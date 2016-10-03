@@ -20,8 +20,8 @@ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
 Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 ## Authors
-Giacomo Marciani, [giacomo.marciani@gmail.com](mailto:giacomo.marciani@gmail.com)
-Michele Porretta, [micheleporretta@gmail.com](mailto:micheleporretta@gmail.com)
+Giacomo Marciani, [gmarciani@acm.org](mailto:gmarciani@acm.org)
+Michele Porretta, [mporretta@acm.org](mailto:mporretta@acm.org)
 
 ## Contributing
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -30,5 +30,5 @@ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
 Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 ## License
-Botnet is released under the [MIT License](https://opensource.org/licenses/MIT).
+The project is released under the [MIT License](https://opensource.org/licenses/MIT).
 Please, read the file LICENSE.md for details.
