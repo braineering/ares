@@ -20,7 +20,7 @@ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
 Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 ## Authors
-Giacomo Marciani, [gmarciani@acm.org](mailto:gmarciani@acm.org)
+Giacomo Marciani, [gmarciani@ieee.org](mailto:gmarciani@ieee.org)
 Michele Porretta, [mporretta@acm.org](mailto:mporretta@acm.org)
 
 ## Contributing
@@ -31,4 +31,3 @@ Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deseru
 
 ## License
 The project is released under the [MIT License](https://opensource.org/licenses/MIT).
-Please, read the file LICENSE.md for details.
