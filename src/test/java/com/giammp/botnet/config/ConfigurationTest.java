@@ -65,8 +65,8 @@ public class ConfigurationTest {
     expected.setSysStat(true);
     expected.setNetStat(false);
     expected.setLogfile("/home/giammp/botnet/log.txt");
-    expected.getTargets().add(new Target("http://www.target1.com", 10000, 20000, 10, "http://www.proxy1.com"));
-    expected.getTargets().add(new Target("http://www.target2.com", 15000, 20000, 15, null));
+    expected.getTargets().add(new Target("http://www.target1.com", 10000, 20000, 10));
+    expected.getTargets().add(new Target("http://www.target2.com", 15000, 20000, 15));
     expected.getSleep().add(new SleepCondition("expression1"));
     expected.getSleep().add(new SleepCondition("expression2"));
     expected.setDebug(true);

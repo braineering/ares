@@ -47,5 +47,4 @@ public class Target {
   private int timeMin;
   private int timeMax;
   private int maxAttempts;
-  private String proxy;
 }
