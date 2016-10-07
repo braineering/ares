@@ -44,7 +44,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Target {
   private String url;
-  private long timeMin;
-  private long timeMax;
-  private long maxAttempts;
+  private int timeMin;
+  private int timeMax;
+  private int maxAttempts;
+  private String proxy;
 }

@@ -27,7 +27,6 @@
 package com.giammp.botnet.config;
 
 import com.giammp.botnet.model.Target;
-import com.giammp.botnet.model.Proxy;
 import com.giammp.botnet.model.SleepCondition;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -57,7 +56,6 @@ public class BotConfiguration {
   private boolean netStat;
   private String logfile;
   private List<Target> targets;
-  private List<Proxy> proxies;
   private List<SleepCondition> sleep;
   private boolean debug;
 
@@ -71,7 +69,6 @@ public class BotConfiguration {
     this.netStat = true;
     this.logfile = "./botlog.txt";
     this.targets = new ArrayList<Target>();
-    this.proxies = new ArrayList<Proxy>();
     this.sleep = new ArrayList<SleepCondition>();
     this.debug = false;
   }
@@ -105,10 +102,6 @@ public class BotConfiguration {
 
     if (config.getTargets() == null) {
       config.setTargets(new ArrayList<Target>());
-    }
-
-    if (config.getProxies() == null) {
-      config.setProxies(new ArrayList<Proxy>());
     }
 
     if (config.getSleep() == null) {

