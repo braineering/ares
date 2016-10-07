@@ -1,0 +1,21 @@
+sysInfo: True
+netInfo: False
+sysStat: True
+netStat: False
+logfile: "/home/giammp/botnet/log.txt"
+targets:
+    - url: "http://www.target1.com"
+      timeMin: 10000
+      timeMax: 20000
+      maxAttempts: 10
+    - url: "http://www.target2.com"
+      timeMin: 15000
+      timeMax: 20000
+      maxAttempts: 15
+proxies:
+    - url: "http://www.proxy1.com"
+    - url: "http://www.proxy2.com"
+sleep:
+    - condition: "expression1"
+    - condition: "expression2"
+debug: True

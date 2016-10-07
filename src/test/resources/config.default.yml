@@ -1,0 +1,9 @@
+sysInfo: True
+netInfo: True
+sysStat: True
+netStat: True
+logfile: "./botlog.txt"
+targets:
+proxies:
+sleep:
+debug: False
