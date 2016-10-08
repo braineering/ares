@@ -23,7 +23,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.giammp.botnet.utils;
+
+package com.giammp.botnet.tools;
 
 import java.util.Random;
 
@@ -33,9 +34,9 @@ import java.util.Random;
  * @author Giacomo Marciani <gmarciani@ieee.org>
  * @author Michele Porretta <mporretta@acm.org>
  * @since 1.0.0
- * @see
+ * @see StringTools
  */
-public class RandomUtils {
+public class RandomTools {
 
   /**
    * Generates a uniform random number in [a, b].

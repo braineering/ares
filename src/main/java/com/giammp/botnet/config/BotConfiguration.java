@@ -43,7 +43,6 @@ import java.util.List;
  * @author Michele Porretta <mporretta@acm.org>
  * @since 1.0.0
  * @see Target
- * @see Proxy
  * @see SleepCondition
  * @see Yaml
  */

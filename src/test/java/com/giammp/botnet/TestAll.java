@@ -27,6 +27,7 @@
 package com.giammp.botnet;
 
 import com.giammp.botnet.config.ConfigurationTest;
+import com.giammp.botnet.control.BashExecutorTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -41,7 +42,8 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    ConfigurationTest.class
+    ConfigurationTest.class,
+    BashExecutorTest.class
 })
 public class TestAll {
 
