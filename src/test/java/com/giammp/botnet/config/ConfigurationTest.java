@@ -64,6 +64,8 @@ public class ConfigurationTest {
     expected.setNetInfo(false);
     expected.setSysStat(true);
     expected.setNetStat(false);
+    expected.setSysStatTime(5000);
+    expected.setNetStatTime(5000);
     expected.setLogfile("/home/giammp/botnet/log.txt");
     expected.getTargets().add(new Target("http://www.target1.com", 10000, 20000, 10));
     expected.getTargets().add(new Target("http://www.target2.com", 15000, 20000, 15));

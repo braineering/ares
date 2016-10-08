@@ -54,6 +54,8 @@ public class BotConfiguration {
   private boolean netInfo;
   private boolean sysStat;
   private boolean netStat;
+  private long sysStatTime;
+  private long netStatTime;
   private String logfile;
   private List<Target> targets;
   private List<SleepCondition> sleep;
@@ -67,6 +69,8 @@ public class BotConfiguration {
     this.netInfo = true;
     this.sysStat = true;
     this.netStat = true;
+    this.sysStatTime = 30000;
+    this.netStatTime = 30000;
     this.logfile = "./botlog.txt";
     this.targets = new ArrayList<Target>();
     this.sleep = new ArrayList<SleepCondition>();

@@ -2,6 +2,8 @@ sysInfo: True
 netInfo: True
 sysStat: True
 netStat: True
+sysStatTime: 30000
+netStatTime: 30000
 logfile: "./botlog.txt"
 targets:
 sleep:

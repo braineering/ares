@@ -1,7 +1,9 @@
 sysInfo: True
-netInfo: False
+netInfo: True
 sysStat: True
-netStat: False
+netStat: True
+sysStatTime: 5000
+netStatTime: 5000
 logfile: "/home/giammp/botnet/log.txt"
 targets:
   - url: "http://www.google.com"
