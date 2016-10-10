@@ -5,6 +5,7 @@ netStat: True
 sysStatTime: 5000
 netStatTime: 5000
 logfile: "/home/giammp/botnet/log.txt"
+cmdfile: "/home/giammp/botnet/cmd.txt"
 targets:
   - url: "http://www.google.com"
     timeMin: 1000
@@ -18,6 +19,7 @@ targets:
     timeMin: 3000
     timeMax: 5000
     maxAttempts: 5
+proxy:
 sleep:
   - condition: "expression1"
   - condition: "expression2"

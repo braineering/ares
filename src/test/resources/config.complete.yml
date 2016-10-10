@@ -5,6 +5,7 @@ netStat: False
 sysStatTime: 5000
 netStatTime: 5000
 logfile: "/home/giammp/botnet/log.txt"
+cmdfile: "/home/giammp/botnet/cmd.txt"
 targets:
   - url: "http://www.target1.com"
     timeMin: 10000
@@ -14,6 +15,9 @@ targets:
     timeMin: 15000
     timeMax: 20000
     maxAttempts: 15
+proxy:
+  address: "http://www.proxy1.com"
+  port: 80
 sleep:
   - condition: "expression1"
   - condition: "expression2"

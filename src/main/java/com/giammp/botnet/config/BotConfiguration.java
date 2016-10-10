@@ -26,6 +26,7 @@
 
 package com.giammp.botnet.config;
 
+import com.giammp.botnet.model.TargetProxy;
 import com.giammp.botnet.model.Target;
 import com.giammp.botnet.model.SleepCondition;
 import lombok.AllArgsConstructor;
@@ -56,12 +57,14 @@ public class BotConfiguration {
   private long sysStatTime;
   private long netStatTime;
   private String logfile;
+  private String cmdfile;
   private List<Target> targets;
+  private TargetProxy proxy;
   private List<SleepCondition> sleep;
   private boolean debug;
 
   /**
-   * Creates the default configuration.
+   * Creates the  default configuration.
    */
   public BotConfiguration() {
     this.sysInfo = true;
@@ -71,7 +74,9 @@ public class BotConfiguration {
     this.sysStatTime = 30000;
     this.netStatTime = 30000;
     this.logfile = "./botlog.txt";
+    this.cmdfile = "./botcmd.txt";
     this.targets = new ArrayList<Target>();
+    this.proxy = null;
     this.sleep = new ArrayList<SleepCondition>();
     this.debug = false;
   }

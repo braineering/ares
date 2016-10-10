@@ -24,32 +24,24 @@
  * THE SOFTWARE.
  */
 
-package com.giammp.botnet.control;
+package com.giammp.botnet.model;
 
-import org.junit.Test;
-
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- ** This class realizes the unit tests on bash command execution.
+ * This class realizes the bot proxy for the contacts.
  *
  * @author Giacomo Marciani <gmarciani@ieee.org>
  * @author Michele Porretta <mporretta@acm.org>
  * @since 1.0.0
- * @see BashExecutor
+ * @see
  */
-public class BashExecutorTest {
-
-  /**
-   * Tests the BashExecutor run method with the command `echo`.
-   */
-  @Test
-  public void testRun_echo() throws IOException {
-    String output = BashExecutor.run("echo", "Hello World");
-    String expected = "Hello World";
-    assertEquals(expected, output);
-  }
-
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class TargetProxy {
+  private String address;
+  private int port;
 }

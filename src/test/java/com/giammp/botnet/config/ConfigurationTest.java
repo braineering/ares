@@ -26,6 +26,7 @@
 
 package com.giammp.botnet.config;
 
+import com.giammp.botnet.model.TargetProxy;
 import com.giammp.botnet.model.Target;
 import com.giammp.botnet.model.SleepCondition;
 import org.junit.Test;
@@ -69,8 +70,10 @@ public class ConfigurationTest {
     expected.setSysStatTime(5000);
     expected.setNetStatTime(5000);
     expected.setLogfile("/home/giammp/botnet/log.txt");
+    expected.setCmdfile("/home/giammp/botnet/cmd.txt");
     expected.getTargets().add(new Target("http://www.target1.com", 10000, 20000, 10));
     expected.getTargets().add(new Target("http://www.target2.com", 15000, 20000, 15));
+    expected.setProxy(new TargetProxy("http://www.proxy1.com", 80));
     expected.getSleep().add(new SleepCondition("expression1"));
     expected.getSleep().add(new SleepCondition("expression2"));
     expected.setDebug(true);

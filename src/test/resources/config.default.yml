@@ -5,6 +5,8 @@ netStat: True
 sysStatTime: 30000
 netStatTime: 30000
 logfile: "./botlog.txt"
+cmdfile: "./botcmd.txt"
 targets:
+proxy:
 sleep:
 debug: False
