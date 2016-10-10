@@ -26,10 +26,13 @@
 
 package com.giammp.botnet.control;
 
+import com.giammp.botnet.model.Period;
 import com.giammp.botnet.model.Target;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -47,8 +50,8 @@ public class TargetAttackerTest {
 
   @Test
   @Ignore
-  public void testGET_single() throws InterruptedException {
-    Target tgt = new Target("http://www.google.com", 1000, 1000, 1);
+  public void testGET_single() throws InterruptedException, MalformedURLException {
+    Target tgt = new Target(new URL("http://www.google.com"), new Period(1000, 1000), 1);
     ExecutorService executor = Executors.newFixedThreadPool(10);
     Runnable attacker = new TargetAttacker(tgt);
     executor.execute(attacker);

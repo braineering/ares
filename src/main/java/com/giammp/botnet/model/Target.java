@@ -30,6 +30,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.net.URL;
+
 /**
  * This class realizes the bot target details.
  *
@@ -43,8 +45,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Target {
-  private String url;
-  private int timeMin;
-  private int timeMax;
-  private int maxAttempts;
+  private URL url;
+  private Period period;
+  private long maxAttempts;
 }

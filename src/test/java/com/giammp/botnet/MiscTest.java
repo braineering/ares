@@ -1,20 +1,20 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Giacomo Marciani, Michele Porretta
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
- *
+ * <p>
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
- *
+ * <p>
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -23,38 +23,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package com.giammp.botnet;
 
-import com.giammp.botnet.config.ConfigurationTest;
-import com.giammp.botnet.control.BashExecutorTest;
-import com.giammp.botnet.control.TargetAttackerTest;
-import com.giammp.botnet.model.PeriodTest;
-import com.giammp.botnet.tools.URLToolsTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.Test;
 
 /**
- * This class realizes the unit test suite that encapsulates all the unit tests provided for the
- * application.
+ * This class realizes ...
  *
  * @author Giacomo Marciani <gmarciani@ieee.org>
  * @author Michele Porretta <mporretta@acm.org>
  * @since 1.0.0
- * @see URLToolsTest
- * @see PeriodTest
- * @see ConfigurationTest
- * @see BashExecutorTest
- * @see TargetAttackerTest
+ * @see
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    URLToolsTest.class,
-    PeriodTest.class,
-    ConfigurationTest.class,
-    BashExecutorTest.class,
-    TargetAttackerTest.class
-})
-public class TestAll {
+public class MiscTest {
 
+  @Test
+  public void test() {
+    String values[] = "1".split("-", 2);
+    System.out.format("len: %d\n", values.length);
+    for (String v : values) System.out.format("val: %s\n", v);
+  }
 }

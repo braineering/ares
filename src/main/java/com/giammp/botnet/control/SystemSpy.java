@@ -23,37 +23,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package com.giammp.botnet.control;
 
-package com.giammp.botnet.tools;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import com.giammp.botnet.model.SysInfo;
+import lombok.Data;
 
 /**
- * This class realizes some useful functions regarding String manipulation.
+ * This class realizes the runnable performing the stealthy collection of system information.
  *
  * @author Giacomo Marciani <gmarciani@ieee.org>
  * @author Michele Porretta <mporretta@acm.org>
  * @since 1.0.0
- * @see RandomTools
+ * @see
  */
-public class StringTools {
-  /**
-   * Transform the given input stream to a string.
-   * @param in The stream to be parsed.
-   * @return The string representation of the input stream.
-   * @throws IOException
-   */
-  public static String getStringFromStream(InputStream in) throws IOException {
-    StringBuilder sb = new StringBuilder();
-    BufferedReader br = new BufferedReader(new InputStreamReader(in));
-    String line;
-    while ((line = br.readLine()) != null) {
-      sb.append(line + System.getProperty("line.separator"));
-    }
-    br.close();
-    return sb.toString();
+@Data
+public class SystemSpy implements Runnable {
+  private SysInfo sysinfo;
+
+  @Override
+  public void run() {
+
   }
 }

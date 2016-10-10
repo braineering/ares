@@ -1,20 +1,20 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Giacomo Marciani, Michele Porretta
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
- *
+ * <p>
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
- *
+ * <p>
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -24,56 +24,58 @@
  * THE SOFTWARE.
  */
 
-package com.giammp.botnet.control;
+package com.giammp.botnet.model;
 
-import com.giammp.botnet.model.Target;
-import com.giammp.botnet.tools.RandomTools;
-import lombok.Data;
+import org.junit.Ignore;
+import org.junit.Test;
 
-import java.io.IOException;
-import java.net.*;
-import java.util.Random;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
- * This class realizes the runnable performing the GET attack.
+ * This class realizes the unit tests on the class `Period`.
  *
  * @author Giacomo Marciani <gmarciani@ieee.org>
  * @author Michele Porretta <mporretta@acm.org>
  * @since 1.0.0
- * @see Target
+ * @see Period
  */
-@Data
-public class TargetAttacker implements Runnable {
-  private final Target target;
-  private Random rnd = new Random();
+public class PeriodTest {
 
-  @Override
-  public void run() {
-    Target tgt = this.getTarget();
-    long i = 0;
-    for (i = 0; i < tgt.getMaxAttempts(); i++) {
-      try {
-        this.makeGetRequest(tgt.getUrl());
-      } catch (IOException e) {
-        e.printStackTrace();
-        return;
-      }
-      int millis = RandomTools.getRandomInt(tgt.getPeriod().getMin(), tgt.getPeriod().getMax(),
-          this.getRnd());
-      try {
-        Thread.sleep(millis);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-    }
+  /**
+   * Tests the Period parsing in the joint form. E.g.: `1`.
+   */
+  @Test
+  public void testValueOf_joint() {
+    final String str = "1";
+    Period p = Period.valueOf(str);
+    Period expected = new Period(1, 1);
+    assertEquals(expected, p);
   }
 
-  private void makeGetRequest(final URL url) throws IOException {
-    HttpURLConnection http = (HttpURLConnection) url.openConnection();
-    http.setRequestMethod("GET");
-    http.setRequestProperty("User-Agent", "BOTNETv1.0.0");
-    int response = http.getResponseCode();
-    System.out.format("[BOT]> GET %s :: %d\n", url, response);
+  /**
+   * Tests the Period parsing in the disjoint form. E.g.: `1-3`.
+   */
+  @Test
+  public void testFromString_disjoint() {
+    final String str = "1-3";
+    Period p = Period.valueOf(str);
+    Period expected = new Period(1, 3);
+    assertEquals(expected, p);
   }
 
+  /**
+   * Tests the Period string validity check.
+   */
+  @Test
+  public void testIsValidString() {
+    assertTrue(Period.isValidString("1"));
+    assertTrue(Period.isValidString("1-3"));
+
+    assertFalse(Period.isValidString(""));
+    assertFalse(Period.isValidString("-"));
+    assertFalse(Period.isValidString("1-"));
+    assertFalse(Period.isValidString("-3"));
+  }
 }

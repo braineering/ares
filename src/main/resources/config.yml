@@ -8,18 +8,14 @@ logfile: "/home/giammp/botnet/log.txt"
 cmdfile: "/home/giammp/botnet/cmd.txt"
 targets:
   - url: "http://www.google.com"
-    timeMin: 1000
-    timeMax: 3000
+    period: 1
     maxAttempts: 5
   - url: "http://www.twitter.com"
-    timeMin: 2000
-    timeMax: 4000
-    maxAttempts: 5
-  - url: "http://www.facebook.com"
-    timeMin: 3000
-    timeMax: 5000
+    period: 2-4
     maxAttempts: 5
 proxy:
+  address: "http://www.securewebproxy.gq"
+  port: 80
 sleep:
   - condition: "expression1"
   - condition: "expression2"

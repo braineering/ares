@@ -26,10 +26,15 @@
 
 package com.giammp.botnet.config;
 
+import com.giammp.botnet.model.Period;
 import com.giammp.botnet.model.TargetProxy;
 import com.giammp.botnet.model.Target;
 import com.giammp.botnet.model.SleepCondition;
 import org.junit.Test;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -59,7 +64,7 @@ public class ConfigurationTest {
    * In this test the configuration file provides with complete non default settings.
    */
   @Test
-  public void testLoadYaml_complete() {
+  public void testLoadYaml_complete() throws MalformedURLException {
     String path = "src/test/resources/config.complete.yml";
     BotConfiguration config = BotConfiguration.fromYaml(path);
     BotConfiguration expected = new BotConfiguration();
@@ -71,9 +76,9 @@ public class ConfigurationTest {
     expected.setNetStatTime(5000);
     expected.setLogfile("/home/giammp/botnet/log.txt");
     expected.setCmdfile("/home/giammp/botnet/cmd.txt");
-    expected.getTargets().add(new Target("http://www.target1.com", 10000, 20000, 10));
-    expected.getTargets().add(new Target("http://www.target2.com", 15000, 20000, 15));
-    expected.setProxy(new TargetProxy("http://www.proxy1.com", 80));
+    expected.getTargets().add(new Target(new URL("http://www.target1.com"), new Period(10000, 20000), 10));
+    expected.getTargets().add(new Target(new URL("http://www.target2.com"), new Period(15000, 20000), 15));
+    expected.setProxy(new TargetProxy("http://www.securewebproxy.gq", 80));
     expected.getSleep().add(new SleepCondition("expression1"));
     expected.getSleep().add(new SleepCondition("expression2"));
     expected.setDebug(true);
