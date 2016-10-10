@@ -34,7 +34,6 @@ import java.util.Random;
  * @author Giacomo Marciani <gmarciani@ieee.org>
  * @author Michele Porretta <mporretta@acm.org>
  * @since 1.0.0
- * @see StringTools
  */
 public class RandomTools {
 

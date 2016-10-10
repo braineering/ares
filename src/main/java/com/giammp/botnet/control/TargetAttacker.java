@@ -35,7 +35,7 @@ import java.net.*;
 import java.util.Random;
 
 /**
- * This class realizes the runnable that performs the GET attack.
+ * This class realizes the runnable performing the GET attack.
  *
  * @author Giacomo Marciani <gmarciani@ieee.org>
  * @author Michele Porretta <mporretta@acm.org>

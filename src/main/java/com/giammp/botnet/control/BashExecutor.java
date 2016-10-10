@@ -26,11 +26,10 @@
 
 package com.giammp.botnet.control;
 
-import com.giammp.botnet.tools.StringTools;
+import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.charset.Charset;
 
 /**
  * This class realizes functions for the execution of bash commands.
@@ -52,7 +51,7 @@ public class BashExecutor {
   public static String run(String ...command) throws IOException {
     ProcessBuilder pb = new ProcessBuilder(command);
     Process p = pb.start();
-    String out = StringTools.getStringFromStream(p.getInputStream());
+    String out = IOUtils.toString(p.getInputStream(), Charset.defaultCharset());
     return out.trim();
   }
 

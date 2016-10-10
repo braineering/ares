@@ -63,6 +63,9 @@
         <apache.math.version>3.6</apache.math.version>
         <joda.time.version>2.9.3</joda.time.version>
 
+        <!-- Utilities -->
+        <apache.io.version>2.5</apache.io.version>
+
         <!-- GUI/CLI -->
         <apache.cli.version>1.3.1</apache.cli.version>
         <snakeyaml.version>1.17</snakeyaml.version>
@@ -100,6 +103,14 @@
             <version>${joda.time.version}</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- Utilities -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${apache.io.version}</version>
+        </dependency>
+
 
         <!-- GUI/CLI -->
         <dependency>
