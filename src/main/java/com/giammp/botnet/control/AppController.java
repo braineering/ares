@@ -31,9 +31,8 @@ import org.apache.commons.cli.Options;
 
 /**
  * This class realizes the application control entry-point.
- *
- * @author Giacomo Marciani <gmarciani@ieee.org>
- * @author Michele Porretta <mporretta@acm.org>
+ * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0.0
  * @see com.giammp.botnet.view.BaseOptions
  */
@@ -54,7 +53,9 @@ public class AppController {
 
   /**
    * Prints the application command line helper.
-   * @param opts
+   * @param opts The CLI options.
+   * @see org.apache.commons.cli.Option
+   * @see org.apache.commons.cli.Options
    */
   public static final void printHelp(final Options opts) {
     HelpFormatter formatter = new HelpFormatter();
@@ -66,13 +67,6 @@ public class AppController {
    */
   public static final void printVersion() {
     System.out.format("%s version %s (by %s)\n", APP_NAME, APP_VERSION, TEAM_NAME);
-  }
-
-  /**
-   *
-   */
-  public static final void quit() {
-    System.exit(0);
   }
 
 }

@@ -39,9 +39,8 @@ import java.util.List;
 
 /**
  * This class realizes the configuration model for the whole application.
- *
- * @author Giacomo Marciani <gmarciani@ieee.org>
- * @author Michele Porretta <mporretta@acm.org>
+ * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0.0
  * @see Target
  * @see CronExpression
@@ -85,7 +84,6 @@ public class BotConfiguration {
    * Loads the application configuration from a YAML file.
    * The default configuration is merged with the settings given by the configuration file.
    * If something goes wrong, the default configuration is loaded.
-   *
    * @param path The absolute path to the configuration file.
    * @return The configuration.
    */

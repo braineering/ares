@@ -36,9 +36,8 @@ import java.util.Random;
 
 /**
  * This class realizes the runnable performing the GET attack.
- *
- * @author Giacomo Marciani <gmarciani@ieee.org>
- * @author Michele Porretta <mporretta@acm.org>
+ * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0.0
  * @see Target
  */

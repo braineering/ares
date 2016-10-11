@@ -31,9 +31,8 @@ import java.util.regex.Pattern;
 
 /**
  * This class realizes URL/InetAddress ecnoding utilities.
- *
- * @author Giacomo Marciani <gmarciani@ieee.org>
- * @author Michele Porretta <mporretta@acm.org>
+ * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0.0
  * @see java.net.URL
  * @see java.net.InetAddress

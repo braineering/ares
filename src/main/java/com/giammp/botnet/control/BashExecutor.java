@@ -33,11 +33,11 @@ import java.nio.charset.Charset;
 
 /**
  * This class realizes functions for the execution of bash commands.
- *
- * @author Giacomo Marciani <gmarciani@ieee.org>
- * @author Michele Porretta <mporretta@acm.org>
+ * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0.0
- * @see
+ * @see ProcessBuilder
+ * @see Process
  */
 public class BashExecutor {
 
@@ -46,7 +46,7 @@ public class BashExecutor {
    * @param command The command to execute. Arguments must be given as a separated strings.
    *                E.g.: BashExecutor.run("ls", "-la") or BashExecutor.run("ls", "-l", "-a")
    * @return The command output as a string.
-   * @throws IOException
+   * @throws IOException when error in process generation or output.
    */
   public static String run(String ...command) throws IOException {
     ProcessBuilder pb = new ProcessBuilder(command);

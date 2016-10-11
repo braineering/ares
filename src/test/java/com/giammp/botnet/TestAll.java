@@ -38,9 +38,8 @@ import org.junit.runners.Suite;
 /**
  * This class realizes the unit test suite that encapsulates all the unit tests provided for the
  * application.
- *
- * @author Giacomo Marciani <gmarciani@ieee.org>
- * @author Michele Porretta <mporretta@acm.org>
+ * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0.0
  * @see URLToolsTest
  * @see PeriodTest

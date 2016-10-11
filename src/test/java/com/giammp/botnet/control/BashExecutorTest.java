@@ -33,10 +33,9 @@ import java.io.IOException;
 import static org.junit.Assert.assertEquals;
 
 /**
- ** This class realizes the unit tests on bash command execution.
- *
- * @author Giacomo Marciani <gmarciani@ieee.org>
- * @author Michele Porretta <mporretta@acm.org>
+ * This class realizes the unit tests on bash command execution.
+ * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0.0
  * @see BashExecutor
  */
@@ -46,8 +45,13 @@ public class BashExecutorTest {
    * Tests the BashExecutor run method with the command `echo`.
    */
   @Test
-  public void testRun_echo() throws IOException {
-    String output = BashExecutor.run("echo", "Hello World");
+  public void testRun_echo() {
+    String output = null;
+    try {
+      output = BashExecutor.run("echo", "Hello World");
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     String expected = "Hello World";
     assertEquals(expected, output);
   }

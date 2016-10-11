@@ -32,9 +32,8 @@ import lombok.NoArgsConstructor;
 
 /**
  * This class realizes the model of system information.
- *
- * @author Giacomo Marciani <gmarciani@ieee.org>
- * @author Michele Porretta <mporretta@acm.org>
+ * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0.0
  * @see NetInfo
  * @see SysStat

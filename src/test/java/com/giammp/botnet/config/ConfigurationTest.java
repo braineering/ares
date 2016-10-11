@@ -40,9 +40,8 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * This class realizes the unit tests on configuration parsing.
- *
- * @author Giacomo Marciani <gmarciani@ieee.org>
- * @author Michele Porretta <mporretta@acm.org>
+ * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0.0
  * @see com.giammp.botnet.TestAll
  */
@@ -63,6 +62,7 @@ public class ConfigurationTest {
   /**
    * Tests the configuration loading from an external YAML configuration file.
    * In this test the configuration file provides with complete non default settings.
+   * @throws MalformedURLException when error in test.
    */
   @Test
   public void testLoadYaml_complete() throws MalformedURLException {

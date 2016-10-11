@@ -23,24 +23,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package com.giammp.botnet.control;
 
-import com.giammp.botnet.model.NetInfo;
-import lombok.Data;
-
 /**
- * This class realizes the runnable performing the stealthy collection of network information.
+ * This class realizes the bot shutdown hook thread.
  * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0.0
- * @see SystemSpy
+ * @see Runtime
  */
-@Data
-public class NetworkSpy implements Runnable {
-  private NetInfo netinfo;
+public class BotShutdown implements Runnable {
 
   @Override
   public void run() {
-
+    System.out.println("SHUTDOWN HOOK THREAD");
   }
 }

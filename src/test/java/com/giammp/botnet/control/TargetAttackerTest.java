@@ -39,9 +39,8 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * This class realizes the unit tests on GET attacks.
- *
- * @author Giacomo Marciani <gmarciani@ieee.org>
- * @author Michele Porretta <mporretta@acm.org>
+ * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0.0
  * @see TargetAttacker
  * @see com.giammp.botnet.model.Target

@@ -37,9 +37,8 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * This class realizes unit tests on URL encoding tools.
- *
- * @author Giacomo Marciani <gmarciani@ieee.org>
- * @author Michele Porretta <mporretta@acm.org>
+ * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0.0
  * @see URLTools
  */
@@ -87,7 +86,7 @@ public class URLToolsTest {
 
   /**
    * Tests the web URL string check.
-   * @throws MalformedURLException
+   * @throws  MalformedURLException when error in test.
    */
   @Test
   public void testGetURLFromString_url() throws MalformedURLException {
@@ -98,10 +97,9 @@ public class URLToolsTest {
 
   /**
    * Tests the IPv4 address string check.
-   * @throws MalformedURLException
    */
   @Test
-  public void testGetURLFromString_ip4() throws MalformedURLException {
+  public void testGetURLFromString_ip4() {
     URL url = URLTools.getURLFromString("104.171.115.66");
     System.out.println(url.toString());
   }

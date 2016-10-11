@@ -34,9 +34,8 @@ import java.net.URL;
 
 /**
  * This class realizes the bot target details.
- *
- * @author Giacomo Marciani <gmarciani@ieee.org>
- * @author Michele Porretta <mporretta@acm.org>
+ * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0.0
  * @see com.giammp.botnet.config.BotConfigurator
  * @see com.giammp.botnet.config.BotConfiguration
