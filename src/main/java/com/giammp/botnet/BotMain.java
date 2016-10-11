@@ -57,7 +57,7 @@ public class BotMain {
         System.out.println(config);
     }
 
-    Runtime.getRuntime().addShutdownHook(new Thread(new BotShutdown()));
+    registerShutdownHooks(new BotShutdown());
 
     attackTargets(config.getTargets());
 
@@ -82,6 +82,20 @@ public class BotMain {
       executor.awaitTermination(60, TimeUnit.SECONDS);
     } catch (InterruptedException e) {
       e.printStackTrace();
+    }
+  }
+
+  /**
+   * Registers atexit runnables as JVM shutdown hooks.
+   * @param hooks atexit runnables.
+   * @see Runtime
+   * @see Thread
+   * @see Runnable
+   */
+  private static void registerShutdownHooks(Runnable ...hooks) {
+    Runtime runtime = Runtime.getRuntime();
+    for (Runnable hook : hooks) {
+      runtime.addShutdownHook(new Thread(hook));
     }
   }
 }
