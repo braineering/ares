@@ -30,6 +30,7 @@ import com.giammp.botnet.config.ConfigurationTest;
 import com.giammp.botnet.control.BashExecutorTest;
 import com.giammp.botnet.control.TargetAttackerTest;
 import com.giammp.botnet.model.PeriodTest;
+import com.giammp.botnet.tools.HTTPToolsTest;
 import com.giammp.botnet.tools.RandomToolsTest;
 import com.giammp.botnet.tools.URLToolsTest;
 import com.giammp.botnet.tools.WatchToolsTest;
@@ -44,6 +45,7 @@ import org.junit.runners.Suite;
  * @since 1.0.0
  * @see RandomToolsTest
  * @see URLToolsTest
+ * @see HTTPToolsTest
  * @see WatchToolsTest
  * @see PeriodTest
  * @see ConfigurationTest
@@ -54,6 +56,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
     RandomToolsTest.class,
     URLToolsTest.class,
+    HTTPToolsTest.class,
     WatchToolsTest.class,
     PeriodTest.class,
     ConfigurationTest.class,

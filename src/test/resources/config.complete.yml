@@ -14,7 +14,7 @@ targets:
     period: 2-4
     maxAttempts: 15
 proxy:
-  address: "http://www.securewebproxy.gq"
+  address: "104.28.5.228"
   port: 80
 sleep:
   - "0 0 12 1/1 * ? *"

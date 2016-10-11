@@ -23,30 +23,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.giammp.botnet;
 
-import org.junit.Test;
-import org.quartz.CronExpression;
+package com.giammp.botnet.tools;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
+import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
-import java.text.ParseException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
- * This class realizes ...
+ * This class realizes HTTP contact utilities.
  * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0.0
+ * @see HttpURLConnection
  */
-public class MiscTest {
+public class HTTPTools {
 
-  @Test
-  public void test() throws ParseException, IOException {
+  /**
+   * Returns the result of a HTTP GET without proxy.
+   * @param url The web url to contact.
+   * @return The string representation of the GET result.
+   * @throws IOException when HTTP GET error.
+   */
+  public static String makeGET(final URL url) throws IOException {
+    HttpURLConnection http = (HttpURLConnection) url.openConnection();
+    http.setRequestMethod("GET");
+    http.setRequestProperty("User-Agent", "BOTNETv1.0.0");
+    int response = http.getResponseCode();
+    String output = String.format("GET %s :: %d", url, response);
+    return output;
+  }
 
+  /**
+   * Returns the result of a HTTP GET with proxy.
+   * @param url The web url to contact.
+   * @param proxy The proxy server.
+   * @return The string representation of the GET result.
+   * @throws IOException when HTTP GET error.
+   */
+  public static String makeGETWithProxy(final URL url, final Proxy proxy) throws IOException {
+    HttpURLConnection http = (HttpURLConnection) url.openConnection(proxy);
+    http.setRequestMethod("GET");
+    http.setRequestProperty("User-Agent", "BOTNETv1.0.0");
+    int response = http.getResponseCode();
+    String output = String.format("GET %s :: %d", url, response);
+    return output;
   }
 }

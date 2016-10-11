@@ -23,30 +23,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.giammp.botnet;
+
+package com.giammp.botnet.tools;
 
 import org.junit.Test;
-import org.quartz.CronExpression;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URL;
 import java.text.ParseException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
- * This class realizes ...
+ * This class realizes junit tests on HTTP utilities.
  * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0.0
+ * @see HTTPTools
  */
-public class MiscTest {
+public class HTTPToolsTest {
 
+  /**
+   * Tests the HTTP GET without Proxy.
+   * @throws ParseException when invalid weburl.
+   * @throws IOException when HTTP GET error.
+   */
   @Test
-  public void test() throws ParseException, IOException {
+  public void testGET() throws ParseException, IOException {
+    URL url = new URL("http://www.google.com");
+    String result = HTTPTools.makeGET(url);
+    String expected = "GET http://www.google.com :: 200";
+    assertEquals(expected, result);
+  }
 
+  /**
+   * Tests the HTTP GET with Proxy.
+   * @throws ParseException when invalid weburl or Proxy.
+   * @throws IOException when HTTP GET error.
+   */
+  @Test
+  public void testGETWithProxy() throws ParseException, IOException {
+    URL url = new URL("http://www.google.com");
+    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("104.28.5.228", 80));
+    String result = HTTPTools.makeGETWithProxy(url, proxy);
+    String expected = "GET http://www.google.com :: 400";
+    assertEquals(expected, result);
   }
 }
