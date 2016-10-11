@@ -79,7 +79,7 @@ public class ConfigurationTest {
     expected.setCmdfile("/home/giammp/botnet/cmd.txt");
     expected.getTargets().add(new Target(new URL("http://www.target1.com"), new Period(1, 1), 10));
     expected.getTargets().add(new Target(new URL("http://www.target2.com"), new Period(2, 4), 15));
-    expected.setProxy(new TargetProxy("http://www.securewebproxy.gq", 80));
+    expected.setProxy(new TargetProxy("104.28.5.228", 80));
     expected.getSleep().add("0 0 12 1/1 * ? *");
     expected.getSleep().add("0 30 18 1/3 * ? *");
     expected.setDebug(true);
