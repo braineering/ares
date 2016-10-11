@@ -2,8 +2,8 @@ sysInfo: True
 netInfo: True
 sysStat: True
 netStat: True
-sysStatTime: 30000
-netStatTime: 30000
+sysStatTime: 60
+netStatTime: 60
 logfile: "./botlog.txt"
 cmdfile: "./botcmd.txt"
 targets:

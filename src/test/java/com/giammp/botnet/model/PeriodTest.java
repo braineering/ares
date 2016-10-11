@@ -44,6 +44,29 @@ import static org.junit.Assert.assertTrue;
 public class PeriodTest {
 
   /**
+   * Tests the Period creation in the joint form. E.g.: `1`.
+   */
+  @Test
+  public void testCreator_joint() {
+    final String str = "1";
+    Period p = new Period(str);
+    Period expected = new Period(1, 1);
+    assertEquals(expected, p);
+  }
+
+  /**
+   * Tests the Period creation in the disjoint form. E.g.: `1-3`.
+   */
+  @Test
+  public void testCreator_disjoint() {
+    final String str = "1-3";
+    Period p = new Period(str);
+    Period expected = new Period(1, 3);
+    assertEquals(expected, p);
+  }
+
+
+  /**
    * Tests the Period parsing in the joint form. E.g.: `1`.
    */
   @Test

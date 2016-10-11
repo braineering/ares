@@ -23,9 +23,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package com.giammp.botnet.tools;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.MalformedURLException;

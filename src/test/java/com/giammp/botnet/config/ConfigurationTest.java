@@ -29,11 +29,12 @@ package com.giammp.botnet.config;
 import com.giammp.botnet.model.Period;
 import com.giammp.botnet.model.TargetProxy;
 import com.giammp.botnet.model.Target;
-import com.giammp.botnet.model.SleepCondition;
 import org.junit.Test;
+import org.quartz.CronExpression;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -72,15 +73,15 @@ public class ConfigurationTest {
     expected.setNetInfo(false);
     expected.setSysStat(true);
     expected.setNetStat(false);
-    expected.setSysStatTime(5000);
-    expected.setNetStatTime(5000);
+    expected.setSysStatTime(5);
+    expected.setNetStatTime(5);
     expected.setLogfile("/home/giammp/botnet/log.txt");
     expected.setCmdfile("/home/giammp/botnet/cmd.txt");
-    expected.getTargets().add(new Target(new URL("http://www.target1.com"), new Period(10000, 20000), 10));
-    expected.getTargets().add(new Target(new URL("http://www.target2.com"), new Period(15000, 20000), 15));
+    expected.getTargets().add(new Target(new URL("http://www.target1.com"), new Period(1, 1), 10));
+    expected.getTargets().add(new Target(new URL("http://www.target2.com"), new Period(2, 4), 15));
     expected.setProxy(new TargetProxy("http://www.securewebproxy.gq", 80));
-    expected.getSleep().add(new SleepCondition("expression1"));
-    expected.getSleep().add(new SleepCondition("expression2"));
+    expected.getSleep().add("0 0 12 1/1 * ? *");
+    expected.getSleep().add("0 30 18 1/3 * ? *");
     expected.setDebug(true);
     assertEquals(expected, config);
   }

@@ -26,6 +26,12 @@
 package com.giammp.botnet;
 
 import org.junit.Test;
+import org.quartz.CronExpression;
+
+import java.text.ParseException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class realizes ...
@@ -38,9 +44,9 @@ import org.junit.Test;
 public class MiscTest {
 
   @Test
-  public void test() {
-    String values[] = "1".split("-", 2);
-    System.out.format("len: %d\n", values.length);
-    for (String v : values) System.out.format("val: %s\n", v);
+  public void test() throws ParseException {
+    CronExpression exp1 = new CronExpression("0 0 12 1/1 * ? *");
+    CronExpression exp2 = new CronExpression("0 0 12 1/1 * ? *");
+    assertTrue(exp1.getCronExpression().equals(exp2.getCronExpression()));
   }
 }

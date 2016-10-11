@@ -2,8 +2,8 @@ sysInfo: True
 netInfo: True
 sysStat: True
 netStat: True
-sysStatTime: 5000
-netStatTime: 5000
+sysStatTime: 5
+netStatTime: 5
 logfile: "/home/giammp/botnet/log.txt"
 cmdfile: "/home/giammp/botnet/cmd.txt"
 targets:
@@ -17,6 +17,6 @@ proxy:
   address: "http://www.securewebproxy.gq"
   port: 80
 sleep:
-  - condition: "expression1"
-  - condition: "expression2"
+  - "0 0 12 1/1 * ? *"
+  - "0 30 18 1/3 * ? *"
 debug: True

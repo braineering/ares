@@ -47,6 +47,20 @@ public class Period {
 
   public static final String REG_PATTERN = "\\d+(-\\d+){0,1}";
 
+  public Period(final String str) {
+    String values[] = str.split("-", 2);
+    int min = 0;
+    int max = 0;
+    if (values.length == 2) {
+      min = Integer.valueOf(values[0]);
+      max = Integer.valueOf(values[1]);
+    } else {
+      min = max = Integer.valueOf(values[0]);
+    }
+    this.min = min;
+    this.max = max;
+  }
+
   /**
    * Checks if the string represents a valid Period.
    * @param str the string to check.

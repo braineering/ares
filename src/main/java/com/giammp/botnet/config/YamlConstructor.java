@@ -28,7 +28,7 @@ package com.giammp.botnet.config;
 
 import com.giammp.botnet.model.TargetProxy;
 import com.giammp.botnet.model.Target;
-import com.giammp.botnet.model.SleepCondition;
+import org.quartz.CronExpression;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -70,7 +70,7 @@ public class YamlConstructor extends Constructor {
     TypeDescription description = new TypeDescription(BotConfiguration.class);
     description.putListPropertyType("targets", Target.class);
     description.putListPropertyType("proxy", TargetProxy.class);
-    description.putListPropertyType("sleep", SleepCondition.class);
+    description.putListPropertyType("sleep", String.class);
     super.addTypeDescription(description);
   }
 }

@@ -21,6 +21,7 @@ Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deseru
 
 ## Authors
 Giacomo Marciani, [gmarciani@ieee.org](mailto:gmarciani@ieee.org)
+
 Michele Porretta, [mporretta@acm.org](mailto:mporretta@acm.org)
 
 ## Contributing
