@@ -26,6 +26,8 @@
 
 package com.giammp.botnet.tools;
 
+import com.giammp.botnet.model.Period;
+
 import java.util.Random;
 
 /**
@@ -38,13 +40,52 @@ import java.util.Random;
 public class RandomTools {
 
   /**
-   * Generates a uniform random number in [a, b].
+   * Generates a uniform integer random number in [a, b].
    * @param a The lower bound.
    * @param b The upper bound.
    * @param rndgen The random number generator.
-   * @return The uniform random number in [a,b].
+   * @return The uniform random integer number in [a,b].
    */
   public static int getRandomInt(final int a, final int b, Random rndgen) {
-    return rndgen.nextInt(b - a) + a;
+    if (a == b) {
+      return a;
+    } else {
+      return rndgen.nextInt(b - a) + a;
+    }
+  }
+
+  /**
+   * Generates a uniform double random number in [a, b].
+   * @param a The lower bound.
+   * @param b The upper bound.
+   * @param rndgen The random number generator.
+   * @return The uniform random double number in [a,b].
+   */
+  public static double getRandomDouble(final double a, final double b, Random rndgen) {
+    if (a == b) {
+      return a;
+    } else {
+      return rndgen.nextDouble() * (b - a) + a;
+    }
+  }
+
+  /**
+   * Generates a uniform random integer number in period.
+   * @param period the period.
+   * @param rndgen the random number generator.
+   * @return the uniform random integer number in period.
+   */
+  public static int getRandomIntInPeriod(final Period period, Random rndgen) {
+    return getRandomInt(period.getMin(), period.getMax(), rndgen);
+  }
+
+  /**
+   * Generates a uniform random double number in period.
+   * @param period the period.
+   * @param rndgen the random number generator.
+   * @return the uniform random double number in period.
+   */
+  public static double getRandomDoubleInPeriod(final Period period, Random rndgen) {
+    return getRandomDouble(period.getMin(), period.getMax(), rndgen);
   }
 }

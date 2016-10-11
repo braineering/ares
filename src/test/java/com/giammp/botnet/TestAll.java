@@ -30,6 +30,7 @@ import com.giammp.botnet.config.ConfigurationTest;
 import com.giammp.botnet.control.BashExecutorTest;
 import com.giammp.botnet.control.TargetAttackerTest;
 import com.giammp.botnet.model.PeriodTest;
+import com.giammp.botnet.tools.RandomToolsTest;
 import com.giammp.botnet.tools.URLToolsTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -50,6 +51,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     URLToolsTest.class,
+    RandomToolsTest.class,
     PeriodTest.class,
     ConfigurationTest.class,
     BashExecutorTest.class,
