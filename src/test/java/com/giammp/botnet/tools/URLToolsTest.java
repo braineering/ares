@@ -101,6 +101,7 @@ public class URLToolsTest {
   @Test
   public void testGetURLFromString_ip4() {
     URL url = URLTools.getURLFromString("104.171.115.66");
-    System.out.println(url.toString());
+    String expected = "http://104.171.115.66/";
+    assertEquals(expected, url.toString());
   }
 }

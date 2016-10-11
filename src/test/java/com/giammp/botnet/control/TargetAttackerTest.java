@@ -48,11 +48,10 @@ import java.util.concurrent.TimeUnit;
 public class TargetAttackerTest {
 
   @Test
-  @Ignore
   public void testGET_single() throws InterruptedException, MalformedURLException {
     Target tgt = new Target(new URL("http://www.google.com"), new Period(1000, 1000), 1);
-    ExecutorService executor = Executors.newFixedThreadPool(10);
-    Runnable attacker = new TargetAttacker(tgt);
+    ExecutorService executor = Executors.newFixedThreadPool(1);
+    Runnable attacker = new TargetAttacker(tgt, false);
     executor.execute(attacker);
     executor.shutdown();
     executor.awaitTermination(60, TimeUnit.SECONDS);
