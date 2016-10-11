@@ -53,10 +53,6 @@ public class BotMain {
 
     final BotConfiguration config = BotConfigurator.loadConfiguration(args);
 
-    if (config.isDebug()) {
-        System.out.println(config);
-    }
-
     registerShutdownHooks(new BotShutdown());
 
     attackTargets(config.getTargets());
