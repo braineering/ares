@@ -41,7 +41,7 @@ import static org.junit.Assert.assertEquals;
  * This class realizes the unit tests on configuration parsing.
  * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
- * @since 1.0.0
+ * @since 1.0
  * @see TestAll
  */
 public class ConfigurationTest {

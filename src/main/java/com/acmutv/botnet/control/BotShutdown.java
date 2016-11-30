@@ -30,7 +30,7 @@ package com.acmutv.botnet.control;
  * This class realizes the bot shutdown hook thread.
  * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
- * @since 1.0.0
+ * @since 1.0
  * @see Runtime
  */
 public class BotShutdown implements Runnable {

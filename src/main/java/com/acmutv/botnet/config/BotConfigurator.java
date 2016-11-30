@@ -38,7 +38,7 @@ import org.apache.commons.cli.ParseException;
  * This class realizes the configuration static layer for the whole application.
  * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
- * @since 1.0.0
+ * @since 1.0
  * @see BotConfiguration
  * @see YamlConstructor
  * @see CommandLine

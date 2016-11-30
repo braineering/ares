@@ -11,7 +11,7 @@
 
     <name>Botnet</name>
     <description>
-        Implementation of a botnet.
+        A botnet.
         Coursework in Computer Security 2015/2016.
     </description>
     <url>http://gitlab.com/acm-utv/botnet</url>
@@ -55,9 +55,9 @@
     </repositories>
 
     <properties>
-        <!-- Project commons -->
+        <!-- General -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- Data Structures -->
         <apache.lang.version>3.4</apache.lang.version>
@@ -82,13 +82,27 @@
         <!-- Test -->
         <junit.version>4.12</junit.version>
 
-        <!-- Apache Maven Plugins -->
-        <mvn.plugin.compiler.version>3.1</mvn.plugin.compiler.version>
-        <mvn.plugin.jar.version>2.6</mvn.plugin.jar.version>
+        <!-- MAVEN PLUGINS -->
+        <!-- Compiler -->
+        <compiler.version>3.6.0</compiler.version>
+        <compiler.java.version>1.8</compiler.java.version>
+        <compiler.java.memory.initial>128m</compiler.java.memory.initial>
+        <compiler.java.memory.maximum>512m</compiler.java.memory.maximum>
+        <compiler.arguments></compiler.arguments>
 
-        <mvn.plugin.exec.version>1.4.0</mvn.plugin.exec.version>
-        <mvn.plugin.lifecycle-mapping.version>1.0.0</mvn.plugin.lifecycle-mapping.version>
-        <mvn.plugin.jar.main.entry>com.acmutv.botnet.BotMain</mvn.plugin.jar.main.entry>
+        <!-- JAR -->
+        <jar.version>3.0.2</jar.version>
+        <jar.main>com.acmutv.botnet.BotMain</jar.main>
+
+        <!-- Surefire -->
+        <surefire.version>2.19.1</surefire.version>
+
+        <!-- Javadoc -->
+        <javadoc.version>2.10.4</javadoc.version>
+
+        <!-- Clean -->
+        <clean.version>3.0.0</clean.version>
+
     </properties>
 
     <dependencies>
@@ -122,7 +136,6 @@
             <artifactId>quartz-jobs</artifactId>
             <version>${quartz.version}</version>
         </dependency>
-
 
         <!-- GUI/CLI -->
         <dependency>
@@ -181,9 +194,9 @@
     </dependencies>
 
     <profiles>
-        <!-- PROFILE ONE -->
+        <!-- PROFILE 1 -->
         <profile>
-            <id>profile-one</id>
+            <id>profile-1</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
@@ -194,31 +207,135 @@
     </profiles>
 
     <build>
+
+        <pluginManagement>
+            <plugins>
+
+                <!-- Compiler -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${compiler.version}</version>
+                </plugin>
+
+                <!-- JAR -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${jar.version}</version>
+                </plugin>
+
+                <!-- Surefire -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${surefire.version}</version>
+                </plugin>
+
+                <!-- Javadoc -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${javadoc.version}</version>
+                </plugin>
+
+                <!-- Clean -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>${clean.version}</version>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+
         <plugins>
-            <!-- JAR -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>${mvn.plugin.jar.version}</version>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <Main-Class>${mvn.plugin.jar.main.entry}</Main-Class>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
 
             <!-- Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${mvn.plugin.compiler.version}</version>
+                <version>${compiler.version}</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <source>${compiler.java.version}</source>
+                    <target>${compiler.java.version}</target>
+                    <fork>true</fork>
+                    <meminitial>${compiler.java.memory.initial}</meminitial>
+                    <maxmem>${compiler.java.memory.maximum}</maxmem>
+                    <compilerArgs>
+                        <arg>${compiler.arguments}</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
+
+            <!-- JAR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${jar.version}</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Main-Class>${jar.main}</Main-Class>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!-- Surefire -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <configuration>
+                    <parallel>methods</parallel>
+                    <threadCount>10</threadCount>
+                </configuration>
+            </plugin>
+
+            <!-- Javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${javadoc.version}</version>
+                <configuration>
+                    <show>private</show>
+                    <nohelp>true</nohelp>
+                </configuration>
+            </plugin>
+
+            <!-- Clean -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>${clean.version}</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>some/relative/path</directory>
+                            <includes>
+                                <include>**/*.tmp</include>
+                                <include>**/*.log</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/important.log</exclude>
+                                <exclude>**/another-important.log</exclude>
+                            </excludes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>auto-clean</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 </project>

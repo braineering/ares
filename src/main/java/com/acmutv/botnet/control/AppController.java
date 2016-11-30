@@ -34,7 +34,7 @@ import org.apache.commons.cli.Options;
  * This class realizes the application control entry-point.
  * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
- * @since 1.0.0
+ * @since 1.0
  * @see BaseOptions
  */
 public class AppController {

@@ -39,7 +39,7 @@ import static org.junit.Assert.assertTrue;
  * This class realizes unit tests on URL encoding tools.
  * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
- * @since 1.0.0
+ * @since 1.0
  * @see URLTools
  */
 public class URLToolsTest {
