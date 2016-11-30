@@ -50,7 +50,7 @@
             <name>Michele Porretta</name>
             <id>mporretta</id>
             <email>mporretta@acm.org</email>
-            <url>http://google.com</url>
+            <url></url>
             <organization>ACM Rome Tor Vergata</organization>
             <organizationUrl>http://acm.uniroma2.it</organizationUrl>
             <roles>
@@ -58,7 +58,7 @@
             </roles>
             <timezone>Europe/Rome</timezone>
             <properties>
-                <picUrl>http://gmarciani.com/media/photos/giacomo-marciani-profile</picUrl>
+                <picUrl></picUrl>
             </properties>
         </developer>
     </developers>
@@ -289,7 +289,6 @@
     </profiles>
 
     <build>
-
         <pluginManagement>
             <plugins>
 
