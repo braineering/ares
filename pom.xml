@@ -4,20 +4,21 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.giammp</groupId>
+    <groupId>com.acmutv</groupId>
     <artifactId>botnet</artifactId>
-    <version>1.0.0</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Botnet</name>
     <description>
-        Implementation of a simple botnet.
+        Implementation of a botnet.
+        Coursework in Computer Security 2015/2016.
     </description>
-    <url>http://giammp.github.io/botnet</url>
+    <url>http://gitlab.com/acm-utv/botnet</url>
 
     <organization>
-        <name>Giammp</name>
-        <url>https://github.com/giammp</url>
+        <name>ACM Rome Tor Vergata</name>
+        <url>https://gitlab.com/acm-utv</url>
     </organization>
 
     <developers>
@@ -87,7 +88,7 @@
 
         <mvn.plugin.exec.version>1.4.0</mvn.plugin.exec.version>
         <mvn.plugin.lifecycle-mapping.version>1.0.0</mvn.plugin.lifecycle-mapping.version>
-        <mvn.plugin.jar.main.entry>com.giammp.botnet.BotMain</mvn.plugin.jar.main.entry>
+        <mvn.plugin.jar.main.entry>com.acmutv.botnet.BotMain</mvn.plugin.jar.main.entry>
     </properties>
 
     <dependencies>
@@ -180,24 +181,14 @@
     </dependencies>
 
     <profiles>
-        <!-- QUERY ONE -->
+        <!-- PROFILE ONE -->
         <profile>
-            <id>q1</id>
+            <id>profile-one</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <apache.flink.entry>com.threecore.project.query.QueryOne</apache.flink.entry>
-            </properties>
-        </profile>
-        <!-- QUERY TWO -->
-        <profile>
-            <id>q2</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <apache.flink.entry>com.threecore.project.query.QueryTwo</apache.flink.entry>
+
             </properties>
         </profile>
     </profiles>
