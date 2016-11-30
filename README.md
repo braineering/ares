@@ -1,6 +1,6 @@
 # BOTNET
 
-*Implementation of a botnet*
+*A botnet showcase*
 
 *Coursework in Computer Security 2015/2016*
 
