@@ -32,16 +32,16 @@ import org.apache.commons.cli.Options;
 
 /**
  * This class realizes the application control entry-point.
- * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see BaseOptions
  */
 public class AppController {
   public static final String APP_NAME = "BOT";
-  public static final String TEAM_NAME = "Giammp Team";
-  public static final String APP_VERSION = "1.0.0";
-  public static final String APP_DESCRIPTION = "A simple bot that collects system/network info/stats.\n";
+  public static final String TEAM_NAME = "Giacomo Marciani and Michele Porretta";
+  public static final String APP_VERSION = "1.0";
+  public static final String APP_DESCRIPTION = "A botnet showcase.\n";
 
   /**
    * Prints the application usage instructions.

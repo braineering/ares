@@ -36,7 +36,7 @@ import org.apache.commons.cli.ParseException;
 
 /**
  * This class realizes the configuration static layer for the whole application.
- * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see BotConfiguration
@@ -46,7 +46,7 @@ import org.apache.commons.cli.ParseException;
  */
 public class BotConfigurator {
 
-  public static BaseOptions OPTS = BaseOptions.getInstance();
+  private static BaseOptions OPTS = BaseOptions.getInstance();
 
   /**
    * Loads the bot configuration, according to the possible arguments passed to the main method.
@@ -59,7 +59,7 @@ public class BotConfigurator {
    */
   public static BotConfiguration loadConfiguration(String[] argv) {
     CommandLine cmd = getCommandLine(argv);
-    BotConfiguration config = null;
+    BotConfiguration config;
 
     if (cmd.hasOption("help")) {
       AppController.printHelp(OPTS);
@@ -71,16 +71,14 @@ public class BotConfigurator {
 
     if (cmd.hasOption("configuration")) {
       String configPath = cmd.getOptionValue("configuration");
-      config = BotConfiguration.fromYaml(configPath);
+      config = BotConfiguration.getInstance().fromYaml(configPath);
     } else {
-      config = new BotConfiguration();
+      config = BotConfiguration.getInstance();
     }
 
     if (cmd.hasOption("debug")) {
       config.setDebug(true);
     }
-
-    String args[] = cmd.getArgs();
 
     if (config.isDebug()) {
       // TODO

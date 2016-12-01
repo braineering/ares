@@ -32,7 +32,7 @@ import java.util.Random;
 
 /**
  * This class realizes random number generation utilities.
- * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see Random

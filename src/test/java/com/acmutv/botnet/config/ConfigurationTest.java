@@ -39,7 +39,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * This class realizes the unit tests on configuration parsing.
- * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see TestAll
@@ -53,8 +53,8 @@ public class ConfigurationTest {
   @Test
   public void testLoadYaml_default() {
     String path = "src/test/resources/config.default.yml";
-    BotConfiguration config = BotConfiguration.fromYaml(path);
-    BotConfiguration expected = new BotConfiguration();
+    BotConfiguration config = BotConfiguration.getInstance().fromYaml(path);
+    BotConfiguration expected = BotConfiguration.getDefault();
     assertEquals(expected, config);
   }
 
@@ -66,16 +66,16 @@ public class ConfigurationTest {
   @Test
   public void testLoadYaml_complete() throws MalformedURLException {
     String path = "src/test/resources/config.complete.yml";
-    BotConfiguration config = BotConfiguration.fromYaml(path);
-    BotConfiguration expected = new BotConfiguration();
+    BotConfiguration config = BotConfiguration.getInstance().fromYaml(path);
+    BotConfiguration expected = BotConfiguration.getDefault();
     expected.setSysInfo(true);
     expected.setNetInfo(false);
     expected.setSysStat(true);
     expected.setNetStat(false);
-    expected.setSysStatTime(5);
-    expected.setNetStatTime(5);
-    expected.setLogfile("/home/giammp/botnet/log.txt");
-    expected.setCmdfile("/home/giammp/botnet/cmd.txt");
+    expected.setSysStatFreq(5);
+    expected.setNetStatFreq(5);
+    expected.setLogfile("/home/com/acmutv/botnet/log.txt");
+    expected.setCmdfile("/home/com/acmutv/botnet/cmd.txt");
     expected.getTargets().add(new Target(new URL("http://www.target1.com"), new Period(1, 1), 10));
     expected.getTargets().add(new Target(new URL("http://www.target2.com"), new Period(2, 4), 15));
     expected.setProxy(new TargetProxy("104.28.5.228", 80));
@@ -92,8 +92,8 @@ public class ConfigurationTest {
   @Test
   public void testloadYaml_incomplete() {
     String path = "src/test/resources/config.incomplete.yml";
-    BotConfiguration config = BotConfiguration.fromYaml(path);
-    BotConfiguration expected = new BotConfiguration();
+    BotConfiguration config = BotConfiguration.getInstance().fromYaml(path);
+    BotConfiguration expected = BotConfiguration.getDefault();
     expected.setSysStat(false);
     expected.setNetStat(false);
     assertEquals(expected, config);
@@ -106,8 +106,8 @@ public class ConfigurationTest {
   @Test
   public void testloadYaml_empty() {
     String path = "src/test/resources/config.empty.yml";
-    BotConfiguration config = BotConfiguration.fromYaml(path);
-    BotConfiguration expected = new BotConfiguration();
+    BotConfiguration config = BotConfiguration.getInstance().fromYaml(path);
+    BotConfiguration expected = BotConfiguration.getDefault();
     assertEquals(expected, config);
   }
 

@@ -34,12 +34,13 @@ import org.quartz.CronExpression;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileReader;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * This class realizes the configuration model for the whole application.
- * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see Target
@@ -49,35 +50,71 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class BotConfiguration {
+
+  // Default values
+  public static boolean SYS_INFO = true;
+  public static boolean NET_INFO = true;
+  public static boolean SYS_STAT = true;
+  public static boolean NET_STAT = true;
+  public static long SYS_STAT_FREQ = 60;
+  public static long NET_STAT_FREQ = 60;
+  public static String  LOG_FILE = "botlog.txt";
+  public static String  CMD_FILE = "botcmd.txt";
+  public static TargetProxy  PROXY = null;
+  public static boolean DEBUG = false;
+  public static DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+
   private boolean sysInfo;
   private boolean netInfo;
   private boolean sysStat;
   private boolean netStat;
-  private long sysStatTime;
-  private long netStatTime;
+  private long sysStatFreq;
+  private long netStatFreq;
   private String logfile;
   private String cmdfile;
   private List<Target> targets;
   private TargetProxy proxy;
   private List<String> sleep;
   private boolean debug;
+  private DateTimeFormatter dtf;
+
+  private static BotConfiguration instance;
 
   /**
-   * Creates the  default configuration.
+   * Retrieves the class singleton.
+   * @return the singleton
    */
-  public BotConfiguration() {
-    this.sysInfo = true;
-    this.netInfo = true;
-    this.sysStat = true;
-    this.netStat = true;
-    this.sysStatTime = 60;
-    this.netStatTime = 60;
-    this.logfile = "./botlog.txt";
-    this.cmdfile = "./botcmd.txt";
+  public static BotConfiguration getInstance() {
+    if (instance == null) {
+      instance = new BotConfiguration();
+    }
+    return instance;
+  }
+
+  /**
+   * Creates the default configuration.
+   */
+  public static BotConfiguration getDefault() {
+    return new BotConfiguration();
+  }
+
+  /**
+   * Creates the default configuration.
+   */
+  private BotConfiguration() {
+    this.sysInfo = SYS_INFO;
+    this.netInfo = NET_INFO;
+    this.sysStat = SYS_STAT;
+    this.netStat = NET_STAT;
+    this.sysStatFreq = SYS_STAT_FREQ;
+    this.netStatFreq = NET_STAT_FREQ;
+    this.logfile = LOG_FILE;
+    this.cmdfile = CMD_FILE;
+    this.proxy = PROXY;
+    this.debug = DEBUG;
     this.targets = new ArrayList<Target>();
-    this.proxy = null;
     this.sleep = new ArrayList<String>();
-    this.debug = false;
+    this.dtf = DTF;
   }
 
   /**
@@ -87,7 +124,7 @@ public class BotConfiguration {
    * @param path The absolute path to the configuration file.
    * @return The configuration.
    */
-  public static BotConfiguration fromYaml(final String path) {
+  public BotConfiguration fromYaml(final String path) {
     BotConfiguration config;
 
     Yaml yaml = new Yaml(YamlConstructor.getInstance());

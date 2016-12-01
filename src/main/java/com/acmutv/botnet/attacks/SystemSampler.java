@@ -23,24 +23,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.acmutv.botnet.control;
+package com.acmutv.botnet.attacks;
 
+import com.acmutv.botnet.config.BotConfiguration;
 import com.acmutv.botnet.model.SysInfo;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 /**
  * This class realizes the runnable performing the stealthy collection of system information.
- * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see NetworkSpy
+ * @see NetworkSampler
+ * @see SysInfo
  */
 @Data
-public class SystemSpy implements Runnable {
-  private SysInfo sysinfo;
+public class SystemSampler implements Runnable {
 
   @Override
   public void run() {
+    makeSample();
+  }
 
+  private void makeSample() {
+    boolean debug = BotConfiguration.getInstance().isDebug();
+    DateTimeFormatter dtf = BotConfiguration.getInstance().getDtf();
+    if (debug) {
+      System.out.format("[BOT %s]> SYSTEM SAMPLE\n", dtf.format(LocalDateTime.now()));
+    }
   }
 }

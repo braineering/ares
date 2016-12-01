@@ -2,10 +2,10 @@ sysInfo: True
 netInfo: False
 sysStat: True
 netStat: False
-sysStatTime: 5
-netStatTime: 5
-logfile: "/home/giammp/botnet/log.txt"
-cmdfile: "/home/giammp/botnet/cmd.txt"
+sysStatFreq: 5
+netStatFreq: 5
+logfile: "/home/com/acmutv/botnet/log.txt"
+cmdfile: "/home/com/acmutv/botnet/cmd.txt"
 targets:
   - url: "http://www.target1.com"
     period: 1

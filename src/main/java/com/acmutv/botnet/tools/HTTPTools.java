@@ -34,7 +34,7 @@ import java.net.URL;
 
 /**
  * This class realizes HTTP contact utilities.
- * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see HttpURLConnection

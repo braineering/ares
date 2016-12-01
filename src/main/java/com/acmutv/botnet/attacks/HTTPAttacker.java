@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.control;
+package com.acmutv.botnet.attacks;
 
 import com.acmutv.botnet.model.Target;
 import com.acmutv.botnet.tools.RandomTools;
@@ -36,13 +36,13 @@ import java.util.Random;
 
 /**
  * This class realizes the runnable performing the GET attack.
- * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see Target
  */
 @Data
-public class TargetAttacker implements Runnable {
+public class HTTPAttacker implements Runnable {
   private final Target target;
   private final boolean output;
   private Random rnd = new Random();

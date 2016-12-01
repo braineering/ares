@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet;
 
-import com.acmutv.botnet.control.TargetAttackerTest;
+import com.acmutv.botnet.attacks.HTTPAttackerTest;
 import com.acmutv.botnet.model.PeriodTest;
 import com.acmutv.botnet.tools.RandomToolsTest;
 import com.acmutv.botnet.config.ConfigurationTest;
@@ -40,7 +40,7 @@ import org.junit.runners.Suite;
 /**
  * This class realizes the unit test suite that encapsulates all the unit tests provided for the
  * application.
- * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see RandomToolsTest
@@ -50,7 +50,7 @@ import org.junit.runners.Suite;
  * @see PeriodTest
  * @see ConfigurationTest
  * @see BashExecutorTest
- * @see TargetAttackerTest
+ * @see HTTPAttackerTest
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
@@ -61,7 +61,7 @@ import org.junit.runners.Suite;
     PeriodTest.class,
     ConfigurationTest.class,
     BashExecutorTest.class,
-    TargetAttackerTest.class
+    HTTPAttackerTest.class
 })
 public class TestAll {
 

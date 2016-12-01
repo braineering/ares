@@ -34,7 +34,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * This class realizes the unit tests on bash command execution.
- * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see BashExecutor

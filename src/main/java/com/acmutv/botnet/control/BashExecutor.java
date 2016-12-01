@@ -33,7 +33,7 @@ import java.nio.charset.Charset;
 
 /**
  * This class realizes functions for the execution of bash commands.
- * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
+ * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see ProcessBuilder

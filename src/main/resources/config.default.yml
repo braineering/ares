@@ -2,10 +2,10 @@ sysInfo: True
 netInfo: True
 sysStat: True
 netStat: True
-sysStatTime: 60
-netStatTime: 60
-logfile: "./botlog.txt"
-cmdfile: "./botcmd.txt"
+sysStatFreq: 60
+netStatFreq: 60
+logfile: "botlog.txt"
+cmdfile: "botcmd.txt"
 targets:
 proxy:
 sleep:
