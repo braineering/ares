@@ -27,7 +27,7 @@
 package com.acmutv.botnet.control;
 
 /**
- * This class realizes the bot shutdown hook thread.
+ * This class realizes the bot shutdown hook task.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

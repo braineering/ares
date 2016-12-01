@@ -59,7 +59,7 @@ public class BotConfigurator {
    */
   public static BotConfiguration loadConfiguration(String[] argv) {
     CommandLine cmd = getCommandLine(argv);
-    BotConfiguration config;
+    BotConfiguration config = BotConfiguration.getInstance().fromDefault();
 
     if (cmd.hasOption("help")) {
       AppController.printHelp(OPTS);
@@ -72,16 +72,10 @@ public class BotConfigurator {
     if (cmd.hasOption("configuration")) {
       String configPath = cmd.getOptionValue("configuration");
       config = BotConfiguration.getInstance().fromYaml(configPath);
-    } else {
-      config = BotConfiguration.getInstance();
     }
 
     if (cmd.hasOption("debug")) {
       config.setDebug(true);
-    }
-
-    if (config.isDebug()) {
-      // TODO
     }
 
     return config;

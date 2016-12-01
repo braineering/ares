@@ -19,4 +19,5 @@ proxy:
 sleep:
   - "0 0 12 1/1 * ? *"
   - "0 30 18 1/3 * ? *"
+maxTime: 60
 debug: True

