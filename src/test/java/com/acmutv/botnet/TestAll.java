@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet;
 
-import com.acmutv.botnet.attacks.HTTPAttackerTest;
+import com.acmutv.botnet.attacks.HTTPAttackTest;
 import com.acmutv.botnet.model.PeriodTest;
 import com.acmutv.botnet.tools.RandomToolsTest;
 import com.acmutv.botnet.config.ConfigurationTest;
@@ -50,7 +50,7 @@ import org.junit.runners.Suite;
  * @see PeriodTest
  * @see ConfigurationTest
  * @see BashExecutorTest
- * @see HTTPAttackerTest
+ * @see HTTPAttackTest
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
@@ -61,7 +61,7 @@ import org.junit.runners.Suite;
     PeriodTest.class,
     ConfigurationTest.class,
     BashExecutorTest.class,
-    HTTPAttackerTest.class
+    HTTPAttackTest.class
 })
 public class TestAll {
 

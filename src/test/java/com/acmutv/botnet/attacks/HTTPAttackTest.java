@@ -26,7 +26,6 @@
 
 package com.acmutv.botnet.attacks;
 
-import com.acmutv.botnet.attacks.HTTPAttacker;
 import com.acmutv.botnet.model.Period;
 import com.acmutv.botnet.model.Target;
 import org.junit.Test;
@@ -42,16 +41,16 @@ import java.util.concurrent.TimeUnit;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HTTPAttacker
+ * @see HTTPAttack
  * @see Target
  */
-public class HTTPAttackerTest {
+public class HTTPAttackTest {
 
   @Test
   public void testGET_single() throws InterruptedException, MalformedURLException {
     Target tgt = new Target(new URL("http://www.google.com"), new Period(1000, 1000), 1);
     ExecutorService executor = Executors.newFixedThreadPool(1);
-    Runnable attacker = new HTTPAttacker(tgt, false);
+    Runnable attacker = new HTTPAttack(tgt);
     executor.execute(attacker);
     executor.shutdown();
     executor.awaitTermination(60, TimeUnit.SECONDS);

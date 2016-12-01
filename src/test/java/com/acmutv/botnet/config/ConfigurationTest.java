@@ -32,6 +32,7 @@ import com.acmutv.botnet.model.TargetProxy;
 import com.acmutv.botnet.model.Target;
 import org.junit.Test;
 
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -52,9 +53,10 @@ public class ConfigurationTest {
    */
   @Test
   public void testLoadYaml_default() {
-    String path = "src/test/resources/config.default.yml";
-    BotConfiguration config = BotConfiguration.getInstance().fromYaml(path);
-    BotConfiguration expected = BotConfiguration.getDefault();
+    InputStream file = ConfigurationTest.class.getResourceAsStream("/config.default.yml");
+    BotConfiguration config = new BotConfiguration();
+    config.fromYaml(file);
+    BotConfiguration expected = new BotConfiguration();
     assertEquals(expected, config);
   }
 
@@ -65,9 +67,10 @@ public class ConfigurationTest {
    */
   @Test
   public void testLoadYaml_complete() throws MalformedURLException {
-    String path = "src/test/resources/config.complete.yml";
-    BotConfiguration config = BotConfiguration.getInstance().fromYaml(path);
-    BotConfiguration expected = BotConfiguration.getDefault();
+    InputStream file = ConfigurationTest.class.getResourceAsStream("/config.complete.yml");
+    BotConfiguration config = new BotConfiguration();
+    config.fromYaml(file);
+    BotConfiguration expected = new BotConfiguration();
     expected.setSysInfo(true);
     expected.setNetInfo(false);
     expected.setSysStat(true);
@@ -81,6 +84,7 @@ public class ConfigurationTest {
     expected.setProxy(new TargetProxy("104.28.5.228", 80));
     expected.getSleep().add("0 0 12 1/1 * ? *");
     expected.getSleep().add("0 30 18 1/3 * ? *");
+    expected.setMaxTime(60);
     expected.setDebug(true);
     assertEquals(expected, config);
   }
@@ -91,9 +95,10 @@ public class ConfigurationTest {
    */
   @Test
   public void testloadYaml_incomplete() {
-    String path = "src/test/resources/config.incomplete.yml";
-    BotConfiguration config = BotConfiguration.getInstance().fromYaml(path);
-    BotConfiguration expected = BotConfiguration.getDefault();
+    InputStream file = ConfigurationTest.class.getResourceAsStream("/config.incomplete.yml");
+    BotConfiguration config = new BotConfiguration();
+    config.fromYaml(file);
+    BotConfiguration expected = new BotConfiguration();
     expected.setSysStat(false);
     expected.setNetStat(false);
     assertEquals(expected, config);
@@ -105,9 +110,10 @@ public class ConfigurationTest {
    */
   @Test
   public void testloadYaml_empty() {
-    String path = "src/test/resources/config.empty.yml";
-    BotConfiguration config = BotConfiguration.getInstance().fromYaml(path);
-    BotConfiguration expected = BotConfiguration.getDefault();
+    InputStream file = ConfigurationTest.class.getResourceAsStream("/config.empty.yml");
+    BotConfiguration config = new BotConfiguration();
+    config.fromYaml(file);
+    BotConfiguration expected = new BotConfiguration();
     assertEquals(expected, config);
   }
 
