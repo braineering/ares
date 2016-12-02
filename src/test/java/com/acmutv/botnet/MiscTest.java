@@ -40,7 +40,6 @@ import static org.junit.Assert.assertTrue;
 /**
  * This class realizes ...
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
- * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  */
 public class MiscTest {

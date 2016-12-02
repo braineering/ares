@@ -41,7 +41,6 @@ import org.junit.runners.Suite;
  * This class realizes the unit test suite that encapsulates all the unit tests provided for the
  * application.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
- * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see RandomToolsTest
  * @see URLToolsTest

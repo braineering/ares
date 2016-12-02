@@ -28,6 +28,8 @@ package com.acmutv.botnet.attacks;
 
 import com.acmutv.botnet.model.Period;
 import com.acmutv.botnet.model.Target;
+import com.acmutv.botnet.tools.ConnectionTools;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.net.MalformedURLException;
@@ -39,12 +41,16 @@ import java.util.concurrent.TimeUnit;
 /**
  * This class realizes the unit tests on HTTP attacks.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
- * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see HTTPAttack
  * @see Target
  */
 public class HTTPAttackTest {
+
+  @Before
+  public void setup() {
+    org.junit.Assume.assumeTrue(ConnectionTools.checkConnection());
+  }
 
   @Test
   public void testGET_single() throws InterruptedException, MalformedURLException {

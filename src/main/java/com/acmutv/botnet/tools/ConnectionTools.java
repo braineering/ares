@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2016 Giacomo Marciani, Michele Porretta
+ * Copyright (c) 2016 Giacomo Marciani
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,36 +23,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-package com.acmutv.botnet.control;
-
-import org.junit.Test;
+package com.acmutv.botnet.tools;
 
 import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.URL;
 
 /**
- * This class realizes the unit tests on bash command execution.
+ * This class realizes utilities for connection management.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @since 1.0
- * @see BashExecutor
+ * @see HttpURLConnection
  */
-public class BashExecutorTest {
+public class ConnectionTools {
 
   /**
-   * Tests the BashExecutor run method with the command `echo`.
+   * Checks if there is an available connection.
+   * @return true, if the connection is available; false, otherwise.
    */
-  @Test
-  public void testRun_echo() {
-    String output = null;
+  public static boolean checkConnection() {
+    boolean check;
+    Socket socket = new Socket();
     try {
-      output = BashExecutor.run("echo", "Hello World");
-    } catch (IOException e) {
-      e.printStackTrace();
+      socket.connect(new InetSocketAddress("www.google.com", 80), 10000);
+      check = true;
+    } catch (IOException exc) {
+      check = false;
+    } finally {
+      try {
+        socket.close();
+      } catch (IOException exc) {
+        exc.printStackTrace();
+      }
     }
-    String expected = "Hello World";
-    assertEquals(expected, output);
+    return check;
   }
-
 }

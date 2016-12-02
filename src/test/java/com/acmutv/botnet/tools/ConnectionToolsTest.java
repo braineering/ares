@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2016 Giacomo Marciani, Michele Porretta
+ * Copyright (c) 2016 Giacomo Marciani
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,36 +23,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package com.acmutv.botnet.tools;
 
-package com.acmutv.botnet.control;
-
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-
 /**
- * This class realizes the unit tests on bash command execution.
+ * This class realizes junit tests on Connection utilities.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @since 1.0
- * @see BashExecutor
  */
-public class BashExecutorTest {
+public class ConnectionToolsTest {
 
-  /**
-   * Tests the BashExecutor run method with the command `echo`.
-   */
-  @Test
-  public void testRun_echo() {
-    String output = null;
-    try {
-      output = BashExecutor.run("echo", "Hello World");
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    String expected = "Hello World";
-    assertEquals(expected, output);
+  @Before
+  public void setup() {
+    org.junit.Assume.assumeTrue(ConnectionTools.checkConnection());
   }
 
+  /**
+   * Tests the connection availability check, by sending an HTTP request.
+   * @throws IOException when HTTP GET error.
+   */
+  @Test
+  public void testCheckConnection() throws IOException {
+    boolean check = ConnectionTools.checkConnection();
+    System.out.println("Connection: " + check);
+  }
 }
