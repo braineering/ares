@@ -24,28 +24,27 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.model;
+package com.acmutv.botnet.tools;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
- * This class realizes the model of system information.
+ * This class realizes the unit tests on random number generation tools.
  * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
- * @since 1.0
- * @see NetInfo
- * @see SysStat
- * @see NetStat
+ * @since 1.0.0
+ * @see RandomTools
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class SysInfo {
-  private String osName;
-  private String hostName;
-  private String kernelVersion;
-  private String userName;
-  
+public class RunCmdToolsTest {
+
+  /**
+   * Tests the execution system command
+   */
+  @Test
+  public void testRunCmd_joint() {
+    String cmdoutput = RunCmdTools.runCmd("java -version");
+    assertTrue(cmdoutput.contains("version"));
+  }
 }

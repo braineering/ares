@@ -39,6 +39,7 @@ import lombok.NoArgsConstructor;
  * @see SysStat
  * @see NetStat
  */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

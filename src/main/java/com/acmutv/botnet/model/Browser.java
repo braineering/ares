@@ -31,21 +31,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * This class realizes the model of system information.
+ * This class realizes the model of browsers information.
  * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
- * @since 1.0
- * @see NetInfo
+ * @since 1.0.0
+ * @see SysInfo
  * @see SysStat
  * @see NetStat
  */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SysInfo {
-  private String osName;
-  private String hostName;
-  private String kernelVersion;
-  private String userName;
-  
+public class Browser {
+	private String name;
+	private String version;
 }
