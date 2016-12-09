@@ -73,7 +73,7 @@ Temporary Items
 # Eclipse
 #==============================================================================#
 .project
-*target*
+./target
 *.jar
 *.war
 *.ear

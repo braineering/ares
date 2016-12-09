@@ -1,0 +1,25 @@
+{
+  "command": "ATTACK_HTTP_POST",
+  "targets": [
+    {
+      "url": "http://www.google.com",
+      "period": {
+        "min": 1,
+        "max": 1
+      },
+      "maxAttempts": 10
+    },
+    {
+      "url": "http://www.twitter.com",
+      "period": {
+        "min": 3,
+        "max": 5
+      },
+      "maxAttempts": 10
+    }
+  ],
+  "proxy": {
+    "address": "104.28.5.228",
+    "port": 80
+  }
+}

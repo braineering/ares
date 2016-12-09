@@ -28,6 +28,7 @@ package com.acmutv.botnet.config;
 
 import com.acmutv.botnet.BotMain;
 import com.acmutv.botnet.control.AppController;
+import com.acmutv.botnet.tool.LoggerTools;
 import com.acmutv.botnet.view.BaseOptions;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -96,7 +97,7 @@ public class BotConfigurator {
     try {
       cmd = cmdParser.parse(OPTS, argv);
     } catch (ParseException exc) {
-      System.err.println("[BOT]> ERROR: " + exc.getMessage());
+      LoggerTools.error(exc.getMessage());
       AppController.printUsage();
     }
 

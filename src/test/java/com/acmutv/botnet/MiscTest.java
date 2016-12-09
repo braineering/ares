@@ -33,6 +33,9 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.text.ParseException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -45,7 +48,10 @@ import static org.junit.Assert.assertTrue;
 public class MiscTest {
 
   @Test
-  public void test() throws ParseException, IOException {
-
+  public void test() {
+    String line = "";
+    String entries[] = line.split(" ");
+    System.out.println("len:"+entries.length);
+    for (String s : entries) System.out.println(s);
   }
 }

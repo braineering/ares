@@ -1,20 +1,20 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Giacomo Marciani, Michele Porretta
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
- *
+ * <p>
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
- *
+ * <p>
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -24,44 +24,39 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet;
+package com.acmutv.botnet.tool;
 
-import com.acmutv.botnet.attack.HttpGetAttackTest;
-import com.acmutv.botnet.time.PeriodTest;
-import com.acmutv.botnet.tool.RandomToolsTest;
-import com.acmutv.botnet.config.ConfigurationTest;
-import com.acmutv.botnet.control.BashExecutorTest;
-import com.acmutv.botnet.tool.HTTPToolsTest;
-import com.acmutv.botnet.tool.URLToolsTest;
-import com.acmutv.botnet.tool.WatchToolsTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
- * This class realizes JUnit test suite that encapsulates all the unit tests provided for the
- * application.
+ * This class realizes JUnit tests for file system watching.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @since 1.0
- * @see RandomToolsTest
- * @see URLToolsTest
- * @see HTTPToolsTest
- * @see WatchToolsTest
- * @see PeriodTest
- * @see ConfigurationTest
- * @see BashExecutorTest
- * @see HttpGetAttackTest
+ * @see WatchTools
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    RandomToolsTest.class,
-    URLToolsTest.class,
-    HTTPToolsTest.class,
-    WatchToolsTest.class,
-    PeriodTest.class,
-    ConfigurationTest.class,
-    BashExecutorTest.class,
-    HttpGetAttackTest.class
-})
-public class TestAll {
+public class WatchToolsTest {
 
+  public class Reloader implements Runnable {
+
+    @Override
+    public void run() {
+      System.out.println("reloaded");
+    }
+  }
+
+  /**
+   * Tests the file watching hook registration.
+   * @throws IOException when the path to watch is not correct.
+   */
+  @Test
+  @Ignore
+  public void testRegisterHook() throws IOException {
+    Path path = Paths.get("src/test/resources/config.complete.yml");
+    WatchTools.watchFile(path, new Reloader());
+  }
 }

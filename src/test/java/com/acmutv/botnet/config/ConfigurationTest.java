@@ -27,9 +27,9 @@
 package com.acmutv.botnet.config;
 
 import com.acmutv.botnet.TestAll;
-import com.acmutv.botnet.model.Period;
-import com.acmutv.botnet.model.TargetProxy;
-import com.acmutv.botnet.model.Target;
+import com.acmutv.botnet.target.HttpTarget;
+import com.acmutv.botnet.time.Period;
+import com.acmutv.botnet.target.HttpTargetProxy;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -39,7 +39,7 @@ import java.net.URL;
 import static org.junit.Assert.assertEquals;
 
 /**
- * This class realizes the unit tests on configuration parsing.
+ * This class realizes JUnit tests on configuration parsing.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @since 1.0
  * @see TestAll
@@ -52,7 +52,7 @@ public class ConfigurationTest {
    */
   @Test
   public void testLoadYaml_default() {
-    InputStream file = ConfigurationTest.class.getResourceAsStream("/config.default.yml");
+    InputStream file = ConfigurationTest.class.getResourceAsStream("/config/config.default.yml");
     BotConfiguration config = new BotConfiguration();
     config.fromYaml(file);
     BotConfiguration expected = new BotConfiguration();
@@ -66,7 +66,7 @@ public class ConfigurationTest {
    */
   @Test
   public void testLoadYaml_complete() throws MalformedURLException {
-    InputStream file = ConfigurationTest.class.getResourceAsStream("/config.complete.yml");
+    InputStream file = ConfigurationTest.class.getResourceAsStream("/config/config.complete.yml");
     BotConfiguration config = new BotConfiguration();
     config.fromYaml(file);
     BotConfiguration expected = new BotConfiguration();
@@ -76,11 +76,11 @@ public class ConfigurationTest {
     expected.setNetStat(false);
     expected.setSysStatFreq(5);
     expected.setNetStatFreq(5);
-    expected.setLogfile("/home/com/acmutv/botnet/log.txt");
-    expected.setCmdfile("/home/com/acmutv/botnet/cmd.txt");
-    expected.getTargets().add(new Target(new URL("http://www.target1.com"), new Period(1, 1), 10));
-    expected.getTargets().add(new Target(new URL("http://www.target2.com"), new Period(2, 4), 15));
-    expected.setProxy(new TargetProxy("104.28.5.228", 80));
+    expected.setLogResource("/home/com/acmutv/botnet/log.txt");
+    expected.setCmdResource("/home/com/acmutv/botnet/cmd.txt");
+    expected.getHttpTargets().add(new HttpTarget(new URL("http://www.target1.com"), new Period(1, 1), 10));
+    expected.getHttpTargets().add(new HttpTarget(new URL("http://www.target2.com"), new Period(2, 4), 15));
+    expected.setProxy(new HttpTargetProxy("104.28.5.228", 80));
     expected.getSleep().add("0 0 12 1/1 * ? *");
     expected.getSleep().add("0 30 18 1/3 * ? *");
     expected.setMaxTime(60);
@@ -94,7 +94,7 @@ public class ConfigurationTest {
    */
   @Test
   public void testloadYaml_incomplete() {
-    InputStream file = ConfigurationTest.class.getResourceAsStream("/config.incomplete.yml");
+    InputStream file = ConfigurationTest.class.getResourceAsStream("/config/config.incomplete.yml");
     BotConfiguration config = new BotConfiguration();
     config.fromYaml(file);
     BotConfiguration expected = new BotConfiguration();
@@ -109,7 +109,7 @@ public class ConfigurationTest {
    */
   @Test
   public void testloadYaml_empty() {
-    InputStream file = ConfigurationTest.class.getResourceAsStream("/config.empty.yml");
+    InputStream file = ConfigurationTest.class.getResourceAsStream("/config/config.empty.yml");
     BotConfiguration config = new BotConfiguration();
     config.fromYaml(file);
     BotConfiguration expected = new BotConfiguration();

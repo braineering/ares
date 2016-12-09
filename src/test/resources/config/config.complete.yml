@@ -1,0 +1,23 @@
+sysInfo: True
+netInfo: False
+sysStat: True
+netStat: False
+sysStatFreq: 5
+netStatFreq: 5
+logResource: "/home/com/acmutv/botnet/log.txt"
+cmdResource: "/home/com/acmutv/botnet/cmd.txt"
+targets:
+  - url: "http://www.target1.com"
+    period: 1
+    maxAttempts: 10
+  - url: "http://www.target2.com"
+    period: 2-4
+    maxAttempts: 15
+proxy:
+  address: "104.28.5.228"
+  port: 80
+sleep:
+  - "0 0 12 1/1 * ? *"
+  - "0 30 18 1/3 * ? *"
+maxTime: 60
+debug: True

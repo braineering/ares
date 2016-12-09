@@ -26,8 +26,8 @@
 
 package com.acmutv.botnet.config;
 
-import com.acmutv.botnet.model.TargetProxy;
-import com.acmutv.botnet.model.Target;
+import com.acmutv.botnet.target.HttpTarget;
+import com.acmutv.botnet.target.HttpTargetProxy;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.quartz.CronExpression;
@@ -35,7 +35,6 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileReader;
 import java.io.InputStream;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +43,7 @@ import java.util.List;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see Target
+ * @see HttpTarget
  * @see CronExpression
  * @see Yaml
  */
@@ -59,12 +58,12 @@ public class BotConfiguration {
   public static boolean NET_STAT = true;
   public static long SYS_STAT_FREQ = 60;
   public static long NET_STAT_FREQ = 60;
-  public static String  LOG_FILE = "botlog.txt";
-  public static String  CMD_FILE = "botcmd.txt";
-  public static TargetProxy  PROXY = null;
+  public static String INIT_RESOURCE = "botinit.txt";
+  public static String CMD_RESOURCE = "botcmd.txt";
+  public static String LOG_RESOURCE = "botlog.txt";
+  public static HttpTargetProxy PROXY = null;
   public static long MAX_TIME = 0;
   public static boolean DEBUG = false;
-  public static DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss:n");
 
   private boolean sysInfo;
   private boolean netInfo;
@@ -72,14 +71,14 @@ public class BotConfiguration {
   private boolean netStat;
   private long sysStatFreq;
   private long netStatFreq;
-  private String logfile;
-  private String cmdfile;
-  private List<Target> targets;
-  private TargetProxy proxy;
+  private String initResource;
+  private String cmdResource;
+  private String logResource;
+  private List<HttpTarget> httpTargets;
+  private HttpTargetProxy proxy;
   private List<String> sleep;
   private long maxTime;
   private boolean debug;
-  private DateTimeFormatter dtf;
 
   private static BotConfiguration instance;
 
@@ -108,14 +107,13 @@ public class BotConfiguration {
     this.netStat = NET_STAT;
     this.sysStatFreq = SYS_STAT_FREQ;
     this.netStatFreq = NET_STAT_FREQ;
-    this.logfile = LOG_FILE;
-    this.cmdfile = CMD_FILE;
+    this.logResource = LOG_RESOURCE;
+    this.cmdResource = CMD_RESOURCE;
     this.proxy = PROXY;
-    this.targets = new ArrayList<Target>();
+    this.httpTargets = new ArrayList<HttpTarget>();
     this.sleep = new ArrayList<String>();
     this.maxTime = MAX_TIME;
     this.debug = DEBUG;
-    this.dtf = DTF;
   }
 
   public BotConfiguration fromDefault() {
@@ -125,14 +123,13 @@ public class BotConfiguration {
     this.netStat = NET_STAT;
     this.sysStatFreq = SYS_STAT_FREQ;
     this.netStatFreq = NET_STAT_FREQ;
-    this.logfile = LOG_FILE;
-    this.cmdfile = CMD_FILE;
+    this.logResource = LOG_RESOURCE;
+    this.cmdResource = CMD_RESOURCE;
     this.proxy = PROXY;
-    this.targets = new ArrayList<Target>();
+    this.httpTargets = new ArrayList<HttpTarget>();
     this.sleep = new ArrayList<String>();
     this.maxTime = MAX_TIME;
     this.debug = DEBUG;
-    this.dtf = DTF;
 
     return this;
   }
@@ -183,8 +180,8 @@ public class BotConfiguration {
       return this;
     }
 
-    if (config.getTargets() == null) {
-      config.setTargets(new ArrayList<Target>());
+    if (config.getHttpTargets() == null) {
+      config.setHttpTargets(new ArrayList<HttpTarget>());
     }
 
     if (config.getSleep() == null) {
@@ -197,14 +194,13 @@ public class BotConfiguration {
     this.netStat = config.isNetStat();
     this.sysStatFreq = config.getSysStatFreq();
     this.netStatFreq = config.getNetStatFreq();
-    this.logfile = config.getLogfile();
-    this.cmdfile = config.getCmdfile();
+    this.logResource = config.getLogResource();
+    this.cmdResource = config.getCmdResource();
     this.proxy = config.getProxy();
-    this.targets = config.getTargets();
+    this.httpTargets = config.getHttpTargets();
     this.sleep = config.getSleep();
     this.maxTime = config.getMaxTime();
     this.debug = config.isDebug();
-    this.dtf = DTF;
 
     return this;
   }

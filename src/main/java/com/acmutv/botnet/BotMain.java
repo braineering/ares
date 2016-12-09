@@ -26,20 +26,14 @@
 
 package com.acmutv.botnet;
 
-import com.acmutv.botnet.attacks.NetworkSampler;
-import com.acmutv.botnet.attacks.SystemSampler;
-import com.acmutv.botnet.control.BotShutdown;
+import com.acmutv.botnet.bot.Bot;
+import com.acmutv.botnet.control.BotWrapperShutdown;
 import com.acmutv.botnet.config.BotConfigurator;
 import com.acmutv.botnet.config.BotConfiguration;
-import com.acmutv.botnet.attacks.HTTPAttack;
-import com.acmutv.botnet.model.Target;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.concurrent.*;
+import com.acmutv.botnet.service.AppService;
 
 /**
- * This class realizes the bot entry-point.
+ * This class realizes the bot wrapper entry-point.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
@@ -47,113 +41,23 @@ import java.util.concurrent.*;
 public class BotMain {
 
   /**
-   * The bot main method, executed when the program is launched.
+   * The bot wrapper main method, executed when the program is launched.
    * @param args The command line arguments.
+   * @see BotConfigurator
+   * @see BotConfiguration
+   * @see Bot
    */
   public static void main(String[] args) {
 
-    BotConfigurator.loadConfiguration(args);
+    BotConfiguration config = BotConfigurator.loadConfiguration(args);
 
-    registerShutdownHooks(new BotShutdown());
+    AppService.registerShutdownHooks(new BotWrapperShutdown());
 
-    registerSamplers();
+    Bot bot = new Bot(config);
 
-    registerHTTPAttackers();
+    bot.run();
+
+    System.exit(0);
   }
 
-  /**
-   * Registers both system and network samplers, according to the given configuration.
-   */
-  public static void registerSamplers() {
-    BotConfiguration config = BotConfiguration.getInstance();
-    final ScheduledExecutorService scheduler =
-        Executors.newScheduledThreadPool(2);
-
-    if (config.isSysStat()) {
-      scheduler.scheduleAtFixedRate(
-          new SystemSampler(), 0, config.getSysStatFreq(), TimeUnit.SECONDS);
-    }
-
-    if (config.isNetStat()) {
-      scheduler.scheduleAtFixedRate(
-          new NetworkSampler(), 0, config.getNetStatFreq(), TimeUnit.SECONDS);
-    }
-
-    scheduler.shutdown();
-
-    long maxtime = config.getMaxTime();
-    if (maxtime > 0) {
-      try {
-        if (scheduler.awaitTermination(maxtime, TimeUnit.SECONDS)) {
-          System.out.format("[MAIN THREAD %s] SAMPLERS THREAD POOL SHUTDOWN\n",
-              config.getDtf().format(LocalDateTime.now()));
-        }
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-    }
-
-  }
-
-  /**
-   * Registers HTTP attackers, according to the given configuration.
-   */
-  private static void registerHTTPAttackers() {
-    BotConfiguration config = BotConfiguration.getInstance();
-    int numcores = Runtime.getRuntime().availableProcessors();
-    ExecutorService executor = Executors.newFixedThreadPool(numcores);
-
-    for (Target tgt : config.getTargets()) {
-      Runnable attacker = new HTTPAttack(tgt);
-      executor.execute(attacker);
-    }
-
-    executor.shutdown();
-
-    long maxtime = config.getMaxTime();
-    if (maxtime > 0) {
-      try {
-        if (executor.awaitTermination(maxtime, TimeUnit.SECONDS)) {
-          System.out.format("[MAIN THREAD %s] HTTP ATTACK THREAD POOL SHUTDOWN\n",
-              config.getDtf().format(LocalDateTime.now()));
-        }
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-    }
-  }
-
-  /**
-   * Registers atexit runnables as JVM shutdown hooks.
-   * @param hooks atexit runnables.
-   * @see Runtime
-   * @see Thread
-   * @see Runnable
-   */
-  private static void registerShutdownHooks(Runnable ...hooks) {
-    Runtime runtime = Runtime.getRuntime();
-    for (Runnable hook : hooks) {
-      runtime.addShutdownHook(new Thread(hook));
-    }
-  }
-
-  /**
-   * Registers a periodic task.
-   * @param task the task to execute.
-   * @param delay the delay (in seconds) to first execution.
-   * @param period the period (in seconds) between executions.
-   */
-  private static void registerPeriodic(Runnable task, long delay, long period) {
-    final ScheduledExecutorService scheduler =
-        Executors.newScheduledThreadPool(1);
-    final ScheduledFuture<?> handler =
-        scheduler.scheduleAtFixedRate(task, delay, period, TimeUnit.SECONDS);
-
-    Runnable interrupt = () -> handler.cancel(true);
-
-    long maxtime = BotConfiguration.getInstance().getMaxTime();
-    if (maxtime > 0) {
-      scheduler.schedule(interrupt, maxtime, TimeUnit.SECONDS);
-    }
-  }
 }

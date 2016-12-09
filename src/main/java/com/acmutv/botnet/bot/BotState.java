@@ -1,20 +1,20 @@
 /**
  * The MIT License (MIT)
- *
- * Copyright (c) 2016 Giacomo Marciani, Michele Porretta
- *
+ * <p>
+ * Copyright (c) 2016 Giacomo Marciani and Michele Porretta
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
- *
+ * <p>
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
- *
+ * <p>
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -24,44 +24,33 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet;
+package com.acmutv.botnet.bot;
 
-import com.acmutv.botnet.attack.HttpGetAttackTest;
-import com.acmutv.botnet.time.PeriodTest;
-import com.acmutv.botnet.tool.RandomToolsTest;
-import com.acmutv.botnet.config.ConfigurationTest;
-import com.acmutv.botnet.control.BashExecutorTest;
-import com.acmutv.botnet.tool.HTTPToolsTest;
-import com.acmutv.botnet.tool.URLToolsTest;
-import com.acmutv.botnet.tool.WatchToolsTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.acmutv.botnet.bot.command.CommandScope;
+import lombok.Getter;
 
 /**
- * This class realizes JUnit test suite that encapsulates all the unit tests provided for the
- * application.
+ * This enum enumerates states of Bot's FSA.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see RandomToolsTest
- * @see URLToolsTest
- * @see HTTPToolsTest
- * @see WatchToolsTest
- * @see PeriodTest
- * @see ConfigurationTest
- * @see BashExecutorTest
- * @see HttpGetAttackTest
+ * @see Bot
+ * @see CommandScope
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    RandomToolsTest.class,
-    URLToolsTest.class,
-    HTTPToolsTest.class,
-    WatchToolsTest.class,
-    PeriodTest.class,
-    ConfigurationTest.class,
-    BashExecutorTest.class,
-    HttpGetAttackTest.class
-})
-public class TestAll {
+@Getter
+public enum BotState {
+  INIT ("INIT"),
+  SLEEP ("SLEEP"),
+  SHUTDOWN ("SHUTDOWN"),
+  KILL ("KILL"),
+  START ("START"),
+  COMMAND ("COMMAND"),
+  ATTACK ("ATTACK");
+
+  private final String name;
+
+  BotState(final String name) {
+    this.name = name;
+  }
 
 }

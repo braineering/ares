@@ -24,35 +24,65 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.control;
-
-import org.junit.Test;
+package com.acmutv.botnet.tool;
 
 import java.io.IOException;
+import java.nio.file.*;
 
-import static org.junit.Assert.assertEquals;
+import static java.nio.file.StandardWatchEventKinds.*;
 
 /**
- * This class realizes JUnit tests on bash command execution.
+ * This class realizes file system watching services.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see BashExecutor
+ * @see WatchService
  */
-public class BashExecutorTest {
+public class WatchTools {
 
   /**
-   * Tests the BashExecutor run method with the command `echo`.
+   * Registers a runnable as a file watching hook.
+   * @param filepath the path to watch.
+   * @param hook the runnable.
+   * @throws IOException when the path is not correct.
    */
-  @Test
-  public void testRun_echo() {
-    String output = null;
+  public static void watchFile(Path filepath, Runnable hook) throws IOException {
+    WatchService watcher = FileSystems.getDefault().newWatchService();
+    Path dir = filepath.getParent();
     try {
-      output = BashExecutor.run("echo", "Hello World");
+      dir.register(watcher, ENTRY_MODIFY);
     } catch (IOException e) {
-      e.printStackTrace();
+      System.err.println(e);
     }
-    String expected = "Hello World";
-    assertEquals(expected, output);
-  }
 
+    while (true) {
+      WatchKey key;
+      try {
+         key = watcher.take();
+      } catch (InterruptedException e) {
+        return;
+      }
+
+      for (WatchEvent<?> event : key.pollEvents()) {
+        WatchEvent.Kind<?> kind = event.kind();
+
+        System.out.println("EVENT: " + kind.name());
+
+        if (kind == OVERFLOW) {
+          continue;
+        }
+
+        WatchEvent<Path> ev = (WatchEvent<Path>) event;
+
+        if (dir.resolve(ev.context()).toAbsolutePath().equals(filepath.toAbsolutePath())) {
+          Thread thread = new Thread(hook);
+          thread.run();
+        }
+      }
+
+      if (!key.reset()) {
+        break;
+      }
+    }
+  }
 }

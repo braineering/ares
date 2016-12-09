@@ -24,35 +24,56 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.control;
+package com.acmutv.botnet.tool;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.URL;
+import java.text.ParseException;
 
 import static org.junit.Assert.assertEquals;
 
 /**
- * This class realizes JUnit tests on bash command execution.
+ * This class realizes JUnit tests on HTTP utilities.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @since 1.0
- * @see BashExecutor
+ * @see HTTPTools
  */
-public class BashExecutorTest {
+public class HTTPToolsTest {
 
-  /**
-   * Tests the BashExecutor run method with the command `echo`.
-   */
-  @Test
-  public void testRun_echo() {
-    String output = null;
-    try {
-      output = BashExecutor.run("echo", "Hello World");
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    String expected = "Hello World";
-    assertEquals(expected, output);
+  @Before
+  public void setup() {
+    org.junit.Assume.assumeTrue(SystemTools.checkConnection());
   }
 
+  /**
+   * Tests the HTTP GET without Proxy.
+   * @throws ParseException when invalid weburl.
+   * @throws IOException when HTTP GET error.
+   */
+  @Test
+  public void testGET() throws ParseException, IOException {
+    URL url = new URL("http://www.google.com");
+    String result = HTTPTools.makeGET(url);
+    String expected = "GET http://www.google.com :: 200";
+    assertEquals(expected, result);
+  }
+
+  /**
+   * Tests the HTTP GET with Proxy.
+   * @throws ParseException when invalid weburl or Proxy.
+   * @throws IOException when HTTP GET error.
+   */
+  @Test
+  public void testGETWithProxy() throws ParseException, IOException {
+    URL url = new URL("http://www.google.com");
+    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("104.28.5.228", 80));
+    String result = HTTPTools.makeGETWithProxy(url, proxy);
+    String expected = "GET http://www.google.com :: 400";
+    assertEquals(expected, result);
+  }
 }

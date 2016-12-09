@@ -1,20 +1,20 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Giacomo Marciani, Michele Porretta
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
- *
+ * <p>
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
- *
+ * <p>
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -24,44 +24,41 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet;
+package com.acmutv.botnet.attack;
 
-import com.acmutv.botnet.attack.HttpGetAttackTest;
-import com.acmutv.botnet.time.PeriodTest;
-import com.acmutv.botnet.tool.RandomToolsTest;
-import com.acmutv.botnet.config.ConfigurationTest;
-import com.acmutv.botnet.control.BashExecutorTest;
-import com.acmutv.botnet.tool.HTTPToolsTest;
-import com.acmutv.botnet.tool.URLToolsTest;
-import com.acmutv.botnet.tool.WatchToolsTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.acmutv.botnet.target.HttpTarget;
+import com.acmutv.botnet.time.Period;
+import com.acmutv.botnet.tool.SystemTools;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
- * This class realizes JUnit test suite that encapsulates all the unit tests provided for the
- * application.
+ * This class realizes JUnit tests on HTTP GET attacks.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @since 1.0
- * @see RandomToolsTest
- * @see URLToolsTest
- * @see HTTPToolsTest
- * @see WatchToolsTest
- * @see PeriodTest
- * @see ConfigurationTest
- * @see BashExecutorTest
- * @see HttpGetAttackTest
+ * @see HttpGetAttack
+ * @see HttpTarget
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    RandomToolsTest.class,
-    URLToolsTest.class,
-    HTTPToolsTest.class,
-    WatchToolsTest.class,
-    PeriodTest.class,
-    ConfigurationTest.class,
-    BashExecutorTest.class,
-    HttpGetAttackTest.class
-})
-public class TestAll {
+public class HttpGetAttackTest {
 
+  @Before
+  public void setup() {
+    org.junit.Assume.assumeTrue(SystemTools.checkConnection());
+  }
+
+  @Test
+  public void test_makeAttack() throws InterruptedException, MalformedURLException {
+    HttpTarget tgt = new HttpTarget(new URL("http://www.google.com"), new Period(1, 1), 1);
+    ExecutorService executor = Executors.newFixedThreadPool(1);
+    Runnable attacker = new HttpGetAttack(tgt);
+    executor.execute(attacker);
+    executor.shutdown();
+    executor.awaitTermination(60, TimeUnit.SECONDS);
+  }
 }

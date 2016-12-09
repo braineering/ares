@@ -1,20 +1,20 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Giacomo Marciani, Michele Porretta
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
- *
+ * <p>
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
- *
+ * <p>
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -24,51 +24,27 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.config;
+package com.acmutv.botnet.target;
 
-import com.acmutv.botnet.target.HttpTargetProxy;
-import com.acmutv.botnet.target.HttpTarget;
-import org.yaml.snakeyaml.TypeDescription;
-import org.yaml.snakeyaml.constructor.Constructor;
+import com.acmutv.botnet.attack.HttpAttack;
+import com.acmutv.botnet.config.BotConfiguration;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * This class realizes the constructor for the SnakeYaml Parser, intended to the parsing of the
- * YAML configuration file.
- *
- * This class is implemented as a singleton.
+ * This class realizes the bot proxy for the contacts.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see BotConfigurator
+ * @see HttpAttack
  * @see BotConfiguration
- * @see org.yaml.snakeyaml.Yaml
- * @see Constructor
- * @see TypeDescription
+ * @see java.net.Proxy
  */
-public class YamlConstructor extends Constructor {
-
-  private static YamlConstructor instance;
-
-  /**
-   * Initializes the singleton instance of the class.
-   * @return the singleton instance of the class.
-   */
-  public static YamlConstructor getInstance() {
-    if (instance == null) {
-      instance = new YamlConstructor();
-    }
-    return instance;
-  }
-
-  /**
-   * Creates the singleton of the class.
-   */
-  private YamlConstructor() {
-    super(BotConfiguration.class);
-    TypeDescription description = new TypeDescription(BotConfiguration.class);
-    description.putListPropertyType("targets", HttpTarget.class);
-    description.putListPropertyType("proxy", HttpTargetProxy.class);
-    description.putListPropertyType("sleep", String.class);
-    super.addTypeDescription(description);
-  }
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class HttpTargetProxy {
+  private String address;
+  private int port;
 }

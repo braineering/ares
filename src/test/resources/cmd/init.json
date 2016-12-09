@@ -1,0 +1,4 @@
+{
+  "command": "INIT",
+  "resource": "/config/config.default.yml"
+}
