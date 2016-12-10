@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.tool;
+package com.acmutv.botnet.service;
 
 import com.acmutv.botnet.time.Period;
 
@@ -37,7 +37,7 @@ import java.util.Random;
  * @since 1.0
  * @see Random
  */
-public class RandomTools {
+public class RandomGenerator {
 
   /**
    * Generates a uniform integer random number in [a, b].

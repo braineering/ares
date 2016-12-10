@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2016 Giacomo Marciani, Michele Porretta
+ * Copyright (c) 2016 Giacomo Marciani and Michele Porretta
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,39 +24,21 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.tool;
+package com.acmutv.botnet.target;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 /**
- * This class realizes JUnit tests for file system watching.
+ * This class realizes JUnit tests for {@link HttpTarget}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see WatchTools
+ * @see HttpTarget
  */
-public class WatchToolsTest {
+public class HttpTargetTest {
 
-  public class Reloader implements Runnable {
-
-    @Override
-    public void run() {
-      System.out.println("reloaded");
-    }
-  }
-
-  /**
-   * Tests the file watching hook registration.
-   * @throws IOException when the path to watch is not correct.
-   */
   @Test
-  @Ignore
-  public void testRegisterHook() throws IOException {
-    Path path = Paths.get("src/test/resources/config.complete.yml");
-    WatchTools.watchFile(path, new Reloader());
+  public void test() {
+    //TODO
   }
 }

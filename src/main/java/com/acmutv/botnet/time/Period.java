@@ -74,7 +74,7 @@ public class Period {
   }
 
   /**
-   * Parses a Period from the given string.
+   * Parses a Period fromJson the given string.
    * @param str the string to parse.
    * @return the parsed Period.
    */

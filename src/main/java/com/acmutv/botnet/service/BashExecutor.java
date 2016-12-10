@@ -24,27 +24,35 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.control;
+package com.acmutv.botnet.service;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import org.apache.commons.io.IOUtils;
 
-import java.nio.file.Path;
+import java.io.IOException;
+import java.nio.charset.Charset;
 
 /**
- * This class realizes the bot configuration reloader.
- * It is used as hook in configuration watching service.
+ * This class realizes functions for the execution of bash commands.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
+ * @see ProcessBuilder
+ * @see Process
  */
-@Data
-@AllArgsConstructor
-public class BotConfigurationReloader implements Runnable {
-  private Path configpath;
+public class BashExecutor {
 
-  @Override
-  public void run() {
-    System.out.format("[BOT]> %s reloaded", this.getConfigpath());
+  /**
+   * Executes the given command and arguments.
+   * @param command The command to execute. Arguments must be given as a separated strings.
+   *                E.g.: BashExecutor.run("ls", "-la") or BashExecutor.run("ls", "-l", "-a")
+   * @return The command output as a string.
+   * @throws IOException when error in process generation or output.
+   */
+  public static String run(String ...command) throws IOException {
+    ProcessBuilder pb = new ProcessBuilder(command);
+    Process p = pb.start();
+    String out = IOUtils.toString(p.getInputStream(), Charset.defaultCharset());
+    return out.trim();
   }
+
 }

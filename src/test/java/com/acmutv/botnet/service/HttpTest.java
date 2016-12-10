@@ -24,42 +24,59 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.attack;
+package com.acmutv.botnet.service;
 
-import com.acmutv.botnet.target.HttpTarget;
-import com.acmutv.botnet.time.Period;
+import com.acmutv.botnet.service.Http;
 import com.acmutv.botnet.service.HostSystemDetails;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URL;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.text.ParseException;
+
+import static org.junit.Assert.assertEquals;
 
 /**
- * This class realizes JUnit tests for {@link HttpGetAttack}.
+ * This class realizes JUnit tests for {@link Http}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
- * * @author Michele Porretta {@literal <mporretta@acm.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HttpGetAttack
- * @see HttpTarget
+ * @see Http
  */
-public class HttpGetAttackTest {
+public class HttpTest {
 
   @Before
   public void setup() {
     org.junit.Assume.assumeTrue(HostSystemDetails.checkConnection());
   }
 
+  /**
+   * Tests the HTTP GET without Proxy.
+   * @throws ParseException when invalid weburl.
+   * @throws IOException when HTTP GET error.
+   */
   @Test
-  public void test_makeAttack() throws InterruptedException, MalformedURLException {
-    HttpTarget tgt = new HttpTarget(new URL("http://www.google.com"), new Period(1, 1), 1);
-    ExecutorService executor = Executors.newFixedThreadPool(1);
-    Runnable attacker = new HttpGetAttack(tgt);
-    executor.execute(attacker);
-    executor.shutdown();
-    executor.awaitTermination(60, TimeUnit.SECONDS);
+  public void testGET() throws ParseException, IOException {
+    URL url = new URL("http://www.google.com");
+    String result = Http.makeGET(url);
+    String expected = "GET http://www.google.com :: 200";
+    assertEquals(expected, result);
+  }
+
+  /**
+   * Tests the HTTP GET with Proxy.
+   * @throws ParseException when invalid weburl or Proxy.
+   * @throws IOException when HTTP GET error.
+   */
+  @Test
+  public void testGETWithProxy() throws ParseException, IOException {
+    URL url = new URL("http://www.google.com");
+    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("104.28.5.228", 80));
+    String result = Http.makeGETWithProxy(url, proxy);
+    String expected = "GET http://www.google.com :: 400";
+    assertEquals(expected, result);
   }
 }

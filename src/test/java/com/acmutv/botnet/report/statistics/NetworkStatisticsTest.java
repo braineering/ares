@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2016 Giacomo Marciani
+ * Copyright (c) 2016 Giacomo Marciani and Michele Porretta
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,18 +24,22 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.report.features;
+package com.acmutv.botnet.report.statistics;
 
-import com.acmutv.botnet.report.features.SystemFeatures;
+import com.acmutv.botnet.report.features.NetworkFeatures;
+import org.junit.Test;
 
 /**
- * This interface exposes methods to retrieve system features.
+ * This class realizes JUnit tests for {@link NetworkFeatures}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
+ * @see NetworkFeatures
  */
-public interface SystemFeaturesService {
+public class NetworkStatisticsTest {
 
-  SystemFeatures acquire();
-
+  @Test
+  public void test() {
+    //TODO
+  }
 }

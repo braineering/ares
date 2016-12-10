@@ -23,12 +23,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package com.acmutv.botnet.bot.command;
 
 import com.acmutv.botnet.target.HttpTarget;
 import com.acmutv.botnet.target.HttpTargetProxy;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,7 +38,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -51,21 +50,21 @@ import java.util.concurrent.TimeUnit;
 public class BotCommandParser {
 
   /**
-   * Parses a BotCommand from a JSON.
+   * Parses a BotCommand fromJson a JSON.
    * @param json the JSON to parse.
    * @return the parsed BotCommand; BotCommand with scope NONE, in case of errors.
    */
-  public static BotCommand from(String json) {
+  public static BotCommand fromJson(String json) {
     InputStream stream = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
-    return BotCommandParser.from(stream);
+    return BotCommandParser.fromJson(stream);
   }
 
   /**
-   * Parses a BotCommand from a JSON.
+   * Parses a BotCommand fromJson a JSON.
    * @param json the JSON to parse.
    * @return the parsed BotCommand; BotCommand with scope NONE, in case of errors.
    */
-  public static BotCommand from(InputStream json) {
+  public static BotCommand fromJson(InputStream json) {
     BotCommand cmd = new BotCommand();
     ObjectMapper mapper = new ObjectMapper();
 
@@ -123,7 +122,7 @@ public class BotCommandParser {
   }
 
   /**
-   * Parses a list of objects from a JSON node.
+   * Parses a list of objects fromJson a JSON node.
    * @param mapper the JSON mapper.
    * @param node the JSON node to parse.
    * @param type the object class reference.
@@ -144,7 +143,7 @@ public class BotCommandParser {
   }
 
   /**
-   * Parses an object from a JSON node.
+   * Parses an object fromJson a JSON node.
    * @param mapper the JSON mapper.
    * @param node the JSON node to parse.
    * @param type the object class reference.
@@ -162,26 +161,4 @@ public class BotCommandParser {
     return obj;
   }
 
-  /**
-   * Parses a BotCommand from a line.
-   * @param line the line to parse.
-   * @return the parsed BotCommand; BotCommand with scope NONE, in case of errors.
-   */
-  /*
-  public static BotCommand fromString(final String line) {
-    BotCommand cmd = new BotCommand();
-
-    final String entries[] = line.split(" ");
-    cmd.setScope(CommandScope.from(entries[0].trim()));
-    if (entries.length > 1) {
-      final String pairs[] = entries[1].split(";");
-      for (String pair : pairs) {
-        final String kv[] = pair.trim().split(":");
-        cmd.getParams().put(kv[0], kv[1]);
-      }
-    }
-
-    return cmd;
-  }
-  */
 }

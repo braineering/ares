@@ -39,15 +39,18 @@ import java.net.URL;
 import static org.junit.Assert.assertEquals;
 
 /**
- * This class realizes JUnit tests on configuration parsing.
+ * This class realizes JUnit tests for {@link BotConfigurator}
+ * and {@link BotConfiguration}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see TestAll
+ * @see BotConfigurator
+ * @see BotConfiguration
  */
 public class ConfigurationTest {
 
   /**
-   * Tests the configuration loading from an external YAML configuration file.
+   * Tests the configuration loading fromJson an external YAML configuration file.
    * In this test the configuration file provides with default settings.
    */
   @Test
@@ -60,7 +63,7 @@ public class ConfigurationTest {
   }
 
   /**
-   * Tests the configuration loading from an external YAML configuration file.
+   * Tests the configuration loading fromJson an external YAML configuration file.
    * In this test the configuration file provides with complete non default settings.
    * @throws MalformedURLException when error in test.
    */
@@ -76,20 +79,16 @@ public class ConfigurationTest {
     expected.setNetStat(false);
     expected.setSysStatFreq(5);
     expected.setNetStatFreq(5);
-    expected.setLogResource("/home/com/acmutv/botnet/log.txt");
-    expected.setCmdResource("/home/com/acmutv/botnet/cmd.txt");
-    expected.getHttpTargets().add(new HttpTarget(new URL("http://www.target1.com"), new Period(1, 1), 10));
-    expected.getHttpTargets().add(new HttpTarget(new URL("http://www.target2.com"), new Period(2, 4), 15));
-    expected.setProxy(new HttpTargetProxy("104.28.5.228", 80));
-    expected.getSleep().add("0 0 12 1/1 * ? *");
-    expected.getSleep().add("0 30 18 1/3 * ? *");
+    expected.setInitResource("/home/com/acmutv/botnet/botinit.txt");
+    expected.setCmdResource("/home/com/acmutv/botnet/botcmd.txt");
+    expected.setLogResource("/home/com/acmutv/botnet/botlog.txt");
     expected.setMaxTime(60);
     expected.setDebug(true);
     assertEquals(expected, config);
   }
 
   /**
-   * Tests the configuration loading from an external YAML configuration file.
+   * Tests the configuration loading fromJson an external YAML configuration file.
    * In this test the configuration file provides with incomplete non default settings.
    */
   @Test
@@ -104,7 +103,7 @@ public class ConfigurationTest {
   }
 
   /**
-   * Tests the configuration loading from an external YAML configuration file.
+   * Tests the configuration loading fromJson an external YAML configuration file.
    * In this test the configuration file provides with empty settings.
    */
   @Test

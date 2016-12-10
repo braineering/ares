@@ -27,7 +27,7 @@
 package com.acmutv.botnet;
 
 import com.acmutv.botnet.bot.Bot;
-import com.acmutv.botnet.control.BotWrapperShutdown;
+import com.acmutv.botnet.service.BotWrapperShutdown;
 import com.acmutv.botnet.config.BotConfigurator;
 import com.acmutv.botnet.config.BotConfiguration;
 import com.acmutv.botnet.service.AppService;

@@ -24,56 +24,41 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.tool;
+package com.acmutv.botnet.service;
 
-import org.junit.Before;
+import com.acmutv.botnet.service.WatchService;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.URL;
-import java.text.ParseException;
-
-import static org.junit.Assert.assertEquals;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
- * This class realizes JUnit tests on HTTP utilities.
+ * This class realizes JUnit tests for {@link WatchService}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HTTPTools
+ * @see WatchService
  */
-public class HTTPToolsTest {
+public class WatchServiceTest {
 
-  @Before
-  public void setup() {
-    org.junit.Assume.assumeTrue(SystemTools.checkConnection());
+  public class Reloader implements Runnable {
+
+    @Override
+    public void run() {
+      System.out.println("reloaded");
+    }
   }
 
   /**
-   * Tests the HTTP GET without Proxy.
-   * @throws ParseException when invalid weburl.
-   * @throws IOException when HTTP GET error.
+   * Tests the file watching hook registration.
+   * @throws IOException when the path to watch is not correct.
    */
   @Test
-  public void testGET() throws ParseException, IOException {
-    URL url = new URL("http://www.google.com");
-    String result = HTTPTools.makeGET(url);
-    String expected = "GET http://www.google.com :: 200";
-    assertEquals(expected, result);
-  }
-
-  /**
-   * Tests the HTTP GET with Proxy.
-   * @throws ParseException when invalid weburl or Proxy.
-   * @throws IOException when HTTP GET error.
-   */
-  @Test
-  public void testGETWithProxy() throws ParseException, IOException {
-    URL url = new URL("http://www.google.com");
-    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("104.28.5.228", 80));
-    String result = HTTPTools.makeGETWithProxy(url, proxy);
-    String expected = "GET http://www.google.com :: 400";
-    assertEquals(expected, result);
+  @Ignore
+  public void testRegisterHook() throws IOException {
+    Path path = Paths.get("src/test/resources/config.complete.yml");
+    WatchService.watchFile(path, new Reloader());
   }
 }

@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2016 Giacomo Marciani
+ * Copyright (c) 2016 Giacomo Marciani and Michele Porretta
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,19 +23,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-package com.acmutv.botnet.report.features;
-
-import com.acmutv.botnet.report.features.SystemFeatures;
+package com.acmutv.botnet.attack;
 
 /**
- * This interface exposes methods to retrieve system features.
+ * This enum enumerates HTTP attacks methods.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  */
-public interface SystemFeaturesService {
+public enum HttpAttackMethod {
+  GET ("GET"),
+  POST ("POST");
 
-  SystemFeatures acquire();
+  private final String name;
 
+  HttpAttackMethod(final String name) {
+    this.name = name;
+  }
 }

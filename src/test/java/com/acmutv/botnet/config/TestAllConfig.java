@@ -26,49 +26,23 @@
 
 package com.acmutv.botnet.config;
 
-import com.acmutv.botnet.target.HttpTargetProxy;
-import com.acmutv.botnet.target.HttpTarget;
-import org.yaml.snakeyaml.TypeDescription;
-import org.yaml.snakeyaml.constructor.Constructor;
+import com.acmutv.botnet.bot.BotPoolTest;
+import com.acmutv.botnet.bot.BotStateTest;
+import com.acmutv.botnet.bot.command.BotCommandParserTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
- * This class realizes the constructor for the SnakeYaml Parser, intended to the parsing of the
- * YAML configuration file.
- *
- * This class is implemented as a singleton.
+ * This class realizes JUnit test suite for configuration.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see BotConfigurator
- * @see BotConfiguration
- * @see org.yaml.snakeyaml.Yaml
- * @see Constructor
- * @see TypeDescription
+ * @see ConfigurationTest
  */
-public class YamlConstructor extends Constructor {
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    ConfigurationTest.class
+})
+public class TestAllConfig {
 
-  private static YamlConstructor instance;
-
-  /**
-   * Initializes the singleton instance of the class.
-   * @return the singleton instance of the class.
-   */
-  public static YamlConstructor getInstance() {
-    if (instance == null) {
-      instance = new YamlConstructor();
-    }
-    return instance;
-  }
-
-  /**
-   * Creates the singleton of the class.
-   */
-  private YamlConstructor() {
-    super(BotConfiguration.class);
-    TypeDescription description = new TypeDescription(BotConfiguration.class);
-    //description.putListPropertyType("targets", HttpTarget.class);
-    //description.putListPropertyType("proxy", HttpTargetProxy.class);
-    //description.putListPropertyType("sleep", String.class);
-    super.addTypeDescription(description);
-  }
 }

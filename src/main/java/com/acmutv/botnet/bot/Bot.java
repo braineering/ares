@@ -29,8 +29,8 @@ package com.acmutv.botnet.bot;
 import com.acmutv.botnet.bot.command.BotCommand;
 import com.acmutv.botnet.bot.command.CommandScope;
 import com.acmutv.botnet.config.BotConfiguration;
-import com.acmutv.botnet.tool.LoggerTools;
-import com.acmutv.botnet.tool.SystemTools;
+import com.acmutv.botnet.service.Logger;
+import com.acmutv.botnet.service.HostSystemDetails;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -71,44 +71,44 @@ public class Bot {
       switch (cmd.getScope()) {
 
         case SLEEP:
-          LoggerTools.info("COMMAND :: SLEEP");
+          Logger.info("COMMAND :: SLEEP");
           long sleepTimeoutAmount = Long.valueOf(cmd.getParams().get("amount").toString());
           TimeUnit sleepTimeoutUnit = TimeUnit.valueOf(cmd.getParams().get("unit").toString());
           this.sleep(sleepTimeoutAmount, sleepTimeoutUnit);
           break;
 
         case SHUTDOWN:
-          LoggerTools.info("COMMAND :: SHUTDOWN");
+          Logger.info("COMMAND :: SHUTDOWN");
           long shutdownTimeoutAmount = Long.valueOf(cmd.getParams().get("amount").toString());
           TimeUnit shutdownTimeoutUnit = TimeUnit.valueOf(cmd.getParams().get("unit").toString());
           this.shutdown(shutdownTimeoutAmount, shutdownTimeoutUnit);
           return;
 
         case KILL:
-          LoggerTools.info("COMMAND :: KILL");
+          Logger.info("COMMAND :: KILL");
           this.kill();
           return;
 
         default:
-          LoggerTools.info("COMMAND :: UNKNOWN");
+          Logger.info("COMMAND :: UNKNOWN");
           break;
       }
     }
   }
 
   private void generateId() {
-    LoggerTools.info("IDGEN");
-    String mac = SystemTools.getMAC();
+    Logger.info("IDGEN");
+    String mac = HostSystemDetails.getMAC();
     this.setId(mac);
-    LoggerTools.info(String.format("IDGEN :: ID = %s", this.getId()));
+    Logger.info(String.format("IDGEN :: ID = %s", this.getId()));
   }
   private BotCommand getNextCommand() {
-    LoggerTools.info("NXTCMD");
+    Logger.info("NXTCMD");
     return new BotCommand(CommandScope.SHUTDOWN, new HashMap<>());
   }
 
   private void sleep(long amount, TimeUnit unit) {
-    LoggerTools.info(String.format("STATUS :: SLEEP :: %d %s", amount, unit));
+    Logger.info(String.format("STATUS :: SLEEP :: %d %s", amount, unit));
     try {
       unit.sleep(amount);
     } catch (InterruptedException e) {
@@ -117,12 +117,12 @@ public class Bot {
   }
 
   private void shutdown(long amount, TimeUnit unit) {
-    LoggerTools.info(String.format("STATUS :: SHUTDOWN :: %d %s", amount, unit));
+    Logger.info(String.format("STATUS :: SHUTDOWN :: %d %s", amount, unit));
     this.pool.shutdown(amount, unit);
   }
 
   private void kill() {
-    LoggerTools.info("STATUS :: KILLED");
+    Logger.info("STATUS :: KILLED");
     this.pool.kill();
   }
 

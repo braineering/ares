@@ -1,20 +1,20 @@
 /**
  * The MIT License (MIT)
- * <p>
- * Copyright (c) 2016 Giacomo Marciani and Michele Porretta
- * <p>
+ *
+ * Copyright (c) 2016 Giacomo Marciani, Michele Porretta
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * <p>
- * <p>
+ *
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * <p>
- * <p>
+ *
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -23,41 +23,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.acmutv.botnet.tool;
 
-import com.acmutv.botnet.config.BotConfiguration;
+package com.acmutv.botnet.report.features;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
- * This class realizes logging utilities.
+ * This class realizes JUnit test suite for system/network features reporting classes.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see DateTimeFormatter
+ * @see NetworkFeaturesTest
+ * @see SystemFeaturesTest
  */
-public class LoggerTools {
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    NetworkFeaturesTest.class,
+    SystemFeaturesTest.class
+})
+public class TestAllFeatures {
 
-  public static DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss:n");
-
-  /**
-   * Logs the specified information message (if debug mode is active).
-   * @param message the information message.
-   */
-  public static void info(final String message) {
-    if (BotConfiguration.getInstance().isDebug()) {
-      System.out.format("[BOT %s]> %s\n", DTF.format(LocalDateTime.now()), message);
-    }
-  }
-
-  /**
-   * Logs the specified error message (if debug mode is active).
-   * @param message the error message.
-   */
-  public static void error(final String message) {
-    if (BotConfiguration.getInstance().isDebug()) {
-      System.err.format("[BOT %s]> ERROR :: %s\n", DTF.format(LocalDateTime.now()), message);
-    }
-  }
 }

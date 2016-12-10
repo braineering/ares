@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.tool;
+package com.acmutv.botnet.service;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -36,9 +36,9 @@ import static java.nio.file.StandardWatchEventKinds.*;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see WatchService
+ * @see java.nio.file.WatchService
  */
-public class WatchTools {
+public class WatchService {
 
   /**
    * Registers a runnable as a file watching hook.
@@ -47,7 +47,7 @@ public class WatchTools {
    * @throws IOException when the path is not correct.
    */
   public static void watchFile(Path filepath, Runnable hook) throws IOException {
-    WatchService watcher = FileSystems.getDefault().newWatchService();
+    java.nio.file.WatchService watcher = FileSystems.getDefault().newWatchService();
     Path dir = filepath.getParent();
     try {
       dir.register(watcher, ENTRY_MODIFY);

@@ -58,10 +58,9 @@ public class BotConfiguration {
   public static boolean NET_STAT = true;
   public static long SYS_STAT_FREQ = 60;
   public static long NET_STAT_FREQ = 60;
-  public static String INIT_RESOURCE = "botinit.txt";
-  public static String CMD_RESOURCE = "botcmd.txt";
-  public static String LOG_RESOURCE = "botlog.txt";
-  public static HttpTargetProxy PROXY = null;
+  public static String INIT_RESOURCE = "/home/com/acmutv/botnet/botinit.txt";
+  public static String CMD_RESOURCE = "/home/com/acmutv/botnet/botcmd.txt";
+  public static String LOG_RESOURCE = "/home/com/acmutv/botnet/botlog.txt";
   public static long MAX_TIME = 0;
   public static boolean DEBUG = false;
 
@@ -74,9 +73,6 @@ public class BotConfiguration {
   private String initResource;
   private String cmdResource;
   private String logResource;
-  private List<HttpTarget> httpTargets;
-  private HttpTargetProxy proxy;
-  private List<String> sleep;
   private long maxTime;
   private boolean debug;
 
@@ -107,11 +103,9 @@ public class BotConfiguration {
     this.netStat = NET_STAT;
     this.sysStatFreq = SYS_STAT_FREQ;
     this.netStatFreq = NET_STAT_FREQ;
-    this.logResource = LOG_RESOURCE;
+    this.initResource = INIT_RESOURCE;
     this.cmdResource = CMD_RESOURCE;
-    this.proxy = PROXY;
-    this.httpTargets = new ArrayList<HttpTarget>();
-    this.sleep = new ArrayList<String>();
+    this.logResource = LOG_RESOURCE;
     this.maxTime = MAX_TIME;
     this.debug = DEBUG;
   }
@@ -123,11 +117,9 @@ public class BotConfiguration {
     this.netStat = NET_STAT;
     this.sysStatFreq = SYS_STAT_FREQ;
     this.netStatFreq = NET_STAT_FREQ;
-    this.logResource = LOG_RESOURCE;
+    this.initResource = INIT_RESOURCE;
     this.cmdResource = CMD_RESOURCE;
-    this.proxy = PROXY;
-    this.httpTargets = new ArrayList<HttpTarget>();
-    this.sleep = new ArrayList<String>();
+    this.logResource = LOG_RESOURCE;
     this.maxTime = MAX_TIME;
     this.debug = DEBUG;
 
@@ -180,14 +172,6 @@ public class BotConfiguration {
       return this;
     }
 
-    if (config.getHttpTargets() == null) {
-      config.setHttpTargets(new ArrayList<HttpTarget>());
-    }
-
-    if (config.getSleep() == null) {
-      config.setSleep(new ArrayList<String>());
-    }
-
     this.sysInfo = config.isSysInfo();
     this.netInfo = config.isNetInfo();
     this.sysStat = config.isSysStat();
@@ -196,9 +180,6 @@ public class BotConfiguration {
     this.netStatFreq = config.getNetStatFreq();
     this.logResource = config.getLogResource();
     this.cmdResource = config.getCmdResource();
-    this.proxy = config.getProxy();
-    this.httpTargets = config.getHttpTargets();
-    this.sleep = config.getSleep();
     this.maxTime = config.getMaxTime();
     this.debug = config.isDebug();
 

@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2016 Giacomo Marciani, Michele Porretta
+ * Copyright (c) 2016 Giacomo Marciani and Michele Porretta
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,35 +24,22 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.control;
+package com.acmutv.botnet.report.statistics;
 
-import org.apache.commons.io.IOUtils;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
+import com.acmutv.botnet.report.features.SystemFeatures;
+import org.junit.Test;
 
 /**
- * This class realizes functions for the execution of bash commands.
+ * This class realizes JUnit tests for {@link SystemFeatures}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see ProcessBuilder
- * @see Process
+ * @see SystemFeatures
  */
-public class BashExecutor {
+public class SystemStatisticsTest {
 
-  /**
-   * Executes the given command and arguments.
-   * @param command The command to execute. Arguments must be given as a separated strings.
-   *                E.g.: BashExecutor.run("ls", "-la") or BashExecutor.run("ls", "-l", "-a")
-   * @return The command output as a string.
-   * @throws IOException when error in process generation or output.
-   */
-  public static String run(String ...command) throws IOException {
-    ProcessBuilder pb = new ProcessBuilder(command);
-    Process p = pb.start();
-    String out = IOUtils.toString(p.getInputStream(), Charset.defaultCharset());
-    return out.trim();
+  @Test
+  public void test() {
+    //TODO
   }
-
 }

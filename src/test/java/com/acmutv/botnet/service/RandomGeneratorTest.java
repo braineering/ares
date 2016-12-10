@@ -24,8 +24,9 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.tool;
+package com.acmutv.botnet.service;
 
+import com.acmutv.botnet.service.RandomGenerator;
 import com.acmutv.botnet.time.Period;
 import org.junit.Test;
 
@@ -35,19 +36,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * This class realizes JUnit tests on random number generation tools.
+ * This class realizes JUnit tests for {@link RandomGenerator}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see RandomTools
+ * @see RandomGenerator
  */
-public class RandomToolsTest {
+public class RandomGeneratorTest {
 
   /**
    * Tests the random integer number generation inside interval in joint form.
    */
   @Test
   public void testGetRandomInt_joint() {
-    int number = RandomTools.getRandomInt(1, 1, new Random());
+    int number = RandomGenerator.getRandomInt(1, 1, new Random());
     assertTrue(number == 1);
   }
 
@@ -56,7 +58,7 @@ public class RandomToolsTest {
    */
   @Test
   public void testGetRandomInt_disjoint() {
-    int number = RandomTools.getRandomInt(2, 4, new Random());
+    int number = RandomGenerator.getRandomInt(2, 4, new Random());
     assertTrue(number >= 2 && number <= 4);
   }
 
@@ -65,7 +67,7 @@ public class RandomToolsTest {
    */
   @Test
   public void testGetRandomDouble_joint() {
-    double number = RandomTools.getRandomDouble(1.0, 1.0, new Random());
+    double number = RandomGenerator.getRandomDouble(1.0, 1.0, new Random());
     assertTrue(number == 1.0);
   }
 
@@ -74,7 +76,7 @@ public class RandomToolsTest {
    */
   @Test
   public void testGetRandomDouble_disjoint() {
-    double number = RandomTools.getRandomDouble(2.0, 4.0, new Random());
+    double number = RandomGenerator.getRandomDouble(2.0, 4.0, new Random());
     assertTrue(number >= 2.0 && number <= 4.0);
   }
 
@@ -84,7 +86,7 @@ public class RandomToolsTest {
   @Test
   public void testGetRandomIntInPeriod_joint() {
     Period period = new Period(1, 1);
-    int seconds = RandomTools.getRandomIntInPeriod(period, new Random());
+    int seconds = RandomGenerator.getRandomIntInPeriod(period, new Random());
     assertTrue(seconds == 1);
   }
 
@@ -94,7 +96,7 @@ public class RandomToolsTest {
   @Test
   public void testGetRandomIntInPeriod_disjoint() {
     Period period = new Period(2, 4);
-    int seconds = RandomTools.getRandomIntInPeriod(period, new Random());
+    int seconds = RandomGenerator.getRandomIntInPeriod(period, new Random());
     assertTrue(seconds >= 2 && seconds <= 4);
   }
 
@@ -104,7 +106,7 @@ public class RandomToolsTest {
   @Test
   public void testGetRandomDoubleInPeriod_joint() {
     Period period = new Period(1, 1);
-    double seconds = RandomTools.getRandomDoubleInPeriod(period, new Random());
+    double seconds = RandomGenerator.getRandomDoubleInPeriod(period, new Random());
     assertTrue(seconds == 1);
   }
 
@@ -114,7 +116,7 @@ public class RandomToolsTest {
   @Test
   public void testGetRandomDoubleInPeriod_disjoint() {
     Period period = new Period(2, 4);
-    double seconds = RandomTools.getRandomDoubleInPeriod(period, new Random());
+    double seconds = RandomGenerator.getRandomDoubleInPeriod(period, new Random());
     assertTrue(seconds >= 2 && seconds <= 4);
   }
 }

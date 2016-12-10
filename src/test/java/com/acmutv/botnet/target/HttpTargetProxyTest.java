@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2016 Giacomo Marciani
+ * Copyright (c) 2016 Giacomo Marciani and Michele Porretta
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,51 +24,21 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.tool;
+package com.acmutv.botnet.target;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-
 /**
- * This class realizes JUnit tests on Connection utilities.
+ * This class realizes JUnit tests for {@link HttpTargetProxy}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
+ * @see HttpTargetProxy
  */
-public class SystemToolsTest {
+public class HttpTargetProxyTest {
 
-  @Before
-  public void setup() {
-    org.junit.Assume.assumeTrue(SystemTools.checkConnection());
-  }
-
-  /**
-   * Tests IP address retrieval.
-   */
   @Test
-  public void test_getIP() {
-    String actual = SystemTools.getIP();
-    System.out.println("IP: " + actual);
+  public void test() {
+    //TODO
   }
-
-  /**
-   * Tests MAC address retrieval.
-   */
-  @Test
-  public void test_getMAC() {
-    String actual = SystemTools.getMAC();
-    System.out.println("MAC: " + actual);
-  }
-
-  /**
-   * Tests the connection availability check, by sending an HTTP request.
-   * @throws IOException when HTTP GET error.
-   */
-  @Test
-  public void test_checkConnection() throws IOException {
-    boolean check = SystemTools.checkConnection();
-    System.out.println("Connection: " + check);
-  }
-
 }

@@ -4,20 +4,8 @@ sysStat: True
 netStat: True
 sysStatFreq: 5
 netStatFreq: 5
-logResource: "/home/com/acmutv/botnet/log.txt"
-cmdResource: "/home/com/acmutv/botnet/cmd.txt"
-targets:
-  - url: "http://www.google.com"
-    period: 1
-    maxAttempts: 5
-  - url: "http://www.twitter.com"
-    period: 2-4
-    maxAttempts: 5
-proxy:
-  address: "104.28.5.228"
-  port: 80
-sleep:
-  - "0 0 12 1/1 * ? *"
-  - "0 30 18 1/3 * ? *"
+initResource: "/home/com/acmutv/botnet/botinit.txt"
+cmdResource: "/home/com/acmutv/botnet/botcmd.txt"
+logResource: "/home/com/acmutv/botnet/botlog.txt"
 maxTime: 60
 debug: True

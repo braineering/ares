@@ -23,13 +23,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package com.acmutv.botnet.bot;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * This class realizes JUnit tests on BotState.
+ * This class realizes JUnit tests for {@link BotState}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

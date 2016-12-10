@@ -28,7 +28,7 @@ package com.acmutv.botnet.attack;
 
 import com.acmutv.botnet.target.HttpTarget;
 import com.acmutv.botnet.time.Period;
-import com.acmutv.botnet.tool.SystemTools;
+import com.acmutv.botnet.service.HostSystemDetails;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,8 +39,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class realizes JUnit tests on HTTP POST attacks.
+ * This class realizes JUnit tests for {@link HttpPostAttack}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see HttpPostAttack
  * @see HttpTarget
@@ -49,7 +50,7 @@ public class HttpPostAttackTest {
 
   @Before
   public void setup() {
-    org.junit.Assume.assumeTrue(SystemTools.checkConnection());
+    org.junit.Assume.assumeTrue(HostSystemDetails.checkConnection());
   }
 
   @Test

@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.control;
+package com.acmutv.botnet.service;
 
 import com.acmutv.botnet.view.BaseOptions;
 import org.apache.commons.cli.HelpFormatter;

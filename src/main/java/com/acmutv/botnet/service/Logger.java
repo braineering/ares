@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2016 Giacomo Marciani
+ * Copyright (c) 2016 Giacomo Marciani and Michele Porretta
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,18 +24,44 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.report.features;
+package com.acmutv.botnet.service;
 
-import com.acmutv.botnet.report.features.SystemFeatures;
+import com.acmutv.botnet.config.BotConfiguration;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
- * This interface exposes methods to retrieve system features.
+ * This class realizes logging utilities.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
+ * @see DateTimeFormatter
  */
-public interface SystemFeaturesService {
+public class Logger {
 
-  SystemFeatures acquire();
+  public static boolean INFO = true;
+  public static boolean ERROR = true;
 
+  public static DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss:n");
+
+  /**
+   * Logs the specified information message (if debug mode is active).
+   * @param message the information message.
+   */
+  public static void info(final String message) {
+    if (Logger.INFO) {
+      System.out.format("[BOT %s]> %s\n", DTF.format(LocalDateTime.now()), message);
+    }
+  }
+
+  /**
+   * Logs the specified error message (if debug mode is active).
+   * @param message the error message.
+   */
+  public static void error(final String message) {
+    if (Logger.ERROR) {
+      System.err.format("[BOT %s]> ERROR :: %s\n", DTF.format(LocalDateTime.now()), message);
+    }
+  }
 }

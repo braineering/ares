@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.tool;
+package com.acmutv.botnet.service;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -38,7 +38,7 @@ import java.net.URL;
  * @since 1.0
  * @see HttpURLConnection
  */
-public class HTTPTools {
+public class Http {
 
   /**
    * Returns the result of a HTTP GET without proxy.

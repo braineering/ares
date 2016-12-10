@@ -36,8 +36,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * This class realizes JUnit tests on URL encoding tools.
+ * This class realizes JUnit tests for {@link URLTools}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see URLTools
  */

