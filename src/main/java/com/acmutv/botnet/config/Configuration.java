@@ -40,13 +40,14 @@ import java.io.InputStream;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
+ * @see Configurator
+ * @see Yaml
  * @see HttpTarget
  * @see CronExpression
- * @see Yaml
  */
 @Data
 @AllArgsConstructor
-public class BotConfiguration {
+public class Configuration {
 
   // Default values
   public static boolean SYS_INFO = true;
@@ -73,17 +74,17 @@ public class BotConfiguration {
   private long maxTime;
   private boolean debug;
 
-  private static BotConfiguration instance;
+  private static Configuration instance;
 
   /**
    * Retrieves the class singleton.
    * @return the singleton
    */
-  public static synchronized BotConfiguration getInstance() {
+  public static synchronized Configuration getInstance() {
     if (instance == null) {
-      synchronized (BotConfiguration.class) {
+      synchronized (Configuration.class) {
         if (instance == null) {
-          instance = new BotConfiguration();
+          instance = new Configuration();
         }
       }
     }
@@ -93,7 +94,7 @@ public class BotConfiguration {
   /**
    * Creates the default configuration.
    */
-  public BotConfiguration() {
+  public Configuration() {
     this.sysInfo = SYS_INFO;
     this.netInfo = NET_INFO;
     this.sysStat = SYS_STAT;
@@ -107,7 +108,7 @@ public class BotConfiguration {
     this.debug = DEBUG;
   }
 
-  public BotConfiguration fromDefault() {
+  public Configuration fromDefault() {
     this.sysInfo = SYS_INFO;
     this.netInfo = NET_INFO;
     this.sysStat = SYS_STAT;
@@ -129,7 +130,7 @@ public class BotConfiguration {
    * @param path The absolute path to the configuration file.
    * @return The configuration.
    */
-  public BotConfiguration fromYaml(final String path) {
+  public Configuration fromYaml(final String path) {
     Yaml yaml = new Yaml(YamlConstructor.getInstance());
 
     FileReader file;
@@ -137,10 +138,10 @@ public class BotConfiguration {
       file = new FileReader(path);
     } catch (Exception exc) {
       System.out.println(exc.getMessage());
-      return new BotConfiguration();
+      return new Configuration();
     }
 
-    BotConfiguration config = yaml.loadAs(file, BotConfiguration.class);
+    Configuration config = yaml.loadAs(file, Configuration.class);
 
     return this.fromConfig(config);
   }
@@ -151,10 +152,10 @@ public class BotConfiguration {
    * @param configStream the configuration YAML file.
    * @return The current configuration.
    */
-  public BotConfiguration fromYaml(InputStream configStream) {
+  public Configuration fromYaml(InputStream configStream) {
     Yaml yaml = new Yaml(YamlConstructor.getInstance());
 
-    BotConfiguration config = yaml.loadAs(configStream, BotConfiguration.class);
+    Configuration config = yaml.loadAs(configStream, Configuration.class);
 
     return this.fromConfig(config);
   }
@@ -164,7 +165,7 @@ public class BotConfiguration {
    * @param config the configuration to overwrite with.
    * @return The current configuration.
    */
-  private BotConfiguration fromConfig(final BotConfiguration config) {
+  private Configuration fromConfig(final Configuration config) {
     if (config == null) {
       return this;
     }

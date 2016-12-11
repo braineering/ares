@@ -27,13 +27,13 @@
 package com.acmutv.botnet;
 
 import com.acmutv.botnet.bot.Bot;
-import com.acmutv.botnet.service.BotWrapperShutdown;
-import com.acmutv.botnet.config.BotConfigurator;
-import com.acmutv.botnet.config.BotConfiguration;
+import com.acmutv.botnet.service.task.BotWrapperShutdown;
+import com.acmutv.botnet.config.Configurator;
+import com.acmutv.botnet.config.Configuration;
 import com.acmutv.botnet.service.AppService;
 
 /**
- * This class realizes the bot wrapper entry-point.
+ * This class realizes the app entry-point.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
@@ -41,15 +41,15 @@ import com.acmutv.botnet.service.AppService;
 public class BotMain {
 
   /**
-   * The bot wrapper main method, executed when the program is launched.
+   * The app main method, executed when the program is launched.
    * @param args The command line arguments.
-   * @see BotConfigurator
-   * @see BotConfiguration
+   * @see Configurator
+   * @see Configuration
    * @see Bot
    */
   public static void main(String[] args) {
 
-    BotConfiguration config = BotConfigurator.loadConfiguration(args);
+    Configuration config = Configurator.loadConfiguration(args);
 
     AppService.registerShutdownHooks(new BotWrapperShutdown());
 

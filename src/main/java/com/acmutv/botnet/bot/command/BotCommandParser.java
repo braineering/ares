@@ -27,7 +27,7 @@
 package com.acmutv.botnet.bot.command;
 
 import com.acmutv.botnet.attack.HttpAttackMethod;
-import com.acmutv.botnet.config.BotConfiguration;
+import com.acmutv.botnet.config.Configuration;
 import com.acmutv.botnet.target.HttpTarget;
 import com.acmutv.botnet.target.HttpTargetProxy;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -144,7 +144,7 @@ public class BotCommandParser {
           break;
 
         case INIT:
-          final String DEFAULT_INIT_RESOURCE = BotConfiguration.getInstance().getInitResource();
+          final String DEFAULT_INIT_RESOURCE = Configuration.getInstance().getInitResource();
           final String initResource = (node.has("resource")) ?
               node.get("resource").asText(DEFAULT_INIT_RESOURCE)
               :

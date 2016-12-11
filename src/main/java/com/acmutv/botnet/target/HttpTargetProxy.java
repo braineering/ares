@@ -27,7 +27,7 @@
 package com.acmutv.botnet.target;
 
 import com.acmutv.botnet.attack.HttpAttack;
-import com.acmutv.botnet.config.BotConfiguration;
+import com.acmutv.botnet.config.Configuration;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,7 +38,7 @@ import lombok.NoArgsConstructor;
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see HttpAttack
- * @see BotConfiguration
+ * @see Configuration
  * @see java.net.Proxy
  */
 @Data

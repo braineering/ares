@@ -26,8 +26,7 @@
 
 package com.acmutv.botnet.config;
 
-import com.acmutv.botnet.BotMain;
-import com.acmutv.botnet.service.AppController;
+import com.acmutv.botnet.service.AppService;
 import com.acmutv.botnet.service.Logger;
 import com.acmutv.botnet.view.BaseOptions;
 import org.apache.commons.cli.CommandLine;
@@ -40,39 +39,37 @@ import org.apache.commons.cli.ParseException;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see BotConfiguration
+ * @see Configuration
  * @see YamlConstructor
  * @see CommandLine
  * @see AppController
  */
-public class BotConfigurator {
+public class Configurator {
 
   private static final BaseOptions OPTS = BaseOptions.getInstance();
 
   /**
-   * Loads the bot configuration, according to the possible arguments passed to the main method.
+   * Loads the configuration, according to the possible arguments passed to the main method.
    * @param argv The command line arguments passed to the main method.
-   * @return The bot configuration.
-   * @see BotMain
+   * @return The configuration.
    * @see CommandLine
-   * @see BotConfiguration
-   * @see AppController
+   * @see Configuration
    */
-  public static BotConfiguration loadConfiguration(String[] argv) {
+  public static Configuration loadConfiguration(String[] argv) {
     CommandLine cmd = getCommandLine(argv);
-    BotConfiguration config = BotConfiguration.getInstance().fromDefault();
+    Configuration config = Configuration.getInstance().fromDefault();
 
     if (cmd.hasOption("help")) {
-      AppController.printHelp(OPTS);
+      AppService.printHelp(OPTS);
       System.exit(0);
     } else if (cmd.hasOption("version")) {
-      AppController.printVersion();
+      AppService.printVersion();
       System.exit(0);
     }
 
     if (cmd.hasOption("configuration")) {
       String configPath = cmd.getOptionValue("configuration");
-      config = BotConfiguration.getInstance().fromYaml(configPath);
+      config = Configuration.getInstance().fromYaml(configPath);
     }
 
     if (cmd.hasOption("debug")) {
@@ -98,7 +95,7 @@ public class BotConfigurator {
       cmd = cmdParser.parse(OPTS, argv);
     } catch (ParseException exc) {
       Logger.error(exc.getMessage());
-      AppController.printUsage();
+      AppService.printUsage();
     }
 
     return cmd;

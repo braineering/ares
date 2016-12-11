@@ -34,13 +34,13 @@ import java.net.MalformedURLException;
 import static org.junit.Assert.assertEquals;
 
 /**
- * This class realizes JUnit tests for {@link BotConfigurator}
- * and {@link BotConfiguration}.
+ * This class realizes JUnit tests for {@link Configurator}
+ * and {@link Configuration}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see BotConfigurator
- * @see BotConfiguration
+ * @see Configurator
+ * @see Configuration
  */
 public class ConfigurationTest {
 
@@ -51,9 +51,9 @@ public class ConfigurationTest {
   @Test
   public void testLoadYaml_default() {
     InputStream file = ConfigurationTest.class.getResourceAsStream("/config/config.default.yml");
-    BotConfiguration config = new BotConfiguration();
+    Configuration config = new Configuration();
     config.fromYaml(file);
-    BotConfiguration expected = new BotConfiguration();
+    Configuration expected = new Configuration();
     assertEquals(expected, config);
   }
 
@@ -65,9 +65,9 @@ public class ConfigurationTest {
   @Test
   public void testLoadYaml_complete() throws MalformedURLException {
     InputStream file = ConfigurationTest.class.getResourceAsStream("/config/config.complete.yml");
-    BotConfiguration config = new BotConfiguration();
+    Configuration config = new Configuration();
     config.fromYaml(file);
-    BotConfiguration expected = new BotConfiguration();
+    Configuration expected = new Configuration();
     expected.setSysInfo(true);
     expected.setNetInfo(false);
     expected.setSysStat(true);
@@ -89,9 +89,9 @@ public class ConfigurationTest {
   @Test
   public void testloadYaml_incomplete() {
     InputStream file = ConfigurationTest.class.getResourceAsStream("/config/config.incomplete.yml");
-    BotConfiguration config = new BotConfiguration();
+    Configuration config = new Configuration();
     config.fromYaml(file);
-    BotConfiguration expected = new BotConfiguration();
+    Configuration expected = new Configuration();
     expected.setSysStat(false);
     expected.setNetStat(false);
     assertEquals(expected, config);
@@ -104,9 +104,9 @@ public class ConfigurationTest {
   @Test
   public void testloadYaml_empty() {
     InputStream file = ConfigurationTest.class.getResourceAsStream("/config/config.empty.yml");
-    BotConfiguration config = new BotConfiguration();
+    Configuration config = new Configuration();
     config.fromYaml(file);
-    BotConfiguration expected = new BotConfiguration();
+    Configuration expected = new Configuration();
     assertEquals(expected, config);
   }
 

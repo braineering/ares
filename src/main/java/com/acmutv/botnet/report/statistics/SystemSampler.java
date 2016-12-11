@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet.report.statistics;
 
-import com.acmutv.botnet.config.BotConfiguration;
+import com.acmutv.botnet.config.Configuration;
 import com.acmutv.botnet.report.features.SystemFeatures;
 import com.acmutv.botnet.service.Logger;
 import lombok.Data;
@@ -48,7 +48,7 @@ public class SystemSampler implements Runnable {
   }
 
   private void makeSample() {
-    boolean debug = BotConfiguration.getInstance().isDebug();
+    boolean debug = Configuration.getInstance().isDebug();
     if (debug) {
       Logger.info("SYSTEM-SAMPLING :: SAMPLE ACQUISITION");
     }

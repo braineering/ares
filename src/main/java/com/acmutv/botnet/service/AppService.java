@@ -26,6 +26,10 @@
 
 package com.acmutv.botnet.service;
 
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+
 /**
  * This class realizes basic app services.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
@@ -33,6 +37,38 @@ package com.acmutv.botnet.service;
  * @since 1.0
  */
 public class AppService {
+
+  private static final String APP_NAME = "BOT";
+  private static final String TEAM_NAME = "Giacomo Marciani and Michele Porretta";
+  private static final String APP_VERSION = "1.0";
+  private static final String APP_DESCRIPTION = "A botnet showcase.\n";
+
+  /**
+   * Prints the application usage instructions.
+   */
+  public static void printUsage() {
+    System.out.format("%s version %s (by %s)\n", APP_NAME, APP_VERSION, TEAM_NAME);
+    System.out.format("%s\n", APP_DESCRIPTION);
+    System.out.format("Usage: %s [options,...]\n", APP_NAME);
+  }
+
+  /**
+   * Prints the application command line helper.
+   * @param opts The CLI options.
+   * @see Option
+   * @see Options
+   */
+  public static void printHelp(final Options opts) {
+    HelpFormatter formatter = new HelpFormatter();
+    formatter.printHelp(APP_NAME, opts, true);
+  }
+
+  /**
+   * Prints the application version.
+   */
+  public static void printVersion() {
+    System.out.format("%s version %s (by %s)\n", APP_NAME, APP_VERSION, TEAM_NAME);
+  }
 
   /**
    * Registers atexit runnables as JVM shutdown hooks.

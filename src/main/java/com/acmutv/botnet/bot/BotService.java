@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet.bot;
 
-import com.acmutv.botnet.config.BotConfiguration;
+import com.acmutv.botnet.config.Configuration;
 
 import java.util.concurrent.*;
 
@@ -42,7 +42,7 @@ public class BotService {
     Registers both system and network samplers, according to the given configuration.
 
   public static void registerSamplers() {
-    BotConfiguration config = BotConfiguration.getInstance();
+    Configuration config = Configuration.getInstance();
     final ScheduledExecutorService scheduler =
         Executors.newScheduledThreadPool(2);
 
@@ -77,7 +77,7 @@ public class BotService {
     Registers HTTP attackers, according to the given configuration.
 
   private static void registerHttpAttacks(HttpAttack attackers[]) {
-    BotConfiguration config = BotConfiguration.getInstance();
+    Configuration config = Configuration.getInstance();
     int numcores = Runtime.getRuntime().availableProcessors();
     ExecutorService executor = Executors.newFixedThreadPool(numcores);
 
@@ -116,7 +116,7 @@ public class BotService {
 
     Runnable interrupt = () -> handler.cancel(true);
 
-    long maxtime = BotConfiguration.getInstance().getMaxTime();
+    long maxtime = Configuration.getInstance().getMaxTime();
     if (maxtime > 0) {
       scheduler.schedule(interrupt, maxtime, TimeUnit.SECONDS);
     }

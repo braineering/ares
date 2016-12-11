@@ -37,8 +37,8 @@ import org.yaml.snakeyaml.constructor.Constructor;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see BotConfigurator
- * @see BotConfiguration
+ * @see Configurator
+ * @see Configuration
  * @see org.yaml.snakeyaml.Yaml
  * @see Constructor
  * @see TypeDescription
@@ -51,9 +51,13 @@ public class YamlConstructor extends Constructor {
    * Initializes the singleton instance of the class.
    * @return the singleton instance of the class.
    */
-  public static YamlConstructor getInstance() {
+  public static synchronized YamlConstructor getInstance() {
     if (instance == null) {
-      instance = new YamlConstructor();
+      synchronized (YamlConstructor.class) {
+        if (instance == null) {
+          instance = new YamlConstructor();
+        }
+      }
     }
     return instance;
   }
@@ -62,8 +66,8 @@ public class YamlConstructor extends Constructor {
    * Creates the singleton of the class.
    */
   private YamlConstructor() {
-    super(BotConfiguration.class);
-    TypeDescription description = new TypeDescription(BotConfiguration.class);
+    super(Configuration.class);
+    TypeDescription description = new TypeDescription(Configuration.class);
     //description.putListPropertyType("targets", HttpTarget.class);
     //description.putListPropertyType("proxy", HttpTargetProxy.class);
     //description.putListPropertyType("sleep", String.class);

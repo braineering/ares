@@ -24,27 +24,21 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.service;
+package com.acmutv.botnet.service.task;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-import java.nio.file.Path;
+import com.acmutv.botnet.service.Logger;
 
 /**
- * This class realizes the bot configuration reloader.
- * It is used as hook in configuration watching service.
+ * This class realizes the bot wrapper shutdown task.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
+ * @see Runtime
  */
-@Data
-@AllArgsConstructor
-public class BotConfigurationReloader implements Runnable {
-  private Path configpath;
+public class BotWrapperShutdown implements Runnable {
 
   @Override
   public void run() {
-    System.out.format("[BOT]> %s reloaded", this.getConfigpath());
+    Logger.info("BOTWRAPPER :: SHUTDOWN TASK");
   }
 }

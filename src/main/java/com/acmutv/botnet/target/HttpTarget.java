@@ -27,7 +27,7 @@
 package com.acmutv.botnet.target;
 
 import com.acmutv.botnet.attack.HttpAttack;
-import com.acmutv.botnet.config.BotConfiguration;
+import com.acmutv.botnet.config.Configuration;
 import com.acmutv.botnet.time.Period;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -42,7 +42,7 @@ import java.net.URL;
  * @since 1.0
  * @see HttpAttack
  * @see HttpTargetProxy
- * @see BotConfiguration
+ * @see Configuration
  */
 @Data
 @AllArgsConstructor

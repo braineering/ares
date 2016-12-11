@@ -28,7 +28,7 @@ package com.acmutv.botnet.bot;
 
 import com.acmutv.botnet.bot.command.BotCommand;
 import com.acmutv.botnet.bot.command.CommandScope;
-import com.acmutv.botnet.config.BotConfiguration;
+import com.acmutv.botnet.config.Configuration;
 import com.acmutv.botnet.service.Logger;
 import com.acmutv.botnet.service.HostSystemDetails;
 import lombok.AllArgsConstructor;
@@ -52,16 +52,16 @@ import java.util.concurrent.TimeUnit;
 public class Bot {
   private String id;
   private BotState state;
-  private BotConfiguration config;
+  private Configuration config;
   private BotPool pool;
   private boolean debug;
 
-  public Bot(BotConfiguration config) {
+  public Bot(Configuration config) {
     this(null, BotState.INIT, config, new BotPool(), false);
   }
 
   public Bot() {
-    this(null, BotState.INIT, new BotConfiguration(), new BotPool(), false);
+    this(null, BotState.INIT, new Configuration(), new BotPool(), false);
   }
 
   public void run() {

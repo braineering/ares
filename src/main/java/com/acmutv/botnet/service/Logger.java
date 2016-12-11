@@ -41,6 +41,7 @@ public class Logger {
   private static final boolean INFO = true;
   private static final boolean ERROR = true;
 
+  private static final String HEADER = "BOT";
   private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss:n");
 
   /**
@@ -49,7 +50,7 @@ public class Logger {
    */
   public static void info(final String message) {
     if (Logger.INFO) {
-      System.out.format("[BOT %s]> %s\n", DTF.format(LocalDateTime.now()), message);
+      System.out.format("[%s %s]> %s\n", HEADER, DTF.format(LocalDateTime.now()), message);
     }
   }
 
@@ -59,7 +60,7 @@ public class Logger {
    */
   public static void error(final String message) {
     if (Logger.ERROR) {
-      System.err.format("[BOT %s]> ERROR :: %s\n", DTF.format(LocalDateTime.now()), message);
+      System.err.format("[%s %s]> ERROR :: %s\n", HEADER, DTF.format(LocalDateTime.now()), message);
     }
   }
 }
