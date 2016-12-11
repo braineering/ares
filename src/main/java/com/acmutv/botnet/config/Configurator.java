@@ -42,7 +42,6 @@ import org.apache.commons.cli.ParseException;
  * @see Configuration
  * @see YamlConstructor
  * @see CommandLine
- * @see AppController
  */
 public class Configurator {
 
@@ -85,7 +84,6 @@ public class Configurator {
    * @return The command line options/arguments parsing utility.
    * @see CommandLineParser
    * @see CommandLine
-   * @see AppController
    */
   private static CommandLine getCommandLine(String argv[]) {
     CommandLineParser cmdParser = new DefaultParser();
