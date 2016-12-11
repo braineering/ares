@@ -26,8 +26,9 @@
 
 package com.acmutv.botnet.time;
 
-import com.acmutv.botnet.time.Period;
 import org.junit.Test;
+
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -48,9 +49,9 @@ public class PeriodTest {
   @Test
   public void testCreator_joint() {
     final String str = "1";
-    Period p = new Period(str);
-    Period expected = new Period(1, 1);
-    assertEquals(expected, p);
+    Period actual = new Period(str);
+    Period expected = new Period(1, 1, TimeUnit.SECONDS);
+    assertEquals(expected, actual);
   }
 
   /**
@@ -59,9 +60,9 @@ public class PeriodTest {
   @Test
   public void testCreator_disjoint() {
     final String str = "1-3";
-    Period p = new Period(str);
-    Period expected = new Period(1, 3);
-    assertEquals(expected, p);
+    Period actual = new Period(str);
+    Period expected = new Period(1, 3, TimeUnit.SECONDS);
+    assertEquals(expected, actual);
   }
 
 
@@ -71,9 +72,9 @@ public class PeriodTest {
   @Test
   public void testValueOf_joint() {
     final String str = "1";
-    Period p = Period.valueOf(str);
-    Period expected = new Period(1, 1);
-    assertEquals(expected, p);
+    Period actual = Period.valueOf(str);
+    Period expected = new Period(1, 1, TimeUnit.SECONDS);
+    assertEquals(expected, actual);
   }
 
   /**
@@ -82,9 +83,9 @@ public class PeriodTest {
   @Test
   public void testFromString_disjoint() {
     final String str = "1-3";
-    Period p = Period.valueOf(str);
-    Period expected = new Period(1, 3);
-    assertEquals(expected, p);
+    Period actual = Period.valueOf(str);
+    Period expected = new Period(1, 3, TimeUnit.SECONDS);
+    assertEquals(expected, actual);
   }
 
   /**

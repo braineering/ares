@@ -31,22 +31,24 @@ import com.acmutv.botnet.target.HttpTarget;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /**
- * This class realizes an interval of integers.
+ * This class realizes a time interval.
  * Typically used for timing interval representation.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see HttpTarget
- * @see BotConfiguration
+ * @see TimeUnit
  */
 @Data
 @AllArgsConstructor
 public class Period {
   private int min;
   private int max;
+  private TimeUnit unit;
 
   public static final String REG_PATTERN = "\\d+(-\\d+){0,1}";
 
@@ -62,6 +64,7 @@ public class Period {
     }
     this.min = min;
     this.max = max;
+    this.unit = TimeUnit.SECONDS;
   }
 
   /**
@@ -74,7 +77,7 @@ public class Period {
   }
 
   /**
-   * Parses a Period fromJson the given string.
+   * Parses a Period from the given string.
    * @param str the string to parse.
    * @return the parsed Period.
    */
@@ -88,6 +91,7 @@ public class Period {
     } else {
       min = max = Integer.valueOf(values[0]);
     }
-    return new Period(min, max);
+    TimeUnit unit = TimeUnit.SECONDS;
+    return new Period(min, max, unit);
   }
 }

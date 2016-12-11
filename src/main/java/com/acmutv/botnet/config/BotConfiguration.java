@@ -58,9 +58,9 @@ public class BotConfiguration {
   public static boolean NET_STAT = true;
   public static long SYS_STAT_FREQ = 60;
   public static long NET_STAT_FREQ = 60;
-  public static String INIT_RESOURCE = "/home/com/acmutv/botnet/botinit.txt";
-  public static String CMD_RESOURCE = "/home/com/acmutv/botnet/botcmd.txt";
-  public static String LOG_RESOURCE = "/home/com/acmutv/botnet/botlog.txt";
+  public static String INIT_RESOURCE = "com/acmutv/botnet/botinit.txt";
+  public static String CMD_RESOURCE = "com/acmutv/botnet/botcmd.txt";
+  public static String LOG_RESOURCE = "com/acmutv/botnet/botlog.txt";
   public static long MAX_TIME = 0;
   public static boolean DEBUG = false;
 

@@ -4,8 +4,8 @@ sysStat: True
 netStat: False
 sysStatFreq: 5
 netStatFreq: 5
-initResource: "/home/com/acmutv/botnet/botinit.txt"
-cmdResource: "/home/com/acmutv/botnet/botcmd.txt"
-logResource: "/home/com/acmutv/botnet/botlog.txt"
+initResource: "com/acmutv/botnet/botinit.txt"
+cmdResource: "com/acmutv/botnet/botcmd.txt"
+logResource: "com/acmutv/botnet/botlog.txt"
 maxTime: 60
 debug: True

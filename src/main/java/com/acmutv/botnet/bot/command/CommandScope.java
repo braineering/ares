@@ -44,12 +44,12 @@ import java.util.Map;
 public enum CommandScope {
   NONE ("NONE", false),
   INIT ("INIT", true),
+  SET ("SET", true),
   SLEEP ("SLEEP", true),
   KILL ("KILL", false),
   SHUTDOWN ("SHUTDOWN", false),
-  ATTACK_HTTP_GET ("ATTACK HTTP-GET", true),
-  ATTACK_HTTP_POST ("ATTACK HTTP-POST", true),
-  ATTACK_SMTP_SEND ("ATTACK SMTP-SEND", true);
+  ATTACK_HTTP ("ATTACK HTTP", true),
+  ATTACK_SMTP ("ATTACK SMTP", true);
 
   private final String name;
   private final boolean withParams;

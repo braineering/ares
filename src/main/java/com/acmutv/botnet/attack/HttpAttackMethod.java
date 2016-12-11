@@ -23,6 +23,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package com.acmutv.botnet.attack;
 
 /**
@@ -39,5 +40,13 @@ public enum HttpAttackMethod {
 
   HttpAttackMethod(final String name) {
     this.name = name;
+  }
+
+  public static HttpAttackMethod from(Object obj) {
+    try {
+      return HttpAttackMethod.valueOf(obj.toString());
+    } catch (IllegalArgumentException e) {
+      return HttpAttackMethod.GET;
+    }
   }
 }

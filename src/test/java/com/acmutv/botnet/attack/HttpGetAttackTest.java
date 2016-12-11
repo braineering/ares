@@ -55,7 +55,7 @@ public class HttpGetAttackTest {
 
   @Test
   public void test_makeAttack() throws InterruptedException, MalformedURLException {
-    HttpTarget tgt = new HttpTarget(new URL("http://www.google.com"), new Period(1, 1), 1);
+    HttpTarget tgt = new HttpTarget(new URL("http://www.google.com"), new Period(1, 1, TimeUnit.SECONDS), 1);
     ExecutorService executor = Executors.newFixedThreadPool(1);
     Runnable attacker = new HttpGetAttack(tgt);
     executor.execute(attacker);

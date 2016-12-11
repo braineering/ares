@@ -79,9 +79,9 @@ public class ConfigurationTest {
     expected.setNetStat(false);
     expected.setSysStatFreq(5);
     expected.setNetStatFreq(5);
-    expected.setInitResource("/home/com/acmutv/botnet/botinit.txt");
-    expected.setCmdResource("/home/com/acmutv/botnet/botcmd.txt");
-    expected.setLogResource("/home/com/acmutv/botnet/botlog.txt");
+    expected.setInitResource("com/acmutv/botnet/botinit.txt");
+    expected.setCmdResource("com/acmutv/botnet/botcmd.txt");
+    expected.setLogResource("com/acmutv/botnet/botlog.txt");
     expected.setMaxTime(60);
     expected.setDebug(true);
     assertEquals(expected, config);

@@ -26,10 +26,16 @@
 
 package com.acmutv.botnet;
 
+import com.acmutv.botnet.bot.command.BotCommand;
+import com.acmutv.botnet.bot.command.BotCommandParser;
+import com.acmutv.botnet.config.ConfigurationTest;
 import org.junit.Test;
 import org.quartz.CronExpression;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
@@ -37,6 +43,7 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -50,10 +57,18 @@ import static org.junit.Assert.assertTrue;
 public class MiscTest {
 
   @Test
-  public void test() {
-    String line = "";
-    String entries[] = line.split(" ");
-    System.out.println("len:"+entries.length);
-    for (String s : entries) System.out.println(s);
+  public void test() throws IOException {
+    final String path = String.format("/home/%s/botnet/botcmd.txt", System.getenv("USER"));
+    while (true) {
+      InputStream stream = new FileInputStream(path);
+      BotCommand cmd = BotCommandParser.fromJson(stream);
+      stream.close();
+      System.out.println(cmd);
+      try {
+        TimeUnit.SECONDS.sleep(10);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
   }
 }

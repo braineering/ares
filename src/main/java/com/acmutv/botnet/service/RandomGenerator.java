@@ -68,24 +68,4 @@ public class RandomGenerator {
       return rndgen.nextDouble() * (b - a) + a;
     }
   }
-
-  /**
-   * Generates a uniform random integer number in period.
-   * @param period the period.
-   * @param rndgen the random number generator.
-   * @return the uniform random integer number in period.
-   */
-  public static int getRandomIntInPeriod(final Period period, Random rndgen) {
-    return getRandomInt(period.getMin(), period.getMax(), rndgen);
-  }
-
-  /**
-   * Generates a uniform random double number in period.
-   * @param period the period.
-   * @param rndgen the random number generator.
-   * @return the uniform random double number in period.
-   */
-  public static double getRandomDoubleInPeriod(final Period period, Random rndgen) {
-    return getRandomDouble(period.getMin(), period.getMax(), rndgen);
-  }
 }

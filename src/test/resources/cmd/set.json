@@ -1,0 +1,17 @@
+{
+  "command": "SET",
+  "settings": [
+    {
+      "property": "prop1",
+      "value": "val1"
+    },
+    {
+      "property": "prop2",
+      "value": "val2"
+    },
+    {
+      "property": "prop3",
+      "value": "val3"
+    }
+  ]
+}

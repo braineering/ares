@@ -31,6 +31,7 @@ import com.acmutv.botnet.time.Period;
 import org.junit.Test;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -80,43 +81,4 @@ public class RandomGeneratorTest {
     assertTrue(number >= 2.0 && number <= 4.0);
   }
 
-  /**
-   * Tests the random integer number generation inside period in joint form.
-   */
-  @Test
-  public void testGetRandomIntInPeriod_joint() {
-    Period period = new Period(1, 1);
-    int seconds = RandomGenerator.getRandomIntInPeriod(period, new Random());
-    assertTrue(seconds == 1);
-  }
-
-  /**
-   * Tests the random integer number generation inside period in disjoint form.
-   */
-  @Test
-  public void testGetRandomIntInPeriod_disjoint() {
-    Period period = new Period(2, 4);
-    int seconds = RandomGenerator.getRandomIntInPeriod(period, new Random());
-    assertTrue(seconds >= 2 && seconds <= 4);
-  }
-
-  /**
-   * Tests the random double number generation inside period in joint form.
-   */
-  @Test
-  public void testGetRandomDoubleInPeriod_joint() {
-    Period period = new Period(1, 1);
-    double seconds = RandomGenerator.getRandomDoubleInPeriod(period, new Random());
-    assertTrue(seconds == 1);
-  }
-
-  /**
-   * Tests the random double number generation inside period in disjoint form.
-   */
-  @Test
-  public void testGetRandomDoubleInPeriod_disjoint() {
-    Period period = new Period(2, 4);
-    double seconds = RandomGenerator.getRandomDoubleInPeriod(period, new Random());
-    assertTrue(seconds >= 2 && seconds <= 4);
-  }
 }

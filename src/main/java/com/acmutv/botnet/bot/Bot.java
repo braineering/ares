@@ -35,6 +35,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -70,10 +71,17 @@ public class Bot {
 
       switch (cmd.getScope()) {
 
+        case SET:
+          final Map<String,String> settings =
+              (Map<String,String>) cmd.getParams().getOrDefault("settings", new HashMap<String,String>());
+          Logger.info(String.format("COMMAND :: SET :: settings=%s\n", settings));
+          this.set(settings);
+          break;
+
         case SLEEP:
-          Logger.info("COMMAND :: SLEEP");
           long sleepTimeoutAmount = Long.valueOf(cmd.getParams().get("amount").toString());
           TimeUnit sleepTimeoutUnit = TimeUnit.valueOf(cmd.getParams().get("unit").toString());
+          Logger.info(String.format("COMMAND :: SLEEP :: amount=%d ; unit=%s", sleepTimeoutAmount, sleepTimeoutUnit));
           this.sleep(sleepTimeoutAmount, sleepTimeoutUnit);
           break;
 
@@ -105,6 +113,12 @@ public class Bot {
   private BotCommand getNextCommand() {
     Logger.info("NXTCMD");
     return new BotCommand(CommandScope.SHUTDOWN, new HashMap<>());
+  }
+
+  private void set(Map<String,String> settings) {
+    for (Map.Entry<String,String> setting : settings.entrySet()) {
+      Logger.info(String.format("COMMAND :: SET :: property=%s ; value=%s\n", setting.getKey(), setting.getValue()));
+    }
   }
 
   private void sleep(long amount, TimeUnit unit) {
