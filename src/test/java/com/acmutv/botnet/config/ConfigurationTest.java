@@ -45,7 +45,7 @@ import static org.junit.Assert.assertEquals;
 public class ConfigurationTest {
 
   /**
-   * Tests the configuration loading fromJson an external YAML configuration file.
+   * Tests the configuration loading from an external YAML configuration file.
    * In this test the configuration file provides with default settings.
    */
   @Test
@@ -58,7 +58,7 @@ public class ConfigurationTest {
   }
 
   /**
-   * Tests the configuration loading fromJson an external YAML configuration file.
+   * Tests the configuration loading from an external YAML configuration file.
    * In this test the configuration file provides with complete non default settings.
    * @throws MalformedURLException when error in test.
    */
@@ -83,7 +83,7 @@ public class ConfigurationTest {
   }
 
   /**
-   * Tests the configuration loading fromJson an external YAML configuration file.
+   * Tests the configuration loading from an external YAML configuration file.
    * In this test the configuration file provides with incomplete non default settings.
    */
   @Test
@@ -98,7 +98,7 @@ public class ConfigurationTest {
   }
 
   /**
-   * Tests the configuration loading fromJson an external YAML configuration file.
+   * Tests the configuration loading from an external YAML configuration file.
    * In this test the configuration file provides with empty settings.
    */
   @Test
