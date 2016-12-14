@@ -27,10 +27,11 @@
 package com.acmutv.botnet;
 
 import com.acmutv.botnet.bot.Bot;
-import com.acmutv.botnet.service.task.BotWrapperShutdown;
-import com.acmutv.botnet.config.Configurator;
-import com.acmutv.botnet.config.Configuration;
-import com.acmutv.botnet.service.AppService;
+import com.acmutv.botnet.tool.RuntimeManager;
+import com.acmutv.botnet.tool.task.ShutdownHook;
+import com.acmutv.botnet.ui.CliService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class realizes the app entry-point.
@@ -40,24 +41,28 @@ import com.acmutv.botnet.service.AppService;
  */
 public class BotMain {
 
+  private static final Logger LOGGER = LogManager.getLogger(BotMain.class);
+
   /**
    * The app main method, executed when the program is launched.
    * @param args The command line arguments.
-   * @see Configurator
-   * @see Configuration
-   * @see Bot
    */
   public static void main(String[] args) {
 
-    Configuration config = Configurator.loadConfiguration(args);
+    LOGGER.traceEntry();
 
-    AppService.registerShutdownHooks(new BotWrapperShutdown());
+    CliService.handleArguments(args);
 
-    Bot bot = new Bot(config);
+    RuntimeManager.registerShutdownHooks(new ShutdownHook());
+
+    Bot bot = new Bot();
 
     bot.run();
 
+    LOGGER.traceExit(0);
+
     System.exit(0);
+
   }
 
 }

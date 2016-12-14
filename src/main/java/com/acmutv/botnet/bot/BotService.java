@@ -1,20 +1,20 @@
 /*
   The MIT License (MIT)
-  <p>
+
   Copyright (c) 2016 Giacomo Marciani and Michele Porretta
-  <p>
+
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
   in the Software without restriction, including without limitation the rights
   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
   copies of the Software, and to permit persons to whom the Software is
   furnished to do so, subject to the following conditions:
-  <p>
-  <p>
+
+
   The above copyright notice and this permission notice shall be included in
   all copies or substantial portions of the Software.
-  <p>
-  <p>
+
+
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -26,7 +26,9 @@
 
 package com.acmutv.botnet.bot;
 
-import com.acmutv.botnet.config.Configuration;
+import com.acmutv.botnet.config.AppConfigurationService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.concurrent.*;
 
@@ -38,11 +40,13 @@ import java.util.concurrent.*;
  */
 public class BotService {
 
+  private static final Logger LOGGER = LogManager.getLogger(BotService.class);
+
   /*
     Registers both system and network samplers, according to the given configuration.
 
   public static void registerSamplers() {
-    Configuration config = Configuration.getInstance();
+    AppConfiguration config = AppConfiguration.getInstance();
     final ScheduledExecutorService scheduler =
         Executors.newScheduledThreadPool(2);
 
@@ -77,7 +81,7 @@ public class BotService {
     Registers HTTP attackers, according to the given configuration.
 
   private static void registerHttpAttacks(HttpAttack attackers[]) {
-    Configuration config = Configuration.getInstance();
+    AppConfiguration config = AppConfiguration.getInstance();
     int numcores = Runtime.getRuntime().availableProcessors();
     ExecutorService executor = Executors.newFixedThreadPool(numcores);
 
@@ -116,7 +120,7 @@ public class BotService {
 
     Runnable interrupt = () -> handler.cancel(true);
 
-    long maxtime = Configuration.getInstance().getMaxTime();
+    long maxtime = AppConfigurationService.getConfigurations().getMaxTime();
     if (maxtime > 0) {
       scheduler.schedule(interrupt, maxtime, TimeUnit.SECONDS);
     }

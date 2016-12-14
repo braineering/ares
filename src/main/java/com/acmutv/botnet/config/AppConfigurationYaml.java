@@ -1,20 +1,20 @@
 /*
   The MIT License (MIT)
-  <p>
+
   Copyright (c) 2016 Giacomo Marciani and Michele Porretta
-  <p>
+
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
   in the Software without restriction, including without limitation the rights
   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
   copies of the Software, and to permit persons to whom the Software is
   furnished to do so, subject to the following conditions:
-  <p>
-  <p>
+
+
   The above copyright notice and this permission notice shall be included in
   all copies or substantial portions of the Software.
-  <p>
-  <p>
+
+
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -24,43 +24,33 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.service;
+package com.acmutv.botnet.config;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import org.yaml.snakeyaml.TypeDescription;
+import org.yaml.snakeyaml.constructor.Constructor;
 
 /**
- * This class realizes logging utilities.
+ * This class realizes the YAML constructor for {@link AppConfiguration}. *
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see DateTimeFormatter
+ * @see AppConfiguration
  */
-public class Logger {
+public class AppConfigurationYaml extends Constructor {
 
-  private static final boolean INFO = true;
-  private static final boolean ERROR = true;
+  private static AppConfigurationYaml instance;
 
-  private static final String HEADER = "BOT";
-  private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss:n");
-
-  /**
-   * Logs the specified information message (if debug mode is active).
-   * @param message the information message.
-   */
-  public static void info(final String message) {
-    if (Logger.INFO) {
-      System.out.format("[%s %s]> %s\n", HEADER, DTF.format(LocalDateTime.now()), message);
+  public static AppConfigurationYaml getInstance() {
+    if (instance == null) {
+      instance = new AppConfigurationYaml();
     }
+    return instance;
   }
 
-  /**
-   * Logs the specified error message (if debug mode is active).
-   * @param message the error message.
-   */
-  public static void error(final String message) {
-    if (Logger.ERROR) {
-      System.err.format("[%s %s]> ERROR :: %s\n", HEADER, DTF.format(LocalDateTime.now()), message);
-    }
+  private AppConfigurationYaml() {
+    super(AppConfiguration.class);
+    TypeDescription description = new TypeDescription(AppConfiguration.class);
+    super.addTypeDescription(description);
   }
+
 }

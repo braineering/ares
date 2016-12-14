@@ -1,20 +1,20 @@
 /*
   The MIT License (MIT)
-  <p>
+
   Copyright (c) 2016 Giacomo Marciani and Michele Porretta
-  <p>
+
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
   in the Software without restriction, including without limitation the rights
   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
   copies of the Software, and to permit persons to whom the Software is
   furnished to do so, subject to the following conditions:
-  <p>
-  <p>
+
+
   The above copyright notice and this permission notice shall be included in
   all copies or substantial portions of the Software.
-  <p>
-  <p>
+
+
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -26,8 +26,6 @@
 
 package com.acmutv.botnet.service;
 
-import com.acmutv.botnet.service.Http;
-import com.acmutv.botnet.service.HostSystemDetails;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,17 +38,17 @@ import java.text.ParseException;
 import static org.junit.Assert.assertEquals;
 
 /**
- * This class realizes JUnit tests for {@link Http}.
+ * This class realizes JUnit tests for {@link HttpService}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see Http
+ * @see HttpService
  */
 public class HttpTest {
 
   @Before
   public void setup() {
-    org.junit.Assume.assumeTrue(HostSystemDetails.checkConnection());
+    org.junit.Assume.assumeTrue(ConnectionService.checkConnection());
   }
 
   /**
@@ -60,10 +58,10 @@ public class HttpTest {
    */
   @Test
   public void testGET() throws ParseException, IOException {
-    URL url = new URL("http://www.google.com");
-    String result = Http.makeGET(url);
-    String expected = "GET http://www.google.com :: 200";
-    assertEquals(expected, result);
+    final URL url = new URL("http://www.google.com");
+    final int expected = 200;
+    final int actual = HttpService.makeGET(url);
+    assertEquals(expected, actual);
   }
 
   /**
@@ -73,10 +71,11 @@ public class HttpTest {
    */
   @Test
   public void testGETWithProxy() throws ParseException, IOException {
-    URL url = new URL("http://www.google.com");
-    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("104.28.5.228", 80));
-    String result = Http.makeGETWithProxy(url, proxy);
-    String expected = "GET http://www.google.com :: 400";
-    assertEquals(expected, result);
+    final URL url = new URL("http://www.google.com");
+    final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("104.28.5.228", 80));
+    final int expected = 400;
+    final int actual = HttpService.makeGETWithProxy(url, proxy);
+    assertEquals(expected, actual);
   }
+
 }

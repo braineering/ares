@@ -1,20 +1,20 @@
 /*
   The MIT License (MIT)
-  <p>
+
   Copyright (c) 2016 Giacomo Marciani and Michele Porretta
-  <p>
+
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
   in the Software without restriction, including without limitation the rights
   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
   copies of the Software, and to permit persons to whom the Software is
   furnished to do so, subject to the following conditions:
-  <p>
-  <p>
+
+
   The above copyright notice and this permission notice shall be included in
   all copies or substantial portions of the Software.
-  <p>
-  <p>
+
+
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -27,12 +27,14 @@
 package com.acmutv.botnet.bot.command;
 
 import com.acmutv.botnet.attack.HttpAttackMethod;
-import com.acmutv.botnet.config.Configuration;
+import com.acmutv.botnet.config.AppConfigurationService;
 import com.acmutv.botnet.target.HttpTarget;
 import com.acmutv.botnet.target.HttpTargetProxy;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -50,6 +52,8 @@ import java.util.concurrent.TimeUnit;
  * @see BotCommand
  */
 public class BotCommandParser {
+
+  private static final Logger LOGGER = LogManager.getLogger(BotCommandParser.class);
 
   private static final CommandScope DEFAULT_COMMAND = CommandScope.NONE;
   private static final Map<String,String> DEFAULT_SET_SETTINGS = new HashMap<>();
@@ -144,7 +148,7 @@ public class BotCommandParser {
           break;
 
         case INIT:
-          final String DEFAULT_INIT_RESOURCE = Configuration.getInstance().getInitResource();
+          final String DEFAULT_INIT_RESOURCE = AppConfigurationService.getConfigurations().getInitResource();
           final String initResource = (node.has("resource")) ?
               node.get("resource").asText(DEFAULT_INIT_RESOURCE)
               :

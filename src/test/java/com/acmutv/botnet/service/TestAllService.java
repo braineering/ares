@@ -35,20 +35,16 @@ import org.junit.runners.Suite;
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see BashExecutorTest
- * @see HostSystemDetailsTest
+ * @see ConnectionServiceTest
  * @see HttpTest
- * @see LoggerTest
  * @see RandomGeneratorTest
- * @see WatchServiceTest
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     BashExecutorTest.class,
-    HostSystemDetailsTest.class,
+    ConnectionServiceTest.class,
     HttpTest.class,
-    LoggerTest.class,
-    RandomGeneratorTest.class,
-    WatchServiceTest.class
+    RandomGeneratorTest.class
 })
 public class TestAllService {
 

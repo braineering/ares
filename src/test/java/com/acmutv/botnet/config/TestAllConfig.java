@@ -34,11 +34,11 @@ import org.junit.runners.Suite;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see ConfigurationTest
+ * @see AppConfigurationTest
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    ConfigurationTest.class
+    AppConfigurationTest.class
 })
 public class TestAllConfig {
 

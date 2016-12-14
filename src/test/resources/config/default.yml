@@ -1,11 +1,10 @@
 sysInfo: True
-netInfo: False
+netInfo: True
 sysStat: True
-netStat: False
-sysStatFreq: 5
-netStatFreq: 5
+netStat: True
+sysStatFreq: 60
+netStatFreq: 60
 initResource: "com/acmutv/botnet/botinit.txt"
 cmdResource: "com/acmutv/botnet/botcmd.txt"
 logResource: "com/acmutv/botnet/botlog.txt"
-maxTime: 60
-debug: True
+maxTime: 0

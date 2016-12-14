@@ -1,20 +1,20 @@
 /*
   The MIT License (MIT)
-  <p>
+
   Copyright (c) 2016 Giacomo Marciani and Michele Porretta
-  <p>
+
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
   in the Software without restriction, including without limitation the rights
   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
   copies of the Software, and to permit persons to whom the Software is
   furnished to do so, subject to the following conditions:
-  <p>
-  <p>
+
+
   The above copyright notice and this permission notice shall be included in
   all copies or substantial portions of the Software.
-  <p>
-  <p>
+
+
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -24,41 +24,22 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.service;
-
-import com.acmutv.botnet.service.WatchService;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+package com.acmutv.botnet.config;
 
 /**
- * This class realizes JUnit tests for {@link WatchService}.
+ * This class encapsulates app details. *
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see WatchService
  */
-public class WatchServiceTest {
+public class AppManifest {
 
-  public class Reloader implements Runnable {
+  public static final String APP_NAME = "BOTNET";
+  public static final String APP_VERSION = "1.0-SNAPSHOT";
+  public static final String APP_DESCRIPTION =
+      "A botnet showcase.\n" +
+          "Coursework in Computer Security 2015/2016";
+  public static final String APP_TEAM_NAME = "ACM Rome Tor Vergata";
+  public static final String APP_TEAM_URL = "http://acm.uniroma2.it";
 
-    @Override
-    public void run() {
-      System.out.println("reloaded");
-    }
-  }
-
-  /**
-   * Tests the file watching hook registration.
-   * @throws IOException when the path to watch is not correct.
-   */
-  @Test
-  @Ignore
-  public void testRegisterHook() throws IOException {
-    Path path = Paths.get("src/test/resources/config.complete.yml");
-    WatchService.watchFile(path, new Reloader());
-  }
 }

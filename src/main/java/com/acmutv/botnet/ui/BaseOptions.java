@@ -24,7 +24,7 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.view;
+package com.acmutv.botnet.ui;
 
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -41,10 +41,11 @@ public class BaseOptions extends Options {
 
   private static final long serialVersionUID = 1L;
 
-  private static final String DESCRIPTION_CONFIGURATION = "YAML configuration file.";
-  private static final String DESCRIPTION_DEBUG = "Debug mode.";
-  private static final String DESCRIPTION_HELP = "Project helper.";
-  private static final String DESCRIPTION_VERSION = "Project version.";
+  private static final String OPTION_DESCRIPTION_CONFIG = "Custom configuration.";
+  private static final String OPTION_DESCRIPTION_SILENT = "Activate silent mode.";
+  private static final String OPTION_DESCRIPTION_TRACE = "Activate trace mode.";
+  private static final String OPTION_DESCRIPTION_HELP = "Show app helper.";
+  private static final String OPTION_DESCRIPTION_VERSION = "Show app version.";
 
   private static BaseOptions instance;
 
@@ -63,42 +64,29 @@ public class BaseOptions extends Options {
    * Constructor for the singleton of the class.
    */
   private BaseOptions() {
-    Option debug = this.optDebug();
-    Option configuration = this.optConfiguration();
-    Option help = this.optHelp();
     Option version = this.optVersion();
+    Option help = this.optHelp();
+    Option silent = this.optSilent();
+    Option trace = this.optTrace();
+    Option config = this.optConfig();
 
-    super.addOption(debug);
-    super.addOption(configuration);
-    super.addOption(help);
     super.addOption(version);
+    super.addOption(help);
+    super.addOption(silent);
+    super.addOption(trace);
+    super.addOption(config);
   }
 
   /**
-   * Builds the option `debug`.
+   * Builds the option `version`.
    * @return the option.
    */
-  private Option optDebug() {
-    return Option.builder("D")
-        .longOpt("debug")
-        .desc(DESCRIPTION_DEBUG)
+  private Option optVersion() {
+    return Option.builder("v")
+        .longOpt("version")
+        .desc(OPTION_DESCRIPTION_VERSION)
         .required(false)
         .hasArg(false)
-        .build();
-  }
-
-  /**
-   * Builds the option `configuration`.
-   * @return the option.
-   */
-  private Option optConfiguration() {
-    return Option.builder("c")
-        .longOpt("configuration")
-        .desc(DESCRIPTION_CONFIGURATION)
-        .required(false)
-        .hasArg(true)
-        .numberOfArgs(1)
-        .argName("YAML-FILE")
         .build();
   }
 
@@ -109,22 +97,51 @@ public class BaseOptions extends Options {
   private Option optHelp() {
     return Option.builder("h")
         .longOpt("help")
-        .desc(DESCRIPTION_HELP)
+        .desc(OPTION_DESCRIPTION_HELP)
         .required(false)
         .hasArg(false)
         .build();
   }
 
   /**
-   * Builds the option `version`.
+   * Builds the option `silent`.
    * @return the option.
    */
-  private Option optVersion() {
-    return Option.builder("v")
-        .longOpt("version")
-        .desc(DESCRIPTION_VERSION)
+  private Option optSilent() {
+    return Option.builder("s")
+        .longOpt("silent")
+        .desc(OPTION_DESCRIPTION_SILENT)
         .required(false)
         .hasArg(false)
         .build();
   }
+
+  /**
+   * Builds the option `trace`.
+   * @return the option.
+   */
+  private Option optTrace() {
+    return Option.builder("t")
+        .longOpt("trace")
+        .desc(OPTION_DESCRIPTION_TRACE)
+        .required(false)
+        .hasArg(false)
+        .build();
+  }
+
+  /**
+   * Builds the option `config`.
+   * @return the option.
+   */
+  private Option optConfig() {
+    return Option.builder("c")
+        .longOpt("config")
+        .desc(OPTION_DESCRIPTION_CONFIG)
+        .required(false)
+        .hasArg(true)
+        .numberOfArgs(1)
+        .argName("YAML-FILE")
+        .build();
+  }
+
 }

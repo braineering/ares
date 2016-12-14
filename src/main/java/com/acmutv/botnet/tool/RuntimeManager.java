@@ -1,20 +1,20 @@
 /*
   The MIT License (MIT)
-  <p>
+
   Copyright (c) 2016 Giacomo Marciani and Michele Porretta
-  <p>
+
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
   in the Software without restriction, including without limitation the rights
   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
   copies of the Software, and to permit persons to whom the Software is
   furnished to do so, subject to the following conditions:
-  <p>
-  <p>
+
+
   The above copyright notice and this permission notice shall be included in
   all copies or substantial portions of the Software.
-  <p>
-  <p>
+
+
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -24,27 +24,41 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.service.task;
+package com.acmutv.botnet.tool;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-import java.nio.file.Path;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
- * This class realizes the bot configuration reloader.
- * It is used as hook in configuration watching service.
+ * This class realizes the app lifecycle services.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  */
-@Data
-@AllArgsConstructor
-public class BotConfigurationReloader implements Runnable {
-  private Path configpath;
+public class RuntimeManager {
 
-  @Override
-  public void run() {
-    System.out.format("[BOT]> %s reloaded", this.getConfigpath());
+  private static final Logger LOGGER = LogManager.getLogger(RuntimeManager.class);
+
+  /**
+   * Registers atexit runnables as JVM shutdown hooks.
+   * @param hooks atexit runnables.
+   * @see Runtime
+   * @see Thread
+   * @see Runnable
+   */
+  public static void registerShutdownHooks(Runnable ...hooks) {
+    Runtime runtime = Runtime.getRuntime();
+    for (Runnable hook : hooks) {
+      runtime.addShutdownHook(new Thread(hook));
+      LOGGER.trace("Registered shutdown hook {}", hook.getClass().getName());
+    }
+  }
+
+  /**
+   * Retrieves the local number of cores.
+   * @return the number of cores.
+   */
+  public static int getCores() {
+    return Runtime.getRuntime().availableProcessors();
   }
 }

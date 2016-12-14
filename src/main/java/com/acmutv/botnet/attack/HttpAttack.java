@@ -1,20 +1,20 @@
 /*
   The MIT License (MIT)
-  <p>
+
   Copyright (c) 2016 Giacomo Marciani and Michele Porretta
-  <p>
+
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
   in the Software without restriction, including without limitation the rights
   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
   copies of the Software, and to permit persons to whom the Software is
   furnished to do so, subject to the following conditions:
-  <p>
-  <p>
+
+
   The above copyright notice and this permission notice shall be included in
   all copies or substantial portions of the Software.
-  <p>
-  <p>
+
+
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -28,13 +28,15 @@ package com.acmutv.botnet.attack;
 
 import com.acmutv.botnet.target.HttpTarget;
 import com.acmutv.botnet.service.RandomGenerator;
-import com.acmutv.botnet.time.Period;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class realizes the behaviour of a HTTP attack.
@@ -48,32 +50,40 @@ import java.util.Random;
 @Getter
 @AllArgsConstructor
 public abstract class HttpAttack implements Runnable {
+
+  private static final Logger LOGGER = LogManager.getLogger(HttpAttack.class);
+
   private HttpTarget target;
   private Random rndgen;
 
   @Override
   public void run() {
-    HttpTarget tgt = this.getTarget();
-    for (long i = 0; i < tgt.getMaxAttempts(); i++) {
+    final URL url = this.getTarget().getUrl();
+    final long maxAttempts = this.getTarget().getMaxAttempts();
+    final int sleepAmountMin = this.getTarget().getPeriod().getMin();
+    final int sleepAmountMax = this.getTarget().getPeriod().getMax();
+    final TimeUnit sleepUnit = this.getTarget().getPeriod().getUnit();
+
+    for (long i = 0; i < maxAttempts; i++) {
       try {
-        this.makeAttack(tgt.getUrl());
+        this.makeAttack(url);
       } catch (IOException e) {
-        e.printStackTrace();
+        LOGGER.error(e.getMessage());
         return;
       }
-      this.sleep();
+      final long sleepAmount = RandomGenerator.getRandomInt(sleepAmountMin, sleepAmountMax, this.getRndgen());
+      this.sleep(sleepAmount, sleepUnit);
     }
   }
 
   protected abstract void makeAttack(final URL url) throws IOException;
 
-  private void sleep() {
-    Period period = this.getTarget().getPeriod();
-    int sleepAmount = RandomGenerator.getRandomInt(period.getMin(), period.getMax(), this.getRndgen());
+  private void sleep(final long amount, final TimeUnit unit) {
+    LOGGER.traceEntry("amount={} unit={}", amount, unit);
     try {
-      period.getUnit().sleep(sleepAmount);
+      unit.sleep(amount);
     } catch (InterruptedException e) {
-      e.printStackTrace();
+      LOGGER.error(e.getMessage());
     }
   }
 }

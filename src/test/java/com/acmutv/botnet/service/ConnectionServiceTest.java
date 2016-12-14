@@ -24,53 +24,52 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.config;
+package com.acmutv.botnet.service;
 
-import org.yaml.snakeyaml.TypeDescription;
-import org.yaml.snakeyaml.constructor.Constructor;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.IOException;
 
 /**
- * This class realizes the constructor for the SnakeYaml Parser, intended to the parsing of the
- * YAML configuration file.
- *
- * This class is implemented as a singleton.
+ * This class realizes JUnit tests for {@link ConnectionService}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see Configurator
- * @see Configuration
- * @see org.yaml.snakeyaml.Yaml
- * @see Constructor
- * @see TypeDescription
  */
-public class YamlConstructor extends Constructor {
+public class ConnectionServiceTest {
 
-  private static YamlConstructor instance;
-
-  /**
-   * Initializes the singleton instance of the class.
-   * @return the singleton instance of the class.
-   */
-  public static synchronized YamlConstructor getInstance() {
-    if (instance == null) {
-      synchronized (YamlConstructor.class) {
-        if (instance == null) {
-          instance = new YamlConstructor();
-        }
-      }
-    }
-    return instance;
+  @Before
+  public void setup() {
+    org.junit.Assume.assumeTrue(ConnectionService.checkConnection());
   }
 
   /**
-   * Creates the singleton of the class.
+   * Tests IP address retrieval.
    */
-  private YamlConstructor() {
-    super(Configuration.class);
-    TypeDescription description = new TypeDescription(Configuration.class);
-    //description.putListPropertyType("targets", HttpTarget.class);
-    //description.putListPropertyType("proxy", HttpTargetProxy.class);
-    //description.putListPropertyType("sleep", String.class);
-    super.addTypeDescription(description);
+  @Test
+  public void test_getIP() {
+    String actual = ConnectionService.getIP();
+    System.out.println("IP: " + actual);
   }
+
+  /**
+   * Tests MAC address retrieval.
+   */
+  @Test
+  public void test_getMAC() {
+    String actual = ConnectionService.getMAC();
+    System.out.println("MAC: " + actual);
+  }
+
+  /**
+   * Tests the connection availability check, by sending an HTTP request.
+   * @throws IOException when HTTP GET error.
+   */
+  @Test
+  public void test_checkConnection() throws IOException {
+    boolean check = ConnectionService.checkConnection();
+    System.out.println("Connection: " + check);
+  }
+
 }

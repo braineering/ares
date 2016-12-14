@@ -26,7 +26,6 @@
 
 package com.acmutv.botnet.bot;
 
-import com.acmutv.botnet.bot.command.BotCommandParserTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
