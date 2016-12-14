@@ -1,10 +1,16 @@
+#=============================================================================
+# REPORT
+#=============================================================================
 sysInfo: True
 netInfo: True
 sysStat: True
 netStat: True
 sysStatFreq: 60
 netStatFreq: 60
-initResource: "com/acmutv/botnet/botinit.txt"
-cmdResource: "com/acmutv/botnet/botcmd.txt"
-logResource: "com/acmutv/botnet/botlog.txt"
-maxTime: 0
+
+#=============================================================================
+# C&C RESOURCES
+#=============================================================================
+initResource: "~/com/acmutv/botnet/botinit.txt"
+cmdResource: "~/com/acmutv/botnet/botcmd.txt"
+logResource: "~/com/acmutv/botnet/botlog.txt"
