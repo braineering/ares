@@ -222,7 +222,7 @@ public class BotCommandParser {
     return list;
   }
   /**
-   * Parses a map <String,String> from a JSON node.
+   * Parses a map from a JSON node.
    * @param mapper the JSON mapper.
    * @param node the JSON node to parse.
    * @return the parsed map; an empty map, in case of error.

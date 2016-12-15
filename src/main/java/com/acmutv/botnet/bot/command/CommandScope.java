@@ -30,7 +30,7 @@ import lombok.Getter;
 
 /**
  * This enum enumerates bot's command types.
- * These command are sent by the C&C and executed by the bot.
+ * These command are sent by the CC and executed by the bot.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
