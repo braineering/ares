@@ -48,7 +48,7 @@ public class URLToolsTest {
    * Tests the URL string validity check.
    */
   @Test
-  public void testIsURL() {
+  public void test_isURL() {
     assertTrue(URLTools.isURL("http://www.sub.google.com"));
     assertTrue(URLTools.isURL("http://sub.google.com"));
     assertTrue(URLTools.isURL("http://www.google.com"));
@@ -74,7 +74,7 @@ public class URLToolsTest {
    * Tests the IPv4 address string validity check.
    */
   @Test
-  public void testIsIP4() {
+  public void test_isIP4() {
     assertTrue(URLTools.isIP4("192.168.0.1"));
 
     assertFalse(URLTools.isIP4(""));
@@ -89,7 +89,7 @@ public class URLToolsTest {
    * @throws  MalformedURLException when error in test.
    */
   @Test
-  public void testGetURLFromString_url() throws MalformedURLException {
+  public void test_getURLFromString_url() throws MalformedURLException {
     URL url = URLTools.getURLFromString("http://www.google.com");
     URL expected = new URL("http://www.google.com");
     assertEquals(expected, url);
@@ -99,7 +99,7 @@ public class URLToolsTest {
    * Tests the IPv4 address string check.
    */
   @Test
-  public void testGetURLFromString_ip4() {
+  public void test_getURLFromString_ip4() {
     URL url = URLTools.getURLFromString("104.171.115.66");
     String expected = "http://104.171.115.66/";
     assert url != null;

@@ -26,6 +26,7 @@
 
 package com.acmutv.botnet.config;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -41,11 +42,23 @@ import static org.junit.Assert.assertEquals;
 public class AppConfigurationTest {
 
   /**
+   * Tests the restoring of default configuration.
+   */
+  @Test
+  public void test_toDefault() {
+    AppConfiguration actual = new AppConfiguration();
+    actual.setNetInfo(false);
+    actual.toDefault();
+    final AppConfiguration expected = new AppConfiguration();
+    Assert.assertEquals(expected, actual);
+  }
+
+  /**
    * Tests the configuration loading from an external YAML file.
    * In this test the configuration file provides with empty settings.
    */
   @Test
-  public void testloadYaml_empty() {
+  public void test_loadYaml_empty() {
     final String file = AppConfigurationTest.class.getResource("/config/empty.yml").getPath();
     final AppConfiguration actual = AppConfigurationService.fromYaml(file);
     final AppConfiguration expected = new AppConfiguration();
@@ -57,7 +70,7 @@ public class AppConfigurationTest {
    * In this test the configuration file provides with complete default settings.
    */
   @Test
-  public void testLoadYaml_default() {
+  public void test_loadYaml_default() {
     final String file = AppConfigurationTest.class.getResource("/config/default.yml").getPath();
     AppConfiguration actual = AppConfigurationService.fromYaml(file);
     AppConfiguration expected = new AppConfiguration();
@@ -69,7 +82,7 @@ public class AppConfigurationTest {
    * In this test the configuration file provides with complete custom settings.
    */
   @Test
-  public void testLoadYaml_custom() {
+  public void test_loadYaml_custom() {
     final String file = AppConfigurationTest.class.getResource("/config/custom.yml").getPath();
     AppConfiguration actual = AppConfigurationService.fromYaml(file);
     AppConfiguration expected = new AppConfiguration();
@@ -82,7 +95,7 @@ public class AppConfigurationTest {
    * In this test the configuration file provides with partial custom settings.
    */
   @Test
-  public void testloadYaml_partialCustom() {
+  public void test_loadYaml_partialCustom() {
     final String file = AppConfigurationTest.class.getResource("/config/partial.yml").getPath();
     AppConfiguration actual = AppConfigurationService.fromYaml(file);
     AppConfiguration expected = new AppConfiguration();

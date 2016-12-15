@@ -109,20 +109,20 @@ public class BotService {
   /**
    * Registers a periodic task.
    * @param task the task to execute.
-   * @param delay the delay (in seconds) to first execution.
-   * @param period the period (in seconds) between executions.
+   * @param delay the delay to first execution.
+   * @param period the period between executions.
+   * @param timeout the time to interruption.
+   * @param unit the time unit.
    */
-  private static void registerPeriodic(Runnable task, long delay, long period) {
+  private static void registerPeriodic(Runnable task, long delay, long period, long timeout, TimeUnit unit) {
     final ScheduledExecutorService scheduler =
         Executors.newScheduledThreadPool(1);
     final ScheduledFuture<?> handler =
-        scheduler.scheduleAtFixedRate(task, delay, period, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(task, delay, period, unit);
 
-    Runnable interrupt = () -> handler.cancel(true);
-
-    long maxtime = AppConfigurationService.getConfigurations().getMaxTime();
-    if (maxtime > 0) {
-      scheduler.schedule(interrupt, maxtime, TimeUnit.SECONDS);
+    if (timeout > 0) {
+      Runnable interrupt = () -> handler.cancel(true);
+      scheduler.schedule(interrupt, timeout, TimeUnit.SECONDS);
     }
   }
 }

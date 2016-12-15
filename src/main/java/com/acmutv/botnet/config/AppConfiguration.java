@@ -49,10 +49,9 @@ public class AppConfiguration {
   public static boolean NET_STAT = true;
   public static long SYS_STAT_FREQ = 60;
   public static long NET_STAT_FREQ = 60;
-  public static String INIT_RESOURCE = "com/acmutv/botnet/botinit.txt";
-  public static String CMD_RESOURCE = "com/acmutv/botnet/botcmd.txt";
-  public static String LOG_RESOURCE = "com/acmutv/botnet/botlog.txt";
-  public static long MAX_TIME = 0;
+  public static String INIT_RESOURCE = "~/com/acmutv/botnet/botinit.txt";
+  public static String CMD_RESOURCE = "~/com/acmutv/botnet/botcmd.txt";
+  public static String LOG_RESOURCE = "~/com/acmutv/botnet/botlog.txt";
 
   private boolean sysInfo = SYS_INFO;
   private boolean netInfo = NET_INFO;
@@ -63,15 +62,19 @@ public class AppConfiguration {
   private String initResource = INIT_RESOURCE;
   private String cmdResource = CMD_RESOURCE;
   private String logResource = LOG_RESOURCE;
-  private long maxTime = MAX_TIME;
 
   /**
-   * Creates a configuration copy.
+   * Constructs a configuration as a copy of the one specified.
+   * @param other the configuration to copy.
    */
   public AppConfiguration(AppConfiguration other) {
     this.copy(other);
   }
 
+  /**
+   * Copies the settings of the configuration specified.
+   * @param other the configuration to copy.
+   */
   public void copy(AppConfiguration other) {
     this.sysInfo = other.sysInfo;
     this.netInfo = other.netInfo;
@@ -82,7 +85,21 @@ public class AppConfiguration {
     this.initResource = other.initResource;
     this.cmdResource = other.cmdResource;
     this.logResource = other.logResource;
-    this.maxTime = other.maxTime;
+  }
+
+  /**
+   * Restores the default configuration settings.
+   */
+  public void toDefault() {
+    this.sysInfo = SYS_INFO;
+    this.netInfo = NET_INFO;
+    this.sysStat = SYS_STAT;
+    this.netStat = NET_STAT;
+    this.sysStatFreq = SYS_STAT_FREQ;
+    this.netStatFreq = NET_STAT_FREQ;
+    this.initResource = INIT_RESOURCE;
+    this.cmdResource = CMD_RESOURCE;
+    this.logResource = LOG_RESOURCE;
   }
 
 }

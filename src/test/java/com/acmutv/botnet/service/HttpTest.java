@@ -57,7 +57,7 @@ public class HttpTest {
    * @throws IOException when HTTP GET error.
    */
   @Test
-  public void testGET() throws ParseException, IOException {
+  public void test_get() throws ParseException, IOException {
     final URL url = new URL("http://www.google.com");
     final int expected = 200;
     final int actual = HttpService.makeGET(url);
@@ -70,7 +70,7 @@ public class HttpTest {
    * @throws IOException when HTTP GET error.
    */
   @Test
-  public void testGETWithProxy() throws ParseException, IOException {
+  public void test_getWithProxy() throws ParseException, IOException {
     final URL url = new URL("http://www.google.com");
     final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("104.28.5.228", 80));
     final int expected = 400;

@@ -26,40 +26,20 @@
 
 package com.acmutv.botnet.service;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.Arrays;
-
 /**
- * This class realizes functions for the execution of bash commands.
+ * This class realizes basic file system services. *
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see ProcessBuilder
- * @see Process
  */
-public class BashExecutor {
+public class FileSystemService {
 
-  private static final Logger LOGGER = LogManager.getLogger(BashExecutor.class);
+  private static final Logger LOGGER = LogManager.getLogger(FileSystemService.class);
 
-  /**
-   * Executes the given command and arguments.
-   * @param command The command to execute. Arguments must be given as a separated strings.
-   *                E.g.: BashExecutor.run("ls", "-la") or BashExecutor.run("ls", "-l", "-a")
-   * @return The command output as a string.
-   * @throws IOException when error in process generation or output.
-   */
-  @SuppressWarnings("ConfusingArgumentToVarargsMethod")
-  public static String run(String ...command) throws IOException {
-    LOGGER.traceEntry("command={}", Arrays.asList(command));
-    ProcessBuilder pb = new ProcessBuilder(command);
-    Process p = pb.start();
-    String out = IOUtils.toString(p.getInputStream(), Charset.defaultCharset());
-    return out.trim();
+  public static String getHome() {
+    return System.getenv("HOME");
   }
-
 }

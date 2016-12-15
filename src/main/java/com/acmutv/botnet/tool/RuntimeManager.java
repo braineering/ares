@@ -29,6 +29,8 @@ package com.acmutv.botnet.tool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.lang.management.ManagementFactory;
+
 /**
  * This class realizes the app lifecycle services.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
@@ -61,4 +63,11 @@ public class RuntimeManager {
   public static int getCores() {
     return Runtime.getRuntime().availableProcessors();
   }
+
+  /**
+   * Returns the current JVM name.
+   * @return the JVM name.
+   */
+  public static String getJvmName() {return ManagementFactory.getRuntimeMXBean().getName();}
+
 }

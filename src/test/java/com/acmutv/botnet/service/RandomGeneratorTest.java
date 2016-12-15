@@ -46,7 +46,7 @@ public class RandomGeneratorTest {
    * Tests the random integer number generation inside interval in joint form.
    */
   @Test
-  public void testGetRandomInt_joint() {
+  public void test_getRandomInt_joint() {
     int number = RandomGenerator.getRandomInt(1, 1, new Random());
     assertTrue(number == 1);
   }
@@ -55,7 +55,7 @@ public class RandomGeneratorTest {
    * Tests the random integer number generation inside interval in disjoint form.
    */
   @Test
-  public void testGetRandomInt_disjoint() {
+  public void test_getRandomInt_disjoint() {
     int number = RandomGenerator.getRandomInt(2, 4, new Random());
     assertTrue(number >= 2 && number <= 4);
   }
@@ -73,7 +73,7 @@ public class RandomGeneratorTest {
    * Tests the random double number generation inside interval in disjoint form.
    */
   @Test
-  public void testGetRandomDouble_disjoint() {
+  public void test_getRandomDouble_disjoint() {
     double number = RandomGenerator.getRandomDouble(2.0, 4.0, new Random());
     assertTrue(number >= 2.0 && number <= 4.0);
   }

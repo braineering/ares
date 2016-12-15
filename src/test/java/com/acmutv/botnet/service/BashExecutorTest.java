@@ -45,7 +45,7 @@ public class BashExecutorTest {
    * Tests the BashExecutor run method with the command `echo`.
    */
   @Test
-  public void testRun_echo() {
+  public void test_run_echo() {
     String output = null;
     try {
       output = BashExecutor.run("echo", "Hello World");

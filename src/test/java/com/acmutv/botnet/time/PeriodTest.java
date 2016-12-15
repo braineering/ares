@@ -47,7 +47,7 @@ public class PeriodTest {
    * Tests the Period creation in the joint form. E.g.: `1`.
    */
   @Test
-  public void testCreator_joint() {
+  public void test_creator_joint() {
     final String str = "1";
     Period actual = new Period(str);
     Period expected = new Period(1, 1, TimeUnit.SECONDS);
@@ -58,7 +58,7 @@ public class PeriodTest {
    * Tests the Period creation in the disjoint form. E.g.: `1-3`.
    */
   @Test
-  public void testCreator_disjoint() {
+  public void test_creator_disjoint() {
     final String str = "1-3";
     Period actual = new Period(str);
     Period expected = new Period(1, 3, TimeUnit.SECONDS);
@@ -81,7 +81,7 @@ public class PeriodTest {
    * Tests the Period parsing in the disjoint form. E.g.: `1-3`.
    */
   @Test
-  public void testFromString_disjoint() {
+  public void test_fromString_disjoint() {
     final String str = "1-3";
     Period actual = Period.valueOf(str);
     Period expected = new Period(1, 3, TimeUnit.SECONDS);
@@ -92,7 +92,7 @@ public class PeriodTest {
    * Tests the Period string validity check.
    */
   @Test
-  public void testIsValidString() {
+  public void test_isValidString() {
     assertTrue(Period.isValidString("1"));
     assertTrue(Period.isValidString("1-3"));
 
