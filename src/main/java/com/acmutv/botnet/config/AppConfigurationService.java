@@ -26,6 +26,7 @@
 
 package com.acmutv.botnet.config;
 
+import com.acmutv.botnet.config.yaml.AppConfigurationConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
@@ -33,7 +34,7 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.FileReader;
 
 /**
- * This class realizes the app configuration services. *
+ * This class realizes the app configuration services.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
@@ -43,8 +44,15 @@ public class AppConfigurationService {
 
   private static final Logger LOGGER = LogManager.getLogger(AppConfiguration.class);
 
+  /**
+   * The singleton of {@link AppConfiguration} for the whole app.
+   */
   private static AppConfiguration appConfig;
 
+  /**
+   * Returns the app configuration singleton.
+   * @return the app configuration.
+   */
   public static synchronized AppConfiguration getConfigurations() {
     if (appConfig == null) {
       synchronized (AppConfigurationService.class) {
@@ -58,7 +66,6 @@ public class AppConfigurationService {
 
   /**
    * Loads the configuration specified in a YAML file.
-   *
    * @param configPath the path to a YAML configuration file.
    */
   public static void loadYaml(final String configPath) {
@@ -70,19 +77,18 @@ public class AppConfigurationService {
   /**
    * Parses an app configuration model from the specified YAML file.
    * If something goes wrong, the default configuration is loaded.
-   *
    * @param path the absolute path to the configuration file.
    * @return the configuration.
    */
   public static AppConfiguration fromYaml(final String path) {
-    final Yaml yaml = new Yaml(AppConfigurationYaml.getInstance());
+    final Yaml yaml = new Yaml(AppConfigurationConstructor.getInstance());
 
     AppConfiguration config = null;
     try {
       FileReader file = new FileReader(path);
       config = yaml.loadAs(file, AppConfiguration.class);
     } catch (Exception e) {
-      LOGGER.trace(e.getMessage());
+      LOGGER.error(e.getMessage());
     }
 
     if (config == null) {

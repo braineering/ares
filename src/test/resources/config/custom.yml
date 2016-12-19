@@ -1,16 +1,21 @@
-#=============================================================================
+#===============================================================================
+# BOT Configuration file
+#===============================================================================
+
+#===============================================================================
 # REPORT
-#=============================================================================
+#===============================================================================
 sysInfo: True
 netInfo: False
 sysStat: True
-netStat: True
-sysStatFreq: 60
-netStatFreq: 60
+netStat: False
+sampling:
+  amount: 1
+  unit: "HOURS"
 
-#=============================================================================
+#===============================================================================
 # C&C RESOURCES
-#=============================================================================
-initResource: "~/com/acmutv/botnet/botinit.txt"
-cmdResource: "~/com/acmutv/botnet/botcmd.txt"
-logResource: "~/com/acmutv/botnet/botlog.txt"
+#===============================================================================
+initResource: !templateString "${PROJECT_RESOURCES}/cc/botinit2.json"
+cmdResource: !templateString "${PROJECT_RESOURCES}/cc/botcmd2.json"
+logResource: !templateString "${PROJECT_RESOURCES}/cc/botlog2.json"

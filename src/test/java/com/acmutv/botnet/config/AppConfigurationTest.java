@@ -26,8 +26,11 @@
 
 package com.acmutv.botnet.config;
 
+import com.acmutv.botnet.tool.time.Frequency;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 
@@ -87,6 +90,11 @@ public class AppConfigurationTest {
     AppConfiguration actual = AppConfigurationService.fromYaml(file);
     AppConfiguration expected = new AppConfiguration();
     expected.setNetInfo(false);
+    expected.setNetStat(false);
+    expected.setSampling(new Frequency(1, TimeUnit.HOURS));
+    expected.setInitResource(AppConfigurationTest.class.getResource("/cc/botinit2.json").getPath());
+    expected.setCmdResource(AppConfigurationTest.class.getResource("/cc/botcmd2.json").getPath());
+    expected.setLogResource(AppConfigurationTest.class.getResource("/cc/botlog2.json").getPath());
     assertEquals(expected, actual);
   }
 

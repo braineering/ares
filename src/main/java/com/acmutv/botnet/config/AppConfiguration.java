@@ -26,10 +26,13 @@
 
 package com.acmutv.botnet.config;
 
+import com.acmutv.botnet.tool.time.Frequency;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class realizes the app configuration model.
@@ -43,24 +46,100 @@ import org.yaml.snakeyaml.Yaml;
 @NoArgsConstructor
 public class AppConfiguration {
 
+  /**
+   * Default value for property sysInfo.
+   */
   public static boolean SYS_INFO = true;
-  public static boolean NET_INFO = true;
-  public static boolean SYS_STAT = true;
-  public static boolean NET_STAT = true;
-  public static long SYS_STAT_FREQ = 60;
-  public static long NET_STAT_FREQ = 60;
-  public static String INIT_RESOURCE = "~/com/acmutv/botnet/botinit.txt";
-  public static String CMD_RESOURCE = "~/com/acmutv/botnet/botcmd.txt";
-  public static String LOG_RESOURCE = "~/com/acmutv/botnet/botlog.txt";
 
+  /**
+   * Default value for property netInfo.
+   */
+  public static boolean NET_INFO = true;
+
+  /**
+   * Default value for property sysStat.
+   */
+  public static boolean SYS_STAT = true;
+
+  /**
+   * Default value for property netStat.
+   */
+  public static boolean NET_STAT = true;
+
+  /**
+   * Default value for property sampling.
+   */
+  public static Frequency SAMPLING = new Frequency(60, TimeUnit.SECONDS);
+
+  /**
+   * Default value for property initResource.
+   */
+  public static String INIT_RESOURCE = AppConfiguration.class.getResource("/cc/botinit.json").getPath();
+
+  /**
+   * Default value for property cmdResource.
+   */
+  public static String CMD_RESOURCE = AppConfiguration.class.getResource("/cc/botcmd.json").getPath();
+
+  /**
+   * Default value for property logResource.
+   */
+  public static String LOG_RESOURCE = AppConfiguration.class.getResource("/cc/botlog.json").getPath();
+
+  /**
+   * Property sysInfo.
+   * If true, the bot sends system information to the CC.
+   * Default is: true.
+   */
   private boolean sysInfo = SYS_INFO;
+
+  /**
+   * Property netInfo.
+   * If true, the bot sends network information to the CC.
+   * Default is: true.
+   */
   private boolean netInfo = NET_INFO;
+
+  /**
+   * Property sysStat.
+   * If true, the bot sends system statistics to the CC.
+   * Default is: true.
+   */
   private boolean sysStat = SYS_STAT;
+
+  /**
+   * Property netStat.
+   * If true, the bot sends network statistics to the CC.
+   * Default is: true.
+   */
   private boolean netStat = NET_STAT;
-  private long sysStatFreq = SYS_STAT_FREQ;
-  private long netStatFreq = NET_STAT_FREQ;
+
+  /**
+   * Property sampling.
+   * The bot collects system/network statistics with the specified sampling rate.
+   * Default is: 60 seconds.
+   */
+  private Frequency sampling = SAMPLING;
+
+  /**
+   * Property initResource.
+   * The bot uses this resource to join the botnet.
+   * Default is: ${PROJECT_RESOURCES}cc/botinit.json.
+   */
   private String initResource = INIT_RESOURCE;
+
+  /**
+   * Property cmdResource.
+   * The bot uses this resource to get commands to execute.
+   * Default is: ${PROJECT_RESOURCES}cc/botcmd.json.
+   */
   private String cmdResource = CMD_RESOURCE;
+
+  /**
+   * Property logResource.
+   * The bot uses this resource to submit reports.
+   * Default is: ${PROJECT_RESOURCES}cc/botlog.json.
+   */
   private String logResource = LOG_RESOURCE;
 
   /**
@@ -80,8 +159,7 @@ public class AppConfiguration {
     this.netInfo = other.netInfo;
     this.sysStat = other.sysStat;
     this.netStat = other.netStat;
-    this.sysStatFreq = other.sysStatFreq;
-    this.netStatFreq = other.netStatFreq;
+    this.sampling = other.sampling;
     this.initResource = other.initResource;
     this.cmdResource = other.cmdResource;
     this.logResource = other.logResource;
@@ -95,8 +173,7 @@ public class AppConfiguration {
     this.netInfo = NET_INFO;
     this.sysStat = SYS_STAT;
     this.netStat = NET_STAT;
-    this.sysStatFreq = SYS_STAT_FREQ;
-    this.netStatFreq = NET_STAT_FREQ;
+    this.sampling = SAMPLING;
     this.initResource = INIT_RESOURCE;
     this.cmdResource = CMD_RESOURCE;
     this.logResource = LOG_RESOURCE;

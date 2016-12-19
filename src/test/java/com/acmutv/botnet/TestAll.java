@@ -26,13 +26,8 @@
 
 package com.acmutv.botnet;
 
-import com.acmutv.botnet.attack.TestAllAttack;
-import com.acmutv.botnet.bot.TestAllBot;
 import com.acmutv.botnet.config.TestAllConfig;
-import com.acmutv.botnet.report.TestAllReport;
-import com.acmutv.botnet.service.TestAllService;
-import com.acmutv.botnet.target.TestAllTarget;
-import com.acmutv.botnet.time.TestAllTime;
+import com.acmutv.botnet.core.TestAllCore;
 import com.acmutv.botnet.tool.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -42,24 +37,13 @@ import org.junit.runners.Suite;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see TestAllAttack
- * @see TestAllBot
  * @see TestAllConfig
- * @see TestAllReport
- * @see TestAllService
- * @see TestAllTarget
- * @see TestAllTime
  * @see TestAllTool
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    TestAllAttack.class,
-    TestAllBot.class,
     TestAllConfig.class,
-    TestAllReport.class,
-    TestAllService.class,
-    TestAllTarget.class,
-    TestAllTime.class,
+    TestAllCore.class,
     TestAllTool.class
 })
 public class TestAll {

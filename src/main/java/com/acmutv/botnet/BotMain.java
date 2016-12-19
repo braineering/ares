@@ -26,9 +26,9 @@
 
 package com.acmutv.botnet;
 
-import com.acmutv.botnet.bot.Bot;
-import com.acmutv.botnet.tool.RuntimeManager;
-import com.acmutv.botnet.tool.task.ShutdownHook;
+import com.acmutv.botnet.core.CoreController;
+import com.acmutv.botnet.tool.runtime.RuntimeManager;
+import com.acmutv.botnet.tool.runtime.ShutdownHook;
 import com.acmutv.botnet.ui.CliService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,9 +55,7 @@ public class BotMain {
 
     RuntimeManager.registerShutdownHooks(new ShutdownHook());
 
-    Bot bot = new Bot();
-
-    bot.run();
+    CoreController.runBot();
 
     LOGGER.traceExit(0);
 

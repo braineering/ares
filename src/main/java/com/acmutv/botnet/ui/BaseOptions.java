@@ -41,17 +41,39 @@ public class BaseOptions extends Options {
 
   private static final long serialVersionUID = 1L;
 
-  private static final String OPTION_DESCRIPTION_CONFIG = "Custom configuration.";
-  private static final String OPTION_DESCRIPTION_SILENT = "Activate silent mode.";
-  private static final String OPTION_DESCRIPTION_TRACE = "Activate trace mode.";
-  private static final String OPTION_DESCRIPTION_HELP = "Show app helper.";
-  private static final String OPTION_DESCRIPTION_VERSION = "Show app version.";
+  /**
+   * The CLI description for the option `config`.
+   */
+  private static final String DESCRIPTION_CONFIG = "Custom configuration.";
 
+  /**
+   * The CLI description for the option `silent`.
+   */
+  private static final String DESCRIPTION_SILENT = "Activate silent mode.";
+
+  /**
+   * The CLI description for the option `trace`.
+   */
+  private static final String DESCRIPTION_TRACE = "Activate trace mode.";
+
+  /**
+   * The CLI description for the option `help`.
+   */
+  private static final String DESCRIPTION_HELP = "Show app helper.";
+
+  /**
+   * The CLI description for the option `version`.
+   */
+  private static final String DESCRIPTION_VERSION = "Show app version.";
+
+  /**
+   * The singleton instance of {@link BaseOptions}.
+   */
   private static BaseOptions instance;
 
   /**
-   * Initializes the singleton instance of the class.
-   * @return the singleton instance of the class.
+   * Returns the singleton of {@link BaseOptions}.
+   * @return the singleton.
    */
   public static BaseOptions getInstance() {
     if (instance == null) {
@@ -61,7 +83,7 @@ public class BaseOptions extends Options {
   }
 
   /**
-   * Constructor for the singleton of the class.
+   * Constructs the singleton of {@link BaseOptions}.
    */
   private BaseOptions() {
     Option version = this.optVersion();
@@ -84,7 +106,7 @@ public class BaseOptions extends Options {
   private Option optVersion() {
     return Option.builder("v")
         .longOpt("version")
-        .desc(OPTION_DESCRIPTION_VERSION)
+        .desc(DESCRIPTION_VERSION)
         .required(false)
         .hasArg(false)
         .build();
@@ -97,7 +119,7 @@ public class BaseOptions extends Options {
   private Option optHelp() {
     return Option.builder("h")
         .longOpt("help")
-        .desc(OPTION_DESCRIPTION_HELP)
+        .desc(DESCRIPTION_HELP)
         .required(false)
         .hasArg(false)
         .build();
@@ -110,7 +132,7 @@ public class BaseOptions extends Options {
   private Option optSilent() {
     return Option.builder("s")
         .longOpt("silent")
-        .desc(OPTION_DESCRIPTION_SILENT)
+        .desc(DESCRIPTION_SILENT)
         .required(false)
         .hasArg(false)
         .build();
@@ -123,7 +145,7 @@ public class BaseOptions extends Options {
   private Option optTrace() {
     return Option.builder("t")
         .longOpt("trace")
-        .desc(OPTION_DESCRIPTION_TRACE)
+        .desc(DESCRIPTION_TRACE)
         .required(false)
         .hasArg(false)
         .build();
@@ -136,7 +158,7 @@ public class BaseOptions extends Options {
   private Option optConfig() {
     return Option.builder("c")
         .longOpt("config")
-        .desc(OPTION_DESCRIPTION_CONFIG)
+        .desc(DESCRIPTION_CONFIG)
         .required(false)
         .hasArg(true)
         .numberOfArgs(1)
