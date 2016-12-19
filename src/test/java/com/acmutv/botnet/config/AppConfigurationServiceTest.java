@@ -30,6 +30,9 @@ import com.acmutv.botnet.tool.time.Duration;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
@@ -77,6 +80,7 @@ public class AppConfigurationServiceTest {
   /**
    * Tests the app configuration parsing from an external YAML file.
    * In this test the configuration file provides with complete custom settings.
+   * The configuration file has non-null values and template string (${RES}).
    */
   @Test
   public void test_fromYaml_custom() {
@@ -91,6 +95,27 @@ public class AppConfigurationServiceTest {
     expected.setInitResource(AppConfigurationServiceTest.class.getResource("/cc/botinit2.json").getPath());
     expected.setCmdResource(AppConfigurationServiceTest.class.getResource("/cc/botcmd2.json").getPath());
     expected.setLogResource(AppConfigurationServiceTest.class.getResource("/cc/botlog2.json").getPath());
+    Assert.assertEquals(expected, actual);
+  }
+
+  /**
+   * Tests the app configuration parsing from an external YAML file.
+   * In this test the configuration file provides with complete custom settings.
+   * The configuration file has non-null values and template string (${PWD}).
+   */
+  @Test
+  public void test_fromYaml_custom2() throws FileNotFoundException {
+    InputStream in = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom2.yml");
+    AppConfiguration actual = AppConfigurationService.fromYaml(in);
+    AppConfiguration expected = new AppConfiguration();
+    expected.setSysInfo(true);
+    expected.setNetInfo(false);
+    expected.setSysStat(true);
+    expected.setNetStat(false);
+    expected.setSampling(new Duration(1, TimeUnit.HOURS));
+    expected.setInitResource(new File("cc/botinit.json").getAbsolutePath());
+    expected.setCmdResource(new File("cc/botcmd.json").getAbsolutePath());
+    expected.setLogResource(new File("cc/botlog.json").getAbsolutePath());
     Assert.assertEquals(expected, actual);
   }
 

@@ -62,10 +62,15 @@ public class StringTemplateMap extends HashMap<String,String> {
 
   /**
    * Initializes the singleton of {@link StringTemplateMap}.
+   * Available properties are:
+   * ${PWD}: the present working directory (e.g.: /home/gmarciani/workspace/app);
+   * ${RES}: the target resources folder (target/classes)
    */
   private StringTemplateMap() {
     super();
-    super.put("PROJECT_RESOURCES",
+    super.put("PWD",
+        System.getProperty("user.dir"));
+    super.put("RES",
         AppConfiguration.class.getResource("/").getPath().replaceAll("/$", ""));
   }
 }

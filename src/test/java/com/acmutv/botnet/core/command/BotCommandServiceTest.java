@@ -194,7 +194,7 @@ public class BotCommandServiceTest {
   public void test_fromJSONFile_init() throws MalformedURLException {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/init.json");
     BotCommand expected = new BotCommand(CommandScope.INIT);
-    expected.getParams().put("resource", "/cc/botinit.json");
+    expected.getParams().put("resource", BotCommandServiceTest.class.getResource("/cc/botinit.json").getPath());
     BotCommand actual = BotCommandService.fromJson(file);
     Assert.assertEquals(expected, actual);
   }

