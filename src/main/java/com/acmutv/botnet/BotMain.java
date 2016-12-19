@@ -51,11 +51,13 @@ public class BotMain {
    */
   public static void main(String[] args) {
 
-    List<String> arguments = CliService.handleArguments(args);
+    CliService.handleArguments(args);
 
     RuntimeManager.registerShutdownHooks(new ShutdownHook());
 
-    CoreController.runBot();
+    if (CoreController.initBot()) {
+      CoreController.runBot();
+    }
 
     LOGGER.traceExit(0);
 

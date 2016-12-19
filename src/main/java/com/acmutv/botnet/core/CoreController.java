@@ -60,26 +60,47 @@ public class CoreController {
   /**
    * The bot ID.
    */
-  private static String ID = generateId();
+  private static String ID;
 
   /**
    * The bot state.
    */
-  private static BotState STATE = BotState.INIT;
+  private static BotState STATE;
 
   /**
    * The bot thread pool.
    */
-  private static final BotPool POOL = new BotPool();
+  private static BotPool POOL;
 
   /**
-   * The core main method.
-   * It initializes and runs the bot.
+   * Initializes the bot.
+   * @return true if the bot is correctly initialized; false, otherwise.
+   */
+  public static boolean initBot() {
+    LOGGER.traceEntry();
+    LOGGER.info("Initializing bot...");
+    changeState(BotState.INIT);
+    ID = generateId();
+    if (ID == null) {
+      LOGGER.warn("Cannot generate bot ID. Aborting...");
+      return LOGGER.traceExit(false);
+    }
+    POOL = new BotPool();
+    LOGGER.info("Bot correctly initialized with ID={}", ID);
+    return LOGGER.traceExit(true);
+  }
+
+  /**
+   * Runs the bot.
+   * The bot must be already initialized.
    */
   public static void runBot() {
-    while (true) {
+    LOGGER.traceEntry();
+    LOGGER.info("Bot is up and running");
+    boolean loop = true;
+    while (loop) {
       BotCommand cmd = getNextCommand();
-      LOGGER.trace("command {} with params={}", cmd.getScope(), cmd.getParams());
+      LOGGER.info("Received command {} with params={}", cmd.getScope(), cmd.getParams());
 
       switch (cmd.getScope()) {
 
@@ -102,16 +123,29 @@ public class CoreController {
         case SHUTDOWN:
           final Duration shutdownTimeout = (Duration) cmd.getParams().get("timeout");
           shutdown((shutdownTimeout != null) ? shutdownTimeout : new Duration(60, TimeUnit.SECONDS));
-          return;
+          loop = false;
+          break;
 
         case KILL:
           kill();
-          return;
+          loop = false;
+          break;
 
         default:
           break;
       }
     }
+    LOGGER.info("Bot is terminating ...");
+    LOGGER.traceExit();
+  }
+
+  /**
+   * Changes the bot state.
+   * @param state the new state.
+   */
+  private static void changeState(BotState state) {
+    LOGGER.traceEntry("state={}", state.getName());
+    STATE = state;
   }
 
   /**
@@ -122,6 +156,9 @@ public class CoreController {
     LOGGER.traceEntry();
     final String mac = ConnectionManager.getMAC();
     final String pid = RuntimeManager.getJvmName();
+    if (mac == null || pid == null) {
+      return LOGGER.traceExit((String)null);
+    }
     final String id = String.format("%s-%s", mac, pid);
     return LOGGER.traceExit(id);
   }
@@ -132,15 +169,17 @@ public class CoreController {
    */
   private static BotCommand getNextCommand() {
     LOGGER.traceEntry();
-    final String path = AppConfigurationService.getConfigurations().getCmdResource();
+    final String cmdResource = AppConfigurationService.getConfigurations().getCmdResource();
+    LOGGER.info("Polling command from {}", cmdResource);
     BotCommand cmd = null;
-    try (InputStream stream = new FileInputStream(path)) {
-      cmd = BotCommandService.fromJson(stream);
-    } catch (FileNotFoundException e) {
-      LOGGER.error(e.getMessage());
+    try (InputStream in = new FileInputStream(cmdResource)) {
+      cmd = BotCommandService.fromJson(in);
+    } catch (FileNotFoundException exc) {
+      LOGGER.error("Cannot load command: ", exc.getMessage());
       cmd = new BotCommand();
-    } catch (IOException e) {
-      LOGGER.error(e.getMessage());
+    } catch (IOException exc) {
+      LOGGER.error("Cannot load command: ", exc.getMessage());
+      cmd = new BotCommand();
     }
 
     return LOGGER.traceExit(cmd);
@@ -152,15 +191,19 @@ public class CoreController {
    */
   private static void init(String resource) {
     LOGGER.traceEntry("resource={}", resource);
+    LOGGER.info("Reinitializing with resource {}", resource);
     InputStream in;
     try {
       in = new FileInputStream(resource);
-    } catch (FileNotFoundException e) {
-      LOGGER.warn(e.getMessage());
+    } catch (FileNotFoundException exc) {
+      LOGGER.warn("Cannot read resource", exc.getMessage());
+      LOGGER.traceExit();
       return;
     }
     POOL.kill();
     AppConfigurationService.loadJson(in);
+    initBot();
+    LOGGER.traceExit();
   }
 
   /**
@@ -184,15 +227,18 @@ public class CoreController {
 
   /**
    * Executes the command `SLEEP` with the specified time period.
-   * @param interval the time period to sleep.
+   * @param timeout the time period to sleep.
    */
-  private static void sleep(Duration interval) {
-    LOGGER.traceEntry("period={}", interval);
+  private static void sleep(Duration timeout) {
+    LOGGER.traceEntry("timeout={}", timeout);
+    LOGGER.info("Sleeping (timeout: {} {})", timeout.getAmount(), timeout.getUnit());
     try {
-      interval.getUnit().sleep(interval.getAmount());
-    } catch (InterruptedException e) {
-      LOGGER.trace(e.getMessage());
+      timeout.getUnit().sleep(timeout.getAmount());
+    } catch (InterruptedException exc) {
+      LOGGER.trace(exc.getMessage());
     }
+    LOGGER.info("Awake");
+    LOGGER.traceExit();
   }
 
 
@@ -202,7 +248,10 @@ public class CoreController {
    */
   private static void shutdown(Duration timeout) {
     LOGGER.traceEntry("timeout={}", timeout);
+    LOGGER.info("Shutting down (timeout: {} {})", timeout.getAmount(), timeout.getUnit());
     POOL.shutdown(timeout);
+    LOGGER.info("Shut down");
+    LOGGER.traceExit();
   }
 
   /**
@@ -210,7 +259,10 @@ public class CoreController {
    */
   private static void kill() {
     LOGGER.traceEntry();
+    LOGGER.info("Killing...");
     POOL.kill();
+    LOGGER.info("Killed");
+    LOGGER.traceExit();
   }
 
 }

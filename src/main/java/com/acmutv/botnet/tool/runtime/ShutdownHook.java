@@ -39,25 +39,19 @@ public class ShutdownHook implements Runnable {
 
   private static final Logger LOGGER = LogManager.getLogger(ShutdownHook.class);
 
+  /**
+   * Releases resources.
+   */
   @Override
   public void run() {
-    splash("Goodbye!");
-  }
-
-  /**
-   * Prints a message.
-   * @param message the message to print.
-   */
-  @SuppressWarnings("SameParameterValue")
-  private void splash(final String message) {
-    LOGGER.traceEntry(message);
-
-    System.out.println(message);
-
+    LOGGER.traceEntry();
+    LOGGER.info("Releasing resources ...");
     try {
       Thread.sleep(1000);
-    } catch (InterruptedException e) {
-      LOGGER.trace(e.getMessage());
+    } catch (InterruptedException exc) {
+      LOGGER.trace(exc.getMessage());
     }
+    LOGGER.info("Resources released");
+    LOGGER.traceExit();
   }
 }
