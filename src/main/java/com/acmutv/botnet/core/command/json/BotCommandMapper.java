@@ -24,22 +24,30 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.tool.time;
+package com.acmutv.botnet.core.command.json;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.acmutv.botnet.core.command.BotCommand;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import lombok.EqualsAndHashCode;
 
 /**
- * This class realizes JUnit test suite for all tools related to time management.
+ * This class realizes the JSON constructor for {@link BotCommand}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see IntervalTest
+ * @see BotCommand
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    IntervalTest.class
-})
-public class TestAllToolTime {
+@EqualsAndHashCode(callSuper = true)
+public class BotCommandMapper extends ObjectMapper {
 
+  /**
+   * Initializes the JSON constructor.
+   */
+  public BotCommandMapper() {
+    super();
+    SimpleModule module = new SimpleModule();
+    module.addDeserializer(BotCommand.class, BotCommandDeserializer.getInstance());
+    super.registerModule(module);
+  }
 }

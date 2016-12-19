@@ -26,16 +26,12 @@
 
 package com.acmutv.botnet.config;
 
-import com.acmutv.botnet.tool.time.Frequency;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.assertEquals;
 
 /**
- * This class realizes JUnit tests for {@link AppConfiguration}
+ * This class realizes JUnit tests for {@link AppConfiguration}.
  * and {@link AppConfiguration}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
@@ -50,65 +46,10 @@ public class AppConfigurationTest {
   @Test
   public void test_toDefault() {
     AppConfiguration actual = new AppConfiguration();
-    actual.setNetInfo(false);
+    actual.setNetStat(false);
     actual.toDefault();
     final AppConfiguration expected = new AppConfiguration();
     Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests the configuration loading from an external YAML file.
-   * In this test the configuration file provides with empty settings.
-   */
-  @Test
-  public void test_loadYaml_empty() {
-    final String file = AppConfigurationTest.class.getResource("/config/empty.yml").getPath();
-    final AppConfiguration actual = AppConfigurationService.fromYaml(file);
-    final AppConfiguration expected = new AppConfiguration();
-    assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests the app configuration loading from an external YAML file.
-   * In this test the configuration file provides with complete default settings.
-   */
-  @Test
-  public void test_loadYaml_default() {
-    final String file = AppConfigurationTest.class.getResource("/config/default.yml").getPath();
-    AppConfiguration actual = AppConfigurationService.fromYaml(file);
-    AppConfiguration expected = new AppConfiguration();
-    assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests the app configuration loading from an external YAML file.
-   * In this test the configuration file provides with complete custom settings.
-   */
-  @Test
-  public void test_loadYaml_custom() {
-    final String file = AppConfigurationTest.class.getResource("/config/custom.yml").getPath();
-    AppConfiguration actual = AppConfigurationService.fromYaml(file);
-    AppConfiguration expected = new AppConfiguration();
-    expected.setNetInfo(false);
-    expected.setNetStat(false);
-    expected.setSampling(new Frequency(1, TimeUnit.HOURS));
-    expected.setInitResource(AppConfigurationTest.class.getResource("/cc/botinit2.json").getPath());
-    expected.setCmdResource(AppConfigurationTest.class.getResource("/cc/botcmd2.json").getPath());
-    expected.setLogResource(AppConfigurationTest.class.getResource("/cc/botlog2.json").getPath());
-    assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests the configuration loading from an external YAML configuration file.
-   * In this test the configuration file provides with partial custom settings.
-   */
-  @Test
-  public void test_loadYaml_partialCustom() {
-    final String file = AppConfigurationTest.class.getResource("/config/partial.yml").getPath();
-    AppConfiguration actual = AppConfigurationService.fromYaml(file);
-    AppConfiguration expected = new AppConfiguration();
-    expected.setNetInfo(false);
-    assertEquals(expected, actual);
   }
 
 }

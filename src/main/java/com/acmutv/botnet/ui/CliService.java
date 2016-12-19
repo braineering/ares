@@ -36,6 +36,9 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -84,8 +87,16 @@ public class CliService {
     if (cmd.hasOption("config")) {
       final String configPath = cmd.getOptionValue("config");
       LOGGER.trace("Detected option CONFIG with configPath={}", configPath);
-      AppConfigurationService.loadYaml(configPath);
-      LOGGER.trace("Configuration successfully loaded: {}",
+      try {
+        InputStream in = new FileInputStream(configPath);
+        AppConfigurationService.loadYaml(in);
+        LOGGER.trace("Custom configuration successfully loaded");
+      } catch (FileNotFoundException exc) {
+        LOGGER.warn("Cannot load custom configuration, loading default: {}", exc.getMessage());
+        AppConfigurationService.loadDefault();
+      }
+
+      LOGGER.trace("Configuration loaded: {}",
           AppConfigurationService.getConfigurations());
     }
 

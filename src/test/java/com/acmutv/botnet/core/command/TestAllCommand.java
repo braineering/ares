@@ -26,8 +26,6 @@
 
 package com.acmutv.botnet.core.command;
 
-import com.acmutv.botnet.core.attack.HttpGetAttackTest;
-import com.acmutv.botnet.core.attack.HttpPostAttackTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -36,11 +34,11 @@ import org.junit.runners.Suite;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see BotCommandParserTest
+ * @see BotCommandServiceTest
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    BotCommandParserTest.class
+    BotCommandServiceTest.class
 })
 public class TestAllCommand {
 

@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /**
- * This class realizes a time interval.
+ * This class realizes a time period.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
@@ -44,18 +44,17 @@ import java.util.regex.Pattern;
  */
 @Data
 @AllArgsConstructor
-public class Period {
+public class Interval {
 
   /**
    * The amount of time (lower bound).
    */
-  private int min;
+  private long min;
 
   /**
    * The amount of time (upper bound).
    */
-  @NonNull
-  private int max;
+  private long max;
 
   /**
    * The period time unit.
@@ -63,13 +62,15 @@ public class Period {
   @NonNull
   private TimeUnit unit = TimeUnit.SECONDS;
 
+  @Deprecated
   public static final String REG_PATTERN = "\\d+(-\\d+)?";
 
   /**
    * Constructs a period from string.
    * @param str the string to parse.
    */
-  public Period(final String str) {
+  @Deprecated
+  public Interval(final String str) {
     String values[] = str.split("-", 2);
     int min;
     int max;
@@ -89,6 +90,7 @@ public class Period {
    * @param str the string to check.
    * @return true, if the given string represents a valid Period; false, otherwise.
    */
+  @Deprecated
   public static boolean isValidString(String str) {
     return Pattern.matches(REG_PATTERN, str);
   }
@@ -98,7 +100,8 @@ public class Period {
    * @param str the string to parse.
    * @return the parsed Period.
    */
-  public static Period valueOf(final String str) {
+  @Deprecated
+  public static Interval valueOf(final String str) {
     String values[] = str.split("-", 2);
     int min;
     int max;
@@ -109,6 +112,6 @@ public class Period {
       min = max = Integer.valueOf(values[0]);
     }
     TimeUnit unit = TimeUnit.SECONDS;
-    return new Period(min, max, unit);
+    return new Interval(min, max, unit);
   }
 }

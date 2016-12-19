@@ -28,7 +28,7 @@ package com.acmutv.botnet.core.attack;
 
 import com.acmutv.botnet.core.target.HttpTarget;
 import com.acmutv.botnet.tool.net.ConnectionManager;
-import com.acmutv.botnet.tool.time.Period;
+import com.acmutv.botnet.tool.time.Interval;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -55,7 +55,7 @@ public class HttpPostAttackTest {
 
   @Test
   public void test_makeAttack() throws InterruptedException, MalformedURLException {
-    HttpTarget tgt = new HttpTarget(new URL("http://www.google.com"), new Period(1, 1, TimeUnit.SECONDS), 1);
+    HttpTarget tgt = new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 1);
     ExecutorService executor = Executors.newFixedThreadPool(1);
     Runnable attacker = new HttpPostAttack(tgt);
     executor.execute(attacker);

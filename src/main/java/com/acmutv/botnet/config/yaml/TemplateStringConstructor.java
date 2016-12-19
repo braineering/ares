@@ -26,18 +26,14 @@
 
 package com.acmutv.botnet.config.yaml;
 
+import com.acmutv.botnet.config.util.TemplateEngine;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
-import org.apache.commons.lang3.text.StrSubstitutor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.yaml.snakeyaml.constructor.AbstractConstruct;
 import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.ScalarNode;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This class realizes the YAML constructor for template string.
@@ -51,29 +47,27 @@ public class TemplateStringConstructor extends AbstractConstruct {
   private static final Logger LOGGER = LogManager.getLogger(TemplateStringConstructor.class);
 
   /**
-   * The templating map, used by the {@link StrSubstitutor}.
+   * The singleton of {@link TemplateStringConstructor}.
    */
-  @NonNull
-  private Map<String,String> map = buildMap();
+  private static TemplateStringConstructor instance;
+
+  /**
+   * Returns the singleton of {@link TemplateStringConstructor}.
+   * @return the singleton.
+   */
+  public static TemplateStringConstructor getInstance() {
+    if (instance == null) {
+      instance = new TemplateStringConstructor();
+    }
+    return instance;
+  }
 
   @Override
   public Object construct(Node node) {
     LOGGER.traceEntry("node={}", node);
     ScalarNode snode = (ScalarNode) node;
     String value = snode.getValue();
-    StrSubstitutor ss = new StrSubstitutor(this.map);
-    String result = ss.replace(value);
+    String result = TemplateEngine.getInstance().replace(value);
     return LOGGER.traceExit(result);
-  }
-
-  /**
-   * Builds the templating map, used by the {@link StrSubstitutor}.
-   * @return the templating map.
-   */
-  private Map<String,String> buildMap() {
-    Map<String,String> map = new HashMap<>();
-    map.put("PROJECT_RESOURCES",
-        AppConfigurationConstructor.class.getResource("/").getPath().replaceAll("/$", ""));
-    return map;
   }
 }

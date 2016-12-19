@@ -27,7 +27,6 @@
 package com.acmutv.botnet.core.attack;
 
 import com.acmutv.botnet.core.target.HttpTarget;
-import com.acmutv.botnet.tool.random.RandomGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
@@ -36,6 +35,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -60,8 +60,8 @@ public abstract class HttpAttack implements Runnable {
   public void run() {
     final URL url = this.getTarget().getUrl();
     final long maxAttempts = this.getTarget().getMaxAttempts();
-    final int sleepAmountMin = this.getTarget().getPeriod().getMin();
-    final int sleepAmountMax = this.getTarget().getPeriod().getMax();
+    final long sleepAmountMin = this.getTarget().getPeriod().getMin();
+    final long sleepAmountMax = this.getTarget().getPeriod().getMax();
     final TimeUnit sleepUnit = this.getTarget().getPeriod().getUnit();
 
     for (long i = 0; i < maxAttempts; i++) {
@@ -71,7 +71,7 @@ public abstract class HttpAttack implements Runnable {
         LOGGER.error(e.getMessage());
         return;
       }
-      final long sleepAmount = RandomGenerator.getRandomInt(sleepAmountMin, sleepAmountMax, this.getRndgen());
+      final long sleepAmount = ThreadLocalRandom.current().nextLong(sleepAmountMin, sleepAmountMax);
       this.sleep(sleepAmount, sleepUnit);
     }
   }

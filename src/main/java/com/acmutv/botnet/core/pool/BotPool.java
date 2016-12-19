@@ -35,6 +35,7 @@ import com.acmutv.botnet.core.report.statistics.NetworkSampler;
 import com.acmutv.botnet.core.report.statistics.SystemSampler;
 import com.acmutv.botnet.core.target.HttpTarget;
 import com.acmutv.botnet.tool.runtime.RuntimeManager;
+import com.acmutv.botnet.tool.time.Duration;
 import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -92,9 +93,9 @@ public class BotPool {
     }
   }
 
-  public void shutdown(long amount, TimeUnit unit) {
-    new Thread(new ExecutorServiceShutdown(this.getFixedThreadPool(), amount, unit)).start();
-    new Thread(new ExecutorServiceShutdown(this.getScheduledThreadPool(), amount, unit)).start();
+  public void shutdown(Duration timeout) {
+    new Thread(new ExecutorServiceShutdown(this.getFixedThreadPool(), timeout)).start();
+    new Thread(new ExecutorServiceShutdown(this.getScheduledThreadPool(), timeout)).start();
   }
 
   public void kill() {

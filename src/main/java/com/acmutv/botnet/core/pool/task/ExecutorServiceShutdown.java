@@ -26,12 +26,12 @@
 
 package com.acmutv.botnet.core.pool.task;
 
+import com.acmutv.botnet.tool.time.Duration;
 import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class realizes an ExecutorService shutdown task.
@@ -45,16 +45,25 @@ public class ExecutorServiceShutdown implements Runnable {
 
   private static final Logger LOGGER = LogManager.getLogger(ExecutorServiceShutdown.class);
 
+  /**
+   * The service to shutdown.
+   */
   private final ExecutorService executor;
-  private final long timeoutAmount;
-  private final TimeUnit timeoutUnit;
 
+  /**
+   * The shutdown timeout.
+   */
+  private final Duration timeout;
+
+  /**
+   * Shuts down the specified service.
+   */
   @Override
   public void run() {
     LOGGER.trace("Shutting down executor {}", this.executor);
     this.executor.shutdown();
     try {
-      this.executor.awaitTermination(this.getTimeoutAmount(), this.getTimeoutUnit());
+      this.executor.awaitTermination(this.getTimeout().getAmount(), this.getTimeout().getUnit());
     } catch (InterruptedException e) {
       e.printStackTrace();
     }

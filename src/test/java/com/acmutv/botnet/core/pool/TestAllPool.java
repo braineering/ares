@@ -26,7 +26,6 @@
 
 package com.acmutv.botnet.core.pool;
 
-import com.acmutv.botnet.core.command.BotCommandParserTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

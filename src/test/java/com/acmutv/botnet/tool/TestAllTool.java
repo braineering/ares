@@ -27,9 +27,8 @@
 package com.acmutv.botnet.tool;
 
 import com.acmutv.botnet.tool.net.TestAllToolNet;
-import com.acmutv.botnet.tool.random.TestAllToolRandom;
+import com.acmutv.botnet.tool.reflection.TestAllToolReflection;
 import com.acmutv.botnet.tool.runtime.TestAllToolRuntime;
-import com.acmutv.botnet.tool.time.PeriodTest;
 import com.acmutv.botnet.tool.time.TestAllToolTime;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -40,14 +39,14 @@ import org.junit.runners.Suite;
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see TestAllToolNet
- * @see TestAllToolRandom
+ * @see TestAllToolReflection
  * @see TestAllToolRuntime
  * @see TestAllToolTime
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     TestAllToolNet.class,
-    TestAllToolRandom.class,
+    TestAllToolReflection.class,
     TestAllToolRuntime.class,
     TestAllToolTime.class
 })

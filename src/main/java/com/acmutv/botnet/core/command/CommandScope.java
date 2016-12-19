@@ -43,7 +43,7 @@ public enum CommandScope {
   SET ("SET", true),
   SLEEP ("SLEEP", true),
   KILL ("KILL", false),
-  SHUTDOWN ("SHUTDOWN", false),
+  SHUTDOWN ("SHUTDOWN", true),
   ATTACK_HTTP ("ATTACK HTTP", true),
   ATTACK_SMTP ("ATTACK SMTP", true);
 

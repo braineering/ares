@@ -1,7 +1,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2016 Giacomo Marciani and Michele Porretta
+  Copyright (c) 2016 Giacomo Marciani
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -24,22 +24,48 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.tool.time;
+package com.acmutv.botnet.config.util;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.acmutv.botnet.config.AppConfiguration;
+import org.apache.commons.lang3.text.StrSubstitutor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.HashMap;
 
 /**
- * This class realizes JUnit test suite for all tools related to time management.
+ * This class realizes a string template that can be used by {@link StrSubstitutor}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see IntervalTest
+ * @see StrSubstitutor
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    IntervalTest.class
-})
-public class TestAllToolTime {
+public class StringTemplateMap extends HashMap<String,String> {
 
+  private static final Logger LOGGER = LogManager.getLogger(StringTemplateMap.class);
+
+  /**
+   * The singleton of {@link StringTemplateMap}.
+   */
+  private static StringTemplateMap instance;
+
+  /**
+   * Returns the singleton of {@link StringTemplateMap}.
+   * @return the singleton.
+   */
+  public static StringTemplateMap getInstance() {
+    if (instance == null) {
+      instance = new StringTemplateMap();
+    }
+    return instance;
+  }
+
+  /**
+   * Initializes the singleton of {@link StringTemplateMap}.
+   */
+  private StringTemplateMap() {
+    super();
+    super.put("PROJECT_RESOURCES",
+        AppConfiguration.class.getResource("/").getPath().replaceAll("/$", ""));
+  }
 }

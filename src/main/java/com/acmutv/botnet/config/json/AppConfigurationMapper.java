@@ -24,24 +24,30 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.tool.random;
+package com.acmutv.botnet.config.json;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-import java.util.Random;
+import com.acmutv.botnet.config.AppConfiguration;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import lombok.EqualsAndHashCode;
 
 /**
- * This class realizes JUnit test suite for all tools related to randomness.
+ * This class realizes the JSON constructor for {@link AppConfiguration}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see RandomGeneratorTest
+ * @see AppConfiguration
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    RandomGeneratorTest.class
-})
-public class TestAllToolRandom {
+@EqualsAndHashCode(callSuper = true)
+public class AppConfigurationMapper extends ObjectMapper {
 
+  /**
+   * Initializes the JSON constructor.
+   */
+  public AppConfigurationMapper() {
+    super();
+    SimpleModule module = new SimpleModule();
+    module.addDeserializer(AppConfiguration.class, AppConfigurationDeserializer.getInstance());
+    super.registerModule(module);
+  }
 }

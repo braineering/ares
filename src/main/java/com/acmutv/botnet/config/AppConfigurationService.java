@@ -26,12 +26,13 @@
 
 package com.acmutv.botnet.config;
 
+import com.acmutv.botnet.config.json.AppConfigurationMapper;
 import com.acmutv.botnet.config.yaml.AppConfigurationConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
 
-import java.io.FileReader;
+import java.io.InputStream;
 
 /**
  * This class realizes the app configuration services.
@@ -42,7 +43,7 @@ import java.io.FileReader;
  */
 public class AppConfigurationService {
 
-  private static final Logger LOGGER = LogManager.getLogger(AppConfiguration.class);
+  private static final Logger LOGGER = LogManager.getLogger(AppConfigurationService.class);
 
   /**
    * The singleton of {@link AppConfiguration} for the whole app.
@@ -65,38 +66,90 @@ public class AppConfigurationService {
   }
 
   /**
-   * Loads the configuration specified in a YAML file.
-   * @param configPath the path to a YAML configuration file.
+   * Loads the default configuration.
    */
-  public static void loadYaml(final String configPath) {
-    LOGGER.traceEntry("configPath={}", configPath);
-    final AppConfiguration config = fromYaml(configPath);
+  public static void loadDefault() {
+    LOGGER.traceEntry();
+    getConfigurations().toDefault();
+  }
+
+  /**
+   * Loads the configuration specified in a YAML file.
+   * @param in the YAML configuration file.
+   */
+  public static void loadYaml(final InputStream in) {
+    LOGGER.traceEntry("in={}", in);
+    final AppConfiguration config = fromYaml(in);
     getConfigurations().copy(config);
+  }
+
+  /**
+   * Loads the configuration specified in a JSON file.
+   * @param in the JSON configuration file.
+   */
+  public static void loadJson(final InputStream in) {
+    LOGGER.traceEntry("in={}", in);
+    final AppConfiguration config = fromJson(in);
+    getConfigurations().copy(config);
+  }
+
+  /**
+   * Returns the default configuration.
+   */
+  public static AppConfiguration fromDefault() {
+    LOGGER.traceEntry();
+    final AppConfiguration config = new AppConfiguration();
+    return LOGGER.traceExit(config);
   }
 
   /**
    * Parses an app configuration model from the specified YAML file.
    * If something goes wrong, the default configuration is loaded.
-   * @param path the absolute path to the configuration file.
+   * @param in the YAML configuration file.
    * @return the configuration.
    */
-  public static AppConfiguration fromYaml(final String path) {
+  public static AppConfiguration fromYaml(final InputStream in) {
+    LOGGER.traceEntry("in={}", in);
     final Yaml yaml = new Yaml(AppConfigurationConstructor.getInstance());
 
     AppConfiguration config = null;
     try {
-      FileReader file = new FileReader(path);
-      config = yaml.loadAs(file, AppConfiguration.class);
-    } catch (Exception e) {
-      LOGGER.error(e.getMessage());
+      config = yaml.loadAs(in, AppConfiguration.class);
+    } catch (Exception exc) {
+      LOGGER.warn("Cannot parse YAML configuration: {}", exc.getMessage());
     }
 
     if (config == null) {
-      LOGGER.warn("Cannot parse custom YAML configuration, loading defaults");
+      LOGGER.warn("Loading default configuration");
       config = new AppConfiguration();
     }
 
-    return config;
+    return LOGGER.traceExit(config);
+  }
+
+  /**
+   * Parses an app configuration model from the specified JSON file.
+   * If something goes wrong, the default configuration is loaded.
+   * @param in the JSON configuration file.
+   * @return the configuration.
+   */
+  public static AppConfiguration fromJson(final InputStream in) {
+    LOGGER.traceEntry("in={}", in);
+    final AppConfigurationMapper mapper = new AppConfigurationMapper();
+
+    AppConfiguration config = null;
+    try {
+      config = mapper.readValue(in, AppConfiguration.class);
+    } catch (Exception exc) {
+      LOGGER.warn("Cannot parse JSON configuration: {}", exc.getMessage());
+    }
+
+    if (config == null) {
+      LOGGER.warn("Loading default configuration");
+      config = new AppConfiguration();
+    }
+
+    return LOGGER.traceExit(config);
   }
 
 }

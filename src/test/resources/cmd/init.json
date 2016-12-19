@@ -1,4 +1,4 @@
 {
   "command": "INIT",
-  "resource": "/config/config.default.yml"
+  "resource": "/cc/botinit.json"
 }

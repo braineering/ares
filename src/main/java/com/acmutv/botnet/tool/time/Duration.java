@@ -26,20 +26,32 @@
 
 package com.acmutv.botnet.tool.time;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+
+import java.util.concurrent.TimeUnit;
 
 /**
- * This class realizes JUnit test suite for all tools related to time management.
+ * This class realizes a time duration.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see IntervalTest
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    IntervalTest.class
-})
-public class TestAllToolTime {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Duration {
 
+  /**
+   * The frequency amount of time.
+   */
+  private long amount;
+
+  /**
+   * The frequency time unit.
+   */
+  @NonNull
+  private TimeUnit unit = TimeUnit.SECONDS;
 }

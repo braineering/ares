@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet.config;
 
-import com.acmutv.botnet.tool.time.Frequency;
+import com.acmutv.botnet.tool.time.Duration;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -69,7 +69,7 @@ public class AppConfiguration {
   /**
    * Default value for property sampling.
    */
-  public static Frequency SAMPLING = new Frequency(60, TimeUnit.SECONDS);
+  public static Duration SAMPLING = new Duration(60, TimeUnit.SECONDS);
 
   /**
    * Default value for property initResource.
@@ -119,7 +119,7 @@ public class AppConfiguration {
    * The bot collects system/network statistics with the specified sampling rate.
    * Default is: 60 seconds.
    */
-  private Frequency sampling = SAMPLING;
+  private Duration sampling = SAMPLING;
 
   /**
    * Property initResource.

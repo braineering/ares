@@ -1,7 +1,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2016 Giacomo Marciani and Michele Porretta
+  Copyright (c) 2016 Giacomo Marciani
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -24,22 +24,44 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.tool.time;
+package com.acmutv.botnet.config.util;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.apache.commons.lang3.text.StrSubstitutor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
- * This class realizes JUnit test suite for all tools related to time management.
+ * This class realizes the string substitution,
+ * according to the templating map {@link StringTemplateMap}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see IntervalTest
+ * @see StringTemplateMap
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    IntervalTest.class
-})
-public class TestAllToolTime {
+public class TemplateEngine extends StrSubstitutor {
 
+  private static final Logger LOGGER = LogManager.getLogger(TemplateEngine.class);
+
+  /**
+   * The singleton of {@link TemplateEngine}.
+   */
+  private static TemplateEngine instance;
+
+  /**
+   * Returns the singleton of {@link TemplateEngine}.
+   * @return the singleton.
+   */
+  public static TemplateEngine getInstance() {
+    if (instance == null) {
+      instance = new TemplateEngine();
+    }
+    return instance;
+  }
+
+  /**
+   * Initializes the singleton of {@link TemplateEngine}.
+   */
+  private TemplateEngine() {
+    super(StringTemplateMap.getInstance());
+  }
 }

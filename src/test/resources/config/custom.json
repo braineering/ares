@@ -1,0 +1,13 @@
+{
+  "sysInfo": true,
+  "netInfo": false,
+  "sysStat": true,
+  "netStat": false,
+  "sampling": {
+    "amount": 1,
+    "unit": "HOURS"
+  },
+  "initResource": "${PROJECT_RESOURCES}/cc/botinit2.json",
+  "cmdResource": "${PROJECT_RESOURCES}/cc/botcmd2.json",
+  "logResource": "${PROJECT_RESOURCES}/cc/botlog2.json"
+}

@@ -26,7 +26,6 @@
 
 package com.acmutv.botnet.tool.runtime;
 
-import com.acmutv.botnet.tool.random.RandomGeneratorTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

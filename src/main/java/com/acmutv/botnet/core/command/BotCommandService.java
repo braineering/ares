@@ -24,57 +24,46 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.tool.random;
+package com.acmutv.botnet.core.command;
 
+import com.acmutv.botnet.core.command.json.BotCommandMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Random;
+import java.io.*;
 
 /**
- * This class realizes random number generation utilities.
+ * This class realizes bot command services.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see Random
+ * @see BotCommand
  */
-public class RandomGenerator {
+public class BotCommandService {
 
-  private static final Logger LOGGER = LogManager.getLogger(RandomGenerator.class);
-
-  /**
-   * Generates a uniform integer random number in [a, b].
-   * @param a The lower bound.
-   * @param b The upper bound.
-   * @param rndgen The random number generator.
-   * @return The uniform random integer number in [a,b].
-   */
-  public static int getRandomInt(final int a, final int b, Random rndgen) {
-    LOGGER.traceEntry("a={} b={}", a, b);
-    int value;
-    if (a == b) {
-      value = a;
-    } else {
-      value = rndgen.nextInt(b - a) + a;
-    }
-    return LOGGER.traceExit(value);
-  }
+  private static final Logger LOGGER = LogManager.getLogger(BotCommandService.class);
 
   /**
-   * Generates a uniform double random number in [a, b].
-   * @param a The lower bound.
-   * @param b The upper bound.
-   * @param rndgen The random number generator.
-   * @return The uniform random double number in [a,b].
+   * Parses a BotCommand from a JSON file.
+   * @param in the JSON file.
+   * @return the parsed BotCommand; BotCommand with scope NONE, in case of errors.
    */
-  public static double getRandomDouble(final double a, final double b, Random rndgen) {
-    LOGGER.traceEntry("a={} b={}", a, b);
-    double value;
-    if (a == b) {
-      value = a;
-    } else {
-      value = rndgen.nextDouble() * (b - a) + a;
+  public static BotCommand fromJson(InputStream in) {
+    LOGGER.traceEntry("in={}", in);
+    BotCommandMapper mapper = new BotCommandMapper();
+    BotCommand cmd = null;
+    try {
+      cmd = mapper.readValue(in, BotCommand.class);
+    } catch (IOException exc) {
+      LOGGER.warn("Cannot read command: {}", exc.getMessage());
     }
-    return LOGGER.traceExit(value);
+
+    if (cmd == null) {
+      LOGGER.warn("Loading default command");
+      cmd = new BotCommand();
+    }
+
+    return LOGGER.traceExit(cmd);
   }
+
 }

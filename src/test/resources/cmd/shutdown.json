@@ -1,3 +1,7 @@
 {
-  "command": "SHUTDOWN"
+  "command": "SHUTDOWN",
+  "timeout": {
+    "amount": 3,
+    "unit": "MINUTES"
+  }
 }

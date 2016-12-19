@@ -24,34 +24,22 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.tool.time;
+package com.acmutv.botnet.tool.reflection;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-
-import java.util.concurrent.TimeUnit;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
- * This class realizes a time frequency.
+ * This class realizes JUnit test suite for all tools related to Java reflection.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
+ * @see ReflectionManagerTest
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Frequency {
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    ReflectionManagerTest.class
+})
+public class TestAllToolReflection {
 
-  /**
-   * The frequency amount of time.
-   */
-  private long amount;
-
-  /**
-   * The frequency time unit.
-   */
-  @NonNull
-  private TimeUnit unit = TimeUnit.SECONDS;
 }

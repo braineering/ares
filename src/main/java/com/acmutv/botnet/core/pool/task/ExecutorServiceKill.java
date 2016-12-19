@@ -44,8 +44,14 @@ public class ExecutorServiceKill implements Runnable {
 
   private static final Logger LOGGER = LogManager.getLogger(ExecutorServiceKill.class);
 
+  /**
+   * The service to kill.
+   */
   private final ExecutorService executor;
 
+  /**
+   * Kills the specified service.
+   */
   @Override
   public void run() {
     LOGGER.traceEntry("Killing executor {}", this.executor);

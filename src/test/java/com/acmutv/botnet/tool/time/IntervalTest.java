@@ -35,13 +35,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * This class realizes JUnit tests for {@link Period}.
+ * This class realizes JUnit tests for {@link Interval}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see Period
+ * @see Interval
  */
-public class PeriodTest {
+public class IntervalTest {
 
   /**
    * Tests the Period creation in the joint form. E.g.: `1`.
@@ -49,8 +49,8 @@ public class PeriodTest {
   @Test
   public void test_creator_joint() {
     final String str = "1";
-    Period actual = new Period(str);
-    Period expected = new Period(1, 1, TimeUnit.SECONDS);
+    Interval actual = new Interval(str);
+    Interval expected = new Interval(1, 1, TimeUnit.SECONDS);
     assertEquals(expected, actual);
   }
 
@@ -60,8 +60,8 @@ public class PeriodTest {
   @Test
   public void test_creator_disjoint() {
     final String str = "1-3";
-    Period actual = new Period(str);
-    Period expected = new Period(1, 3, TimeUnit.SECONDS);
+    Interval actual = new Interval(str);
+    Interval expected = new Interval(1, 3, TimeUnit.SECONDS);
     assertEquals(expected, actual);
   }
 
@@ -72,8 +72,8 @@ public class PeriodTest {
   @Test
   public void testValueOf_joint() {
     final String str = "1";
-    Period actual = Period.valueOf(str);
-    Period expected = new Period(1, 1, TimeUnit.SECONDS);
+    Interval actual = Interval.valueOf(str);
+    Interval expected = new Interval(1, 1, TimeUnit.SECONDS);
     assertEquals(expected, actual);
   }
 
@@ -83,8 +83,8 @@ public class PeriodTest {
   @Test
   public void test_fromString_disjoint() {
     final String str = "1-3";
-    Period actual = Period.valueOf(str);
-    Period expected = new Period(1, 3, TimeUnit.SECONDS);
+    Interval actual = Interval.valueOf(str);
+    Interval expected = new Interval(1, 3, TimeUnit.SECONDS);
     assertEquals(expected, actual);
   }
 
@@ -93,12 +93,12 @@ public class PeriodTest {
    */
   @Test
   public void test_isValidString() {
-    assertTrue(Period.isValidString("1"));
-    assertTrue(Period.isValidString("1-3"));
+    assertTrue(Interval.isValidString("1"));
+    assertTrue(Interval.isValidString("1-3"));
 
-    assertFalse(Period.isValidString(""));
-    assertFalse(Period.isValidString("-"));
-    assertFalse(Period.isValidString("1-"));
-    assertFalse(Period.isValidString("-3"));
+    assertFalse(Interval.isValidString(""));
+    assertFalse(Interval.isValidString("-"));
+    assertFalse(Interval.isValidString("1-"));
+    assertFalse(Interval.isValidString("-3"));
   }
 }

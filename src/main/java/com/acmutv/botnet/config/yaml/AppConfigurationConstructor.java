@@ -66,7 +66,7 @@ public class AppConfigurationConstructor extends Constructor {
   private AppConfigurationConstructor() {
     super(AppConfiguration.class);
     TypeDescription description = new TypeDescription(AppConfiguration.class);
-    super.yamlConstructors.put(new Tag("!templateString"), new TemplateStringConstructor());
+    super.yamlConstructors.put(new Tag("!templateString"), TemplateStringConstructor.getInstance());
     super.addTypeDescription(description);
   }
 
