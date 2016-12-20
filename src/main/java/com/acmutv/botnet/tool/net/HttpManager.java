@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
+import java.util.Map;
 
 /**
  * This class realizes HTTP contact utilities.
@@ -40,38 +41,56 @@ import java.net.URL;
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see HttpURLConnection
+ *
  */
 public class HttpManager {
 
   private static final Logger LOGGER = LogManager.getLogger(HttpManager.class);
 
   /**
-   * Returns the result of a HTTP GET without proxy.
+   * Executes a HTTP request.
+   * @param method the HTTP method.
    * @param url the web url to contact.
    * @return the response code.
-   * @throws IOException when HTTP GET error.
+   * @throws IOException when HTTP error.
    */
-  public static int makeGET(final URL url) throws IOException {
+  public static int makeRequest(final HttpMethod method, final URL url) throws IOException {
     LOGGER.traceEntry("url={}", url);
     HttpURLConnection http = (HttpURLConnection) url.openConnection();
-    http.setRequestMethod("GET");
-    http.setRequestProperty("User-Agent", "BOTNETv1.0.0");
+    http.setRequestMethod(method.name());
     int response = http.getResponseCode();
     return LOGGER.traceExit(response);
   }
 
   /**
-   * Returns the result of a HTTP GET with proxy.
-   * @param url The web url to contact.
+   * Executes a HTTP request.
+   * @param method the HTTP method.
+   * @param props the request properties.
+   * @return the response code.
+   * @throws IOException when HTTP error.
+   */
+  public static int makeRequest(final HttpMethod method, final URL url, Map<String,String> props) throws IOException {
+    LOGGER.traceEntry("url={}", url);
+    HttpURLConnection http = (HttpURLConnection) url.openConnection();
+    http.setRequestMethod(method.name());
+    props.forEach((k,v) -> http.setRequestProperty(k, v));
+    int response = http.getResponseCode();
+    return LOGGER.traceExit(response);
+  }
+
+  /**
+   * Executes a HTTP request.
+   * @param method the HTTP method.
+   * @param props the request properties.
    * @param proxy The proxy server.
    * @return the response code.
-   * @throws IOException when HTTP GET error.
+   * @throws IOException when HTTP error.
    */
-  public static int makeGETWithProxy(final URL url, final Proxy proxy) throws IOException {
+  public static int makeRequest(final HttpMethod method, final URL url, Map<String,String> props, final Proxy proxy) throws IOException {
     LOGGER.traceEntry("url={} proxy={}", url, proxy);
     HttpURLConnection http = (HttpURLConnection) url.openConnection(proxy);
-    http.setRequestMethod("GET");
-    http.setRequestProperty("User-Agent", "BOTNETv1.0.0");
+    http.setRequestMethod(method.name());
+    props.forEach((k,v) -> http.setRequestProperty(k, v));
     int response = http.getResponseCode();
     return LOGGER.traceExit(response);
   }

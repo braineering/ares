@@ -44,8 +44,7 @@ public enum CommandScope {
   SLEEP ("SLEEP", true),
   KILL ("KILL", false),
   SHUTDOWN ("SHUTDOWN", true),
-  ATTACK_HTTP ("ATTACK HTTP", true),
-  ATTACK_SMTP ("ATTACK SMTP", true);
+  ATTACK_HTTP("ATTACK_HTTP", true);
 
   private final String name;
   private final boolean withParams;

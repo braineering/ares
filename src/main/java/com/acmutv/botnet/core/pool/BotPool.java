@@ -26,9 +26,9 @@
 
 package com.acmutv.botnet.core.pool;
 
-import com.acmutv.botnet.core.attack.HttpAttack;
-import com.acmutv.botnet.core.attack.HttpGetAttack;
-import com.acmutv.botnet.core.attack.HttpPostAttack;
+import com.acmutv.botnet.core.attack.http.HttpAttack;
+import com.acmutv.botnet.core.attack.http.HttpGetAttack;
+import com.acmutv.botnet.core.attack.http.HttpPostAttack;
 import com.acmutv.botnet.core.pool.task.ExecutorServiceKill;
 import com.acmutv.botnet.core.pool.task.ExecutorServiceShutdown;
 import com.acmutv.botnet.core.report.statistics.NetworkSampler;

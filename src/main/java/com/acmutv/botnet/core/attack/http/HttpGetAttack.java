@@ -24,30 +24,27 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.attack;
+package com.acmutv.botnet.core.attack.http;
+
+import com.acmutv.botnet.core.target.HttpTarget;
+import com.acmutv.botnet.tool.net.HttpMethod;
 
 /**
- * This enum enumerates HTTP attacks methods.
+ * This class realizes a HTTP HTTP_GET attack.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
+ * @see HttpAttack
  */
-public enum HttpAttackMethod {
-  GET ("GET"),
-  POST ("POST");
+public class HttpGetAttack extends HttpAttack {
 
-  @SuppressWarnings("FieldCanBeLocal")
-  private final String name;
-
-  HttpAttackMethod(final String name) {
-    this.name = name;
+  /**
+   * Initializes the attacker.
+   * @param target the target to attack.
+   */
+  public HttpGetAttack(HttpTarget target) {
+    super(HttpMethod.GET, target);
+    super.getProperties().put("User-Agent", "BOTNETv1.0.0");
   }
 
-  public static HttpAttackMethod from(Object obj) {
-    try {
-      return HttpAttackMethod.valueOf(obj.toString());
-    } catch (IllegalArgumentException e) {
-      return HttpAttackMethod.GET;
-    }
-  }
 }

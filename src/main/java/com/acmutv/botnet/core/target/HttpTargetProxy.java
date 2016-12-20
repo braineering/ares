@@ -26,11 +26,10 @@
 
 package com.acmutv.botnet.core.target;
 
-import com.acmutv.botnet.core.attack.HttpAttack;
+import com.acmutv.botnet.core.attack.http.HttpAttack;
 import com.acmutv.botnet.config.AppConfiguration;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 /**
  * This class realizes the bot proxy for the contacts.
@@ -42,9 +41,17 @@ import lombok.NoArgsConstructor;
  * @see java.net.Proxy
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class HttpTargetProxy {
+
+  /**
+   * The proxy's IP address.
+   */
+  @NonNull
   private String address;
+
+  /**
+   * The proxy's port.
+   */
+  @NonNull
   private int port;
 }

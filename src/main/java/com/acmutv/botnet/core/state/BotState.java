@@ -30,7 +30,7 @@ import com.acmutv.botnet.core.command.CommandScope;
 import lombok.Getter;
 
 /**
- * This enum enumerates states of Bot's FSA.
+ * This enum enumerates states of bot's FSA.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
@@ -44,7 +44,7 @@ public enum BotState {
   KILL ("KILL"),
   START ("START"),
   COMMAND ("COMMAND"),
-  ATTACK ("ATTACK");
+  ATTACK_HTTP ("ATTACK_HTTP");
 
   private final String name;
 

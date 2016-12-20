@@ -24,44 +24,24 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.attack;
+package com.acmutv.botnet.core.attack.http;
 
-import com.acmutv.botnet.core.target.HttpTarget;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Random;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
- * This class realizes a HTTP POST attack.
+ * This class realizes JUnit test suite for HTTP attacks.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HttpAttack
+ * @see HttpGetAttackTest
+ * @see HttpPostAttackTest
  */
-public class HttpPostAttack extends HttpAttack {
-
-  private static final Logger LOGGER = LogManager.getLogger(HttpAttack.class);
-
-  public HttpPostAttack(HttpTarget target, Random rndgen) {
-    super(target, rndgen);
-  }
-
-  public HttpPostAttack(HttpTarget target) {
-    super(target, new Random());
-  }
-
-  public void makeAttack(final URL url) throws IOException {
-    LOGGER.traceEntry("url={}", url);
-    HttpURLConnection http = (HttpURLConnection) url.openConnection();
-    http.setRequestMethod("POST");
-    http.setRequestProperty("User-Agent", "BOTNETv1.0.0");
-    int response = http.getResponseCode();
-
-    LOGGER.info("HTTP-ATTACK :: POST {} :: {}", url, response);
-  }
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    HttpGetAttackTest.class,
+    HttpPostAttackTest.class
+})
+public class TestAllAttackHttp {
 
 }

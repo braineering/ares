@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet.core.command;
 
-import com.acmutv.botnet.core.attack.HttpAttackMethod;
+import com.acmutv.botnet.core.attack.http.HttpAttackMethod;
 import com.acmutv.botnet.core.target.HttpTarget;
 import com.acmutv.botnet.core.target.HttpTargetProxy;
 import com.acmutv.botnet.tool.time.Duration;
@@ -79,7 +79,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_attackHTTPGet() throws MalformedURLException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack.http.get.json");
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.get.json");
     BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
     expected.getParams().put("method", HttpAttackMethod.GET);
     List<HttpTarget> targets = new ArrayList<>();
@@ -96,13 +96,12 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_attackHTTPGet_malformed() throws MalformedURLException {
-    InputStream file1 = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack.http.get.malformed1.json");
-    InputStream file2 = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack.http.get.malformed2.json");
-    InputStream file3 = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack.http.get.malformed3.json");
+    InputStream file1 = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.get.malformed1.json");
+    InputStream file2 = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.get.malformed2.json");
+    InputStream file3 = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.get.malformed3.json");
     BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
     expected.getParams().put("method", HttpAttackMethod.GET);
-    List<HttpTarget> targets = new ArrayList<>();
-    expected.getParams().put("targets", targets);
+    expected.getParams().put("targets", new ArrayList<>());
     expected.getParams().put("proxy", null);
     BotCommand actual1 = BotCommandService.fromJson(file1);
     BotCommand actual2 = BotCommandService.fromJson(file2);
@@ -117,7 +116,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_attackHTTPGetWithProxy() throws MalformedURLException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack.http.get.proxy.json");
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.get.proxy.json");
     BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
     expected.getParams().put("method", HttpAttackMethod.GET);
     List<HttpTarget> targets = new ArrayList<>();
@@ -135,7 +134,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_attackHTTPPost() throws MalformedURLException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack.http.post.json");
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.post.json");
     BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
     expected.getParams().put("method", HttpAttackMethod.POST);
     List<HttpTarget> targets = new ArrayList<>();
@@ -152,19 +151,14 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_attackHTTPPost_malformed() throws MalformedURLException {
-    InputStream file1 = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack.http.post.malformed1.json");
-    InputStream file2 = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack.http.post.malformed2.json");
-    InputStream file3 = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack.http.post.malformed3.json");
+    InputStream file2 = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.post.malformed2.json");
+    InputStream file3 = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.post.malformed3.json");
     BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
     expected.getParams().put("method", HttpAttackMethod.POST);
-    //noinspection MismatchedQueryAndUpdateOfCollection
-    List<HttpTarget> targets = new ArrayList<>();
-    expected.getParams().put("targets", targets);
+    expected.getParams().put("targets", new ArrayList<>());
     expected.getParams().put("proxy", null);
-    BotCommand actual1 = BotCommandService.fromJson(file1);
     BotCommand actual2 = BotCommandService.fromJson(file2);
     BotCommand actual3 = BotCommandService.fromJson(file3);
-    Assert.assertEquals(expected, actual1);
     Assert.assertEquals(expected, actual2);
     Assert.assertEquals(expected, actual3);
   }
@@ -174,7 +168,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_attackHTTPPostWithProxy() throws MalformedURLException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack.http.post.proxy.json");
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.post.proxy.json");
     BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
     expected.getParams().put("method", HttpAttackMethod.POST);
     List<HttpTarget> targets = new ArrayList<>();
@@ -242,8 +236,7 @@ public class BotCommandServiceTest {
   public void test_fromJSONFile_set_default() throws MalformedURLException {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/set.default.json");
     BotCommand expected = new BotCommand(CommandScope.SET);
-    Map<String,String> settings = new HashMap<>();
-    expected.getParams().put("settings", settings);
+    expected.getParams().put("settings", new HashMap<>());
     BotCommand actual = BotCommandService.fromJson(file);
     Assert.assertEquals(expected, actual);
   }

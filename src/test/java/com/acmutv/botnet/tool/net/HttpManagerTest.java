@@ -26,8 +26,7 @@
 
 package com.acmutv.botnet.tool.net;
 
-import com.acmutv.botnet.tool.net.ConnectionManager;
-import com.acmutv.botnet.tool.net.HttpManager;
+import com.acmutv.botnet.core.target.HttpTargetProxy;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,6 +35,8 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -54,29 +55,47 @@ public class HttpManagerTest {
   }
 
   /**
-   * Tests the HTTP GET without Proxy.
+   * Tests the HTTP GET request (method:GET properties:none proxy:none)
    * @throws ParseException when invalid weburl.
-   * @throws IOException when HTTP GET error.
+   * @throws IOException when HTTP error.
    */
   @Test
   public void test_get() throws ParseException, IOException {
     final URL url = new URL("http://www.google.com");
     final int expected = 200;
-    final int actual = HttpManager.makeGET(url);
+    final int actual = HttpManager.makeRequest(HttpMethod.GET, url);
     assertEquals(expected, actual);
   }
 
   /**
-   * Tests the HTTP GET with Proxy.
-   * @throws ParseException when invalid weburl or Proxy.
-   * @throws IOException when HTTP GET error.
+   * Tests the HTTP GET request (method:GET properties:(User-Agent) proxy:none)
+   * @throws ParseException when invalid weburl.
+   * @throws IOException when HTTP error.
    */
   @Test
-  public void test_getWithProxy() throws ParseException, IOException {
+  public void test_get_props() throws ParseException, IOException {
     final URL url = new URL("http://www.google.com");
-    final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("104.28.5.228", 80));
-    final int expected = 400;
-    final int actual = HttpManager.makeGETWithProxy(url, proxy);
+    final Map<String,String> props = new HashMap<>();
+    props.put("User-Agent", "BOTNETv1.0.0");
+    final int expected = 200;
+    final int actual = HttpManager.makeRequest(HttpMethod.GET, url, props);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Tests the HTTP GET request (method:GET properties:(User-Agent) proxy:provided)
+   * See {@literal https://www.us-proxy.org/} for a list of active public proxies.
+   * @throws ParseException when invalid weburl.
+   * @throws IOException when HTTP error.
+   */
+  @Test
+  public void test_get_propsAndProxy() throws ParseException, IOException {
+    final URL url = new URL("http://www.google.com");
+    final Map<String,String> props = new HashMap<>();
+    props.put("User-Agent", "BOTNETv1.0.0");
+    final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("31.220.56.101", 80));
+    final int expected = 200;
+    final int actual = HttpManager.makeRequest(HttpMethod.GET, url, props, proxy);
     assertEquals(expected, actual);
   }
 

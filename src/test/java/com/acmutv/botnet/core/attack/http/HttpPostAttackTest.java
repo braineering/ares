@@ -24,7 +24,7 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.attack;
+package com.acmutv.botnet.core.attack.http;
 
 import com.acmutv.botnet.core.target.HttpTarget;
 import com.acmutv.botnet.tool.net.ConnectionManager;
@@ -39,14 +39,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class realizes JUnit tests for {@link HttpGetAttack}.
+ * This class realizes JUnit tests for {@link HttpPostAttack}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
- * * @author Michele Porretta {@literal <mporretta@acm.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HttpGetAttack
+ * @see HttpPostAttack
  * @see HttpTarget
  */
-public class HttpGetAttackTest {
+public class HttpPostAttackTest {
 
   @Before
   public void setup() {
@@ -57,7 +57,7 @@ public class HttpGetAttackTest {
   public void test_makeAttack() throws InterruptedException, MalformedURLException {
     HttpTarget tgt = new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 1);
     ExecutorService executor = Executors.newFixedThreadPool(1);
-    Runnable attacker = new HttpGetAttack(tgt);
+    Runnable attacker = new HttpPostAttack(tgt);
     executor.execute(attacker);
     executor.shutdown();
     executor.awaitTermination(60, TimeUnit.SECONDS);

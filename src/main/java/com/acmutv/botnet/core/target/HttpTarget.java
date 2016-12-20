@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet.core.target;
 
-import com.acmutv.botnet.core.attack.HttpAttack;
+import com.acmutv.botnet.core.attack.http.HttpAttack;
 import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.tool.time.Interval;
 import lombok.AllArgsConstructor;

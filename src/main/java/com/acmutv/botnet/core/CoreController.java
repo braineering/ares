@@ -131,6 +131,9 @@ public class CoreController {
           loop = false;
           break;
 
+        case ATTACK_HTTP:
+          break;
+
         default:
           break;
       }
