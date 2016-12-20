@@ -101,6 +101,7 @@
         <!-- General -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.main>com.acmutv.botnet.BotMain</project.main>
 
         <!-- Core -->
 
@@ -138,10 +139,16 @@
 
         <!-- JAR -->
         <jar.version>3.0.2</jar.version>
-        <jar.main>com.acmutv.botnet.BotMain</jar.main>
+
+        <!-- Assembly -->
+        <assembly.version>3.0.0</assembly.version>
+
+        <!-- Exec -->
+        <exec.version>1.5.0</exec.version>
 
         <!-- Surefire -->
         <surefire.version>2.19.1</surefire.version>
+        <surefire.skipTests>false</surefire.skipTests>
 
         <!-- Proguard -->
         <proguard.version>2.0.13</proguard.version>
@@ -252,9 +259,20 @@
     </dependencies>
 
     <profiles>
-        <!-- PRODUCTION -->
+        <!-- PROFILE: skip-tests -->
         <profile>
-            <id>production</id>
+            <id>skip-tests</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <surefire.skipTests>true</surefire.skipTests>
+            </properties>
+        </profile>
+
+        <!-- PROFILE: optimize -->
+        <profile>
+            <id>optimize</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
@@ -283,6 +301,14 @@
                                         <lib>${java.home}/lib/rt.jar</lib>
                                         <lib>${java.home}/lib/jsse.jar</lib>
                                     </libs>
+                                    <options>
+                                        <option>-allowaccessmodification</option>
+                                        <option>-optimizationpasses 3</option>
+                                        <option>-overloadaggressively</option>
+                                        <option>-overloadaggressively</option>
+                                        <option>-overloadaggressively</option>
+                                        <option>-keep public class ${project.main} { public static void main(java.lang.String[]); }</option>
+                                    </options>
                                 </configuration>
                             </execution>
                         </executions>
@@ -315,6 +341,20 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>${jar.version}</version>
+                </plugin>
+
+                <!-- Assembly -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${assembly.version}</version>
+                </plugin>
+
+                <!-- Exec -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>${exec.version}</version>
                 </plugin>
 
                 <!-- Surefire -->
@@ -375,9 +415,54 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Main-Class>${jar.main}</Main-Class>
+                            <Main-Class>${project.main}</Main-Class>
                         </manifestEntries>
                     </archive>
+                </configuration>
+            </plugin>
+
+            <!-- Assembly -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${assembly.version}</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>${project.main}</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Exec -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec.version}</version>
+                <configuration>
+                    <mainClass>${project.main}</mainClass>
+                    <arguments>
+                        <argument/>
+                    </arguments>
+                    <systemProperties>
+                        <systemProperty>
+                            <key/>
+                            <value/>
+                        </systemProperty>
+                    </systemProperties>
                 </configuration>
             </plugin>
 
@@ -387,6 +472,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.version}</version>
                 <configuration>
+                    <skipTests>${surefire.skipTests}</skipTests>
                     <parallel>methods</parallel>
                     <threadCount>10</threadCount>
                 </configuration>
