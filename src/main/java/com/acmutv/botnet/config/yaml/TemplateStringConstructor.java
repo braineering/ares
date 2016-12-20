@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet.config.yaml;
 
-import com.acmutv.botnet.config.util.TemplateEngine;
+import com.acmutv.botnet.tool.string.TemplateEngine;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.logging.log4j.LogManager;

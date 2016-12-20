@@ -24,53 +24,44 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.config.util;
+package com.acmutv.botnet.tool.string;
 
-import com.acmutv.botnet.config.AppConfiguration;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
-
 /**
- * This class realizes a string template that can be used by {@link StrSubstitutor}.
+ * This class realizes the string substitution,
+ * according to the templating map {@link StringTemplateMap}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see StrSubstitutor
+ * @see StringTemplateMap
  */
-public class StringTemplateMap extends HashMap<String,String> {
+public class TemplateEngine extends StrSubstitutor {
 
-  private static final Logger LOGGER = LogManager.getLogger(StringTemplateMap.class);
+  private static final Logger LOGGER = LogManager.getLogger(TemplateEngine.class);
 
   /**
-   * The singleton of {@link StringTemplateMap}.
+   * The singleton of {@link TemplateEngine}.
    */
-  private static StringTemplateMap instance;
+  private static TemplateEngine instance;
 
   /**
-   * Returns the singleton of {@link StringTemplateMap}.
+   * Returns the singleton of {@link TemplateEngine}.
    * @return the singleton.
    */
-  public static StringTemplateMap getInstance() {
+  public static TemplateEngine getInstance() {
     if (instance == null) {
-      instance = new StringTemplateMap();
+      instance = new TemplateEngine();
     }
     return instance;
   }
 
   /**
-   * Initializes the singleton of {@link StringTemplateMap}.
-   * Available properties are:
-   * ${PWD}: the present working directory (e.g.: /home/gmarciani/workspace/app);
-   * ${RES}: the target resources folder (target/classes)
+   * Initializes the singleton of {@link TemplateEngine}.
    */
-  private StringTemplateMap() {
-    super();
-    super.put("PWD",
-        System.getProperty("user.dir"));
-    super.put("RES",
-        AppConfiguration.class.getResource("/").getPath().replaceAll("/$", ""));
+  private TemplateEngine() {
+    super(StringTemplateMap.getInstance());
   }
 }

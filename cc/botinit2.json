@@ -1,0 +1,13 @@
+{
+  "sysInfo": true,
+  "netInfo": true,
+  "sysStat": false,
+  "netStat": false,
+  "sampling": {
+    "amount": 3,
+    "unit": "MINUTES"
+  },
+  "initResource": "${PWD}/cc/botinit2.json",
+  "cmdResource": "${PWD}/cc/botcmd.json",
+  "logResource": "${PWD}/cc/botlog.json"
+}

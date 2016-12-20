@@ -93,6 +93,10 @@ public class BotPool {
     }
   }
 
+  public void pause(Duration timeout) {
+    return;
+  }
+
   public void shutdown(Duration timeout) {
     new Thread(new ExecutorServiceShutdown(this.getFixedThreadPool(), timeout)).start();
     new Thread(new ExecutorServiceShutdown(this.getScheduledThreadPool(), timeout)).start();

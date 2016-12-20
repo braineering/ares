@@ -27,13 +27,12 @@
 package com.acmutv.botnet;
 
 import com.acmutv.botnet.core.CoreController;
+import com.acmutv.botnet.core.exception.BotException;
 import com.acmutv.botnet.tool.runtime.RuntimeManager;
 import com.acmutv.botnet.tool.runtime.ShutdownHook;
 import com.acmutv.botnet.ui.CliService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.List;
 
 /**
  * This class realizes the app entry-point.
@@ -55,8 +54,10 @@ public class BotMain {
 
     RuntimeManager.registerShutdownHooks(new ShutdownHook());
 
-    if (CoreController.initBot()) {
-      CoreController.runBot();
+    try {
+      CoreController.startBot();
+    } catch (BotException exc) {
+      LOGGER.error(exc.getMessage());
     }
 
     LOGGER.traceExit(0);

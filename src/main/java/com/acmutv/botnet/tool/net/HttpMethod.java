@@ -26,8 +26,6 @@
 
 package com.acmutv.botnet.tool.net;
 
-import com.acmutv.botnet.core.attack.http.HttpAttackMethod;
-
 /**
  * This enum enumerates the HTTP methods.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}

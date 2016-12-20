@@ -24,54 +24,46 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.tool.net;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+package com.acmutv.botnet.core.exception;
 
 /**
- * This class realizes JUnit tests for {@link ConnectionManager}.
+ * This class realizes the base exception related to bot command parsing.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  */
-public class ConnectionManagerTest {
+public class BotCommandParsingException extends Exception {
 
-  @Before
-  public void setup() {
-    org.junit.Assume.assumeTrue(ConnectionManager.checkConnection());
+  /**
+   * Constructs a new runtime exception with {@code null} as its
+   * detail message.  The cause is not initialized, and may subsequently be
+   * initialized by a call to {@link #initCause}.
+   */
+  public BotCommandParsingException() {
   }
 
   /**
-   * Tests IP address retrieval.
+   * Constructs a new runtime exception with the specified detail message.
+   * The cause is not initialized, and may subsequently be initialized by a
+   * call to {@link #initCause}.
+   *
+   * @param message the detail message. The detail message is saved for
+   *                later retrieval by the {@link #getMessage()} method.
    */
-  @Test
-  public void test_getIP() throws UnknownHostException {
-    String actual = ConnectionManager.getIP();
+  public BotCommandParsingException(String message) {
+    super(message);
   }
 
   /**
-   * Tests MAC address retrieval.
+   * Constructs a new runtime exception with the specified detail message.
+   * The cause is not initialized, and may subsequently be initialized by a
+   * call to {@link #initCause}.
+   *
+   * @param format the detail (format) message. The detail message is saved for
+   *                later retrieval by the {@link #getMessage()} method.
+   * @param objects the objects to fill the format string with.
    */
-  @Test
-  public void test_getMAC() throws SocketException, UnknownHostException {
-    String actual = ConnectionManager.getMAC();
-    Assert.assertNotNull(actual);
+  public BotCommandParsingException(String format, Object... objects) {
+    super(String.format(format, objects));
   }
-
-  /**
-   * Tests the connection availability check, by sending an HTTP request.
-   * @throws IOException when HTTP GET error.
-   */
-  @Test
-  public void test_checkConnection() throws IOException {
-    boolean check = ConnectionManager.checkConnection();
-    Assert.assertTrue(check);
-  }
-
 }

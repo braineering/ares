@@ -73,7 +73,7 @@ public class HttpManager {
     LOGGER.traceEntry("url={}", url);
     HttpURLConnection http = (HttpURLConnection) url.openConnection();
     http.setRequestMethod(method.name());
-    props.forEach((k,v) -> http.setRequestProperty(k, v));
+    props.forEach(http::setRequestProperty);
     int response = http.getResponseCode();
     return LOGGER.traceExit(response);
   }
@@ -90,7 +90,7 @@ public class HttpManager {
     LOGGER.traceEntry("url={} proxy={}", url, proxy);
     HttpURLConnection http = (HttpURLConnection) url.openConnection(proxy);
     http.setRequestMethod(method.name());
-    props.forEach((k,v) -> http.setRequestProperty(k, v));
+    props.forEach(http::setRequestProperty);
     int response = http.getResponseCode();
     return LOGGER.traceExit(response);
   }

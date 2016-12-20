@@ -24,36 +24,46 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.command;
-
-import com.acmutv.botnet.core.command.json.BotCommandMapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.io.*;
+package com.acmutv.botnet.core.exception;
 
 /**
- * This class realizes bot command services.
+ * This class realizes the base exception related to bot.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see BotCommand
  */
-public class BotCommandService {
-
-  private static final Logger LOGGER = LogManager.getLogger(BotCommandService.class);
+public class BotException extends Exception {
 
   /**
-   * Parses a BotCommand from a JSON file.
-   * @param in the JSON file.
-   * @return the parsed BotCommand; BotCommand with scope NONE, in case of errors.
-   * @throws IOException when command cannot be parsed.
+   * Constructs a new runtime exception with {@code null} as its
+   * detail message.  The cause is not initialized, and may subsequently be
+   * initialized by a call to {@link #initCause}.
    */
-  public static BotCommand fromJson(InputStream in) throws IOException {
-    LOGGER.traceEntry("in={}", in);
-    BotCommandMapper mapper = new BotCommandMapper();
-    BotCommand cmd = mapper.readValue(in, BotCommand.class);
-    return LOGGER.traceExit(cmd);
+  public BotException() {
   }
 
+  /**
+   * Constructs a new runtime exception with the specified detail message.
+   * The cause is not initialized, and may subsequently be initialized by a
+   * call to {@link #initCause}.
+   *
+   * @param message the detail message. The detail message is saved for
+   *                later retrieval by the {@link #getMessage()} method.
+   */
+  public BotException(String message) {
+    super(message);
+  }
+
+  /**
+   * Constructs a new runtime exception with the specified detail message.
+   * The cause is not initialized, and may subsequently be initialized by a
+   * call to {@link #initCause}.
+   *
+   * @param format the detail (format) message. The detail message is saved for
+   *                later retrieval by the {@link #getMessage()} method.
+   * @param objects the objects to fill the format string with.
+   */
+  public BotException(String format, Object... objects) {
+    super(String.format(format, objects));
+  }
 }

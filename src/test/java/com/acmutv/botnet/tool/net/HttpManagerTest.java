@@ -26,7 +26,6 @@
 
 package com.acmutv.botnet.tool.net;
 
-import com.acmutv.botnet.core.target.HttpTargetProxy;
 import org.junit.Before;
 import org.junit.Test;
 

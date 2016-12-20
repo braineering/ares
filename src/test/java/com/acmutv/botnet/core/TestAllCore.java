@@ -40,6 +40,7 @@ import com.acmutv.botnet.core.target.TestAllTarget;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
+ * @see CoreControllerTest
  * @see TestAllAttack
  * @see TestAllCommand
  * @see TestAllPool
@@ -49,6 +50,7 @@ import com.acmutv.botnet.core.target.TestAllTarget;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+    CoreControllerTest.class,
     TestAllAttack.class,
     TestAllCommand.class,
     TestAllPool.class,

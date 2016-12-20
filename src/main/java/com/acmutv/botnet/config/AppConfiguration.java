@@ -123,7 +123,7 @@ public class AppConfiguration {
 
   /**
    * Property initResource.
-   * The bot uses this resource to join the botnet.
+   * The bot uses this resource to joinBotnet the botnet.
    * Default is: ${PROJECT_RESOURCES}cc/botinit.json.
    */
   private String initResource = INIT_RESOURCE;

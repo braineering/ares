@@ -39,11 +39,11 @@ import lombok.Getter;
 @Getter
 public enum CommandScope {
   NONE ("NONE", false),
-  INIT ("INIT", true),
-  SET ("SET", true),
+  RESTART ("RESTART", true),
+  UPDATE ("UPDATE", true),
   SLEEP ("SLEEP", true),
-  KILL ("KILL", false),
   SHUTDOWN ("SHUTDOWN", true),
+  KILL ("KILL", false),
   ATTACK_HTTP("ATTACK_HTTP", true);
 
   private final String name;
@@ -52,13 +52,5 @@ public enum CommandScope {
   CommandScope(final String name, final boolean withParams) {
     this.name = name;
     this.withParams = withParams;
-  }
-
-  public static CommandScope from(Object obj) {
-    try {
-      return CommandScope.valueOf(obj.toString());
-    } catch (IllegalArgumentException e) {
-      return CommandScope.NONE;
-    }
   }
 }

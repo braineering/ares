@@ -23,6 +23,7 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
  */
+
 package com.acmutv.botnet.tool.net;
 
 import org.apache.logging.log4j.LogManager;
@@ -33,8 +34,7 @@ import java.net.*;
 import java.util.Enumeration;
 
 /**
- * This class realizes ...
- *
+ * This class realizes connection
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
@@ -46,45 +46,35 @@ public class ConnectionManager {
   /**
    * Retrieves the local host MAC address.
    * @return the string representation of MAC address.
+   * @throws UnknownHostException when IP address of the host cannot be determined.
+   * @throws SocketException when there is an error creating or accessing a Socket.
    */
-  public static String getMAC() {
+  public static String getMAC() throws UnknownHostException, SocketException {
     LOGGER.traceEntry();
     String macString = null;
-
-    try {
-      InetAddress ip = InetAddress.getLocalHost();
-      Enumeration<NetworkInterface> networks = NetworkInterface.getNetworkInterfaces();
-      while (networks.hasMoreElements()) {
-        NetworkInterface network = networks.nextElement();
-        byte[] mac = network.getHardwareAddress();
-        if (mac != null) {
-          StringBuilder sb = new StringBuilder();
-          for (int i = 0; i < mac.length; i++) {
-            sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
-          }
-          macString = sb.toString();
+    InetAddress ip = InetAddress.getLocalHost();
+    Enumeration<NetworkInterface> networks = NetworkInterface.getNetworkInterfaces();
+    while (networks.hasMoreElements()) {
+      NetworkInterface network = networks.nextElement();
+      byte[] mac = network.getHardwareAddress();
+      if (mac != null) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < mac.length; i++) {
+          sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
         }
+        macString = sb.toString();
       }
-    } catch (UnknownHostException |SocketException e) {
-      LOGGER.error(e.getMessage());
     }
-
     return LOGGER.traceExit(macString);
   }
 
   /**
    * Retrieves the local IP address.
    * @return the string representation of the local IP address; null, if error.
+   * @throws UnknownHostException when IP address of the host cannot be determined.
    */
-  public static String getIP() {
-    String ipString = null;
-
-    try {
-      ipString = InetAddress.getLocalHost().getHostAddress();
-    } catch (UnknownHostException e) {
-      LOGGER.error(e.getMessage());
-    }
-
+  public static String getIP() throws UnknownHostException {
+    final  String ipString = InetAddress.getLocalHost().getHostAddress();
     return LOGGER.traceExit(ipString);
   }
 
@@ -97,6 +87,7 @@ public class ConnectionManager {
     boolean check;
 
     Socket socket = new Socket();
+
     try {
       socket.connect(new InetSocketAddress("www.google.com", 80), 10000);
       check = true;

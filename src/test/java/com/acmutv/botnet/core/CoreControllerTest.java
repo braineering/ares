@@ -1,7 +1,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2016 Giacomo Marciani
+  Copyright (c) 2016 Giacomo Marciani and Michele Porretta
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -24,44 +24,28 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.config.util;
+package com.acmutv.botnet.core;
 
-import org.apache.commons.lang3.text.StrSubstitutor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.acmutv.botnet.core.state.BotState;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
- * This class realizes the string substitution,
- * according to the templating map {@link StringTemplateMap}.
+ * This class realizes JUnit tests for core controller services.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see StringTemplateMap
+ * @see CoreController
  */
-public class TemplateEngine extends StrSubstitutor {
-
-  private static final Logger LOGGER = LogManager.getLogger(TemplateEngine.class);
+public class CoreControllerTest {
 
   /**
-   * The singleton of {@link TemplateEngine}.
+   * Tests the bot initialization.
    */
-  private static TemplateEngine instance;
-
-  /**
-   * Returns the singleton of {@link TemplateEngine}.
-   * @return the singleton.
-   */
-  public static TemplateEngine getInstance() {
-    if (instance == null) {
-      instance = new TemplateEngine();
-    }
-    return instance;
+  @Test
+  public void test_initBot() {
+    //TODO
   }
 
-  /**
-   * Initializes the singleton of {@link TemplateEngine}.
-   */
-  private TemplateEngine() {
-    super(StringTemplateMap.getInstance());
-  }
+
 }

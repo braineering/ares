@@ -24,32 +24,32 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.state;
+package com.acmutv.botnet.tool.string;
 
-import com.acmutv.botnet.core.command.CommandScope;
-import lombok.Getter;
+import com.acmutv.botnet.tool.runtime.RuntimeManager;
+import org.junit.Test;
+
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
 
 /**
- * This enum enumerates states of bot's FSA.
+ * This class realizes JUnit tests for {@link TemplateEngine}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see CommandScope
+ * @see TemplateEngine
  */
-@Getter
-public enum BotState {
-  INIT ("INIT"),
-  JOIN ("JOIN"),
-  SLEEP ("SLEEP"),
-  SHUTDOWN ("SHUTDOWN"),
-  KILL ("KILL"),
-  DEAD ("DEAD"),
-  COMMAND ("COMMAND");
+public class TemplateEngineTest {
 
-  private final String name;
-
-  BotState(final String name) {
-    this.name = name;
+  /**
+   * Tests string template with variables.
+   */
+  @Test
+  public void test_withVariable() {
+    String actual = TemplateEngine.getInstance().replace("${RES}/log4j2-test.xml");
+    String expected = TemplateEngineTest.class.getResource("/log4j2-test.xml").getPath();
+    assertEquals(expected, actual);
   }
 
 }

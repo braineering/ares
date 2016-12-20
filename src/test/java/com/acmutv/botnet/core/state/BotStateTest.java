@@ -45,8 +45,12 @@ public class BotStateTest {
   public void test_toString() {
     for (BotState state : BotState.values()) {
       final String expected = String.format("%s", state.getName());
-      final String actual = String.format("%s", state);
-      Assert.assertEquals(expected, actual);
+      final String actual1 = String.format("%s", state.name());
+      final String actual2 = String.format("%s", state.toString());
+      final String actual3 = String.format("%s", state);
+      Assert.assertEquals(expected, actual1);
+      Assert.assertEquals(expected, actual2);
+      Assert.assertEquals(expected, actual3);
     }
   }
 }

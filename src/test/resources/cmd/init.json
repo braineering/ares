@@ -1,4 +1,0 @@
-{
-  "command": "INIT",
-  "resource": "${RES}/cc/botinit.json"
-}

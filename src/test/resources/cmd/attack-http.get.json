@@ -20,5 +20,6 @@
       },
       "maxAttempts": 10
     }
-  ]
+  ],
+  "proxy": null
 }

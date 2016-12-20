@@ -1,7 +1,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2016 Giacomo Marciani and Michele Porretta
+  Copyright (c) 2016 Giacomo Marciani
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -24,36 +24,53 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.command;
+package com.acmutv.botnet.tool.string;
 
-import com.acmutv.botnet.core.command.json.BotCommandMapper;
+import com.acmutv.botnet.config.AppConfiguration;
+import org.apache.commons.lang3.text.StrSubstitutor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
+import java.util.HashMap;
 
 /**
- * This class realizes bot command services.
+ * This class realizes a string template that can be used by {@link StrSubstitutor}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see BotCommand
+ * @see StrSubstitutor
  */
-public class BotCommandService {
+public class StringTemplateMap extends HashMap<String,String> {
 
-  private static final Logger LOGGER = LogManager.getLogger(BotCommandService.class);
+  private static final Logger LOGGER = LogManager.getLogger(StringTemplateMap.class);
 
   /**
-   * Parses a BotCommand from a JSON file.
-   * @param in the JSON file.
-   * @return the parsed BotCommand; BotCommand with scope NONE, in case of errors.
-   * @throws IOException when command cannot be parsed.
+   * The singleton of {@link StringTemplateMap}.
    */
-  public static BotCommand fromJson(InputStream in) throws IOException {
-    LOGGER.traceEntry("in={}", in);
-    BotCommandMapper mapper = new BotCommandMapper();
-    BotCommand cmd = mapper.readValue(in, BotCommand.class);
-    return LOGGER.traceExit(cmd);
+  private static StringTemplateMap instance;
+
+  /**
+   * Returns the singleton of {@link StringTemplateMap}.
+   * @return the singleton.
+   */
+  public static StringTemplateMap getInstance() {
+    if (instance == null) {
+      instance = new StringTemplateMap();
+    }
+    return instance;
   }
 
+  /**
+   * Initializes the singleton of {@link StringTemplateMap}.
+   * Available properties are:
+   * ${PWD}: the present working directory (e.g.: /home/gmarciani/workspace/app);
+   * ${RES}: the target resources folder (target/classes)
+   */
+  private StringTemplateMap() {
+    super();
+    super.put("PWD",
+        System.getProperty("user.dir"));
+    super.put("RES",
+        AppConfiguration.class.getResource("/").getPath().replaceAll("/$", ""));
+  }
 }

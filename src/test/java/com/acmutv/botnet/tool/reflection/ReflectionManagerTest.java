@@ -31,6 +31,9 @@ import lombok.Data;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.beans.IntrospectionException;
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * This class realizes JUnit tests for {@link ReflectionManager}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
@@ -58,7 +61,12 @@ public class ReflectionManagerTest {
   @Test
   public void test_get_error() {
     CustomObject object = new CustomObject();
-    Object actualObj = ReflectionManager.get(CustomObject.class, object, "prop");
+    Object actualObj = null;
+    try {
+      actualObj = ReflectionManager.get(CustomObject.class, object, "prop");
+    } catch (IntrospectionException | InvocationTargetException | IllegalAccessException exc) {
+      exc.printStackTrace();
+    }
     Assert.assertNull(actualObj);
   }
 
@@ -68,8 +76,11 @@ public class ReflectionManagerTest {
   @Test
   public void test_set_error() {
     CustomObject object = new CustomObject();
-    boolean result = ReflectionManager.set(CustomObject.class, object, "prop", "custom");
-    Assert.assertFalse(result);
+    try {
+      ReflectionManager.set(CustomObject.class, object, "prop", "custom");
+    } catch (IntrospectionException | IllegalAccessException | InvocationTargetException exc) {
+      exc.printStackTrace();
+    }
     String expected = "default";
     String actual = object.getPropString();
     Assert.assertEquals(expected, actual);
@@ -82,7 +93,12 @@ public class ReflectionManagerTest {
   @Test
   public void test_get_boolean() {
     CustomObject object = new CustomObject();
-    Object actualObj = ReflectionManager.get(CustomObject.class, object, "propBoolean");
+    Object actualObj = null;
+    try {
+      actualObj = ReflectionManager.get(CustomObject.class, object, "propBoolean");
+    } catch (IntrospectionException | InvocationTargetException | IllegalAccessException exc) {
+      exc.printStackTrace();
+    }
     if (actualObj == null) Assert.fail();
     boolean actual = (boolean) actualObj;
     boolean expected = false;
@@ -95,7 +111,12 @@ public class ReflectionManagerTest {
   @Test
   public void test_get_int() {
     CustomObject object = new CustomObject();
-    Object actualObj = ReflectionManager.get(CustomObject.class, object, "propInt");
+    Object actualObj = null;
+    try {
+      actualObj = ReflectionManager.get(CustomObject.class, object, "propInt");
+    } catch (IntrospectionException | InvocationTargetException | IllegalAccessException exc) {
+      exc.printStackTrace();
+    }
     if (actualObj == null) Assert.fail();
     int actual = (int) actualObj;
     int expected = 10;
@@ -108,7 +129,12 @@ public class ReflectionManagerTest {
   @Test
   public void test_get_long() {
     CustomObject object = new CustomObject();
-    Object actualObj = ReflectionManager.get(CustomObject.class, object, "propLong");
+    Object actualObj = null;
+    try {
+      actualObj = ReflectionManager.get(CustomObject.class, object, "propLong");
+    } catch (IntrospectionException | InvocationTargetException | IllegalAccessException exc) {
+      exc.printStackTrace();
+    }
     if (actualObj == null) Assert.fail();
     long actual = (long) actualObj;
     long expected = 10;
@@ -121,7 +147,12 @@ public class ReflectionManagerTest {
   @Test
   public void test_get_double() {
     CustomObject object = new CustomObject();
-    Object actualObj = ReflectionManager.get(CustomObject.class, object, "propDouble");
+    Object actualObj = null;
+    try {
+      actualObj = ReflectionManager.get(CustomObject.class, object, "propDouble");
+    } catch (IntrospectionException | InvocationTargetException | IllegalAccessException exc) {
+      exc.printStackTrace();
+    }
     if (actualObj == null) Assert.fail();
     double actual = (double) actualObj;
     double expected = 10.10;
@@ -134,7 +165,12 @@ public class ReflectionManagerTest {
   @Test
   public void test_get_string() {
     CustomObject object = new CustomObject();
-    Object actualObj = ReflectionManager.get(CustomObject.class, object, "propString");
+    Object actualObj = null;
+    try {
+      actualObj = ReflectionManager.get(CustomObject.class, object, "propString");
+    } catch (IntrospectionException | InvocationTargetException | IllegalAccessException exc) {
+      exc.printStackTrace();
+    }
     if (actualObj == null) Assert.fail();
     String actual = (String) actualObj;
     String expected = "default";
@@ -147,8 +183,11 @@ public class ReflectionManagerTest {
   @Test
   public void test_set_boolean() {
     CustomObject object = new CustomObject();
-    boolean result = ReflectionManager.set(CustomObject.class, object, "propBoolean", true);
-    Assert.assertTrue(result);
+    try {
+      ReflectionManager.set(CustomObject.class, object, "propBoolean", true);
+    } catch (IntrospectionException | InvocationTargetException | IllegalAccessException exc) {
+      exc.printStackTrace();
+    }
     Assert.assertTrue(object.isPropBoolean());
   }
 
@@ -158,8 +197,11 @@ public class ReflectionManagerTest {
   @Test
   public void test_set_int() {
     CustomObject object = new CustomObject();
-    boolean result = ReflectionManager.set(CustomObject.class, object, "propInt", 100);
-    Assert.assertTrue(result);
+    try {
+      ReflectionManager.set(CustomObject.class, object, "propInt", 100);
+    } catch (IntrospectionException | InvocationTargetException | IllegalAccessException exc) {
+      exc.printStackTrace();
+    }
     int expected = 100;
     int actual = object.getPropInt();
     Assert.assertEquals(expected, actual);
@@ -171,8 +213,11 @@ public class ReflectionManagerTest {
   @Test
   public void test_set_long() {
     CustomObject object = new CustomObject();
-    boolean result = ReflectionManager.set(CustomObject.class, object, "propLong", 100);
-    Assert.assertTrue(result);
+    try {
+      ReflectionManager.set(CustomObject.class, object, "propLong", 100);
+    } catch (IntrospectionException | InvocationTargetException | IllegalAccessException exc) {
+      exc.printStackTrace();
+    }
     long expected = 100;
     long actual = object.getPropLong();
     Assert.assertEquals(expected, actual);
@@ -184,8 +229,11 @@ public class ReflectionManagerTest {
   @Test
   public void test_set_double() {
     CustomObject object = new CustomObject();
-    boolean result = ReflectionManager.set(CustomObject.class, object, "propDouble", 100.10);
-    Assert.assertTrue(result);
+    try {
+      ReflectionManager.set(CustomObject.class, object, "propDouble", 100.10);
+    } catch (IntrospectionException | InvocationTargetException | IllegalAccessException exc) {
+      exc.printStackTrace();
+    }
     double expected = 100.10;
     double actual = object.getPropDouble();
     Assert.assertEquals(expected, actual, 0);
@@ -197,8 +245,11 @@ public class ReflectionManagerTest {
   @Test
   public void test_set_string() {
     CustomObject object = new CustomObject();
-    boolean result = ReflectionManager.set(CustomObject.class, object, "propString", "custom");
-    Assert.assertTrue(result);
+    try {
+      ReflectionManager.set(CustomObject.class, object, "propString", "custom");
+    } catch (IntrospectionException | InvocationTargetException | IllegalAccessException exc) {
+      exc.printStackTrace();
+    }
     String expected = "custom";
     String actual = object.getPropString();
     Assert.assertEquals(expected, actual);

@@ -1,5 +1,5 @@
 {
-  "command": "SET",
+  "command": "UPDATE",
   "settings": [
     {
       "property": "prop1",

@@ -24,32 +24,22 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.state;
+package com.acmutv.botnet.tool.string;
 
-import com.acmutv.botnet.core.command.CommandScope;
-import lombok.Getter;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
- * This enum enumerates states of bot's FSA.
+ * This class realizes JUnit test suite for all tools related to string management.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see CommandScope
+ * @see TemplateEngineTest
  */
-@Getter
-public enum BotState {
-  INIT ("INIT"),
-  JOIN ("JOIN"),
-  SLEEP ("SLEEP"),
-  SHUTDOWN ("SHUTDOWN"),
-  KILL ("KILL"),
-  DEAD ("DEAD"),
-  COMMAND ("COMMAND");
-
-  private final String name;
-
-  BotState(final String name) {
-    this.name = name;
-  }
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    TemplateEngineTest.class
+})
+public class TestAllToolString {
 
 }
