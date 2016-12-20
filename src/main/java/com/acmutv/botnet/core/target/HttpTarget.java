@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet.core.target;
 
-import com.acmutv.botnet.core.attack.http.HttpAttack;
+import com.acmutv.botnet.core.attack.HttpAttack;
 import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.tool.time.Interval;
 import lombok.AllArgsConstructor;
@@ -41,7 +41,6 @@ import java.net.URL;
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see HttpAttack
- * @see HttpTargetProxy
  * @see AppConfiguration
  */
 @Data

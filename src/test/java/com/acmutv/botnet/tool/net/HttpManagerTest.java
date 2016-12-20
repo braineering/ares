@@ -30,8 +30,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -92,7 +90,7 @@ public class HttpManagerTest {
     final URL url = new URL("http://www.google.com");
     final Map<String,String> props = new HashMap<>();
     props.put("User-Agent", "BOTNETv1.0.0");
-    final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("31.220.56.101", 80));
+    final HttpProxy proxy = new HttpProxy("31.220.56.101", 80);
     final int expected = 200;
     final int actual = HttpManager.makeRequest(HttpMethod.GET, url, props, proxy);
     assertEquals(expected, actual);

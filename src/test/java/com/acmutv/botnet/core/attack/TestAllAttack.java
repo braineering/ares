@@ -26,7 +26,6 @@
 
 package com.acmutv.botnet.core.attack;
 
-import com.acmutv.botnet.core.attack.http.TestAllAttackHttp;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -35,11 +34,13 @@ import org.junit.runners.Suite;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see TestAllAttackHttp
+ * @see HttpGetAttackTest
+ * @see HttpPostAttackTest
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    TestAllAttackHttp.class
+    HttpGetAttackTest.class,
+    HttpPostAttackTest.class
 })
 public class TestAllAttack {
 

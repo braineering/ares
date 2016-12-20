@@ -35,12 +35,10 @@ import org.junit.runners.Suite;
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see HttpTargetTest
- * @see HttpTargetProxyTest
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    HttpTargetTest.class,
-    HttpTargetProxyTest.class
+    HttpTargetTest.class
 })
 public class TestAllTarget {
 

@@ -24,10 +24,12 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.attack.http;
+package com.acmutv.botnet.core.attack;
 
 import com.acmutv.botnet.core.target.HttpTarget;
 import com.acmutv.botnet.tool.net.ConnectionManager;
+import com.acmutv.botnet.tool.net.HttpMethod;
+import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Interval;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,11 +41,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class realizes JUnit tests for {@link HttpPostAttack}.
+ * This class realizes JUnit tests for {@link HttpAttack}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HttpPostAttack
+ * @see HttpAttack
  * @see HttpTarget
  */
 public class HttpPostAttackTest {
@@ -57,7 +59,18 @@ public class HttpPostAttackTest {
   public void test_makeAttack() throws InterruptedException, MalformedURLException {
     HttpTarget tgt = new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 1);
     ExecutorService executor = Executors.newFixedThreadPool(1);
-    Runnable attacker = new HttpPostAttack(tgt);
+    Attacker attacker = new HttpAttack(HttpMethod.POST, tgt);
+    executor.execute(attacker);
+    executor.shutdown();
+    executor.awaitTermination(60, TimeUnit.SECONDS);
+  }
+
+  @Test
+  public void test_makeAttack_withProxy() throws InterruptedException, MalformedURLException {
+    HttpTarget tgt = new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 1);
+    ExecutorService executor = Executors.newFixedThreadPool(1);
+    final HttpProxy proxy = new HttpProxy("31.220.56.101", 80);
+    Attacker attacker = new HttpAttack(HttpMethod.POST, tgt, proxy);
     executor.execute(attacker);
     executor.shutdown();
     executor.awaitTermination(60, TimeUnit.SECONDS);

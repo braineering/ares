@@ -26,11 +26,10 @@
 
 package com.acmutv.botnet.core.command;
 
-import com.acmutv.botnet.config.AppConfigurationService;
+import com.acmutv.botnet.tool.net.HttpMethod;
+import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.string.TemplateEngine;
-import com.acmutv.botnet.core.attack.http.HttpAttackMethod;
 import com.acmutv.botnet.core.target.HttpTarget;
-import com.acmutv.botnet.core.target.HttpTargetProxy;
 import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
 import org.junit.Assert;
@@ -63,7 +62,7 @@ public class BotCommandServiceTest {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.get.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
-    expected.getParams().put("method", HttpAttackMethod.GET);
+    expected.getParams().put("method", HttpMethod.GET);
     List<HttpTarget> targets = new ArrayList<>();
     targets.add(new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 10));
     targets.add(new HttpTarget(new URL("http://www.twitter.com"), new Interval(3, 5, TimeUnit.SECONDS), 10));
@@ -107,7 +106,7 @@ public class BotCommandServiceTest {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.get.notargets.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
-    expected.getParams().put("method", HttpAttackMethod.GET);
+    expected.getParams().put("method", HttpMethod.GET);
     expected.getParams().put("targets", new ArrayList<>());
     expected.getParams().put("proxy", null);
     Assert.assertEquals(expected, actual);
@@ -122,12 +121,12 @@ public class BotCommandServiceTest {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.get.proxy.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
-    expected.getParams().put("method", HttpAttackMethod.GET);
+    expected.getParams().put("method", HttpMethod.GET);
     List<HttpTarget> targets = new ArrayList<>();
     targets.add(new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 10));
     targets.add(new HttpTarget(new URL("http://www.twitter.com"), new Interval(3, 5, TimeUnit.SECONDS), 10));
     expected.getParams().put("targets", targets);
-    HttpTargetProxy proxy = new HttpTargetProxy("104.28.5.228", 80);
+    HttpProxy proxy = new HttpProxy("104.28.5.228", 80);
     expected.getParams().put("proxy", proxy);
     Assert.assertEquals(expected, actual);
   }
@@ -141,7 +140,7 @@ public class BotCommandServiceTest {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.post.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
-    expected.getParams().put("method", HttpAttackMethod.POST);
+    expected.getParams().put("method", HttpMethod.POST);
     List<HttpTarget> targets = new ArrayList<>();
     targets.add(new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 10));
     targets.add(new HttpTarget(new URL("http://www.twitter.com"), new Interval(3, 5, TimeUnit.SECONDS), 10));
@@ -185,7 +184,7 @@ public class BotCommandServiceTest {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.post.notargets.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
-    expected.getParams().put("method", HttpAttackMethod.POST);
+    expected.getParams().put("method", HttpMethod.POST);
     expected.getParams().put("targets", new ArrayList<>());
     expected.getParams().put("proxy", null);
     Assert.assertEquals(expected, actual);
@@ -200,12 +199,12 @@ public class BotCommandServiceTest {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.post.proxy.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
-    expected.getParams().put("method", HttpAttackMethod.POST);
+    expected.getParams().put("method", HttpMethod.POST);
     List<HttpTarget> targets = new ArrayList<>();
     targets.add(new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 10));
     targets.add(new HttpTarget(new URL("http://www.twitter.com"), new Interval(3, 5, TimeUnit.SECONDS), 10));
     expected.getParams().put("targets", targets);
-    HttpTargetProxy proxy = new HttpTargetProxy("104.28.5.228", 80);
+    HttpProxy proxy = new HttpProxy("104.28.5.228", 80);
     expected.getParams().put("proxy", proxy);
     Assert.assertEquals(expected, actual);
   }

@@ -24,27 +24,13 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.attack.http;
-
-import com.acmutv.botnet.core.target.HttpTarget;
-import com.acmutv.botnet.tool.net.HttpMethod;
+package com.acmutv.botnet.core.attack;
 
 /**
- * This class realizes a HTTP HTTP_POST attack.
+ * This interface define the attacker task.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HttpAttack
  */
-public class HttpPostAttack extends HttpAttack {
-
-  /**
-   * Initializes the attacker.
-   * @param target the target to attack.
-   */
-  public HttpPostAttack(HttpTarget target) {
-    super(HttpMethod.GET, target);
-    super.getProperties().put("User-Agent", "BOTNETv1.0.0");
-  }
-
+public interface Attacker extends Runnable {
 }

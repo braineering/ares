@@ -26,14 +26,11 @@
 
 package com.acmutv.botnet.core.pool;
 
-import com.acmutv.botnet.core.attack.http.HttpAttack;
-import com.acmutv.botnet.core.attack.http.HttpGetAttack;
-import com.acmutv.botnet.core.attack.http.HttpPostAttack;
+import com.acmutv.botnet.core.attack.Attacker;
 import com.acmutv.botnet.core.pool.task.ExecutorServiceKill;
 import com.acmutv.botnet.core.pool.task.ExecutorServiceShutdown;
 import com.acmutv.botnet.core.report.statistics.NetworkSampler;
 import com.acmutv.botnet.core.report.statistics.SystemSampler;
-import com.acmutv.botnet.core.target.HttpTarget;
 import com.acmutv.botnet.tool.runtime.RuntimeManager;
 import com.acmutv.botnet.tool.time.Duration;
 import lombok.Data;
@@ -79,22 +76,13 @@ public class BotPool {
     this.getScheduledThreadPool().scheduleAtFixedRate(sampler, 0, frequency, unit);
   }
 
-  public void registerHttpGetAttack(HttpTarget...targets) {
-    for (HttpTarget target : targets) {
-      HttpAttack attacker = new HttpGetAttack(target);
-      this.getFixedThreadPool().submit(attacker);
-    }
-  }
-
-  public void registerHttpPostAttack(HttpTarget...targets) {
-    for (HttpTarget target : targets) {
-      HttpAttack attacker = new HttpPostAttack(target);
-      this.getFixedThreadPool().submit(attacker);
-    }
+  public void submit(Attacker attacker) {
+    this.getFixedThreadPool().submit(attacker);
   }
 
   public void pause(Duration timeout) {
-    return;
+    LOGGER.traceEntry();
+    LOGGER.traceExit();
   }
 
   public void shutdown(Duration timeout) {

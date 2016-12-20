@@ -26,8 +26,6 @@
 
 package com.acmutv.botnet.core;
 
-import com.acmutv.botnet.core.state.BotState;
-import org.junit.Assert;
 import org.junit.Test;
 
 /**

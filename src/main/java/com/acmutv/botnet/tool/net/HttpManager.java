@@ -86,9 +86,9 @@ public class HttpManager {
    * @return the response code.
    * @throws IOException when HTTP error.
    */
-  public static int makeRequest(final HttpMethod method, final URL url, Map<String,String> props, final Proxy proxy) throws IOException {
+  public static int makeRequest(final HttpMethod method, final URL url, Map<String,String> props, final HttpProxy proxy) throws IOException {
     LOGGER.traceEntry("url={} proxy={}", url, proxy);
-    HttpURLConnection http = (HttpURLConnection) url.openConnection(proxy);
+    HttpURLConnection http = (HttpURLConnection) url.openConnection((proxy!=null)?proxy: Proxy.NO_PROXY);
     http.setRequestMethod(method.name());
     props.forEach(http::setRequestProperty);
     int response = http.getResponseCode();
