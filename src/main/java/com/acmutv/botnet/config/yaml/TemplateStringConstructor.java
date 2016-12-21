@@ -38,6 +38,7 @@ import org.yaml.snakeyaml.nodes.ScalarNode;
 /**
  * This class realizes the YAML constructor for template string.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  */
 @Data

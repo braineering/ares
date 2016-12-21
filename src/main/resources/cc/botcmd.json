@@ -1,7 +1,7 @@
 {
   "command": "SLEEP",
   "timeout": {
-    "amount": 60,
+    "amount": 10,
     "unit": "SECONDS"
   }
 }

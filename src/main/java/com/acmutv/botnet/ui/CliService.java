@@ -37,7 +37,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
@@ -90,6 +90,7 @@ public class CliService {
       System.exit(0);
     }
 
+    boolean configured = false;
     /* OPTION: config */
     if (cmd.hasOption("config")) {
       final String configPath = cmd.getOptionValue("config");
@@ -97,19 +98,27 @@ public class CliService {
       LOGGER.trace("Loading custom configuration {}", configPath);
       try {
         loadConfiguration(configPath);
-      } catch (FileNotFoundException exc) {
-        LOGGER.warn("Cannot load custom configuration, loading default");
-        AppConfigurationService.loadDefault();
+        configured = true;
+      } catch (IOException exc) {
+        LOGGER.warn("Cannot load custom configuration");
       }
-    } else {
+    }
+
+    if (!configured) {
       final String configPath = AppConfigurationService.DEFAULT_CONFIG_FILENAME;
       LOGGER.trace("Loading local configuration {}", configPath);
       try {
         loadConfiguration(configPath);
-      } catch (FileNotFoundException exc) {
-        LOGGER.warn("Cannot load local configuration, loading default");
-        AppConfigurationService.loadDefault();
+        configured = true;
+      } catch (IOException exc) {
+        LOGGER.warn("Cannot load local configuration");
       }
+    }
+
+    if (!configured) {
+      LOGGER.trace("Loading default configuration");
+      AppConfigurationService.loadDefault();
+      //configured = true;
     }
 
     LOGGER.trace("Configuration loaded: {}",
@@ -187,10 +196,12 @@ public class CliService {
   /**
    * Configures the app with the specified YAML configuration file.
    * @param configPath the path to configuration file.
+   * @throws IOException when configuration cannot be read.
    */
-  private static void loadConfiguration(final String configPath) throws FileNotFoundException {
-    InputStream in = new FileInputStream(configPath);
-    AppConfigurationService.loadYaml(in);
+  private static void loadConfiguration(final String configPath) throws IOException {
+    try(InputStream in = new FileInputStream(configPath)) {
+      AppConfigurationService.loadYaml(in);
+    }
   }
 
 }

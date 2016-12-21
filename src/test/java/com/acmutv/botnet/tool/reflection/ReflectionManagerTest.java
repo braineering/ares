@@ -39,7 +39,7 @@ import java.lang.reflect.InvocationTargetException;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see RuntimeManager
+ * @see ReflectionManager
  */
 public class ReflectionManagerTest {
 

@@ -7,7 +7,7 @@
     "amount": 60,
     "unit": "SECONDS"
   },
-  "initResource": "${PROJECT_RESOURCES}/cc/botinit.json",
-  "cmdResource": "${PROJECT_RESOURCES}/cc/botcmd.json",
-  "logResource": "${PROJECT_RESOURCES}/cc/botlog.json"
+  "initResource": "${RES}/cc/botinit.json",
+  "cmdResource": "${RES}/cc/botcmd.json",
+  "logResource": "${RES}/cc/botlog.json"
 }

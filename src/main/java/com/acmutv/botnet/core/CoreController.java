@@ -147,6 +147,7 @@ public class CoreController {
     } catch (IOException exc) {
       LOGGER.warn("Cannot close connection to C&C. Cause: {}", exc.getMessage());
     }
+    allocateResources();
     LOGGER.info("Bot is up and running");
     changeState(BotState.COMMAND);
     LOGGER.traceExit();
@@ -337,6 +338,19 @@ public class CoreController {
     LOGGER.traceExit();
   }
 
+  /**
+   * Allocates bot's resources.
+   */
+  private static void allocateResources() {
+    POOL = new BotPool();
+  }
+
+  /**
+   * Deallocates bot's resources.
+   * If timeout is specified, resources are deallocated softly.
+   * If timeout is not specified, resources are deallocated immediately.
+   * @param timeout the timeout for resources deallocation (null for immediate deallocation).
+   */
   private static void freeResources(Duration timeout) {
     LOGGER.traceEntry("timeout={}", timeout);
     if (timeout == null) {
