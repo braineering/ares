@@ -53,8 +53,6 @@ public class RuntimeManager {
    * Registers atexit runnables as JVM shutdown hooks.
    * @param hooks atexit runnables.
    * @see Runtime
-   * @see Thread
-   * @see Runnable
    */
   public static void registerShutdownHooks(Runnable ...hooks) {
     Runtime runtime = Runtime.getRuntime();

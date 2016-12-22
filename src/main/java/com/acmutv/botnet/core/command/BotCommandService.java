@@ -27,10 +27,12 @@
 package com.acmutv.botnet.core.command;
 
 import com.acmutv.botnet.core.command.json.BotCommandMapper;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
+import java.net.URI;
 
 /**
  * This class realizes bot command services.
@@ -44,16 +46,95 @@ public class BotCommandService {
   private static final Logger LOGGER = LogManager.getLogger(BotCommandService.class);
 
   /**
-   * Parses a BotCommand from a JSON file.
-   * @param in the JSON file.
+   * Read a {@link BotCommand} from a JSON file.
+   * The JSON file is ovewritten with an empty JSON.
+   * This function is used to simulate bot->CC communication.
+   * @param resource the resource providing a JSON file.
+   * @return the parsed command.
+   * @throws IOException when command cannot be parsed.
+   */
+  public static BotCommand popCommand(URI resource) throws IOException {
+    LOGGER.traceEntry("resource={}", resource);
+    BotCommand cmd;
+    try (InputStream in = resource.toURL().openStream()) {
+      cmd = readFromJson(in);
+    }
+
+    /*
+    try (OutputStream out = new FileOutputStream(path)) {
+      out.write("{}".getBytes());
+    }
+    return LOGGER.traceExit("cmd={}", cmd);
+    */
+    return LOGGER.traceExit("cmd={}", cmd);
+  }
+
+  /**
+   * Read a {@link BotCommand} from a JSON file.
+   * The JSON file is ovewritten with an empty JSON.
+   * This function is used to simulate bot->CC communication.
+   * @param path the path to JSON file.
+   * @return the parsed command.
+   * @throws IOException when command cannot be parsed.
+   */
+  public static BotCommand popCommand(String path) throws IOException {
+    LOGGER.traceEntry("path={}", path);
+    BotCommand cmd = readFromJson(path);
+    try (OutputStream out = new FileOutputStream(path)) {
+      out.write("{}".getBytes());
+    }
+    return LOGGER.traceExit("cmd={}", cmd);
+  }
+
+  /**
+   * Parses a {@link BotCommand} from a JSON file.
+   * @param path the path to JSON file.
    * @return the parsed BotCommand; BotCommand with scope NONE, in case of errors.
    * @throws IOException when command cannot be parsed.
    */
-  public static BotCommand fromJson(InputStream in) throws IOException {
+  public static BotCommand readFromJson(String path) throws IOException {
+    LOGGER.traceEntry("path={}", path);
+    BotCommand cmd;
+    try (InputStream in = new FileInputStream(path)) {
+      cmd = readFromJson(in);
+    }
+    return LOGGER.traceExit("cmd={}", cmd);
+  }
+
+  /**
+   * Parses a {@link BotCommand} from a JSON file.
+   * @param in the JSON file.
+   * @return the parsed command.
+   * @throws IOException when command cannot be parsed.
+   */
+  public static BotCommand readFromJson(InputStream in) throws IOException {
     LOGGER.traceEntry("in={}", in);
     BotCommandMapper mapper = new BotCommandMapper();
     BotCommand cmd = mapper.readValue(in, BotCommand.class);
     return LOGGER.traceExit(cmd);
   }
 
+  /**
+   * Read a {@link BotCommand} from a JSON file.
+   * The JSON file is ovewritten with an empty JSON.
+   * This function is used to simulate bot->CC communication.
+   * @param in the JSON file.
+   * @return the parsed BotCommand; BotCommand with scope NONE, in case of errors.
+   * @throws IOException when command cannot be parsed.
+   */
+  public static BotCommand takeCommand(InputStream in) throws IOException {
+    LOGGER.traceEntry("in={}", in);
+    BotCommand cmd = readFromJson(in);
+    OutputStream out = null;
+    IOUtils.copy(in, out);
+    out.close();
+    return LOGGER.traceExit(cmd);
+  }
+
+
+  public static BotCommand readFromJsonResource(String cmdResource) throws IOException {
+    LOGGER.traceEntry();
+    BotCommand cmd = null;
+    return LOGGER.traceExit(cmd);
+  }
 }

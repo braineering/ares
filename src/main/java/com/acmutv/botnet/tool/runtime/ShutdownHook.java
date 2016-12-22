@@ -44,14 +44,12 @@ public class ShutdownHook implements Runnable {
    */
   @Override
   public void run() {
-    LOGGER.traceEntry();
-    LOGGER.info("Releasing resources ...");
+    LOGGER.traceEntry("Releasing resources ...");
     try {
       Thread.sleep(1000);
     } catch (InterruptedException exc) {
       LOGGER.trace(exc.getMessage());
     }
-    LOGGER.info("Resources released");
-    LOGGER.traceExit();
+    LOGGER.traceExit("Resources released");
   }
 }

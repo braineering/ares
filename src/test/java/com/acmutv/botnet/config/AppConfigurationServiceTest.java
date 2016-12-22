@@ -26,12 +26,12 @@
 
 package com.acmutv.botnet.config;
 
+import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.tool.time.Duration;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
@@ -45,146 +45,107 @@ import java.util.concurrent.TimeUnit;
  */
 public class AppConfigurationServiceTest {
 
+  /**
+   * Tests the restoring of default settings in app configuration.
+   */
   @Test
   public void test_fromDefault() {
-    final AppConfiguration actual = AppConfigurationService.fromDefault();
-    final AppConfiguration expected = new AppConfiguration();
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests the configuration parsing from an external YAML file.
-   * In this test the configuration file provides with empty settings.
-   */
-  @Test
-  public void test_fromYaml_empty() {
-    InputStream in = AppConfigurationServiceTest.class.getResourceAsStream("/config/empty.yml");
-    AppConfiguration actual = AppConfigurationService.fromYaml(in);
+    AppConfiguration actual = AppConfigurationService.fromDefault();
     AppConfiguration expected = new AppConfiguration();
     Assert.assertEquals(expected, actual);
   }
 
   /**
-   * Tests the app configuration parsing from an external YAML file.
-   * In this test the configuration file provides with complete default settings.
-   */
-  @Test
-  public void test_fromYaml_default() {
-    InputStream in = AppConfigurationServiceTest.class.getResourceAsStream("/config/default.yml");
-    AppConfiguration actual = AppConfigurationService.fromYaml(in);
-    AppConfiguration expected = new AppConfiguration();
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests the app configuration parsing from an external YAML file.
+   * Tests the app configuration parsing from an external JSON/YAML file.
    * In this test the configuration file provides with complete custom settings.
    * The configuration file has non-null values and template string (${RES}).
    */
   @Test
-  public void test_fromYaml_custom() {
-    InputStream in = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom.yml");
-    AppConfiguration actual = AppConfigurationService.fromYaml(in);
+  public void test_fromJsonYaml_custom() throws IOException {
+    InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom.json");
+    InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom.yaml");
+    AppConfiguration actualjson = AppConfigurationService.fromJson(injson);
+    AppConfiguration actualyaml = AppConfigurationService.fromYaml(inyaml);
     AppConfiguration expected = new AppConfiguration();
     expected.setSysInfo(true);
     expected.setNetInfo(false);
-    expected.setSysStat(true);
+    expected.setSysInfo(true);
     expected.setNetStat(false);
     expected.setSampling(new Duration(1, TimeUnit.HOURS));
-    expected.setInitResource(AppConfigurationServiceTest.class.getResource("/cc/botinit2.json").getPath());
-    expected.setCmdResource(AppConfigurationServiceTest.class.getResource("/cc/botcmd2.json").getPath());
-    expected.setLogResource(AppConfigurationServiceTest.class.getResource("/cc/botlog2.json").getPath());
-    Assert.assertEquals(expected, actual);
+    expected.setInitResource(TemplateEngine.getInstance().replace("${RES}/cc/botinit2.json"));
+    expected.setCmdResource(TemplateEngine.getInstance().replace("${RES}/cc/botcmd2.json"));
+    expected.setLogResource(TemplateEngine.getInstance().replace("${RES}/cc/botlog2.json"));
+    Assert.assertEquals(expected, actualjson);
+    Assert.assertEquals(expected, actualyaml);
   }
 
   /**
-   * Tests the app configuration parsing from an external YAML file.
+   * Tests the app configuration parsing from an external JSON/YAML file.
    * In this test the configuration file provides with complete custom settings.
-   * The configuration file has non-null values and template string (${PWD}).
+   * The configuration file has null values and template string (${PWD}).
    */
   @Test
-  public void test_fromYaml_custom2() throws FileNotFoundException {
-    InputStream in = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom2.yml");
-    AppConfiguration actual = AppConfigurationService.fromYaml(in);
+  public void test_fromJsonYaml_custom2() throws IOException {
+    InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom2.json");
+    InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom2.yaml");
+    AppConfiguration actualjson = AppConfigurationService.fromJson(injson);
+    AppConfiguration actualyaml = AppConfigurationService.fromYaml(inyaml);
     AppConfiguration expected = new AppConfiguration();
     expected.setSysInfo(true);
     expected.setNetInfo(false);
-    expected.setSysStat(true);
+    expected.setSysInfo(true);
     expected.setNetStat(false);
     expected.setSampling(new Duration(1, TimeUnit.HOURS));
-    expected.setInitResource(new File("cc/botinit.json").getAbsolutePath());
-    expected.setCmdResource(new File("cc/botcmd.json").getAbsolutePath());
-    expected.setLogResource(new File("cc/botlog.json").getAbsolutePath());
-    Assert.assertEquals(expected, actual);
+    expected.setInitResource(TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"));
+    expected.setCmdResource(TemplateEngine.getInstance().replace("${PWD}/cc/botcmd.json"));
+    expected.setLogResource(TemplateEngine.getInstance().replace("${PWD}/cc/botlog.json"));
+    Assert.assertEquals(expected, actualjson);
+    Assert.assertEquals(expected, actualyaml);
   }
 
   /**
-   * Tests the configuration parsing from an external YAML configuration file.
-   * In this test the configuration file provides with partial custom settings.
-   */
-  @Test
-  public void test_fromYaml_partialCustom() {
-    InputStream in = AppConfigurationServiceTest.class.getResourceAsStream("/config/partial.yml");
-    AppConfiguration actual = AppConfigurationService.fromYaml(in);
-    AppConfiguration expected = new AppConfiguration();
-    expected.setNetInfo(false);
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests the configuration parsing from an external JSON file.
-   * In this test the configuration file provides with empty settings.
-   */
-  @Test
-  public void test_fromJson_empty() {
-    InputStream in = AppConfigurationServiceTest.class.getResourceAsStream("/config/empty.json");
-    AppConfiguration actual = AppConfigurationService.fromJson(in);
-    AppConfiguration expected = new AppConfiguration();
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests the app configuration parsing from an external JSON file.
+   * Tests the app configuration parsing from an external JSON/YAML file.
    * In this test the configuration file provides with complete default settings.
    */
   @Test
-  public void test_fromJson_default() {
-    InputStream in = AppConfigurationServiceTest.class.getResourceAsStream("/config/default.json");
-    AppConfiguration actual = AppConfigurationService.fromJson(in);
+  public void test_fromJsonYaml_default() throws IOException {
+    InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/default.json");
+    InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/default.yaml");
+    AppConfiguration actualjson = AppConfigurationService.fromJson(injson);
+    AppConfiguration actualyaml = AppConfigurationService.fromYaml(inyaml);
     AppConfiguration expected = new AppConfiguration();
-    Assert.assertEquals(expected, actual);
+    Assert.assertEquals(expected, actualjson);
+    Assert.assertEquals(expected, actualyaml);
   }
 
   /**
-   * Tests the app configuration parsing from an external JSON file.
-   * In this test the configuration file provides with complete custom settings.
+   * Tests the configuration parsing from an external JSON/YAML file.
+   * In this test the configuration file provides with empty settings.
    */
   @Test
-  public void test_fromJson_custom() {
-    InputStream in = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom.json");
-    AppConfiguration actual = AppConfigurationService.fromJson(in);
-    AppConfiguration expected = new AppConfiguration();
-    expected.setSysInfo(true);
-    expected.setNetInfo(false);
-    expected.setSysStat(true);
-    expected.setNetStat(false);
-    expected.setSampling(new Duration(1, TimeUnit.HOURS));
-    expected.setInitResource(AppConfigurationServiceTest.class.getResource("/cc/botinit2.json").getPath());
-    expected.setCmdResource(AppConfigurationServiceTest.class.getResource("/cc/botcmd2.json").getPath());
-    expected.setLogResource(AppConfigurationServiceTest.class.getResource("/cc/botlog2.json").getPath());
-    Assert.assertEquals(expected, actual);
+  public void test_fromJsonYaml_empty() throws IOException {
+    InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/empty.json");
+    InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/empty.yaml");
+    try {
+      AppConfigurationService.fromJson(injson);
+      AppConfigurationService.fromYaml(inyaml);
+    } catch (IOException exc) {return;}
+    Assert.fail();
   }
 
   /**
-   * Tests the configuration parsing from an external JSON configuration file.
+   * Tests the configuration parsing from an external JSON/YAML configuration file.
    * In this test the configuration file provides with partial custom settings.
    */
   @Test
-  public void test_fromJson_partialCustom() {
-    InputStream in = AppConfigurationServiceTest.class.getResourceAsStream("/config/partial.json");
-    AppConfiguration actual = AppConfigurationService.fromJson(in);
+  public void test_fromJsonYaml_partialCustom() throws IOException {
+    InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/partial.json");
+    InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/partial.yaml");
+    AppConfiguration actualjson = AppConfigurationService.fromJson(injson);
+    AppConfiguration actualyaml = AppConfigurationService.fromYaml(inyaml);
     AppConfiguration expected = new AppConfiguration();
     expected.setNetInfo(false);
-    Assert.assertEquals(expected, actual);
+    Assert.assertEquals(expected, actualjson);
+    Assert.assertEquals(expected, actualyaml);
   }
 }

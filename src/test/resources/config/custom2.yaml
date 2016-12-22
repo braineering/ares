@@ -16,6 +16,6 @@ sampling:
 #===============================================================================
 # C&C RESOURCES
 #===============================================================================
-initResource: !templateString "${PWD}/cc/botinit.json"
-cmdResource: !templateString "${PWD}/cc/botcmd.json"
-logResource: !templateString "${PWD}/cc/botlog.json"
+initResource: "${PWD}/cc/botinit.json"
+cmdResource: "${PWD}/cc/botcmd.json"
+logResource: "${PWD}/cc/botlog.json"

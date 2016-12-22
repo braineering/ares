@@ -16,6 +16,6 @@
 #===============================================================================
 # C&C RESOURCES
 #===============================================================================
-#initResource: !templateString "${PROJECT_RESOURCES}/cc/botinit.json"
-#cmdResource: !templateString "${PROJECT_RESOURCES}/cc/botcmd.json"
-#logResource: !templateString "${PROJECT_RESOURCES}/cc/botlog.json"
+#initResource: "${PROJECT_RESOURCES}/cc/botinit.json"
+#cmdResource: "${PROJECT_RESOURCES}/cc/botcmd.json"
+#logResource: "${PROJECT_RESOURCES}/cc/botlog.json"

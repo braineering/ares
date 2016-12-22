@@ -46,13 +46,8 @@ public class RuntimeManagerTest {
    * Tests the BashExecutor run method with the command `echo`.
    */
   @Test
-  public void test_run_echo() {
-    String output = null;
-    try {
-      output = RuntimeManager.run("echo", "Hello World");
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+  public void test_run_echo() throws IOException {
+    String output = RuntimeManager.run("echo", "Hello World");
     String expected = "Hello World";
     assertEquals(expected, output);
   }

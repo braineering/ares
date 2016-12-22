@@ -24,51 +24,29 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.config.yaml;
+package com.acmutv.botnet.config.serial;
 
-import com.acmutv.botnet.tool.string.TemplateEngine;
-import lombok.Data;
+import com.acmutv.botnet.config.AppConfiguration;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import lombok.EqualsAndHashCode;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.yaml.snakeyaml.constructor.AbstractConstruct;
-import org.yaml.snakeyaml.nodes.Node;
-import org.yaml.snakeyaml.nodes.ScalarNode;
 
 /**
- * This class realizes the YAML constructor for template string.
+ * This class realizes the YAML constructor for {@link AppConfiguration}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
- * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
+ * @see AppConfiguration
  */
-@Data
 @EqualsAndHashCode(callSuper = true)
-public class TemplateStringConstructor extends AbstractConstruct {
-
-  private static final Logger LOGGER = LogManager.getLogger(TemplateStringConstructor.class);
+public class AppConfigurationYamlMapper extends YAMLMapper {
 
   /**
-   * The singleton of {@link TemplateStringConstructor}.
+   * Initializes the JSON constructor.
    */
-  private static TemplateStringConstructor instance;
-
-  /**
-   * Returns the singleton of {@link TemplateStringConstructor}.
-   * @return the singleton.
-   */
-  public static TemplateStringConstructor getInstance() {
-    if (instance == null) {
-      instance = new TemplateStringConstructor();
-    }
-    return instance;
-  }
-
-  @Override
-  public Object construct(Node node) {
-    LOGGER.traceEntry("node={}", node);
-    ScalarNode snode = (ScalarNode) node;
-    String value = snode.getValue();
-    String result = TemplateEngine.getInstance().replace(value);
-    return LOGGER.traceExit(result);
+  public AppConfigurationYamlMapper() {
+    super();
+    SimpleModule module = new SimpleModule();
+    module.addDeserializer(AppConfiguration.class, AppConfigurationDeserializer.getInstance());
+    super.registerModule(module);
   }
 }

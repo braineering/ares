@@ -1,7 +1,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2016 Giacomo Marciani and Michele Porretta
+  Copyright (c) 2016 Giacomo Marciani
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.config.json;
+package com.acmutv.botnet.config.serial;
 
 import com.acmutv.botnet.config.AppConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,17 +34,16 @@ import lombok.EqualsAndHashCode;
 /**
  * This class realizes the JSON constructor for {@link AppConfiguration}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
- * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see AppConfiguration
  */
 @EqualsAndHashCode(callSuper = true)
-public class AppConfigurationMapper extends ObjectMapper {
+public class AppConfigurationJsonMapper extends ObjectMapper {
 
   /**
    * Initializes the JSON constructor.
    */
-  public AppConfigurationMapper() {
+  public AppConfigurationJsonMapper() {
     super();
     SimpleModule module = new SimpleModule();
     module.addDeserializer(AppConfiguration.class, AppConfigurationDeserializer.getInstance());

@@ -44,7 +44,7 @@ public enum BotState {
   SHUTDOWN ("SHUTDOWN"),
   KILL ("KILL"),
   DEAD ("DEAD"),
-  COMMAND ("COMMAND");
+  EXECUTION("EXECUTION");
 
   private final String name;
 

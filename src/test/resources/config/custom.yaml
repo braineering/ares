@@ -6,16 +6,16 @@
 # REPORT
 #===============================================================================
 sysInfo: True
-netInfo: True
+netInfo: False
 sysStat: True
-netStat: True
+netStat: False
 sampling:
-  amount: 60
-  unit: "SECONDS"
+  amount: 1
+  unit: "HOURS"
 
 #===============================================================================
 # C&C RESOURCES
 #===============================================================================
-initResource: !templateString "${RES}/cc/botinit.json"
-cmdResource: !templateString "${RES}/cc/botcmd.json"
-logResource: !templateString "${RES}/cc/botlog.json"
+initResource: "${RES}/cc/botinit2.json"
+cmdResource: "${RES}/cc/botcmd2.json"
+logResource: "${RES}/cc/botlog2.json"
