@@ -26,10 +26,13 @@
 
 package com.acmutv.botnet.tool.io;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -67,5 +70,41 @@ public class IOManager {
   public static OutputStream getOutputStream(final String resource) throws IOException {
     final Path path = FileSystems.getDefault().getPath(resource).toAbsolutePath();
     return Files.newOutputStream(path);
+  }
+
+  /**
+   * Checks if a resource is writable.
+   * @param resource the resource to check.
+   * @return true if the resource is writable; false, otherwise.
+   */
+  public static boolean isWritableResource(String resource) {
+    final Path path = FileSystems.getDefault().getPath(resource).toAbsolutePath();
+    return Files.isWritable(path);
+  }
+
+  /**
+   * Reads a resource.
+   * @param resource the resource to read.
+   * @return the string read.
+   * @throws IOException when resource cannot be read.
+   */
+  public static String readResource(String resource) throws IOException {
+    String string;
+    try (final InputStream in = getInputStream(resource)) {
+      string = IOUtils.toString(in, Charset.defaultCharset());
+    }
+    return string;
+  }
+
+  /**
+   * Write on a resource.
+   * @param resource the resource to write on.
+   * @param  string the string to write.
+   * @throws IOException when resource cannot be read.
+   */
+  public static void writeResource(String resource, String string) throws IOException {
+    try (final OutputStream out = getOutputStream(resource)) {
+      IOUtils.write(string, out, Charset.defaultCharset());
+    }
   }
 }

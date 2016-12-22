@@ -23,39 +23,30 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
  */
+package com.acmutv.botnet.tool.time;
 
-package com.acmutv.botnet.tool;
+import org.junit.Assert;
+import org.junit.Test;
 
-import com.acmutv.botnet.tool.io.TestAllToolIO;
-import com.acmutv.botnet.tool.net.TestAllToolNet;
-import com.acmutv.botnet.tool.reflection.TestAllToolReflection;
-import com.acmutv.botnet.tool.runtime.TestAllToolRuntime;
-import com.acmutv.botnet.tool.string.TestAllToolString;
-import com.acmutv.botnet.tool.time.TestAllToolTime;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.concurrent.TimeUnit;
 
 /**
- * This class realizes JUnit test suite for all tools.
+ * This class realizes JUnit tests for {@link Duration}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see TestAllToolIO
- * @see TestAllToolNet
- * @see TestAllToolReflection
- * @see TestAllToolRuntime
- * @see TestAllToolString
- * @see TestAllToolTime
+ * @see Duration
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    TestAllToolIO.class,
-    TestAllToolNet.class,
-    TestAllToolReflection.class,
-    TestAllToolRuntime.class,
-    TestAllToolString.class,
-    TestAllToolTime.class
-})
-public class TestAllTool {
+public class DurationTest {
 
+  /**
+   * Tests parsing from string representation.
+   */
+  @Test
+  public void test_valueOf() {
+    String string = "1:SECONDS";
+    Duration actual = Duration.valueOf(string);
+    Duration expected = new Duration(1, TimeUnit.SECONDS);
+    Assert.assertEquals(expected, actual);
+  }
 }

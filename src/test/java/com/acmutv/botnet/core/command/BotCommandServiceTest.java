@@ -26,13 +26,17 @@
 
 package com.acmutv.botnet.core.command;
 
+import com.acmutv.botnet.core.command.serial.BotCommandJsonMapper;
+import com.acmutv.botnet.tool.io.IOManager;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.core.target.HttpTarget;
 import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -53,204 +57,116 @@ import java.util.concurrent.TimeUnit;
  */
 public class BotCommandServiceTest {
 
+  @Before
+  public void before() throws IOException {
+    String resource = BotCommandServiceTest.class.getResource("/cmd/consume.json").getPath();
+    BotCommand cmd = new BotCommand(CommandScope.KILL);
+    String json = new BotCommandJsonMapper().writeValueAsString(cmd);
+    IOManager.writeResource(resource, json);
+  }
+
   /**
-   * Tests command parsing from a JSON file.
-   * command: ATTACK_HTTP, method: GET, targets: provided, proxy: none
+   * Tests command consume from a JSON resource.
    */
   @Test
-  public void test_fromJSONFile_attackHTTPGet() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.get.json");
-    BotCommand actual = BotCommandService.readFromJson(file);
+  public void test_consumeJsonResource() throws IOException {
+    String resource = BotCommandServiceTest.class.getResource("/cmd/consume.json").getPath();
+    BotCommand actual = BotCommandService.consumeJsonResource(resource);
+    BotCommand expected = new BotCommand(CommandScope.KILL);
+    Assert.assertEquals(expected, actual);
+    String actualJson = IOManager.readResource(resource);
+    String expectedJson = new BotCommandJsonMapper().writeValueAsString(BotCommand.NONE);
+    Assert.assertEquals(expectedJson, actualJson);
+  }
+
+  @After
+  public void after() throws IOException {
+    String resource = BotCommandServiceTest.class.getResource("/cmd/consume.json").getPath();
+    BotCommand cmd = new BotCommand(CommandScope.KILL);
+    String json = new BotCommandJsonMapper().writeValueAsString(cmd);
+    IOManager.writeResource(resource, json);
+  }
+
+  /**
+   * Tests command parsing from a JSON resource.
+   * command: ATTACK_HTTP, Method: GET
+   */
+  @Test
+  public void test_fromJsonResource_attackHTTPGet() throws IOException {
+    String resource = BotCommandServiceTest.class.getResource("/cmd/attack-http.get.json").getPath();
+    BotCommand actual = BotCommandService.fromJsonResource(resource);
     BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
     expected.getParams().put("method", HttpMethod.GET);
     List<HttpTarget> targets = new ArrayList<>();
-    targets.add(new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 10));
-    targets.add(new HttpTarget(new URL("http://www.twitter.com"), new Interval(3, 5, TimeUnit.SECONDS), 10));
+    targets.add(new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 10, null));
+    targets.add(new HttpTarget(new URL("http://www.twitter.com"), new Interval(3, 5, TimeUnit.SECONDS), 10, new HttpProxy("192.168.0.1", 80)));
     expected.getParams().put("targets", targets);
-    expected.getParams().put("proxy", null);
     Assert.assertEquals(expected, actual);
   }
 
   /**
-   * Tests command parsing from a malformed JSON file.
-   * command: ATTACK_HTTP, method: none, targets: none, proxy: none
+   * Tests command parsing from a JSON resource.
+   * command: ATTACK_HTTP, Method: POST
    */
   @Test
-  public void test_fromJSONFile_attackHTTPGet_malformed1() {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.get.malformed1.json");
-    try {
-      BotCommandService.readFromJson(file);
-    } catch (IOException exc) { return; }
-    Assert.fail();
-  }
-
-  /**
-   * Tests command parsing from a malformed JSON file.
-   * command: ATTACK_HTTP, method: GET, targets: none, proxy: none
-   */
-  @Test
-  public void test_fromJSONFile_attackHTTPGet_malformed2() {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.get.malformed2.json");
-    try {
-      BotCommandService.readFromJson(file);
-    } catch (IOException exc) { return; }
-    Assert.fail();
-  }
-
-  /**
-   * Tests command parsing from a JSON file.
-   * command: ATTACK_HTTP, method: GET, targets: empty, proxy: none
-   */
-  @Test
-  public void test_fromJSONFile_attackHTTPGet_notargets() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.get.notargets.json");
-    BotCommand actual = BotCommandService.readFromJson(file);
-    BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
-    expected.getParams().put("method", HttpMethod.GET);
-    expected.getParams().put("targets", new ArrayList<>());
-    expected.getParams().put("proxy", null);
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests command parsing from a JSON file.
-   * command: ATTACK_HTTP, method: GET, targets: provided, proxy: provided
-   */
-  @Test
-  public void test_fromJSONFile_attackHTTPGetWithProxy() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.get.proxy.json");
-    BotCommand actual = BotCommandService.readFromJson(file);
-    BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
-    expected.getParams().put("method", HttpMethod.GET);
-    List<HttpTarget> targets = new ArrayList<>();
-    targets.add(new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 10));
-    targets.add(new HttpTarget(new URL("http://www.twitter.com"), new Interval(3, 5, TimeUnit.SECONDS), 10));
-    expected.getParams().put("targets", targets);
-    HttpProxy proxy = new HttpProxy("104.28.5.228", 80);
-    expected.getParams().put("proxy", proxy);
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests command parsing from a JSON file.
-   * command: ATTACK_HTTP, method: POST, targets: provided, proxy: none
-   */
-  @Test
-  public void test_fromJSONFile_attackHTTPPost() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.post.json");
-    BotCommand actual = BotCommandService.readFromJson(file);
+  public void test_fromJsonResource_attackHTTPPost() throws IOException {
+    String resource = BotCommandServiceTest.class.getResource("/cmd/attack-http.post.json").getPath();
+    BotCommand actual = BotCommandService.fromJsonResource(resource);
     BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
     expected.getParams().put("method", HttpMethod.POST);
     List<HttpTarget> targets = new ArrayList<>();
-    targets.add(new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 10));
-    targets.add(new HttpTarget(new URL("http://www.twitter.com"), new Interval(3, 5, TimeUnit.SECONDS), 10));
+    targets.add(new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 10, null));
+    targets.add(new HttpTarget(new URL("http://www.twitter.com"), new Interval(3, 5, TimeUnit.SECONDS), 10, new HttpProxy("192.168.0.1", 80)));
     expected.getParams().put("targets", targets);
-    expected.getParams().put("proxy", null);
     Assert.assertEquals(expected, actual);
   }
 
   /**
-   * Tests command parsing from a malformed JSON file.
-   * command: ATTACK_HTTP, method: none, targets: none, proxy: none
+   * Tests command parsing from a JSON resource.
+   * Empty JSON.
    */
   @Test
-  public void test_fromJSONFile_attackHTTPPost_malformed1() {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.post.malformed1.json");
+  public void test_fromJsonResource_empty() {
+    String resource = BotCommandServiceTest.class.getResource("/cmd/empty.json").getPath();
     try {
-      BotCommandService.readFromJson(file);
+      BotCommandService.fromJsonResource(resource);
     } catch (IOException exc) { return; }
     Assert.fail();
   }
 
   /**
-   * Tests command parsing from a malformed JSON file.
-   * command: ATTACK_HTTP, method: POST, targets: none, proxy: none
+   * Tests command parsing from a JSON resource.
+   * Command: KILL
    */
   @Test
-  public void test_fromJSONFile_attackHTTPPost_malformed2() {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.post.malformed2.json");
-    try {
-      BotCommandService.readFromJson(file);
-    } catch (IOException exc) { return; }
-    Assert.fail();
-  }
-
-  /**
-   * Tests command parsing from a JSON file.
-   * command: ATTACK_HTTP, method: POST, targets: empty, proxy: none
-   */
-  @Test
-  public void test_fromJSONFile_attackHTTPPost_notargets() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.post.notargets.json");
-    BotCommand actual = BotCommandService.readFromJson(file);
-    BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
-    expected.getParams().put("method", HttpMethod.POST);
-    expected.getParams().put("targets", new ArrayList<>());
-    expected.getParams().put("proxy", null);
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests command parsing from a JSON file.
-   * command: ATTACK_HTTP, method: POST, targets: provided, proxy: provided
-   */
-  @Test
-  public void test_fromJSONFile_attackHTTPPostWithProxy() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/attack-http.post.proxy.json");
-    BotCommand actual = BotCommandService.readFromJson(file);
-    BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
-    expected.getParams().put("method", HttpMethod.POST);
-    List<HttpTarget> targets = new ArrayList<>();
-    targets.add(new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 10));
-    targets.add(new HttpTarget(new URL("http://www.twitter.com"), new Interval(3, 5, TimeUnit.SECONDS), 10));
-    expected.getParams().put("targets", targets);
-    HttpProxy proxy = new HttpProxy("104.28.5.228", 80);
-    expected.getParams().put("proxy", proxy);
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests command parsing from an empty JSON (i.e.: {@literal {}}).
-   */
-  @Test
-  public void test_fromJSONFile_empty() {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/empty.json");
-    try {
-      BotCommandService.readFromJson(file);
-    } catch (IOException exc) { return; }
-    Assert.fail();
-  }
-
-  /**
-   * Tests command parsing from a JSON file (command: KILL)
-   */
-  @Test
-  public void test_fromJSONFile_kill() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/kill.json");
-    BotCommand actual = BotCommandService.readFromJson(file);
+  public void test_fromJsonResource_kill() throws IOException {
+    String resource = BotCommandServiceTest.class.getResource("/cmd/kill.json").getPath();
+    BotCommand actual = BotCommandService.fromJsonResource(resource);
     BotCommand expected = new BotCommand(CommandScope.KILL);
     Assert.assertEquals(expected, actual);
   }
 
   /**
-   * Tests command parsing from a JSON file (command: NONE)
+   * Tests command parsing from a JSON resource.
+   * Command: NONE
    */
   @Test
-  public void test_fromJSONFile_none() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/none.json");
-    BotCommand actual = BotCommandService.readFromJson(file);
+  public void test_fromJsonResource_none() throws IOException {
+    String resource = BotCommandServiceTest.class.getResource("/cmd/none.json").getPath();
+    BotCommand actual = BotCommandService.fromJsonResource(resource);
     BotCommand expected = new BotCommand(CommandScope.NONE);
     Assert.assertEquals(expected, actual);
   }
 
   /**
-   * Tests command parsing from a null JSON (empty string).
+   * Tests command parsing from a JSON resource.
+   * Null JSON
    */
   @Test
   public void test_fromJSONFile_null() {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/null.json");
+    String resource = BotCommandServiceTest.class.getResource("/cmd/null.json").getPath();
     try {
-      BotCommandService.readFromJson(file);
+      BotCommandService.fromJsonResource(resource);
     } catch (IOException exc) { return; }
     Assert.fail();
   }
@@ -261,7 +177,7 @@ public class BotCommandServiceTest {
   @Test
   public void test_fromJSONFile_restart() throws IOException {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/restart.json");
-    BotCommand actual = BotCommandService.readFromJson(file);
+    BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.RESTART);
     expected.getParams().put("resource", TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"));
     Assert.assertEquals(expected, actual);
@@ -275,7 +191,7 @@ public class BotCommandServiceTest {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/shutdown.json");
     BotCommand expected = new BotCommand(CommandScope.SHUTDOWN);
     expected.getParams().put("timeout", new Duration(3, TimeUnit.MINUTES));
-    BotCommand actual = BotCommandService.readFromJson(file);
+    BotCommand actual = BotCommandService.fromJson(file);
     Assert.assertEquals(expected, actual);
   }
 
@@ -287,7 +203,7 @@ public class BotCommandServiceTest {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/sleep.json");
     BotCommand expected = new BotCommand(CommandScope.SLEEP);
     expected.getParams().put("timeout", new Duration(3, TimeUnit.MINUTES));
-    BotCommand actual = BotCommandService.readFromJson(file);
+    BotCommand actual = BotCommandService.fromJson(file);
     Assert.assertEquals(expected, actual);
   }
 
@@ -299,9 +215,10 @@ public class BotCommandServiceTest {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/update.json");
     BotCommand expected = new BotCommand(CommandScope.UPDATE);
     Map<String,String> settings = new HashMap<>();
-    for (int i=1;i<=3;i++) settings.put(String.format("prop%d",i), String.format("val%d",i));
+    settings.put("prop1", "val1");
+    settings.put("prop2", "val2");
     expected.getParams().put("settings", settings);
-    BotCommand actual = BotCommandService.readFromJson(file);
+    BotCommand actual = BotCommandService.fromJson(file);
     Assert.assertEquals(expected, actual);
   }
 

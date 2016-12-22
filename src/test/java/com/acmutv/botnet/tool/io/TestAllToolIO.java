@@ -1,7 +1,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2016 Giacomo Marciani and Michele Porretta
+  Copyright (c) 2016 Giacomo Marciani
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -24,38 +24,20 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.tool;
+package com.acmutv.botnet.tool.io;
 
-import com.acmutv.botnet.tool.io.TestAllToolIO;
-import com.acmutv.botnet.tool.net.TestAllToolNet;
-import com.acmutv.botnet.tool.reflection.TestAllToolReflection;
-import com.acmutv.botnet.tool.runtime.TestAllToolRuntime;
-import com.acmutv.botnet.tool.string.TestAllToolString;
-import com.acmutv.botnet.tool.time.TestAllToolTime;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * This class realizes JUnit test suite for all tools.
+ * This class realizes JUnit test suite for tools related to reflection.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
- * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see TestAllToolIO
- * @see TestAllToolNet
- * @see TestAllToolReflection
- * @see TestAllToolRuntime
- * @see TestAllToolString
- * @see TestAllToolTime
+ * @see IOManagerTest
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    TestAllToolIO.class,
-    TestAllToolNet.class,
-    TestAllToolReflection.class,
-    TestAllToolRuntime.class,
-    TestAllToolString.class,
-    TestAllToolTime.class
+    IOManagerTest.class
 })
-public class TestAllTool {
-
+public class TestAllToolIO {
 }

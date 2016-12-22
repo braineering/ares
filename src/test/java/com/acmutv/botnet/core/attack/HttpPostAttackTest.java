@@ -57,7 +57,7 @@ public class HttpPostAttackTest {
 
   @Test
   public void test_makeAttack() throws InterruptedException, MalformedURLException {
-    HttpTarget tgt = new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 1);
+    HttpTarget tgt = new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 1, null);
     ExecutorService executor = Executors.newFixedThreadPool(1);
     Attacker attacker = new HttpAttack(HttpMethod.POST, tgt);
     executor.execute(attacker);
@@ -67,10 +67,9 @@ public class HttpPostAttackTest {
 
   @Test
   public void test_makeAttack_withProxy() throws InterruptedException, MalformedURLException {
-    HttpTarget tgt = new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 1);
+    HttpTarget tgt = new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 1, new HttpProxy("31.220.56.101", 80));
     ExecutorService executor = Executors.newFixedThreadPool(1);
-    final HttpProxy proxy = new HttpProxy("31.220.56.101", 80);
-    Attacker attacker = new HttpAttack(HttpMethod.POST, tgt, proxy);
+    Attacker attacker = new HttpAttack(HttpMethod.POST, tgt);
     executor.execute(attacker);
     executor.shutdown();
     executor.awaitTermination(60, TimeUnit.SECONDS);

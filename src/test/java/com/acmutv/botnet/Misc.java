@@ -23,39 +23,39 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
  */
+package com.acmutv.botnet;
 
-package com.acmutv.botnet.tool;
+import com.acmutv.botnet.config.AppConfiguration;
+import com.acmutv.botnet.core.state.BotState;
+import com.acmutv.botnet.core.target.HttpTarget;
+import com.acmutv.botnet.tool.time.Interval;
+import org.apache.commons.io.IOUtils;
+import org.junit.Ignore;
+import org.junit.Test;
 
-import com.acmutv.botnet.tool.io.TestAllToolIO;
-import com.acmutv.botnet.tool.net.TestAllToolNet;
-import com.acmutv.botnet.tool.reflection.TestAllToolReflection;
-import com.acmutv.botnet.tool.runtime.TestAllToolRuntime;
-import com.acmutv.botnet.tool.string.TestAllToolString;
-import com.acmutv.botnet.tool.time.TestAllToolTime;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
 
 /**
- * This class realizes JUnit test suite for all tools.
+ * This class realizes local tests (for personal use only).
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see TestAllToolIO
- * @see TestAllToolNet
- * @see TestAllToolReflection
- * @see TestAllToolRuntime
- * @see TestAllToolString
- * @see TestAllToolTime
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    TestAllToolIO.class,
-    TestAllToolNet.class,
-    TestAllToolReflection.class,
-    TestAllToolRuntime.class,
-    TestAllToolString.class,
-    TestAllToolTime.class
-})
-public class TestAllTool {
+public class Misc {
 
+  @Test
+  public void test() throws MalformedURLException {
+    HttpTarget t = new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 10, null);
+    System.out.println(t.getUrl().toString());
+  }
 }

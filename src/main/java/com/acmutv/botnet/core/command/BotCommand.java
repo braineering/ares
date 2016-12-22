@@ -44,6 +44,8 @@ import java.util.Map;
 @NoArgsConstructor
 public class BotCommand {
 
+  public static final BotCommand NONE = new BotCommand();
+
   /**
    * The command scope.
    */

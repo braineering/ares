@@ -9,7 +9,7 @@
 # Project specific
 #==============================================================================#
 _ignore
-src/test/java/com/acmutv/botnet/MiscTest.java
+src/test/java/com/acmutv/botnet/Misc.java
 
 #==============================================================================#
 # OS

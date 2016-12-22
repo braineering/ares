@@ -24,38 +24,31 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.tool;
+package com.acmutv.botnet.core.command.serial;
 
-import com.acmutv.botnet.tool.io.TestAllToolIO;
-import com.acmutv.botnet.tool.net.TestAllToolNet;
-import com.acmutv.botnet.tool.reflection.TestAllToolReflection;
-import com.acmutv.botnet.tool.runtime.TestAllToolRuntime;
-import com.acmutv.botnet.tool.string.TestAllToolString;
-import com.acmutv.botnet.tool.time.TestAllToolTime;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.acmutv.botnet.core.command.BotCommand;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import lombok.EqualsAndHashCode;
 
 /**
- * This class realizes JUnit test suite for all tools.
+ * This class realizes the JSON constructor for {@link BotCommand}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see TestAllToolIO
- * @see TestAllToolNet
- * @see TestAllToolReflection
- * @see TestAllToolRuntime
- * @see TestAllToolString
- * @see TestAllToolTime
+ * @see BotCommand
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    TestAllToolIO.class,
-    TestAllToolNet.class,
-    TestAllToolReflection.class,
-    TestAllToolRuntime.class,
-    TestAllToolString.class,
-    TestAllToolTime.class
-})
-public class TestAllTool {
+@EqualsAndHashCode(callSuper = true)
+public class BotCommandJsonMapper extends ObjectMapper {
 
+  /**
+   * Initializes the JSON constructor.
+   */
+  public BotCommandJsonMapper() {
+    super();
+    SimpleModule module = new SimpleModule();
+    module.addDeserializer(BotCommand.class, BotCommandDeserializer.getInstance());
+    module.addSerializer(BotCommand.class, BotCommandSerializer.getInstance());
+    super.registerModule(module);
+  }
 }

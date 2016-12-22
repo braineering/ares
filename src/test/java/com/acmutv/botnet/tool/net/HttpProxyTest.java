@@ -23,31 +23,41 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
  */
+package com.acmutv.botnet.tool.net;
 
-package com.acmutv.botnet.core.command.json;
+import org.junit.Assert;
+import org.junit.Test;
 
-import com.acmutv.botnet.core.command.BotCommand;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import lombok.EqualsAndHashCode;
+import java.net.InetSocketAddress;
 
 /**
- * This class realizes the JSON constructor for {@link BotCommand}.
+ * This class realizes JUnit tests for {@link HttpProxy}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see BotCommand
+ * @see HttpProxy
  */
-@EqualsAndHashCode(callSuper = true)
-public class BotCommandMapper extends ObjectMapper {
+public class HttpProxyTest {
 
   /**
-   * Initializes the JSON constructor.
+   * Tests proxy's compact string representation.
    */
-  public BotCommandMapper() {
-    super();
-    SimpleModule module = new SimpleModule();
-    module.addDeserializer(BotCommand.class, BotCommandDeserializer.getInstance());
-    super.registerModule(module);
+  @Test
+  public void test_toCompactString() {
+    HttpProxy proxy = new HttpProxy("192.168.0.1", 80);
+    String actual = proxy.toCompactString();
+    String expected = "192.168.0.1:80";
+    Assert.assertEquals(expected, actual);
+  }
+
+  /**
+   * Tests parsing from string representation.
+   */
+  @Test
+  public void test_valueOf() {
+    String string = "192.168.0.1:80";
+    HttpProxy actual = HttpProxy.valueOf(string);
+    HttpProxy expected = new HttpProxy("192.168.0.1", 80);
+    Assert.assertEquals(expected, actual);
   }
 }

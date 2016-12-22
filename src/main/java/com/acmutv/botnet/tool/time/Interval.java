@@ -32,7 +32,6 @@ import lombok.Data;
 import lombok.NonNull;
 
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
 /**
  * This class realizes a time period.
@@ -62,56 +61,31 @@ public class Interval {
   @NonNull
   private TimeUnit unit = TimeUnit.SECONDS;
 
-  @Deprecated
-  public static final String REG_PATTERN = "\\d+(-\\d+)?";
-
   /**
-   * Constructs a period from string.
-   * @param str the string to parse.
+   * Parses {@link Interval} from string.
+   * @param string the string to parse.
+   * @return the parsed {@link Interval}; null if cannot be parsed.
    */
-  @Deprecated
-  public Interval(final String str) {
-    String values[] = str.split("-", 2);
-    int min;
-    int max;
-    if (values.length == 2) {
-      min = Integer.valueOf(values[0]);
-      max = Integer.valueOf(values[1]);
+  public static Interval valueOf(final String string) {
+    if (string == null) return null;
+    String parts[] = string.split(":", 2);
+    if (parts.length != 2) return null;
+    String subparts[] = parts[0].split("-",2);
+    long min, max;
+    if (subparts.length == 1) {
+      min = max = Long.valueOf(subparts[0]);
+    } else if (subparts.length == 2) {
+      min = Long.valueOf(subparts[0]);
+      max = Long.valueOf(subparts[1]);
     } else {
-      min = max = Integer.valueOf(values[0]);
+      return null;
     }
-    this.min = min;
-    this.max = max;
-    this.unit = TimeUnit.SECONDS;
-  }
-
-  /**
-   * Checks if the string represents a valid Period.
-   * @param str the string to check.
-   * @return true, if the given string represents a valid Period; false, otherwise.
-   */
-  @Deprecated
-  public static boolean isValidString(String str) {
-    return Pattern.matches(REG_PATTERN, str);
-  }
-
-  /**
-   * Parses a Period from the given string.
-   * @param str the string to parse.
-   * @return the parsed Period.
-   */
-  @Deprecated
-  public static Interval valueOf(final String str) {
-    String values[] = str.split("-", 2);
-    int min;
-    int max;
-    if (values.length == 2) {
-      min = Integer.valueOf(values[0]);
-      max = Integer.valueOf(values[1]);
-    } else {
-      min = max = Integer.valueOf(values[0]);
-    }
-    TimeUnit unit = TimeUnit.SECONDS;
+    TimeUnit unit = TimeUnit.valueOf(parts[1]);
     return new Interval(min, max, unit);
+  }
+
+  @Override
+  public String toString() {
+    return String.format("%d-%d:%s", this.getMin(), this.getMax(), this.getUnit());
   }
 }

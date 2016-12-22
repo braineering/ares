@@ -69,7 +69,7 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
    * Initializes the singleton of {@link AppConfigurationDeserializer}.
    */
   private AppConfigurationDeserializer() {
-    super((Class<?>)null);
+    super((Class<AppConfiguration>)null);
   }
 
   @Override
@@ -100,21 +100,9 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
     }
 
     if (node.has("sampling")) {
-      Duration sampling = new Duration();
-      JsonNode samplingNode = node.get("sampling");
-      if (samplingNode.has("amount")) {
-        final long a = samplingNode.get("amount").asLong();
-        sampling.setAmount(a);
-      }
-
-      if (samplingNode.has("unit")) {
-        final TimeUnit unit = TimeUnit.valueOf(samplingNode.get("unit").asText());
-        sampling.setUnit(unit);
-      }
-
+      final Duration sampling = Duration.valueOf(node.get("sampling").asText());
       config.setSampling(sampling);
     }
-
 
     if (node.has("initResource")) {
       final String initResource = TemplateEngine.getInstance().replace(

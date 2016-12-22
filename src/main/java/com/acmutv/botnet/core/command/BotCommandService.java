@@ -26,7 +26,9 @@
 
 package com.acmutv.botnet.core.command;
 
-import com.acmutv.botnet.core.command.json.BotCommandMapper;
+import com.acmutv.botnet.config.AppConfiguration;
+import com.acmutv.botnet.core.command.serial.BotCommandJsonMapper;
+import com.acmutv.botnet.tool.io.IOManager;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,95 +48,76 @@ public class BotCommandService {
   private static final Logger LOGGER = LogManager.getLogger(BotCommandService.class);
 
   /**
-   * Read a {@link BotCommand} from a JSON file.
-   * The JSON file is ovewritten with an empty JSON.
-   * This function is used to simulate bot->CC communication.
-   * @param resource the resource providing a JSON file.
-   * @return the parsed command.
-   * @throws IOException when command cannot be parsed.
+   * Deserializes {@link BotCommand} from a resource providing a JSON.
+   * If the resource is writable, it is then cleared with a JSON representing the `NONE` command.
+   * @param resource the resource providing a JSON.
+   * @return the consumed command.
+   * @throws IOException if {@link BotCommand} cannot be consumed.
    */
-  public static BotCommand popCommand(URI resource) throws IOException {
+  public static BotCommand consumeJsonResource(String resource) throws IOException {
     LOGGER.traceEntry("resource={}", resource);
-    BotCommand cmd;
-    try (InputStream in = resource.toURL().openStream()) {
-      cmd = readFromJson(in);
+    BotCommand cmd = fromJsonResource(resource);
+    if (IOManager.isWritableResource(resource)) {
+      BotCommandJsonMapper mapper = new BotCommandJsonMapper();
+      String noneCommandJson = mapper.writeValueAsString(BotCommand.NONE);
+      IOManager.writeResource(resource, noneCommandJson);
     }
-
-    /*
-    try (OutputStream out = new FileOutputStream(path)) {
-      out.write("{}".getBytes());
-    }
-    return LOGGER.traceExit("cmd={}", cmd);
-    */
-    return LOGGER.traceExit("cmd={}", cmd);
+    return LOGGER.traceExit(cmd);
   }
 
   /**
-   * Read a {@link BotCommand} from a JSON file.
-   * The JSON file is ovewritten with an empty JSON.
-   * This function is used to simulate bot->CC communication.
-   * @param path the path to JSON file.
+   * Deserializes {@link BotCommand} from JSON.
+   * @param in the stream providing a JSON.
    * @return the parsed command.
-   * @throws IOException when command cannot be parsed.
+   * @throws IOException if {@link BotCommand} cannot be deserialized.
    */
-  public static BotCommand popCommand(String path) throws IOException {
-    LOGGER.traceEntry("path={}", path);
-    BotCommand cmd = readFromJson(path);
-    try (OutputStream out = new FileOutputStream(path)) {
-      out.write("{}".getBytes());
-    }
-    return LOGGER.traceExit("cmd={}", cmd);
-  }
-
-  /**
-   * Parses a {@link BotCommand} from a JSON file.
-   * @param path the path to JSON file.
-   * @return the parsed BotCommand; BotCommand with scope NONE, in case of errors.
-   * @throws IOException when command cannot be parsed.
-   */
-  public static BotCommand readFromJson(String path) throws IOException {
-    LOGGER.traceEntry("path={}", path);
-    BotCommand cmd;
-    try (InputStream in = new FileInputStream(path)) {
-      cmd = readFromJson(in);
-    }
-    return LOGGER.traceExit("cmd={}", cmd);
-  }
-
-  /**
-   * Parses a {@link BotCommand} from a JSON file.
-   * @param in the JSON file.
-   * @return the parsed command.
-   * @throws IOException when command cannot be parsed.
-   */
-  public static BotCommand readFromJson(InputStream in) throws IOException {
+  public static BotCommand fromJson(InputStream in) throws IOException {
     LOGGER.traceEntry("in={}", in);
-    BotCommandMapper mapper = new BotCommandMapper();
+    BotCommandJsonMapper mapper = new BotCommandJsonMapper();
     BotCommand cmd = mapper.readValue(in, BotCommand.class);
     return LOGGER.traceExit(cmd);
   }
 
   /**
-   * Read a {@link BotCommand} from a JSON file.
-   * The JSON file is ovewritten with an empty JSON.
-   * This function is used to simulate bot->CC communication.
-   * @param in the JSON file.
-   * @return the parsed BotCommand; BotCommand with scope NONE, in case of errors.
-   * @throws IOException when command cannot be parsed.
+   * Deserializes {@link BotCommand} from a resource providing a JSON.
+   * @param resource the resource providing a JSON.
+   * @return the deserialized command.
+   * @throws IOException if {@link BotCommand} cannot be deserialized.
    */
-  public static BotCommand takeCommand(InputStream in) throws IOException {
-    LOGGER.traceEntry("in={}", in);
-    BotCommand cmd = readFromJson(in);
-    OutputStream out = null;
-    IOUtils.copy(in, out);
-    out.close();
+  public static BotCommand fromJsonResource(String resource) throws IOException {
+    LOGGER.traceEntry();
+    BotCommand cmd;
+    try (final InputStream in = IOManager.getInputStream(resource)) {
+      cmd = fromJson(in);
+    }
     return LOGGER.traceExit(cmd);
   }
 
+  /**
+   * Serializes {@link BotCommand} to JSON.
+   * @param out the stream accepting a JSON.
+   * @param cmd the command to serialize.
+   * @throws IOException if {@link BotCommand} cannot be serialized.
+   */
+  public static void toJson(OutputStream out, BotCommand cmd) throws IOException {
+    LOGGER.traceEntry("out={} cmd={}", out, cmd);
+    //TODO
+    LOGGER.traceExit();
+    return;
+  }
 
-  public static BotCommand readFromJsonResource(String cmdResource) throws IOException {
-    LOGGER.traceEntry();
-    BotCommand cmd = null;
-    return LOGGER.traceExit(cmd);
+  /**
+   * Serializes {@link BotCommand} to a resource accepting a JSON.
+   * @param resource the resource accepting a JSON.
+   * @param cmd the command to serialize.
+   * @throws IOException if {@link BotCommand} cannot be serialized.
+   */
+  public static void toJsonResource(String resource, BotCommand cmd) throws IOException {
+    LOGGER.traceEntry("resource={} cmd={}", resource, cmd);
+    try (final OutputStream out = IOManager.getOutputStream(resource)) {
+      toJson(out, cmd);
+    }
+    LOGGER.traceExit();
+    return;
   }
 }

@@ -54,4 +54,23 @@ public class Duration {
    */
   @NonNull
   private TimeUnit unit = TimeUnit.SECONDS;
+
+  /**
+   * Parses {@link Duration} from string.
+   * @param string the string to parse.
+   * @return the parsed {@link Duration}; null if cannot be parsed.
+   */
+  public static Duration valueOf(String string) {
+    if (string == null) return null;
+    String parts[] = string.split(":", 2);
+    if (parts.length != 2) return null;
+    long amount = Long.valueOf(parts[0]);
+    TimeUnit unit = TimeUnit.valueOf(parts[1]);
+    return new Duration(amount, unit);
+  }
+
+  @Override
+  public String toString() {
+    return String.format("%d:%s", this.getAmount(), this.getUnit());
+  }
 }

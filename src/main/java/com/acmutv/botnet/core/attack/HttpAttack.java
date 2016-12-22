@@ -63,11 +63,7 @@ public class HttpAttack implements Attacker {
   private static final long MAX_ERRORS= 10;
 
   public HttpAttack(HttpMethod method, HttpTarget target) {
-    this(method, target, null);
-  }
-
-  public HttpAttack(HttpMethod method, HttpTarget target, HttpProxy proxy) {
-    this(method, target, proxy, new HashMap<>());
+    this(method, target, new HashMap<>());
   }
 
   /**
@@ -83,11 +79,6 @@ public class HttpAttack implements Attacker {
   private HttpTarget target;
 
   /**
-   * The proxy to attack by.
-   */
-  private HttpProxy proxy;
-
-  /**
    * The HTTP request properties.
    */
   @NonNull
@@ -98,43 +89,48 @@ public class HttpAttack implements Attacker {
    */
   @Override
   public void run() {
+    final HttpMethod method = this.getMethod();
     final URL url = this.getTarget().getUrl();
-    final long maxAttempts = this.getTarget().getMaxAttempts();
+    final HttpProxy proxy = this.getTarget().getProxy();
+    final long repetitions = this.getTarget().getMaxAttempts();
     final Interval period = this.getTarget().getPeriod();
 
     long errors = 0;
 
-    for (long i = 0; i < maxAttempts; i++) {
+    for (long i = 1; i <= repetitions; i++) {
       try {
         LOGGER.info("Launching HTTP attack: {} {} with proxy {} ({}/{})",
-            this.getMethod(), url, this.getProxy().address(), i, maxAttempts);
-        this.makeAttack(url);
+            method, url, proxy, i, repetitions);
+        this.makeAttack(url, proxy);
       } catch (IOException exc) {
         errors ++;
         LOGGER.error("Cannot execute the attack (error {}/{}): {}",
             errors, MAX_ERRORS, exc.getMessage());
         if (errors >= MAX_ERRORS) {
           LOGGER.info("Max number of connection errors reached, aborting ...");
-          LOGGER.traceExit();
-          return;
+          break;
         }
       }
-      final long sleepAmount =
-          ThreadLocalRandom.current().nextLong(period.getMin(), period.getMax());
-      final Duration timeout = new Duration(sleepAmount, period.getUnit());
-      this.sleep(timeout);
+      if (i < repetitions) {
+        final long sleepAmount =
+            ThreadLocalRandom.current().nextLong(period.getMin(), period.getMax());
+        final Duration timeout = new Duration(sleepAmount, period.getUnit());
+        this.sleep(timeout);
+      }
     }
+    LOGGER.traceExit();
   }
 
   /**
    * Executes the attack.
    * @param url the target to attack.
+   * @param proxy the proxy to attack through.
    * @throws IOException when the target is not reachable.
    */
-  public void makeAttack(final URL url) throws IOException {
-    LOGGER.traceEntry("url={}", url);
+  public void makeAttack(final URL url, final HttpProxy proxy) throws IOException {
+    LOGGER.traceEntry("url={} proxy={}", url, proxy);
 
-    final int response = HttpManager.makeRequest(this.getMethod(), url, this.getProperties(), this.getProxy());
+    final int response = HttpManager.makeRequest(this.getMethod(), url, this.getProperties(), proxy);
 
     LOGGER.info("Attack response :: {} {} :: {}", this.getMethod(), url, response);
   }

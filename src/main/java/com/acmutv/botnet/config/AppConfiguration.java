@@ -69,7 +69,7 @@ public class AppConfiguration {
   /**
    * Default value for property sampling.
    */
-  public static Duration SAMPLING = new Duration(60, TimeUnit.SECONDS);
+  public static Duration SAMPLING = new Duration(1, TimeUnit.MINUTES);
 
   /**
    * Default value for property initResource.

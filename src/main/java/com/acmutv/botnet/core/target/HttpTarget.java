@@ -28,10 +28,12 @@ package com.acmutv.botnet.core.target;
 
 import com.acmutv.botnet.core.attack.HttpAttack;
 import com.acmutv.botnet.config.AppConfiguration;
+import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Interval;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import java.net.URL;
 
@@ -47,7 +49,27 @@ import java.net.URL;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HttpTarget {
+
+  /**
+   * The URL of the target to attack.
+   */
+  @NonNull
   private URL url;
+
+  /**
+   * The period to attack.
+   */
+  @NonNull
   private Interval period;
+
+  /**
+   * Maximum number of attack repetition.
+   */
+  @NonNull
   private long maxAttempts;
+
+  /**
+   * The proxy to attack through.
+   */
+  private HttpProxy proxy;
 }

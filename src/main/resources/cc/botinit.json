@@ -3,10 +3,7 @@
   "netInfo": true,
   "sysStat": true,
   "netStat": true,
-  "sampling": {
-    "amount": 60,
-    "unit": "SECONDS"
-  },
+  "sampling": "1:MINUTES",
   "initResource": "${RES}/cc/botinit.json",
   "cmdResource": "${RES}/cc/botcmd.json",
   "logResource": "${RES}/cc/botlog.json"

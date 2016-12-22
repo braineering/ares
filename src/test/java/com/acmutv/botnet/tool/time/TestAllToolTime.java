@@ -34,10 +34,12 @@ import org.junit.runners.Suite;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
+ * @see DurationTest
  * @see IntervalTest
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+    DurationTest.class,
     IntervalTest.class
 })
 public class TestAllToolTime {

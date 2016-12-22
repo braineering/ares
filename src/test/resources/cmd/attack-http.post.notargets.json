@@ -1,6 +1,0 @@
-{
-  "command": "ATTACK_HTTP",
-  "method": "POST",
-  "targets": [],
-  "proxy": null
-}

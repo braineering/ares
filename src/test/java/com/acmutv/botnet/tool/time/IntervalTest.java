@@ -23,16 +23,12 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
  */
-
 package com.acmutv.botnet.tool.time;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * This class realizes JUnit tests for {@link Interval}.
@@ -44,61 +40,24 @@ import static org.junit.Assert.assertTrue;
 public class IntervalTest {
 
   /**
-   * Tests the Period creation in the joint form. E.g.: `1`.
+   * Tests parsing from string representation.
    */
   @Test
-  public void test_creator_joint() {
-    final String str = "1";
-    Interval actual = new Interval(str);
-    Interval expected = new Interval(1, 1, TimeUnit.SECONDS);
-    assertEquals(expected, actual);
+  public void test_valueOf() {
+    String string = "1:SECONDS";
+    Interval actual = Interval.valueOf(string);
+    Interval expected = new Interval(1,1, TimeUnit.SECONDS);
+    Assert.assertEquals(expected, actual);
   }
 
   /**
-   * Tests the Period creation in the disjoint form. E.g.: `1-3`.
+   * Tests parsing from string representation.
    */
   @Test
-  public void test_creator_disjoint() {
-    final String str = "1-3";
-    Interval actual = new Interval(str);
-    Interval expected = new Interval(1, 3, TimeUnit.SECONDS);
-    assertEquals(expected, actual);
-  }
-
-
-  /**
-   * Tests the Period parsing in the joint form. E.g.: `1`.
-   */
-  @Test
-  public void testValueOf_joint() {
-    final String str = "1";
-    Interval actual = Interval.valueOf(str);
-    Interval expected = new Interval(1, 1, TimeUnit.SECONDS);
-    assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests the Period parsing in the disjoint form. E.g.: `1-3`.
-   */
-  @Test
-  public void test_fromString_disjoint() {
-    final String str = "1-3";
-    Interval actual = Interval.valueOf(str);
-    Interval expected = new Interval(1, 3, TimeUnit.SECONDS);
-    assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests the Period string validity check.
-   */
-  @Test
-  public void test_isValidString() {
-    assertTrue(Interval.isValidString("1"));
-    assertTrue(Interval.isValidString("1-3"));
-
-    assertFalse(Interval.isValidString(""));
-    assertFalse(Interval.isValidString("-"));
-    assertFalse(Interval.isValidString("1-"));
-    assertFalse(Interval.isValidString("-3"));
+  public void test_valueOf_compact() {
+    String string = "1-3:SECONDS";
+    Interval actual = Interval.valueOf(string);
+    Interval expected = new Interval(1,3, TimeUnit.SECONDS);
+    Assert.assertEquals(expected, actual);
   }
 }
