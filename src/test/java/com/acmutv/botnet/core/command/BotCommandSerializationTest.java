@@ -31,14 +31,11 @@ import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,6 +96,7 @@ public class BotCommandSerializationTest {
    * Command: empty
    * @throws IOException when command cannot be serialized/deserialized.
    */
+  @SuppressWarnings("ConstantConditions")
   @Test
   public void test_empty() throws IOException {
     BotCommand cmdExpected = null;

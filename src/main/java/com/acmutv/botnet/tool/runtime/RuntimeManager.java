@@ -109,6 +109,8 @@ public class RuntimeManager {
    * Returns the current JVM name.
    * @return the JVM name.
    */
-  public static String getJvmName() {return ManagementFactory.getRuntimeMXBean().getName();}
+  public static String getJvmName() {
+    return LOGGER.traceExit(ManagementFactory.getRuntimeMXBean().getName());
+  }
 
 }

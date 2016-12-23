@@ -1,10 +1,11 @@
 {
   "sysInfo": true,
   "netInfo": true,
-  "sysStat": true,
-  "netStat": true,
+  "sysStat": false,
+  "netStat": false,
   "sampling": "1:MINUTES",
   "initResource": "${PWD}/cc/botinit.json",
   "cmdResource": "${PWD}/cc/botcmd.json",
-  "logResource": "${PWD}/cc/botlog.json"
+  "logResource": "${PWD}/cc/botlog.json",
+  "polling": "10-10:SECONDS"
 }

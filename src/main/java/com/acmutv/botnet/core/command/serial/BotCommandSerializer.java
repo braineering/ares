@@ -34,8 +34,6 @@ import com.acmutv.botnet.tool.time.Duration;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.List;
@@ -49,8 +47,6 @@ import java.util.Map;
  * @see BotCommand
  */
 public class BotCommandSerializer extends StdSerializer<BotCommand> {
-
-  private static final Logger LOGGER = LogManager.getLogger(BotCommandSerializer.class);
 
   /**
    * The singleton of {@link BotCommandSerializer}.
@@ -77,7 +73,6 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
 
   @Override
   public void serialize(BotCommand value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-    LOGGER.traceEntry("value={}", value);
     gen.writeStartObject();
     gen.writeStringField("command", value.getScope().getName());
     if (value.getScope().isWithParams()) {
@@ -89,7 +84,7 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
           break;
 
         case UPDATE:
-          final Map<String,String> settings = (Map<String,String>) value.getParams().get("settings");
+          @SuppressWarnings("unchecked") final Map<String,String> settings = (Map<String,String>) value.getParams().get("settings");
           gen.writeObjectField("settings", settings);
           break;
 
@@ -105,7 +100,7 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
 
         case ATTACK_HTTP:
           final HttpMethod httpMethod = (HttpMethod) value.getParams().get("method");
-          final List<HttpTarget> httpTargets = (List<HttpTarget>) value.getParams().get("targets");
+          @SuppressWarnings("unchecked") final List<HttpTarget> httpTargets = (List<HttpTarget>) value.getParams().get("targets");
           final HttpProxy httpProxy = (HttpProxy) value.getParams().get("proxy");
           gen.writeStringField("method", httpMethod.name());
           gen.writeArrayFieldStart("targets");
@@ -130,6 +125,5 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
       }
     }
     gen.writeEndObject();
-    LOGGER.traceExit();
   }
 }

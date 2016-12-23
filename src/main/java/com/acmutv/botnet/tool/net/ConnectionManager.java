@@ -50,7 +50,6 @@ public class ConnectionManager {
    * @throws SocketException when there is an error creating or accessing a Socket.
    */
   public static String getMAC() throws UnknownHostException, SocketException {
-    LOGGER.traceEntry();
     String macString = null;
     InetAddress ip = InetAddress.getLocalHost();
     Enumeration<NetworkInterface> networks = NetworkInterface.getNetworkInterfaces();

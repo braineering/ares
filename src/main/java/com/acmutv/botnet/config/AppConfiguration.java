@@ -27,6 +27,7 @@
 package com.acmutv.botnet.config;
 
 import com.acmutv.botnet.tool.time.Duration;
+import com.acmutv.botnet.tool.time.Interval;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -49,42 +50,47 @@ public class AppConfiguration {
   /**
    * Default value for property sysInfo.
    */
-  public static boolean SYS_INFO = true;
+  public static final boolean SYS_INFO = true;
 
   /**
    * Default value for property netInfo.
    */
-  public static boolean NET_INFO = true;
+  public static final boolean NET_INFO = true;
 
   /**
    * Default value for property sysStat.
    */
-  public static boolean SYS_STAT = true;
+  public static final boolean SYS_STAT = true;
 
   /**
    * Default value for property netStat.
    */
-  public static boolean NET_STAT = true;
+  public static final boolean NET_STAT = true;
 
   /**
    * Default value for property sampling.
    */
-  public static Duration SAMPLING = new Duration(1, TimeUnit.MINUTES);
+  public static final Duration SAMPLING = new Duration(1, TimeUnit.MINUTES);
 
   /**
    * Default value for property initResource.
    */
-  public static String INIT_RESOURCE = AppConfiguration.class.getResource("/cc/botinit.json").getPath();
+  public static final String INIT_RESOURCE = AppConfiguration.class.getResource("/cc/botinit.json").getPath();
 
   /**
    * Default value for property cmdResource.
    */
-  public static String CMD_RESOURCE = AppConfiguration.class.getResource("/cc/botcmd.json").getPath();
+  public static final String CMD_RESOURCE = AppConfiguration.class.getResource("/cc/botcmd.json").getPath();
 
   /**
    * Default value for property logResource.
    */
-  public static String LOG_RESOURCE = AppConfiguration.class.getResource("/cc/botlog.json").getPath();
+  public static final String LOG_RESOURCE = AppConfiguration.class.getResource("/cc/botlog.json").getPath();
+
+  /**
+   * Default value for property polling.
+   */
+  public static final Interval POLLING = new Interval(10, 10, TimeUnit.SECONDS);
 
   /**
    * Property sysInfo.
@@ -143,6 +149,12 @@ public class AppConfiguration {
   private String logResource = LOG_RESOURCE;
 
   /**
+   * Property polling.
+   * The bot polls CC for commands with a random period within this interval.
+   */
+  private Interval polling = POLLING;
+
+  /**
    * Constructs a configuration as a copy of the one specified.
    * @param other the configuration to copy.
    */
@@ -163,6 +175,7 @@ public class AppConfiguration {
     this.initResource = other.initResource;
     this.cmdResource = other.cmdResource;
     this.logResource = other.logResource;
+    this.polling = other.polling;
   }
 
   /**
@@ -177,6 +190,7 @@ public class AppConfiguration {
     this.initResource = INIT_RESOURCE;
     this.cmdResource = CMD_RESOURCE;
     this.logResource = LOG_RESOURCE;
+    this.polling = POLLING;
   }
 
 }

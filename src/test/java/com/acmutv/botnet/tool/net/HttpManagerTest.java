@@ -36,8 +36,6 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-
 /**
  * This class realizes JUnit tests for {@link HttpManager}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}

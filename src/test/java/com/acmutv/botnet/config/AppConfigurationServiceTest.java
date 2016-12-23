@@ -28,6 +28,7 @@ package com.acmutv.botnet.config;
 
 import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.tool.time.Duration;
+import com.acmutv.botnet.tool.time.Interval;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -75,6 +76,7 @@ public class AppConfigurationServiceTest {
     expected.setInitResource(TemplateEngine.getInstance().replace("${RES}/cc/botinit2.json"));
     expected.setCmdResource(TemplateEngine.getInstance().replace("${RES}/cc/botcmd2.json"));
     expected.setLogResource(TemplateEngine.getInstance().replace("${RES}/cc/botlog2.json"));
+    expected.setPolling(new Interval(10, 15, TimeUnit.SECONDS));
     Assert.assertEquals(expected, actualjson);
     Assert.assertEquals(expected, actualyaml);
   }
@@ -99,6 +101,7 @@ public class AppConfigurationServiceTest {
     expected.setInitResource(TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"));
     expected.setCmdResource(TemplateEngine.getInstance().replace("${PWD}/cc/botcmd.json"));
     expected.setLogResource(TemplateEngine.getInstance().replace("${PWD}/cc/botlog.json"));
+    expected.setPolling(new Interval(10, 15, TimeUnit.SECONDS));
     Assert.assertEquals(expected, actualjson);
     Assert.assertEquals(expected, actualyaml);
   }

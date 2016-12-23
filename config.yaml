@@ -9,13 +9,11 @@ sysInfo: True
 netInfo: True
 sysStat: True
 netStat: True
-sampling:
-  amount: 60
-  unit: "SECONDS"
+sampling: "1:MINUTES"
 
 #===============================================================================
 # C&C RESOURCES
 #===============================================================================
-initResource: !templateString "${PWD}/cc/botinit.json"
-cmdResource: !templateString "${PWD}/cc/botcmd.json"
-logResource: !templateString "${PWD}/cc/botlog.json"
+initResource: "${PWD}/cc/botinit.json"
+cmdResource: "${PWD}/cc/botcmd.json"
+logResource: "${PWD}/cc/botlog.json"

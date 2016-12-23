@@ -28,9 +28,7 @@ package com.acmutv.botnet.core.report.statistics;
 
 import com.acmutv.botnet.core.report.features.NetworkFeatures;
 import com.acmutv.botnet.core.report.features.SystemFeatures;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * This class realizes the model fo network statistics.
@@ -42,8 +40,7 @@ import lombok.NoArgsConstructor;
  * @see SystemStatistics
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class NetworkStatistics {
+
   private long uptime;
 }

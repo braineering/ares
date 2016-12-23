@@ -37,10 +37,7 @@ import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URL;
@@ -54,8 +51,6 @@ import java.util.*;
  * @see BotCommand
  */
 public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
-
-  private static final Logger LOGGER = LogManager.getLogger(BotCommandDeserializer.class);
 
   /**
    * The singleton of {@link BotCommandDeserializer}.
@@ -82,9 +77,7 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
 
   @Override
   public BotCommand deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
-    LOGGER.traceEntry();
     JsonNode node = parser.getCodec().readTree(parser);
-    LOGGER.trace("node={}", node);
 
     if (!node.has("command")) {
       throw new IOException("Cannot read command scope (missing).");
@@ -155,7 +148,7 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
       }
     }
 
-    return LOGGER.traceExit(cmd);
+    return cmd;
   }
 
   /**
@@ -164,7 +157,6 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
    * @return the parsed list of {@link HttpTarget}.
    */
   private static List<HttpTarget> parseTargets(JsonNode node) throws IOException {
-    ObjectMapper mapper = new ObjectMapper();
     List<HttpTarget> targets = new ArrayList<>();
     Iterator<JsonNode> iter = node.elements();
     while (iter.hasNext()) {

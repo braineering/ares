@@ -29,15 +29,13 @@ package com.acmutv.botnet.config.serial;
 import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.tool.time.Duration;
+import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class realizes the JSON deserializer for {@link AppConfiguration}.
@@ -46,8 +44,6 @@ import java.util.concurrent.TimeUnit;
  * @see AppConfiguration
  */
 public class AppConfigurationDeserializer extends StdDeserializer<AppConfiguration> {
-
-  private static final Logger LOGGER = LogManager.getLogger(AppConfigurationDeserializer.class);
 
   /**
    * The singleton of {@link AppConfigurationDeserializer}.
@@ -74,10 +70,8 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
 
   @Override
   public AppConfiguration deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
-    LOGGER.traceEntry();
     AppConfiguration config = new AppConfiguration();
     JsonNode node = parser.getCodec().readTree(parser);
-    LOGGER.trace("node={}", node);
 
     if (node.has("sysInfo")) {
       final boolean sysInfo = node.get("sysInfo").asBoolean();
@@ -125,6 +119,10 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
       config.setLogResource(logResource);
     }
 
-    return LOGGER.traceExit(config);
+    if (node.has("polling")) {
+      final Interval polling = Interval.valueOf(node.get("polling").asText());
+      config.setPolling(polling);
+    }
+    return config;
   }
 }

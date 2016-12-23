@@ -27,19 +27,19 @@
 package com.acmutv.botnet.core.exception;
 
 /**
- * Thrown when a bot command cannot be correctly read.
+ * Thrown when the bot cannot be correctly configured.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  */
-public class BotCommandParsingException extends BotException {
+public class BotInitializationException extends BotException {
 
   /**
    * Constructs a new runtime exception with {@code null} as its
    * detail message.  The cause is not initialized, and may subsequently be
    * initialized by a call to {@link #initCause}.
    */
-  public BotCommandParsingException() {
+  public BotInitializationException() {
   }
 
   /**
@@ -50,7 +50,7 @@ public class BotCommandParsingException extends BotException {
    * @param message the detail message. The detail message is saved for
    *                later retrieval by the {@link #getMessage()} method.
    */
-  public BotCommandParsingException(String message) {
+  public BotInitializationException(String message) {
     super(message);
   }
 
@@ -63,7 +63,7 @@ public class BotCommandParsingException extends BotException {
    *                later retrieval by the {@link #getMessage()} method.
    * @param objects the objects to fill the format string with.
    */
-  public BotCommandParsingException(String format, Object... objects) {
+  public BotInitializationException(String format, Object... objects) {
     super(String.format(format, objects));
   }
 }

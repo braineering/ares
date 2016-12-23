@@ -23,48 +23,19 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
  */
-
-package com.acmutv.botnet;
-
-import com.acmutv.botnet.core.CoreController;
-import com.acmutv.botnet.core.exception.BotException;
-import com.acmutv.botnet.core.exception.BotFatalException;
-import com.acmutv.botnet.tool.runtime.RuntimeManager;
-import com.acmutv.botnet.tool.runtime.ShutdownHook;
-import com.acmutv.botnet.ui.CliService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+package com.acmutv.botnet.core.report;
 
 /**
- * This class realizes the app entry-point.
+ * This interface defines a generic bot response.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  */
-public class BotMain {
-
-  private static final Logger LOGGER = LogManager.getLogger(BotMain.class);
+public interface Response {
 
   /**
-   * The app main method, executed when the program is launched.
-   * @param args The command line arguments.
+   * Converts the instance to a JSON string.
+   * @return the JSON string.
    */
-  public static void main(String[] args) {
-
-    CliService.handleArguments(args);
-
-    RuntimeManager.registerShutdownHooks(new ShutdownHook());
-
-    try {
-      CoreController.startBot();
-    } catch (BotFatalException exc) {
-      LOGGER.error(exc.getMessage());
-    }
-
-    LOGGER.traceExit(0);
-
-    System.exit(0);
-
-  }
-
+  String toJson();
 }

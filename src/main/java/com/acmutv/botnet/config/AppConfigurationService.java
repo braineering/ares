@@ -89,10 +89,9 @@ public class AppConfigurationService {
    * @throws IOException if {@link AppConfiguration} cannot be deserialized.
    */
   public static AppConfiguration fromJson(final InputStream in) throws IOException {
-    LOGGER.traceEntry("in={}", in);
     final ObjectMapper mapper = new AppConfigurationJsonMapper();
     final AppConfiguration config = mapper.readValue(in, AppConfiguration.class);
-    return LOGGER.traceExit(config);
+    return config;
   }
 
   /**
@@ -117,10 +116,9 @@ public class AppConfigurationService {
    * @throws IOException if {@link AppConfiguration} cannot be deserialized.
    */
   public static AppConfiguration fromYaml(final InputStream in) throws IOException {
-    LOGGER.traceEntry("in={}", in);
     final YAMLMapper mapper = new AppConfigurationYamlMapper();
     final AppConfiguration config = mapper.readValue(in, AppConfiguration.class);
-    return LOGGER.traceExit(config);
+    return config;
   }
 
   /**
@@ -152,7 +150,6 @@ public class AppConfigurationService {
    * @throws IOException if {@link AppConfiguration} cannot be deserialized.
    */
   public static void loadJson(final InputStream in) throws IOException {
-    LOGGER.traceEntry("in={}", in);
     final AppConfiguration config = fromJson(in);
     getConfigurations().copy(config);
   }
@@ -160,7 +157,6 @@ public class AppConfigurationService {
   /**
    * Loads {@link AppConfiguration} from a resource providing a JSON.
    * @param resource the resource providing a JSON.
-   * @return the deserialized configuration.
    * @throws IOException if {@link AppConfiguration} cannot be deserialized.
    */
   public static void loadJsonResource(final String resource) throws IOException {
@@ -175,7 +171,6 @@ public class AppConfigurationService {
    * @throws IOException if {@link AppConfiguration} cannot be deserialized.
    */
   public static void loadYaml(final InputStream in) throws IOException {
-    LOGGER.traceEntry("in={}", in);
     final AppConfiguration config = fromYaml(in);
     getConfigurations().copy(config);
   }
@@ -183,7 +178,6 @@ public class AppConfigurationService {
   /**
    * Loads {@link AppConfiguration} from a resource providing a YAML.
    * @param resource the resource providing a YAML.
-   * @return the deserialized configuration.
    * @throws IOException if {@link AppConfiguration} cannot be deserialized.
    */
   public static void loadYamlResource(final String resource) throws IOException {

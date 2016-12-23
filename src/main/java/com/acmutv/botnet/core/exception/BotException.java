@@ -27,7 +27,7 @@
 package com.acmutv.botnet.core.exception;
 
 /**
- * This class realizes the base exception related to bot.
+ * Thrown as a root-level bot exception.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

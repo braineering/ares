@@ -26,8 +26,6 @@
 
 package com.acmutv.botnet.tool.net;
 
-import com.acmutv.botnet.tool.time.Duration;
-
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 
@@ -50,8 +48,7 @@ public class HttpProxy extends Proxy {
    */
   public String getIP() {
     InetSocketAddress sock = (InetSocketAddress) super.address();
-    String ip = sock.getHostString();
-    return ip;
+    return sock.getHostString();
   }
 
   /**
@@ -60,8 +57,7 @@ public class HttpProxy extends Proxy {
    */
   public int getPort() {
     InetSocketAddress sock = (InetSocketAddress) super.address();
-    int port = sock.getPort();
-    return port;
+    return sock.getPort();
   }
 
   /**

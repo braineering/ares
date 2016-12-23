@@ -26,15 +26,12 @@
 
 package com.acmutv.botnet.core.command;
 
-import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.core.command.serial.BotCommandJsonMapper;
 import com.acmutv.botnet.tool.io.IOManager;
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
-import java.net.URI;
 
 /**
  * This class realizes bot command services.
@@ -72,10 +69,9 @@ public class BotCommandService {
    * @throws IOException if {@link BotCommand} cannot be deserialized.
    */
   public static BotCommand fromJson(InputStream in) throws IOException {
-    LOGGER.traceEntry("in={}", in);
     BotCommandJsonMapper mapper = new BotCommandJsonMapper();
     BotCommand cmd = mapper.readValue(in, BotCommand.class);
-    return LOGGER.traceExit(cmd);
+    return cmd;
   }
 
   /**
@@ -85,7 +81,7 @@ public class BotCommandService {
    * @throws IOException if {@link BotCommand} cannot be deserialized.
    */
   public static BotCommand fromJsonResource(String resource) throws IOException {
-    LOGGER.traceEntry();
+    LOGGER.traceEntry("resource={}", resource);
     BotCommand cmd;
     try (final InputStream in = IOManager.getInputStream(resource)) {
       cmd = fromJson(in);
@@ -98,26 +94,25 @@ public class BotCommandService {
    * @param out the stream accepting a JSON.
    * @param cmd the command to serialize.
    * @throws IOException if {@link BotCommand} cannot be serialized.
-   */
   public static void toJson(OutputStream out, BotCommand cmd) throws IOException {
     LOGGER.traceEntry("out={} cmd={}", out, cmd);
     //TODO
     LOGGER.traceExit();
-    return;
   }
+   */
 
   /**
    * Serializes {@link BotCommand} to a resource accepting a JSON.
    * @param resource the resource accepting a JSON.
    * @param cmd the command to serialize.
    * @throws IOException if {@link BotCommand} cannot be serialized.
-   */
+
   public static void toJsonResource(String resource, BotCommand cmd) throws IOException {
     LOGGER.traceEntry("resource={} cmd={}", resource, cmd);
     try (final OutputStream out = IOManager.getOutputStream(resource)) {
       toJson(out, cmd);
     }
     LOGGER.traceExit();
-    return;
   }
+   */
 }

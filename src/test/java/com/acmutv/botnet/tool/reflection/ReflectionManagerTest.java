@@ -26,7 +26,6 @@
 
 package com.acmutv.botnet.tool.reflection;
 
-import com.acmutv.botnet.tool.runtime.RuntimeManager;
 import lombok.Data;
 import org.junit.Assert;
 import org.junit.Test;

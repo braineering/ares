@@ -81,6 +81,7 @@ public class IOManagerTest {
   public void test_getOutputStream_local() throws IOException {
     //String resource = "data/test/sample-write.txt";
     String resource = IOManagerTest.class.getResource("/tool/sample-write.txt").getPath();
+    //noinspection EmptyTryBlock
     try (final OutputStream out = IOManager.getOutputStream(resource)) {
       //
     }
@@ -92,6 +93,7 @@ public class IOManagerTest {
   @Test
   public void test_getOutputStream_remote() {
     String resource = "http://www.google.com/robots.txt";
+    //noinspection EmptyTryBlock
     try (final OutputStream out = IOManager.getOutputStream(resource)) {
       //
     } catch (IOException exc) { return; }
