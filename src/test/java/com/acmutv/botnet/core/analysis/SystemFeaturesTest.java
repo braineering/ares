@@ -24,9 +24,9 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.report.statistics;
+package com.acmutv.botnet.core.analysis;
 
-import com.acmutv.botnet.core.report.features.SystemFeatures;
+import com.acmutv.botnet.core.analysis.SystemFeatures;
 import org.junit.Test;
 
 /**
@@ -36,7 +36,7 @@ import org.junit.Test;
  * @since 1.0
  * @see SystemFeatures
  */
-public class SystemStatisticsTest {
+public class SystemFeaturesTest {
 
   @Test
   public void test() {

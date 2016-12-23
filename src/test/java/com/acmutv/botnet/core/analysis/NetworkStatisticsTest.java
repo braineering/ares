@@ -24,17 +24,17 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.report.statistics;
+package com.acmutv.botnet.core.analysis;
 
-import com.acmutv.botnet.core.report.features.NetworkFeatures;
+import com.acmutv.botnet.core.analysis.NetworkFeatures;
 import org.junit.Test;
 
 /**
- * This class realizes JUnit tests for {@link NetworkFeatures}.
+ * This class realizes JUnit tests for {@link NetworkStatistics}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see NetworkFeatures
+ * @see NetworkStatistics
  */
 public class NetworkStatisticsTest {
 

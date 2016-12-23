@@ -26,8 +26,6 @@
 
 package com.acmutv.botnet.tool.reflection;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -36,6 +34,8 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class realizes Java reflection services.
@@ -45,11 +45,8 @@ import java.util.Arrays;
  */
 public class ReflectionManager {
 
-  private static final Logger LOGGER = LogManager.getLogger(ReflectionManager.class);
-
   /**
    * Gets an object property by reflection.
-   *
    * @param type     the object class to reflect.
    * @param object   the object instance to address.
    * @param property the name of the object property to get.
@@ -60,7 +57,6 @@ public class ReflectionManager {
    */
   public static Object get(Class<?> type, Object object, String property)
       throws IntrospectionException, InvocationTargetException, IllegalAccessException {
-    LOGGER.traceEntry("type={} object={} property={}", type, object, property);
     final BeanInfo beanInfo = Introspector.getBeanInfo(type);
     final PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
     Method getter = Arrays.stream(propertyDescriptors)
@@ -72,23 +68,49 @@ public class ReflectionManager {
     }
     Object result = getter.invoke(object);
 
-    return LOGGER.traceExit(result);
+    return result;
+  }
+
+  /**
+   * Maps object attributes.
+   * @param type the class to reflect.
+   * @param object the instance to address.
+   * @param <T> the class to reflect.
+   * @return the attributes mapping.
+   * @throws IntrospectionException when errors in reflection.
+   * @throws InvocationTargetException when errors in reflection.
+   * @throws IllegalAccessException when errors in reflection.
+   */
+  public static <T> Map<String,Object> getAttributes(Class<T> type, T object)
+      throws IntrospectionException, InvocationTargetException, IllegalAccessException {
+    Map<String,Object> propsmap = new HashMap<>();
+    final BeanInfo beanInfo = Introspector.getBeanInfo(type);
+    final PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+    for (PropertyDescriptor pd : propertyDescriptors) {
+      if (pd.getName().equals("class")) continue;
+      final Method getter = pd.getReadMethod();
+      if (getter != null) {
+        final String attrname = pd.getName();
+        final Object attrvalue = getter.invoke(object);
+        propsmap.put(attrname, attrvalue);
+      }
+    }
+    return propsmap;
   }
 
   /**
    * Sets an object property by reflection.
-   *
-   * @param type     the object class to reflect.
-   * @param object   the object instance to address.
+   * @param type     the class to reflect.
+   * @param object   the instance to address.
    * @param property the name of the object property to set.
    * @param value    the value to set the property to.
+   * @param <T>      the class to reflect.
    * @throws IntrospectionException when property cannot be found.
    * @throws InvocationTargetException when setter method cannot be invoked.
    * @throws IllegalAccessException when setter method cannot be accessed.
    */
-  public static void set(Class<?> type, Object object, String property, Object value)
+  public static <T> void set(Class<T> type, T object, String property, Object value)
       throws IntrospectionException, InvocationTargetException, IllegalAccessException {
-    LOGGER.traceEntry("type={} object={} property={} value={}", type, object, property, value);
     final BeanInfo beanInfo = Introspector.getBeanInfo(type);
     final PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
     Method setter = Arrays.stream(propertyDescriptors)

@@ -24,10 +24,8 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.report.features;
+package com.acmutv.botnet.core.analysis;
 
-import com.acmutv.botnet.core.report.statistics.NetworkStatistics;
-import com.acmutv.botnet.core.report.statistics.SystemStatistics;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -45,5 +43,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SystemFeatures {
+
+  /**
+   * The Operating System's name.
+   */
   private String os;
+
+  /**
+   * The kernel's name.
+   */
+  private String kernel;
 }

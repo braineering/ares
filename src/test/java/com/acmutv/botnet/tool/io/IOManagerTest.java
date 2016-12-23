@@ -34,6 +34,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 
 /**
  * This class realizes JUnit tests for {@link IOManager}.
@@ -49,7 +53,6 @@ public class IOManagerTest {
    */
   @Test
   public void test_getInputStream_local() throws IOException {
-    //String resource = "data/test/sample-read.txt";
     String resource = IOManagerTest.class.getResource("/tool/sample-read.txt").getPath();
     String actual;
     try (final InputStream in = IOManager.getInputStream(resource)) {
@@ -68,7 +71,7 @@ public class IOManagerTest {
     String resource = "http://www.google.com/robots.txt";
     String actual;
     try (final InputStream in = IOManager.getInputStream(resource)) {
-       actual = IOUtils.toString(in, Charset.defaultCharset());
+      actual = IOUtils.toString(in, Charset.defaultCharset());
     }
     Assert.assertNotNull(actual);
   }
@@ -79,9 +82,7 @@ public class IOManagerTest {
    */
   @Test
   public void test_getOutputStream_local() throws IOException {
-    //String resource = "data/test/sample-write.txt";
     String resource = IOManagerTest.class.getResource("/tool/sample-write.txt").getPath();
-    //noinspection EmptyTryBlock
     try (final OutputStream out = IOManager.getOutputStream(resource)) {
       //
     }
@@ -93,7 +94,6 @@ public class IOManagerTest {
   @Test
   public void test_getOutputStream_remote() {
     String resource = "http://www.google.com/robots.txt";
-    //noinspection EmptyTryBlock
     try (final OutputStream out = IOManager.getOutputStream(resource)) {
       //
     } catch (IOException exc) { return; }
@@ -102,7 +102,6 @@ public class IOManagerTest {
 
   @Test
   public void test_isWritableResource_local() {
-    //String resource = "data/test/sample-write.txt";
     String resource = IOManagerTest.class.getResource("/tool/sample-write.txt").getPath();
     boolean result = IOManager.isWritableResource(resource);
     Assert.assertTrue(result);
@@ -120,7 +119,6 @@ public class IOManagerTest {
    */
   @Test
   public void test_readResource_local() throws IOException {
-    //String resource = "data/test/sample-read.txt";
     String resource = IOManagerTest.class.getResource("/tool/sample-read.txt").getPath();
     String actual = IOManager.readResource(resource);
     final String expected = "Hello World!";
@@ -142,7 +140,6 @@ public class IOManagerTest {
    */
   @Test
   public void test_writeResource_local() throws IOException {
-    //String resource = "data/test/sample-write.txt";
     String resource = IOManagerTest.class.getResource("/tool/sample-write.txt").getPath();
     IOManager.writeResource(resource, "{}");
     String actual = IOManager.readResource(resource);
@@ -152,6 +149,7 @@ public class IOManagerTest {
 
   /**
    * Tests write to a remote resource.
+   * Should fail.
    */
   @Test
   public void test_writeResource_remote() {
@@ -162,4 +160,40 @@ public class IOManagerTest {
     Assert.fail();
   }
 
+  /**
+   * Tests append to a local resource.
+   * @throws IOException when errors in I/O.
+   */
+  @Test
+  public void test_appendResource_local() throws IOException {
+    String resource = IOManagerTest.class.getResource("/tool/sample-append.txt").getPath();
+    Path path = FileSystems.getDefault().getPath(resource).toAbsolutePath();
+
+    Files.write(path, "".getBytes());
+
+    IOManager.appendResource(resource, "1");
+    String actual1 = IOManager.readResource(resource);
+    final String expected1 = "1";
+    Assert.assertEquals(expected1, actual1);
+
+    IOManager.appendResource(resource, "1");
+    String actual2 = IOManager.readResource(resource);
+    final String expected2 = "11";
+    Assert.assertEquals(expected2, actual2);
+
+    Files.write(path, "".getBytes());
+  }
+
+  /**
+   * Tests append to a remote resource.
+   * Should fail.
+   */
+  @Test
+  public void test_appendResource_remote() {
+    String resource = "http://www.google.com/robots.txt";
+    try {
+      IOManager.appendResource(resource, "1");
+    } catch (IOException exc) { return; }
+    Assert.fail();
+  }
 }

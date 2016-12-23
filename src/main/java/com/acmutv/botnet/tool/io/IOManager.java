@@ -36,6 +36,7 @@ import java.nio.charset.Charset;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 
 /**
  * This class realizes I/O services.
@@ -106,5 +107,16 @@ public class IOManager {
     try (final OutputStream out = getOutputStream(resource)) {
       IOUtils.write(string, out, Charset.defaultCharset());
     }
+  }
+
+  /**
+   * Appends string on a resource.
+   * @param resource the resource to write on.
+   * @param string the string to write.
+   * @throws IOException when resource cannot be written.
+   */
+  public static void appendResource(String resource, String string) throws IOException {
+    Path path = FileSystems.getDefault().getPath(resource).toAbsolutePath();
+    Files.write(path, string.getBytes(), StandardOpenOption.APPEND);
   }
 }

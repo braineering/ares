@@ -24,21 +24,41 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.report.features;
+package com.acmutv.botnet.core.analysis;
 
-import org.junit.Test;
+import com.acmutv.botnet.core.report.Report;
+import com.acmutv.botnet.core.report.SimpleReport;
+import com.acmutv.botnet.tool.reflection.ReflectionManager;
+
+import java.beans.IntrospectionException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * This class realizes JUnit tests for {@link NetworkFeatures}.
+ * This class realizes a simple system analyzer.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see NetworkFeatures
+ * @see SystemFeatures
+ * @see SystemStatistics
  */
-public class NetworkFeaturesTest {
+public class SystemAnalyzer implements Analyzer {
 
-  @Test
-  public void test() {
-    //TODO
+  /**
+   * Produces a {@link Report}.
+   * @return the report produced.
+   */
+  @Override
+  public Report makeReport() {
+    SystemFeatures features = new SystemFeatures();
+    Map<String,Object> attributes;
+    try {
+      attributes = ReflectionManager.getAttributes(SystemFeatures.class, features);
+    } catch (IntrospectionException | InvocationTargetException | IllegalAccessException exc) {
+      attributes = new HashMap<>();
+    }
+    Report report = new SimpleReport(attributes);
+    return report;
   }
 }

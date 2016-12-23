@@ -23,25 +23,21 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
  */
+package com.acmutv.botnet.core.analysis;
 
-package com.acmutv.botnet.core.report.statistics;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.acmutv.botnet.core.report.Report;
 
 /**
- * This class realizes JUnit test suite for system/network statistics reporting classes.
+ * This interface defines the basic host analyzer.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see NetworkStatisticsTest
- * @see SystemStatisticsTest
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    NetworkStatisticsTest.class,
-    SystemStatisticsTest.class
-})
-public class TestAllStatistics {
+public interface Analyzer {
 
+  /**
+   * Produces a {@link Report}.
+   * @return the report produced.
+   */
+  Report makeReport();
 }

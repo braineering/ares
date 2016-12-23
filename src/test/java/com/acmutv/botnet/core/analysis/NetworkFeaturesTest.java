@@ -24,16 +24,22 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.report.statistics;
+package com.acmutv.botnet.core.analysis;
+
+import com.acmutv.botnet.core.analysis.NetworkFeatures;
+import org.junit.Test;
 
 /**
- * This interface exposes methods to sample system behaviour.
+ * This class realizes JUnit tests for {@link NetworkFeatures}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
+ * @see NetworkFeatures
  */
-public interface SystemSamplingService {
+public class NetworkFeaturesTest {
 
-  SystemStatistics acquire();
-
+  @Test
+  public void test() {
+    //TODO
+  }
 }

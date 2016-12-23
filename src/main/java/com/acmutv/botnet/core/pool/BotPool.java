@@ -29,8 +29,6 @@ package com.acmutv.botnet.core.pool;
 import com.acmutv.botnet.core.attack.Attacker;
 import com.acmutv.botnet.core.pool.task.ExecutorServiceKill;
 import com.acmutv.botnet.core.pool.task.ExecutorServiceShutdown;
-import com.acmutv.botnet.core.report.statistics.NetworkSampler;
-import com.acmutv.botnet.core.report.statistics.SystemSampler;
 import com.acmutv.botnet.tool.runtime.RuntimeManager;
 import com.acmutv.botnet.tool.time.Duration;
 import lombok.Data;
@@ -64,16 +62,6 @@ public class BotPool {
     int cores = RuntimeManager.getCores();
     this.fixedThreadPool = Executors.newFixedThreadPool(cores);
     this.scheduledThreadPool = Executors.newScheduledThreadPool(1);
-  }
-
-  public void registerSystemSampler(long frequency, TimeUnit unit) {
-    SystemSampler sampler = new SystemSampler();
-    this.getScheduledThreadPool().scheduleAtFixedRate(sampler, 0, frequency, unit);
-  }
-
-  public void registerNetworkSampler(long frequency, TimeUnit unit) {
-    NetworkSampler sampler = new NetworkSampler();
-    this.getScheduledThreadPool().scheduleAtFixedRate(sampler, 0, frequency, unit);
   }
 
   public void submit(Attacker attacker) {

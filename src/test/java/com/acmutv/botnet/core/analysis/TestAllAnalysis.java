@@ -24,32 +24,28 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.report.statistics;
+package com.acmutv.botnet.core.analysis;
 
-import com.acmutv.botnet.core.report.features.SystemFeatures;
-import lombok.Data;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
- * This class realizes the runnable performing the stealthy collection of system information.
+ * This class realizes JUnit test suite for system/network analysis.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see NetworkSampler
- * @see SystemFeatures
+ * @see NetworkFeaturesTest
+ * @see NetworkStatisticsTest
+ * @see SystemFeaturesTest
+ * @see SystemStatisticsTest
  */
-@Data
-public class SystemSampler implements Runnable {
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    NetworkFeaturesTest.class,
+    NetworkStatisticsTest.class,
+    SystemFeaturesTest.class,
+    SystemStatisticsTest.class
+})
+public class TestAllAnalysis {
 
-  private static final Logger LOGGER = LogManager.getLogger(SystemSampler.class);
-
-  @Override
-  public void run() {
-    makeSample();
-  }
-
-  private void makeSample() {
-    LOGGER.traceEntry();
-  }
 }

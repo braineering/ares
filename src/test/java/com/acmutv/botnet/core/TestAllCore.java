@@ -26,6 +26,7 @@
 
 package com.acmutv.botnet.core;
 
+import com.acmutv.botnet.core.analysis.TestAllAnalysis;
 import com.acmutv.botnet.core.command.TestAllCommand;
 import com.acmutv.botnet.core.pool.TestAllPool;
 import com.acmutv.botnet.core.state.TestAllState;
@@ -41,6 +42,7 @@ import com.acmutv.botnet.core.target.TestAllTarget;
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see CoreControllerTest
+ * @see TestAllAnalysis
  * @see TestAllAttack
  * @see TestAllCommand
  * @see TestAllPool
@@ -51,6 +53,7 @@ import com.acmutv.botnet.core.target.TestAllTarget;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     CoreControllerTest.class,
+    TestAllAnalysis.class,
     TestAllAttack.class,
     TestAllCommand.class,
     TestAllPool.class,

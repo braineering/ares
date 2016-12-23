@@ -24,24 +24,22 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.report.features;
+package com.acmutv.botnet.core.analysis;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.acmutv.botnet.core.analysis.SystemFeatures;
+import org.junit.Test;
 
 /**
- * This class realizes JUnit test suite for system/network features reporting classes.
+ * This class realizes JUnit tests for {@link SystemStatistics}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see NetworkFeaturesTest
- * @see SystemFeaturesTest
+ * @see SystemStatistics
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    NetworkFeaturesTest.class,
-    SystemFeaturesTest.class
-})
-public class TestAllFeatures {
+public class SystemStatisticsTest {
 
+  @Test
+  public void test() {
+    //TODO
+  }
 }

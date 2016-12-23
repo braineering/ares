@@ -26,8 +26,6 @@
 
 package com.acmutv.botnet.core.report;
 
-import com.acmutv.botnet.core.report.features.TestAllFeatures;
-import com.acmutv.botnet.core.report.statistics.TestAllStatistics;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -36,13 +34,11 @@ import org.junit.runners.Suite;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see TestAllFeatures
- * @see TestAllStatistics
+ * @see SimpleReportTest
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    TestAllFeatures.class,
-    TestAllStatistics.class
+    SimpleReportTest.class
 })
 public class TestAllReport {
 

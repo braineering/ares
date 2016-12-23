@@ -24,32 +24,25 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.report.statistics;
+package com.acmutv.botnet.core.analysis;
 
-import com.acmutv.botnet.core.report.features.NetworkFeatures;
+import com.acmutv.botnet.tool.time.Duration;
 import lombok.Data;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
- * This class realizes the runnable performing the stealthy collection of network information.
+ * This class realizes the model fo network statistics.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see SystemSampler
+ * @see SystemFeatures
  * @see NetworkFeatures
+ * @see SystemStatistics
  */
 @Data
-public class NetworkSampler implements Runnable {
+public class NetworkStatistics {
 
-  private static final Logger LOGGER = LogManager.getLogger(NetworkSampler.class);
-
-  @Override
-  public void run() {
-    makeSample();
-  }
-
-  private void makeSample() {
-    LOGGER.traceEntry();
-  }
+  /**
+   * The network uptime.
+   */
+  private Duration uptime;
 }

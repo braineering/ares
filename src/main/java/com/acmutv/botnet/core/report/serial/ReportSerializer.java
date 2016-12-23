@@ -24,16 +24,51 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.report.statistics;
+package com.acmutv.botnet.core.report.serial;
+
+import com.acmutv.botnet.core.report.Report;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+
+import java.io.IOException;
 
 /**
- * This interface exposes methods to sample network behaviour.
+ * This class realizes the JSON serializer for {@link Report}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
+ * @see Report
  */
-public interface NetworkSamplingService {
+public class ReportSerializer extends StdSerializer<Report> {
 
-  NetworkStatistics acquire();
+  /**
+   * The singleton of {@link ReportSerializer}.
+   */
+  private static ReportSerializer instance;
 
+  /**
+   * Returns the singleton of {@link ReportSerializer}.
+   * @return the singleton.
+   */
+  public static ReportSerializer getInstance() {
+    if (instance == null) {
+      instance = new ReportSerializer();
+    }
+    return instance;
+  }
+
+  /**
+   * Initializes the singleton of {@link ReportSerializer}.
+   */
+  private ReportSerializer() {
+    super((Class<Report>) null);
+  }
+
+  @Override
+  public void serialize(Report value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+    gen.writeStartObject();
+    //TODO explicit report serialization
+    gen.writeEndObject();
+  }
 }

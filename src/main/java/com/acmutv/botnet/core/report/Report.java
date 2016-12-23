@@ -24,16 +24,27 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.report.features;
+package com.acmutv.botnet.core.report;
+
+import java.util.Map;
 
 /**
- * This interface exposes methods to retrieve system features.
+ * This interface defines a generic bot response report.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  */
-public interface SystemFeaturesService {
+public interface Report extends Map<String,Object> {
 
-  SystemFeatures acquire();
+  /**
+   * Merges the report with another report.
+   * @param other the report to merge with.
+   */
+  void merge(Report other);
 
+  /**
+   * Converts the instance to a JSON.
+   * @return the JSON.
+   */
+  String toJson();
 }

@@ -24,26 +24,48 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.report.features;
+package com.acmutv.botnet.core.report;
 
-import com.acmutv.botnet.core.report.statistics.NetworkStatistics;
-import com.acmutv.botnet.core.report.statistics.SystemStatistics;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.acmutv.botnet.core.report.serial.ReportJsonMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.EqualsAndHashCode;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * This class realizes the model of network information.
+ * This class realizes a simple report.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see SystemFeatures
- * @see SystemStatistics
- * @see NetworkStatistics
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class NetworkFeatures {
-  private String ip;
+@EqualsAndHashCode(callSuper = true)
+public class SimpleReport extends HashMap<String,Object> implements Report {
+
+  public SimpleReport(Map<? extends String,? extends Object> map) {
+    super(map);
+  }
+
+  public SimpleReport() {
+    super();
+  }
+
+  /**
+   * Merges the report with another report.
+   * @param other the report to merge with.
+   */
+  public void merge(Report other) {
+    super.putAll(other);
+  }
+
+  /**
+   * Converts the instance to a JSON.
+   * @return the JSON.
+   */
+  @Override
+  public String toJson() {
+    ObjectMapper mapper = new ReportJsonMapper();
+    //TODO map the report to JSON
+    return null;
+  }
 }

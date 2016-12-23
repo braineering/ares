@@ -24,21 +24,31 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.report.features;
+package com.acmutv.botnet.core.report.serial;
 
-import org.junit.Test;
+import com.acmutv.botnet.core.report.Report;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import lombok.EqualsAndHashCode;
 
 /**
- * This class realizes JUnit tests for {@link SystemFeatures}.
+ * This class realizes the JSON constructor for {@link Report}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see SystemFeatures
+ * @see Report
  */
-public class SystemFeaturesTest {
+@EqualsAndHashCode(callSuper = true)
+public class ReportJsonMapper extends ObjectMapper {
 
-  @Test
-  public void test() {
-    //TODO
+  /**
+   * Initializes the JSON constructor.
+   */
+  public ReportJsonMapper() {
+    super();
+    SimpleModule module = new SimpleModule();
+    module.addDeserializer(Report.class, ReportDeserializer.getInstance());
+    module.addSerializer(Report.class, ReportSerializer.getInstance());
+    super.registerModule(module);
   }
 }

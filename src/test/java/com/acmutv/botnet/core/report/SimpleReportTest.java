@@ -25,17 +25,19 @@
  */
 package com.acmutv.botnet.core.report;
 
+import org.junit.Test;
+
 /**
- * This interface defines a generic bot response.
+ * This class realizes JUnit tests for {@link SimpleReport}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
+ * @see SimpleReport
  */
-public interface Response {
+public class SimpleReportTest {
 
-  /**
-   * Converts the instance to a JSON string.
-   * @return the JSON string.
-   */
-  String toJson();
+  @Test
+  public void test() {
+
+  }
 }

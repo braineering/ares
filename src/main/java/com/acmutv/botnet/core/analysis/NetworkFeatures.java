@@ -24,23 +24,33 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.report.statistics;
+package com.acmutv.botnet.core.analysis;
 
-import com.acmutv.botnet.core.report.features.NetworkFeatures;
-import com.acmutv.botnet.core.report.features.SystemFeatures;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * This class realizes the model fo network statistics.
+ * This class realizes the model of network information.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see SystemFeatures
- * @see NetworkFeatures
  * @see SystemStatistics
+ * @see NetworkStatistics
  */
 @Data
-public class NetworkStatistics {
+@AllArgsConstructor
+@NoArgsConstructor
+public class NetworkFeatures {
 
-  private long uptime;
+  /**
+   * The IP address.
+   */
+  private String ip;
+
+  /**
+   * The MAC address.
+   */
+  private String MAC;
 }

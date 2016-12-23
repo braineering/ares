@@ -24,23 +24,41 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.report.statistics;
+package com.acmutv.botnet.core.analysis;
 
-import com.acmutv.botnet.core.report.features.NetworkFeatures;
-import com.acmutv.botnet.core.report.features.SystemFeatures;
-import lombok.Data;
+import com.acmutv.botnet.core.report.Report;
+import com.acmutv.botnet.core.report.SimpleReport;
+import com.acmutv.botnet.tool.reflection.ReflectionManager;
+
+import java.beans.IntrospectionException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * This class realizes the model of system statistics.
+ * This class realizes a simple network analyzer.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see SystemFeatures
  * @see NetworkFeatures
  * @see NetworkStatistics
  */
-@Data
-public class SystemStatistics {
+public class NetworkAnalyzer implements Analyzer {
 
-  private long uptime;
+  /**
+   * Produces a {@link Report}.
+   * @return the report produced.
+   */
+  @Override
+  public Report makeReport() {
+    NetworkFeatures features = new NetworkFeatures();
+    Map<String,Object> attributes;
+    try {
+      attributes = ReflectionManager.getAttributes(NetworkFeatures.class, features);
+    } catch (IntrospectionException | InvocationTargetException | IllegalAccessException exc) {
+      attributes = new HashMap<>();
+    }
+    Report report = new SimpleReport(attributes);
+    return report;
+  }
 }

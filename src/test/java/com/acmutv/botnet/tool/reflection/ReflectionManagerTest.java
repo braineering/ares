@@ -32,6 +32,8 @@ import org.junit.Test;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class realizes JUnit tests for {@link ReflectionManager}.
@@ -55,7 +57,54 @@ public class ReflectionManagerTest {
   }
 
   /**
-   * Tests reflected getter for properties (error).
+   * Tests attributes mapping.
+   * @throws IllegalAccessException when errors in reflection.
+   * @throws IntrospectionException when errors in reflection.
+   * @throws InvocationTargetException when errors in reflection.
+   */
+  @Test
+  public void test_getAttributes()
+      throws IllegalAccessException, IntrospectionException, InvocationTargetException {
+    CustomObject object = new CustomObject();
+    Map<String,Object> actual = ReflectionManager.getAttributes(CustomObject.class, object);
+    Map<String,Object> expected = new HashMap<>();
+    expected.put("propBoolean", false);
+    expected.put("propInt", 10);
+    expected.put("propLong", 10L);
+    expected.put("propDouble", 10.10);
+    expected.put("propString", "default");
+    Assert.assertEquals(expected, actual);
+  }
+
+  /**
+   * Tests reflected getter.
+   * @throws IllegalAccessException when errors in reflection.
+   * @throws IntrospectionException when errors in reflection.
+   * @throws InvocationTargetException when errors in reflection.
+   */
+  @Test
+  public void test_get()
+      throws IllegalAccessException, IntrospectionException, InvocationTargetException {
+    CustomObject object = new CustomObject();
+    Object actualBoolean = ReflectionManager.get(CustomObject.class, object, "propBoolean");
+    Object actualInt = ReflectionManager.get(CustomObject.class, object, "propInt");
+    Object actualLong = ReflectionManager.get(CustomObject.class, object, "propLong");
+    Object actualDouble = ReflectionManager.get(CustomObject.class, object, "propDouble");
+    Object actualString = ReflectionManager.get(CustomObject.class, object, "propString");
+    Assert.assertNotNull(actualBoolean);
+    Assert.assertNotNull(actualInt);
+    Assert.assertNotNull(actualLong);
+    Assert.assertNotNull(actualDouble);
+    Assert.assertNotNull(actualString);
+    Assert.assertEquals(false, (boolean) actualBoolean);
+    Assert.assertEquals(10, (int) actualInt);
+    Assert.assertEquals(10, (long) actualLong);
+    Assert.assertEquals(10.10, (double) actualDouble,0);
+    Assert.assertEquals("default", (String) actualString);
+  }
+
+  /**
+   * Tests reflected getter (error).
    */
   @Test
   public void test_get_error() {
@@ -69,7 +118,34 @@ public class ReflectionManagerTest {
   }
 
   /**
-   * Tests reflected setter for properties (error).
+   * Tests reflected setter for boolean properties.
+   * @throws IllegalAccessException when errors in reflection.
+   * @throws IntrospectionException when errors in reflection.
+   * @throws InvocationTargetException when errors in reflection.
+   */
+  @Test
+  public void test_set()
+      throws IllegalAccessException, IntrospectionException, InvocationTargetException {
+    CustomObject object = new CustomObject();
+    ReflectionManager.set(CustomObject.class, object, "propBoolean", true);
+    ReflectionManager.set(CustomObject.class, object, "propInt", 20);
+    ReflectionManager.set(CustomObject.class, object, "propLong", 20);
+    ReflectionManager.set(CustomObject.class, object, "propDouble", 20.20);
+    ReflectionManager.set(CustomObject.class, object, "propString", "custom");
+    boolean actualPropBoolean = object.isPropBoolean();
+    int actualPropInt = object.getPropInt();
+    long actualPropLong = object.getPropLong();
+    double actualPropDouble = object.getPropDouble();
+    String actualPropString = object.getPropString();
+    Assert.assertEquals(true, actualPropBoolean);
+    Assert.assertEquals(20, actualPropInt);
+    Assert.assertEquals(20, actualPropLong);
+    Assert.assertEquals(20.20, actualPropDouble,0);
+    Assert.assertEquals("custom", actualPropString);
+  }
+
+  /**
+   * Tests reflected setter (error).
    */
   @Test
   public void test_set_error() {
@@ -80,127 +156,5 @@ public class ReflectionManagerTest {
       return;
     }
     Assert.fail();
-  }
-
-  /**
-   * Tests reflected getter for boolean properties.
-   */
-  @Test
-  public void test_get_boolean() throws IllegalAccessException, IntrospectionException, InvocationTargetException {
-    CustomObject object = new CustomObject();
-    Object actualObj = ReflectionManager.get(CustomObject.class, object, "propBoolean");
-    Assert.assertNotNull(actualObj);
-    boolean actual = (boolean) actualObj;
-    Assert.assertFalse(actual);
-  }
-
-  /**
-   * Tests reflected getter for int properties.
-   */
-  @Test
-  public void test_get_int() throws IllegalAccessException, IntrospectionException, InvocationTargetException {
-    CustomObject object = new CustomObject();
-    Object actualObj = ReflectionManager.get(CustomObject.class, object, "propInt");
-    Assert.assertNotNull(actualObj);
-    int actual = (int) actualObj;
-    int expected = 10;
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests reflected getter for long properties.
-   */
-  @Test
-  public void test_get_long() throws IllegalAccessException, IntrospectionException, InvocationTargetException {
-    CustomObject object = new CustomObject();
-    Object actualObj = ReflectionManager.get(CustomObject.class, object, "propLong");
-    Assert.assertNotNull(actualObj);
-    long actual = (long) actualObj;
-    long expected = 10;
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests reflected getter for double properties.
-   */
-  @Test
-  public void test_get_double() throws IllegalAccessException, IntrospectionException, InvocationTargetException {
-    CustomObject object = new CustomObject();
-    Object actualObj = ReflectionManager.get(CustomObject.class, object, "propDouble");
-    Assert.assertNotNull(actualObj);
-    double actual = (double) actualObj;
-    double expected = 10.10;
-    Assert.assertEquals(expected, actual, 0);
-  }
-
-  /**
-   * Tests reflected getter for string properties.
-   */
-  @Test
-  public void test_get_string() throws IllegalAccessException, IntrospectionException, InvocationTargetException {
-    CustomObject object = new CustomObject();
-    Object actualObj = ReflectionManager.get(CustomObject.class, object, "propString");
-    Assert.assertNotNull(actualObj);
-    String actual = (String) actualObj;
-    String expected = "default";
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests reflected setter for boolean properties.
-   */
-  @Test
-  public void test_set_boolean() throws IllegalAccessException, IntrospectionException, InvocationTargetException {
-    CustomObject object = new CustomObject();
-    ReflectionManager.set(CustomObject.class, object, "propBoolean", true);
-    Assert.assertTrue(object.isPropBoolean());
-  }
-
-  /**
-   * Tests reflected setter for int properties.
-   */
-  @Test
-  public void test_set_int() throws IllegalAccessException, IntrospectionException, InvocationTargetException {
-    CustomObject object = new CustomObject();
-    ReflectionManager.set(CustomObject.class, object, "propInt", 100);
-    int expected = 100;
-    int actual = object.getPropInt();
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests reflected setter for long properties.
-   */
-  @Test
-  public void test_set_long() throws IllegalAccessException, IntrospectionException, InvocationTargetException {
-    CustomObject object = new CustomObject();
-    ReflectionManager.set(CustomObject.class, object, "propLong", 100);
-    long expected = 100;
-    long actual = object.getPropLong();
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests reflected setter for double properties.
-   */
-  @Test
-  public void test_set_double() throws IllegalAccessException, IntrospectionException, InvocationTargetException {
-    CustomObject object = new CustomObject();
-    ReflectionManager.set(CustomObject.class, object, "propDouble", 100.10);
-    double expected = 100.10;
-    double actual = object.getPropDouble();
-    Assert.assertEquals(expected, actual, 0);
-  }
-
-  /**
-   * Tests reflected setter for string properties.
-   */
-  @Test
-  public void test_set_string() throws IllegalAccessException, IntrospectionException, InvocationTargetException {
-    CustomObject object = new CustomObject();
-    ReflectionManager.set(CustomObject.class, object, "propString", "custom");
-    String expected = "custom";
-    String actual = object.getPropString();
-    Assert.assertEquals(expected, actual);
   }
 }

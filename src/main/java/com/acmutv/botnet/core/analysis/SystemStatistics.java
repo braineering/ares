@@ -24,16 +24,25 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.report.features;
+package com.acmutv.botnet.core.analysis;
+
+import com.acmutv.botnet.tool.time.Duration;
+import lombok.Data;
 
 /**
- * This interface exposes methods to retrieve network features.
+ * This class realizes the model of system statistics.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
+ * @see SystemFeatures
+ * @see NetworkFeatures
+ * @see NetworkStatistics
  */
-public interface NetworkFeaturesService {
+@Data
+public class SystemStatistics {
 
-  NetworkFeatures acquire();
-
+  /**
+   * The Operating System's uptime.
+   */
+  private Duration uptime;
 }

@@ -6,6 +6,5 @@
   "sampling": "1:MINUTES",
   "initResource": "${PWD}/cc/botinit.json",
   "cmdResource": "${PWD}/cc/botcmd.json",
-  "logResource": "${PWD}/cc/botlog.json",
-  "polling": "10-10:SECONDS"
+  "logResource": "${PWD}/cc/botlog.json"
 }
