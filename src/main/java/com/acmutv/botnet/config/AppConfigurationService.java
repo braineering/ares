@@ -90,8 +90,7 @@ public class AppConfigurationService {
    */
   public static AppConfiguration fromJson(final InputStream in) throws IOException {
     final ObjectMapper mapper = new AppConfigurationJsonMapper();
-    final AppConfiguration config = mapper.readValue(in, AppConfiguration.class);
-    return config;
+    return mapper.readValue(in, AppConfiguration.class);
   }
 
   /**
@@ -117,8 +116,7 @@ public class AppConfigurationService {
    */
   public static AppConfiguration fromYaml(final InputStream in) throws IOException {
     final YAMLMapper mapper = new AppConfigurationYamlMapper();
-    final AppConfiguration config = mapper.readValue(in, AppConfiguration.class);
-    return config;
+    return mapper.readValue(in, AppConfiguration.class);
   }
 
   /**

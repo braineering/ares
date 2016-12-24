@@ -26,6 +26,7 @@
 
 package com.acmutv.botnet.core.analysis;
 
+import com.acmutv.botnet.core.exception.BotAnalysisException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -53,4 +54,22 @@ public class SystemFeatures {
    * The kernel's name.
    */
   private String kernel;
+
+  /**
+   * Returns local system features.
+   * @return local system features.
+   * @throws BotAnalysisException when some system features cannot be determined.
+   */
+  public static SystemFeatures getLocal() throws BotAnalysisException {
+    String os;
+    String kernel;
+
+    //TODO implement for real (this is only a placeholder implementation)
+    os = "A cool OS";
+
+    //TODO implement for real (this is only a placeholder implementation)
+    kernel = "A cool kernel";
+
+    return new SystemFeatures(os, kernel);
+  }
 }

@@ -26,6 +26,7 @@
 
 package com.acmutv.botnet.core.analysis;
 
+import com.acmutv.botnet.core.exception.BotAnalysisException;
 import com.acmutv.botnet.core.report.Report;
 import com.acmutv.botnet.core.report.SimpleReport;
 import com.acmutv.botnet.tool.reflection.ReflectionManager;
@@ -48,17 +49,17 @@ public class SystemAnalyzer implements Analyzer {
   /**
    * Produces a {@link Report}.
    * @return the report produced.
+   * @throws BotAnalysisException when analysis cannot be correctly executed.
    */
   @Override
-  public Report makeReport() {
-    SystemFeatures features = new SystemFeatures();
+  public Report makeReport() throws BotAnalysisException {
+    SystemFeatures features = SystemFeatures.getLocal();
     Map<String,Object> attributes;
     try {
       attributes = ReflectionManager.getAttributes(SystemFeatures.class, features);
     } catch (IntrospectionException | InvocationTargetException | IllegalAccessException exc) {
       attributes = new HashMap<>();
     }
-    Report report = new SimpleReport(attributes);
-    return report;
+    return new SimpleReport(attributes);
   }
 }

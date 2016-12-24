@@ -24,13 +24,13 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.command.serial;
+package com.acmutv.botnet.core.control.command.serial;
 
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.string.TemplateEngine;
-import com.acmutv.botnet.core.command.BotCommand;
-import com.acmutv.botnet.core.command.CommandScope;
+import com.acmutv.botnet.core.control.command.BotCommand;
+import com.acmutv.botnet.core.control.command.CommandScope;
 import com.acmutv.botnet.core.target.HttpTarget;
 import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;

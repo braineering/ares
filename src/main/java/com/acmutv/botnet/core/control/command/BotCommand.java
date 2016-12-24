@@ -24,7 +24,7 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.command;
+package com.acmutv.botnet.core.control.command;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

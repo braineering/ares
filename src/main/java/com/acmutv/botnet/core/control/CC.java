@@ -24,21 +24,38 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.analysis;
+package com.acmutv.botnet.core.control;
 
-import org.junit.Test;
+import com.acmutv.botnet.core.control.command.BotCommand;
+import lombok.Data;
+import lombok.NonNull;
 
 /**
- * This class realizes JUnit tests for {@link SystemStatistics}.
+ * This class realizes a simple Command and Control.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see SystemStatistics
+ * @see BotCommand
  */
-public class SystemStatisticsTest {
+@Data
+public class CC {
 
-  @Test
-  public void test() {
-    //TODO
-  }
+  /**
+   * The resource providing configuration for bot initialization.
+   */
+  @NonNull
+  private final String initResource;
+
+  /**
+   * The resource providing bot commands.
+   */
+  @NonNull
+  private final String cmdResource;
+
+  /**
+   * The resource to push  bot's reports to.
+   */
+  @NonNull
+  private final String logResource;
+
 }

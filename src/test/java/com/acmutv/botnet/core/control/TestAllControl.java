@@ -24,24 +24,25 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.command;
+package com.acmutv.botnet.core.control;
 
+import com.acmutv.botnet.core.control.command.TestAllCommand;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * This class realizes JUnit test suite for bot's commands.
+ * This class realizes JUnit test suite for bot controls.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see BotCommandSerializationTest
- * @see BotCommandServiceTest
+ * @see CCTest
+ * @see TestAllCommand
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    BotCommandSerializationTest.class,
-    BotCommandServiceTest.class
+    CCTest.class,
+    TestAllCommand.class
 })
-public class TestAllCommand {
+public class TestAllControl {
 
 }

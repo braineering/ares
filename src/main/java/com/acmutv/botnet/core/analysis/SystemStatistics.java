@@ -26,8 +26,12 @@
 
 package com.acmutv.botnet.core.analysis;
 
+import com.acmutv.botnet.core.exception.BotAnalysisException;
 import com.acmutv.botnet.tool.time.Duration;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class realizes the model of system statistics.
@@ -39,10 +43,25 @@ import lombok.Data;
  * @see NetworkStatistics
  */
 @Data
+@AllArgsConstructor
 public class SystemStatistics {
 
   /**
    * The Operating System's uptime.
    */
   private Duration uptime;
+
+  /**
+   * Returns local system statistics.
+   * @return local system statistics.
+   * @throws BotAnalysisException when some system statistics cannot be determined.
+   */
+  public static SystemStatistics getLocal() throws BotAnalysisException {
+    Duration uptime;
+
+    //TODO implement for real (this is only a placeholder implementation)
+    uptime = new Duration(1, TimeUnit.HOURS);
+
+    return new SystemStatistics(uptime);
+  }
 }

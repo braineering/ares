@@ -25,6 +25,7 @@
  */
 package com.acmutv.botnet.core.analysis;
 
+import com.acmutv.botnet.core.exception.BotAnalysisException;
 import com.acmutv.botnet.core.report.Report;
 
 /**
@@ -39,5 +40,5 @@ public interface Analyzer {
    * Produces a {@link Report}.
    * @return the report produced.
    */
-  Report makeReport();
+  Report makeReport() throws BotAnalysisException;
 }

@@ -96,11 +96,11 @@ public class ReflectionManagerTest {
     Assert.assertNotNull(actualLong);
     Assert.assertNotNull(actualDouble);
     Assert.assertNotNull(actualString);
-    Assert.assertEquals(false, (boolean) actualBoolean);
+    Assert.assertEquals(false, actualBoolean);
     Assert.assertEquals(10, (int) actualInt);
     Assert.assertEquals(10, (long) actualLong);
     Assert.assertEquals(10.10, (double) actualDouble,0);
-    Assert.assertEquals("default", (String) actualString);
+    Assert.assertEquals("default", actualString);
   }
 
   /**

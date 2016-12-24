@@ -66,9 +66,8 @@ public class ReflectionManager {
     if (getter == null) {
       throw new IntrospectionException("Cannot find setter nethod for property " + property);
     }
-    Object result = getter.invoke(object);
 
-    return result;
+    return getter.invoke(object);
   }
 
   /**

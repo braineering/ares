@@ -26,9 +26,14 @@
 
 package com.acmutv.botnet.core.analysis;
 
+import com.acmutv.botnet.core.exception.BotAnalysisException;
+import com.acmutv.botnet.tool.net.ConnectionManager;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 /**
  * This class realizes the model of network information.
@@ -53,4 +58,28 @@ public class NetworkFeatures {
    * The MAC address.
    */
   private String MAC;
+
+  /**
+   * Returns local network features.
+   * @return local network features.
+   * @throws BotAnalysisException when some network features cannot be determined.
+   */
+  public static NetworkFeatures getLocal() throws BotAnalysisException {
+    String ip;
+    String mac;
+
+    try {
+      ip = ConnectionManager.getIP();
+    } catch (UnknownHostException exc) {
+      throw new BotAnalysisException("Cannot determine IP. %s", exc.getMessage());
+    }
+
+    try {
+      mac = ConnectionManager.getMAC();
+    } catch (UnknownHostException | SocketException exc) {
+      throw new BotAnalysisException("Cannot determine MAC. %s", exc.getMessage());
+    }
+
+    return new NetworkFeatures(ip, mac);
+  }
 }

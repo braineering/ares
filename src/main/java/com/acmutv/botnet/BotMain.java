@@ -27,7 +27,6 @@
 package com.acmutv.botnet;
 
 import com.acmutv.botnet.core.CoreController;
-import com.acmutv.botnet.core.exception.BotException;
 import com.acmutv.botnet.core.exception.BotFatalException;
 import com.acmutv.botnet.tool.runtime.RuntimeManager;
 import com.acmutv.botnet.tool.runtime.ShutdownHook;

@@ -23,9 +23,9 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
  */
-package com.acmutv.botnet.core.command;
+package com.acmutv.botnet.core.control.command;
 
-import com.acmutv.botnet.core.command.serial.BotCommandJsonMapper;
+import com.acmutv.botnet.core.control.command.serial.BotCommandJsonMapper;
 import com.acmutv.botnet.core.target.HttpTarget;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;

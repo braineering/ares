@@ -27,7 +27,7 @@
 package com.acmutv.botnet.core;
 
 import com.acmutv.botnet.core.analysis.TestAllAnalysis;
-import com.acmutv.botnet.core.command.TestAllCommand;
+import com.acmutv.botnet.core.control.TestAllControl;
 import com.acmutv.botnet.core.pool.TestAllPool;
 import com.acmutv.botnet.core.state.TestAllState;
 import org.junit.runner.RunWith;
@@ -44,7 +44,7 @@ import com.acmutv.botnet.core.target.TestAllTarget;
  * @see CoreControllerTest
  * @see TestAllAnalysis
  * @see TestAllAttack
- * @see TestAllCommand
+ * @see TestAllControl
  * @see TestAllPool
  * @see TestAllReport
  * @see TestAllState
@@ -55,7 +55,7 @@ import com.acmutv.botnet.core.target.TestAllTarget;
     CoreControllerTest.class,
     TestAllAnalysis.class,
     TestAllAttack.class,
-    TestAllCommand.class,
+    TestAllControl.class,
     TestAllPool.class,
     TestAllReport.class,
     TestAllState.class,

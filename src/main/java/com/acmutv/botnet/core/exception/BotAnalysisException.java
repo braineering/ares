@@ -24,53 +24,46 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.report.serial;
-
-import com.acmutv.botnet.core.report.Report;
-import com.acmutv.botnet.core.report.SimpleReport;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-
-import java.io.IOException;
+package com.acmutv.botnet.core.exception;
 
 /**
- * This class realizes the JSON deserializer for {@link Report}.
+ * Thrown when an analysis cannot be correctly executed.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see Report
  */
-public class ReportDeserializer extends StdDeserializer<Report> {
+public class BotAnalysisException extends BotException {
 
   /**
-   * The singleton of {@link ReportDeserializer}.
+   * Constructs a new runtime exception with {@code null} as its
+   * detail message.  The cause is not initialized, and may subsequently be
+   * initialized by a call to {@link #initCause}.
    */
-  private static ReportDeserializer instance;
-
-  /**
-   * Returns the singleton of {@link ReportDeserializer}.
-   * @return the singleton.
-   */
-  public static ReportDeserializer getInstance() {
-    if (instance == null) {
-      instance = new ReportDeserializer();
-    }
-    return instance;
+  public BotAnalysisException() {
   }
 
   /**
-   * Initializes the singleton of {@link ReportDeserializer}.
+   * Constructs a new runtime exception with the specified detail message.
+   * The cause is not initialized, and may subsequently be initialized by a
+   * call to {@link #initCause}.
+   *
+   * @param message the detail message. The detail message is saved for
+   *                later retrieval by the {@link #getMessage()} method.
    */
-  private ReportDeserializer() {
-    super((Class<Report>) null);
+  public BotAnalysisException(String message) {
+    super(message);
   }
 
-  @Override
-  public Report deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
-    JsonNode node = parser.getCodec().readTree(parser);
-    //TODO explicit report deserialization
-    return new SimpleReport();
+  /**
+   * Constructs a new runtime exception with the specified detail message.
+   * The cause is not initialized, and may subsequently be initialized by a
+   * call to {@link #initCause}.
+   *
+   * @param format the detail (format) message. The detail message is saved for
+   *                later retrieval by the {@link #getMessage()} method.
+   * @param objects the objects to fill the format string with.
+   */
+  public BotAnalysisException(String format, Object... objects) {
+    super(String.format(format, objects));
   }
 }

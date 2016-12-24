@@ -24,9 +24,9 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.command;
+package com.acmutv.botnet.core.control.command;
 
-import com.acmutv.botnet.core.command.serial.BotCommandJsonMapper;
+import com.acmutv.botnet.core.control.command.serial.BotCommandJsonMapper;
 import com.acmutv.botnet.tool.io.IOManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -70,8 +70,7 @@ public class BotCommandService {
    */
   public static BotCommand fromJson(InputStream in) throws IOException {
     BotCommandJsonMapper mapper = new BotCommandJsonMapper();
-    BotCommand cmd = mapper.readValue(in, BotCommand.class);
-    return cmd;
+    return mapper.readValue(in, BotCommand.class);
   }
 
   /**
@@ -89,30 +88,4 @@ public class BotCommandService {
     return LOGGER.traceExit(cmd);
   }
 
-  /**
-   * Serializes {@link BotCommand} to JSON.
-   * @param out the stream accepting a JSON.
-   * @param cmd the command to serialize.
-   * @throws IOException if {@link BotCommand} cannot be serialized.
-  public static void toJson(OutputStream out, BotCommand cmd) throws IOException {
-    LOGGER.traceEntry("out={} cmd={}", out, cmd);
-    //TODO
-    LOGGER.traceExit();
-  }
-   */
-
-  /**
-   * Serializes {@link BotCommand} to a resource accepting a JSON.
-   * @param resource the resource accepting a JSON.
-   * @param cmd the command to serialize.
-   * @throws IOException if {@link BotCommand} cannot be serialized.
-
-  public static void toJsonResource(String resource, BotCommand cmd) throws IOException {
-    LOGGER.traceEntry("resource={} cmd={}", resource, cmd);
-    try (final OutputStream out = IOManager.getOutputStream(resource)) {
-      toJson(out, cmd);
-    }
-    LOGGER.traceExit();
-  }
-   */
 }

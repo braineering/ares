@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet.core.state;
 
-import com.acmutv.botnet.core.command.CommandScope;
+import com.acmutv.botnet.core.control.command.CommandScope;
 import lombok.Getter;
 
 /**

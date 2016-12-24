@@ -23,19 +23,18 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
  */
-
-package com.acmutv.botnet.core.analysis;
+package com.acmutv.botnet.core.control;
 
 import org.junit.Test;
 
 /**
- * This class realizes JUnit tests for {@link SystemStatistics}.
+ * This class realizes JUnit tests for {@link CC}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see SystemStatistics
+ * @see CC
  */
-public class SystemStatisticsTest {
+public class CCTest {
 
   @Test
   public void test() {

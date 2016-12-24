@@ -24,31 +24,33 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.command.serial;
+package com.acmutv.botnet.core.control.command;
 
-import com.acmutv.botnet.core.command.BotCommand;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 /**
- * This class realizes the JSON constructor for {@link BotCommand}.
+ * This enum enumerates bot's command types.
+ * These command are sent by the CC and executed by the bot.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see BotCommand
  */
-@EqualsAndHashCode(callSuper = true)
-public class BotCommandJsonMapper extends ObjectMapper {
+@Getter
+public enum CommandScope {
+  NONE ("NONE", false),
+  RESTART ("RESTART", true),
+  UPDATE ("UPDATE", true),
+  SLEEP ("SLEEP", true),
+  SHUTDOWN ("SHUTDOWN", true),
+  KILL ("KILL", false),
+  ATTACK_HTTP("ATTACK_HTTP", true);
 
-  /**
-   * Initializes the JSON constructor.
-   */
-  public BotCommandJsonMapper() {
-    super();
-    SimpleModule module = new SimpleModule();
-    module.addDeserializer(BotCommand.class, BotCommandDeserializer.getInstance());
-    module.addSerializer(BotCommand.class, BotCommandSerializer.getInstance());
-    super.registerModule(module);
+  private final String name;
+  private final boolean withParams;
+
+  CommandScope(final String name, final boolean withParams) {
+    this.name = name;
+    this.withParams = withParams;
   }
 }

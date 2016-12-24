@@ -24,9 +24,9 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.command.serial;
+package com.acmutv.botnet.core.control.command.serial;
 
-import com.acmutv.botnet.core.command.BotCommand;
+import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.target.HttpTarget;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
