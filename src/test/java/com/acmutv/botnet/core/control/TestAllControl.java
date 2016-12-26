@@ -35,12 +35,12 @@ import org.junit.runners.Suite;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see CCTest
+ * @see ControllerTest
  * @see TestAllCommand
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    CCTest.class,
+    ControllerTest.class,
     TestAllCommand.class
 })
 public class TestAllControl {

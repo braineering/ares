@@ -26,6 +26,7 @@
 
 package com.acmutv.botnet.config;
 
+import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
@@ -34,6 +35,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -69,13 +72,19 @@ public class AppConfigurationServiceTest {
     AppConfiguration actualyaml = AppConfigurationService.fromYaml(inyaml);
     AppConfiguration expected = new AppConfiguration();
     expected.setSysInfo(true);
-    expected.setNetInfo(false);
-    expected.setSysInfo(true);
+    expected.setNetInfo(true);
+    expected.setSysStat(false);
     expected.setNetStat(false);
     expected.setSampling(new Duration(1, TimeUnit.HOURS));
-    expected.setInitResource(TemplateEngine.getInstance().replace("${RES}/cc/botinit2.json"));
-    expected.setCmdResource(TemplateEngine.getInstance().replace("${RES}/cc/botcmd2.json"));
-    expected.setLogResource(TemplateEngine.getInstance().replace("${RES}/cc/botlog2.json"));
+    List<Controller> controllers = new ArrayList<>();
+    controllers.add(
+        new Controller(
+            TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"),
+            TemplateEngine.getInstance().replace("${PWD}/cc/botcmd.json"),
+            TemplateEngine.getInstance().replace("${PWD}/cc/botlog.json")
+        )
+    );
+    expected.setControllers(controllers);
     expected.setPolling(new Interval(10, 15, TimeUnit.SECONDS));
     Assert.assertEquals(expected, actualjson);
     Assert.assertEquals(expected, actualyaml);
@@ -94,13 +103,26 @@ public class AppConfigurationServiceTest {
     AppConfiguration actualyaml = AppConfigurationService.fromYaml(inyaml);
     AppConfiguration expected = new AppConfiguration();
     expected.setSysInfo(true);
-    expected.setNetInfo(false);
-    expected.setSysInfo(true);
+    expected.setNetInfo(true);
+    expected.setSysStat(false);
     expected.setNetStat(false);
     expected.setSampling(new Duration(1, TimeUnit.HOURS));
-    expected.setInitResource(TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"));
-    expected.setCmdResource(TemplateEngine.getInstance().replace("${PWD}/cc/botcmd.json"));
-    expected.setLogResource(TemplateEngine.getInstance().replace("${PWD}/cc/botlog.json"));
+    List<Controller> controllers = new ArrayList<>();
+    controllers.add(
+        new Controller(
+            TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"),
+            TemplateEngine.getInstance().replace("${PWD}/cc/botcmd.json"),
+            TemplateEngine.getInstance().replace("${PWD}/cc/botlog.json")
+        )
+    );
+    controllers.add(
+        new Controller(
+            TemplateEngine.getInstance().replace("${PWD}/cc/botinit2.json"),
+            TemplateEngine.getInstance().replace("${PWD}/cc/botcmd2.json"),
+            TemplateEngine.getInstance().replace("${PWD}/cc/botlog2.json")
+        )
+    );
+    expected.setControllers(controllers);
     expected.setPolling(new Interval(10, 15, TimeUnit.SECONDS));
     Assert.assertEquals(expected, actualjson);
     Assert.assertEquals(expected, actualyaml);

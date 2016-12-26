@@ -42,7 +42,7 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 public class SimpleReport extends HashMap<String,Object> implements Report {
 
-  public SimpleReport(Map<? extends String,? extends Object> map) {
+  public SimpleReport(Map<? extends String,?> map) {
     super(map);
   }
 

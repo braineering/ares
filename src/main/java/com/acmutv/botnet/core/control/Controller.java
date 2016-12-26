@@ -38,7 +38,7 @@ import lombok.NonNull;
  * @see BotCommand
  */
 @Data
-public class CC {
+public class Controller {
 
   /**
    * The resource providing configuration for bot initialization.

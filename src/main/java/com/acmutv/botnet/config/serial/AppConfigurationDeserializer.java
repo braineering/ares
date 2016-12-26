@@ -27,6 +27,7 @@
 package com.acmutv.botnet.config.serial;
 
 import com.acmutv.botnet.config.AppConfiguration;
+import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
@@ -36,6 +37,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This class realizes the JSON deserializer for {@link AppConfiguration}.
@@ -98,25 +102,9 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
       config.setSampling(sampling);
     }
 
-    if (node.has("initResource")) {
-      final String initResource = TemplateEngine.getInstance().replace(
-          node.get("initResource").asText(null)
-      );
-      config.setInitResource(initResource);
-    }
-
-    if (node.has("cmdResource")) {
-      final String cmdResource = TemplateEngine.getInstance().replace(
-          node.get("cmdResource").asText(null)
-      );
-      config.setCmdResource(cmdResource);
-    }
-
-    if (node.has("logResource")) {
-      final String logResource = TemplateEngine.getInstance().replace(
-          node.get("logResource").asText(null)
-      );
-      config.setLogResource(logResource);
+    if (node.has("controllers")) {
+      final List<Controller> controllers = parseControllers(node.get("controllers"));
+      config.setControllers(controllers);
     }
 
     if (node.has("polling")) {
@@ -124,5 +112,36 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
       config.setPolling(polling);
     }
     return config;
+  }
+
+  /**
+   * Parses a list of {@link Controller} from a JSON node.
+   * @param node the JSON node to parse.
+   * @return the parsed list of {@link Controller}.
+   */
+  private static List<Controller> parseControllers(JsonNode node) {
+    List<Controller> controllers = new ArrayList<>();
+    Iterator<JsonNode> iter = node.elements();
+    while (iter.hasNext()) {
+      JsonNode n = iter.next();
+      if (!n.hasNonNull("init") ||
+          !n.hasNonNull("command") ||
+          !n.hasNonNull("log")) {
+        continue;
+      }
+      final String initResource = TemplateEngine.getInstance().replace(
+          n.get("init").asText(null)
+      );
+      final String commandResource = TemplateEngine.getInstance().replace(
+          n.get("command").asText(null)
+      );
+      final String logResource = TemplateEngine.getInstance().replace(
+          n.get("log").asText(null)
+      );
+
+      Controller controller = new Controller(initResource, commandResource, logResource);
+      controllers.add(controller);
+    }
+    return controllers;
   }
 }

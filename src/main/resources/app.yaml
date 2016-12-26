@@ -12,9 +12,10 @@
 #sampling: 1:MINUTES
 
 #===============================================================================
-# C&C RESOURCES
+# C&C
 #===============================================================================
-#initResource: "${RES}/cc/botinit.json"
-#cmdResource: "${RES}/cc/botcmd.json"
-#logResource: "${RES}/cc/botlog.json"
-#polling: 10-10:SECONDS
+controllers:
+  - init: "${RES}/cc/botinit.json"
+    command: "${RES}/cc/botcmd.json"
+    log: "${RES}/cc/botlog.json"
+polling: 10-10:SECONDS

@@ -14,6 +14,6 @@ sampling: "1:MINUTES"
 #===============================================================================
 # C&C RESOURCES
 #===============================================================================
-initResource: "${PWD}/cc/botinit.json"
-cmdResource: "${PWD}/cc/botcmd.json"
-logResource: "${PWD}/cc/botlog.json"
+initResource: "${PWD}/controllers/botinit.json"
+cmdResource: "${PWD}/controllers/botcmd.json"
+logResource: "${PWD}/controllers/botlog.json"

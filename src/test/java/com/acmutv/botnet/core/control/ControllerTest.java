@@ -28,13 +28,13 @@ package com.acmutv.botnet.core.control;
 import org.junit.Test;
 
 /**
- * This class realizes JUnit tests for {@link CC}.
+ * This class realizes JUnit tests for {@link Controller}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see CC
+ * @see Controller
  */
-public class CCTest {
+public class ControllerTest {
 
   @Test
   public void test() {

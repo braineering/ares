@@ -65,7 +65,6 @@ public class HttpTarget {
   /**
    * Maximum number of attack repetition.
    */
-  @NonNull
   private long maxAttempts;
 
   /**

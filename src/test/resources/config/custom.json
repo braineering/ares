@@ -1,11 +1,15 @@
 {
   "sysInfo": true,
-  "netInfo": false,
-  "sysStat": true,
+  "netInfo": true,
+  "sysStat": false,
   "netStat": false,
   "sampling": "1:HOURS",
-  "initResource": "${RES}/cc/botinit2.json",
-  "cmdResource": "${RES}/cc/botcmd2.json",
-  "logResource": "${RES}/cc/botlog2.json",
+  "controllers": [
+    {
+      "init": "${PWD}/cc/botinit.json",
+      "command": "${PWD}/cc/botcmd.json",
+      "log": "${PWD}/cc/botlog.json"
+    }
+  ],
   "polling": "10-15:SECONDS"
 }

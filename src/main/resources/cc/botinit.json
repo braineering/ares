@@ -4,8 +4,12 @@
   "sysStat": true,
   "netStat": true,
   "sampling": "1:MINUTES",
-  "initResource": "${RES}/cc/botinit.json",
-  "cmdResource": "${RES}/cc/botcmd.json",
-  "logResource": "${RES}/cc/botlog.json",
+  "controllers": [
+    {
+      "init": "${RES}/cc/botinit.json",
+      "command": "${RES}/cc/botcmd.json",
+      "log": "${RES}/cc/botlog.json"
+    }
+  ],
   "polling": "10-10:SECONDS"
 }

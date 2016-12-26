@@ -3,8 +3,13 @@
   "netInfo": true,
   "sysStat": true,
   "netStat": true,
-  "sampling": "60uSECONDS",
-  "initResource": "${PWD}/cc/botinit.json",
-  "cmdResource": "${PWD}/cc/botcmd.json",
-  "logResource": "${PWD}/cc/botlog.json"
+  "sampling": "1:MINUTES",
+  "controllers": [
+    {
+      "init": "${PWD}/cc/botinit2.json",
+      "command": "${PWD}/cc/botcmd2.json",
+      "log": "${PWD}/cc/botlog2.json"
+    }
+  ],
+  "polling": "10-10:SECONDS"
 }
