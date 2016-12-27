@@ -11,5 +11,8 @@
       "log": "${RES}/cc/botlog.json"
     }
   ],
-  "polling": "10-10:SECONDS"
+  "polling": "10-10:SECONDS",
+  "reconnections": 3,
+  "reconnectionWait": "10-10:SECONDS",
+  "proxy": "none"
 }

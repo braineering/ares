@@ -28,6 +28,7 @@ package com.acmutv.botnet.config.serial;
 
 import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.core.control.Controller;
+import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
@@ -35,6 +36,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import lombok.Data;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,67 +51,80 @@ import java.util.List;
  */
 public class AppConfigurationDeserializer extends StdDeserializer<AppConfiguration> {
 
-  /**
-   * The singleton of {@link AppConfigurationDeserializer}.
-   */
-  private static AppConfigurationDeserializer instance;
+  private static AppConfiguration DEFAULT;
 
   /**
-   * Returns the singleton of {@link AppConfigurationDeserializer}.
-   * @return the singleton.
+   * Initializes {@link AppConfigurationDeserializer} with no default deserialization.
    */
-  public static AppConfigurationDeserializer getInstance() {
-    if (instance == null) {
-      instance = new AppConfigurationDeserializer();
-    }
-    return instance;
+  public AppConfigurationDeserializer() {
+    super((Class<AppConfiguration>)null);
+    this.DEFAULT = new AppConfiguration();
   }
 
   /**
-   * Initializes the singleton of {@link AppConfigurationDeserializer}.
+   * Initializes {@link AppConfigurationDeserializer} with default deserialization.
    */
-  private AppConfigurationDeserializer() {
+  public AppConfigurationDeserializer(AppConfiguration defaultConfig) {
     super((Class<AppConfiguration>)null);
+    this.DEFAULT = defaultConfig;
   }
 
   @Override
   public AppConfiguration deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
-    AppConfiguration config = new AppConfiguration();
+    AppConfiguration config = new AppConfiguration(this.DEFAULT);
     JsonNode node = parser.getCodec().readTree(parser);
 
-    if (node.has("sysInfo")) {
+    if (node.hasNonNull("sysInfo")) {
       final boolean sysInfo = node.get("sysInfo").asBoolean();
       config.setSysInfo(sysInfo);
     }
 
-    if (node.has("netInfo")) {
+    if (node.hasNonNull("netInfo")) {
       final boolean netInfo = node.get("netInfo").asBoolean();
       config.setNetInfo(netInfo);
     }
 
-    if (node.has("sysStat")) {
+    if (node.hasNonNull("sysStat")) {
       final boolean sysStat = node.get("sysStat").asBoolean();
       config.setSysStat(sysStat);
     }
 
-    if (node.has("netStat")) {
+    if (node.hasNonNull("netStat")) {
       final boolean netStat = node.get("netStat").asBoolean();
       config.setNetStat(netStat);
     }
 
-    if (node.has("sampling")) {
+    if (node.hasNonNull("sampling")) {
       final Duration sampling = Duration.valueOf(node.get("sampling").asText());
       config.setSampling(sampling);
     }
 
-    if (node.has("controllers")) {
-      final List<Controller> controllers = parseControllers(node.get("controllers"));
-      config.setControllers(controllers);
-    }
-
-    if (node.has("polling")) {
+    if (node.hasNonNull("polling")) {
       final Interval polling = Interval.valueOf(node.get("polling").asText());
       config.setPolling(polling);
+    }
+
+    if (node.hasNonNull("reconnections")) {
+      final Long reconnections = (node.get("reconnections").asLong() >= 0) ?
+          Long.valueOf(node.get("reconnections").asLong())
+          :
+          Long.MAX_VALUE;
+      config.setReconnections(reconnections);
+    }
+
+    if (node.hasNonNull("reconnectionWait")) {
+      final Interval reconnectionWait = Interval.valueOf(node.get("reconnectionWait").asText());
+      config.setReconnectionWait(reconnectionWait);
+    }
+
+    if (node.hasNonNull("proxy")) {
+      final HttpProxy proxy = HttpProxy.valueOf(node.get("proxy").asText());
+      config.setProxy(proxy);
+    }
+
+    if (node.hasNonNull("controllers")) {
+      final List<Controller> controllers = parseControllers(node.get("controllers"), config);
+      if (!controllers.isEmpty()) config.setControllers(controllers);
     }
     return config;
   }
@@ -117,9 +132,10 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
   /**
    * Parses a list of {@link Controller} from a JSON node.
    * @param node the JSON node to parse.
+   * @param config the default configuration.
    * @return the parsed list of {@link Controller}.
    */
-  private static List<Controller> parseControllers(JsonNode node) {
+  private static List<Controller> parseControllers(JsonNode node, AppConfiguration config) {
     List<Controller> controllers = new ArrayList<>();
     Iterator<JsonNode> iter = node.elements();
     while (iter.hasNext()) {
@@ -130,16 +146,40 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
         continue;
       }
       final String initResource = TemplateEngine.getInstance().replace(
-          n.get("init").asText(null)
+          n.get("init").asText()
       );
       final String commandResource = TemplateEngine.getInstance().replace(
-          n.get("command").asText(null)
+          n.get("command").asText()
       );
       final String logResource = TemplateEngine.getInstance().replace(
-          n.get("log").asText(null)
+          n.get("log").asText()
       );
 
-      Controller controller = new Controller(initResource, commandResource, logResource);
+      Interval polling = config.getPolling();
+      Long reconnections = config.getReconnections();
+      Interval reconnectionWait = config.getReconnectionWait();
+      HttpProxy proxy = config.getProxy();
+
+      if (n.hasNonNull("polling")) {
+        polling = Interval.valueOf(n.get("polling").asText());
+      }
+
+      if (n.hasNonNull("reconnections")) {
+        reconnections = Long.valueOf(n.get("reconnections").asLong());
+      }
+
+      if (n.hasNonNull("reconnectionWait")) {
+        reconnectionWait = Interval.valueOf(n.get("reconnectionWait").asText());
+      }
+
+      if (n.hasNonNull("proxy")) {
+        proxy = HttpProxy.valueOf(n.get("proxy").asText());
+      }
+
+      Controller controller = new Controller(
+          initResource, commandResource, logResource,
+          polling, reconnections, reconnectionWait, proxy
+          );
       controllers.add(controller);
     }
     return controllers;

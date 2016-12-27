@@ -38,8 +38,14 @@ import java.net.Proxy;
  */
 public class HttpProxy extends Proxy {
 
+  public static final HttpProxy NONE = null;
+
   public HttpProxy(String address, int port) {
     super(Type.HTTP, new InetSocketAddress(address, port));
+  }
+
+  private HttpProxy(Type type, InetSocketAddress sock) {
+    super(type, sock);
   }
 
   /**
@@ -67,6 +73,7 @@ public class HttpProxy extends Proxy {
    */
   public static HttpProxy valueOf(String string) {
     if (string == null) return null;
+    if (string.equalsIgnoreCase("none")) return HttpProxy.NONE;
     String parts[] = string.split(":",2);
     if (parts.length != 2) return null;
     String ipaddr = parts[0];
@@ -79,6 +86,10 @@ public class HttpProxy extends Proxy {
    * @return the compact string representation.
    */
   public String toCompactString() {
-    return String.format("%s:%d", this.getIP(), this.getPort());
+    if (this.equals(HttpProxy.NONE)) {
+      return "none";
+    } else {
+      return String.format("%s:%d", this.getIP(), this.getPort());
+    }
   }
 }

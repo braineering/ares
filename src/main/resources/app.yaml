@@ -3,19 +3,26 @@
 #===============================================================================
 
 #===============================================================================
-# REPORT
+# REPORT: FEATURES
 #===============================================================================
 #sysInfo: True
 #netInfo: True
+
+#===============================================================================
+# REPORT: STATISTICS
+#===============================================================================
 #sysStat: True
 #netStat: True
 #sampling: 1:MINUTES
 
 #===============================================================================
-# C&C
+# COMMAND&CONTROL
 #===============================================================================
-controllers:
-  - init: "${RES}/cc/botinit.json"
-    command: "${RES}/cc/botcmd.json"
-    log: "${RES}/cc/botlog.json"
-polling: 10-10:SECONDS
+#controllers:
+#  - init: ${PWD}/cc/botinit.json
+#    command: ${PWD}/cc/botcmd.json
+#    log: ${PWD}/cc/botlog.json
+#polling: 10-10:SECONDS
+#reconnections: 3
+#reconnectionWait: 10-10:SECONDS
+#proxy: none

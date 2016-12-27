@@ -27,6 +27,7 @@
 package com.acmutv.botnet.config;
 
 import com.acmutv.botnet.core.control.Controller;
+import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
@@ -81,49 +82,40 @@ public class AppConfigurationServiceTest {
         new Controller(
             TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"),
             TemplateEngine.getInstance().replace("${PWD}/cc/botcmd.json"),
-            TemplateEngine.getInstance().replace("${PWD}/cc/botlog.json")
-        )
-    );
-    expected.setControllers(controllers);
-    expected.setPolling(new Interval(10, 15, TimeUnit.SECONDS));
-    Assert.assertEquals(expected, actualjson);
-    Assert.assertEquals(expected, actualyaml);
-  }
-
-  /**
-   * Tests the app configuration parsing from an external JSON/YAML file.
-   * In this test the configuration file provides with complete custom settings.
-   * The configuration file has null values and template string (${PWD}).
-   */
-  @Test
-  public void test_fromJsonYaml_custom2() throws IOException {
-    InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom2.json");
-    InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom2.yaml");
-    AppConfiguration actualjson = AppConfigurationService.fromJson(injson);
-    AppConfiguration actualyaml = AppConfigurationService.fromYaml(inyaml);
-    AppConfiguration expected = new AppConfiguration();
-    expected.setSysInfo(true);
-    expected.setNetInfo(true);
-    expected.setSysStat(false);
-    expected.setNetStat(false);
-    expected.setSampling(new Duration(1, TimeUnit.HOURS));
-    List<Controller> controllers = new ArrayList<>();
-    controllers.add(
-        new Controller(
-            TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"),
-            TemplateEngine.getInstance().replace("${PWD}/cc/botcmd.json"),
-            TemplateEngine.getInstance().replace("${PWD}/cc/botlog.json")
+            TemplateEngine.getInstance().replace("${PWD}/cc/botlog.json"),
+            new Interval(10, 15, TimeUnit.SECONDS),
+            5L,
+            new Interval(10, 15, TimeUnit.SECONDS),
+            new HttpProxy("192.168.0.1", 8080)
         )
     );
     controllers.add(
         new Controller(
             TemplateEngine.getInstance().replace("${PWD}/cc/botinit2.json"),
             TemplateEngine.getInstance().replace("${PWD}/cc/botcmd2.json"),
-            TemplateEngine.getInstance().replace("${PWD}/cc/botlog2.json")
+            TemplateEngine.getInstance().replace("${PWD}/cc/botlog2.json"),
+            new Interval(10, 15, TimeUnit.SECONDS),
+            5L,
+            new Interval(10, 15, TimeUnit.SECONDS),
+            HttpProxy.NONE
+        )
+    );
+    controllers.add(
+        new Controller(
+            TemplateEngine.getInstance().replace("${PWD}/cc/botinit2.json"),
+            TemplateEngine.getInstance().replace("${PWD}/cc/botcmd2.json"),
+            TemplateEngine.getInstance().replace("${PWD}/cc/botlog2.json"),
+            new Interval(10, 20, TimeUnit.SECONDS),
+            -1L,
+            new Interval(10, 20, TimeUnit.SECONDS),
+            new HttpProxy("192.168.0.1", 3000)
         )
     );
     expected.setControllers(controllers);
     expected.setPolling(new Interval(10, 15, TimeUnit.SECONDS));
+    expected.setReconnections(5L);
+    expected.setReconnectionWait(new Interval(10, 15, TimeUnit.SECONDS));
+    expected.setProxy(new HttpProxy("192.168.0.1", 8080));
     Assert.assertEquals(expected, actualjson);
     Assert.assertEquals(expected, actualyaml);
   }

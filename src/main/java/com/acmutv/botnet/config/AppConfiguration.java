@@ -27,6 +27,7 @@
 package com.acmutv.botnet.config;
 
 import com.acmutv.botnet.core.control.Controller;
+import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
@@ -85,7 +86,11 @@ public class AppConfiguration {
         new Controller(
             TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"),
             TemplateEngine.getInstance().replace("${PWD}/cc/botcmd.json"),
-            TemplateEngine.getInstance().replace("${PWD}/cc/botlog.json")
+            TemplateEngine.getInstance().replace("${PWD}/cc/botlog.json"),
+            new Interval(10, 10, TimeUnit.SECONDS),
+            3L,
+            new Interval(10, 10, TimeUnit.SECONDS),
+            HttpProxy.NONE
         )
     );
   }
@@ -94,6 +99,21 @@ public class AppConfiguration {
    * Default value for property polling.
    */
   public static final Interval POLLING = new Interval(10, 10, TimeUnit.SECONDS);
+
+  /**
+   * Default value for property reconnections.
+   */
+  public static final Long RECONNECTIONS = 3L;
+
+  /**
+   * Default value for property reconnectionWait.
+   */
+  public static final Interval RECONNECTION_WAIT = new Interval(10,10, TimeUnit.SECONDS);
+
+  /**
+   * Default value for property proxy.
+   */
+  public static final HttpProxy PROXY = HttpProxy.NONE;
 
   /**
    * Property sysInfo.
@@ -138,9 +158,27 @@ public class AppConfiguration {
 
   /**
    * Property polling.
-   * The bot polls CONTROLLERS for commands with a random period within this interval.
+   * The bot polls controllers for commands with a random period within this interval.
    */
   private Interval polling = POLLING;
+
+  /**
+   * Property reconnections.
+   * The maximum number of connection errors tolerated when connecting to a CC.
+   */
+  private Long reconnections = RECONNECTIONS;
+
+  /**
+   * Property reconnectionWait.
+   * The bot tries to reconnect to a controller waiting a random period within this interval.
+   */
+  private Interval reconnectionWait = RECONNECTION_WAIT;
+
+  /**
+   * Property proxy.
+   * The proxy server to contact the controllers through.
+   */
+  private HttpProxy proxy = PROXY;
 
   /**
    * Constructs a configuration as a copy of the one specified.
@@ -162,6 +200,9 @@ public class AppConfiguration {
     this.sampling = other.sampling;
     this.controllers = other.controllers;
     this.polling = other.polling;
+    this.reconnections = other.reconnections;
+    this.reconnectionWait = other.reconnectionWait;
+    this.proxy = other.proxy;
   }
 
   /**
@@ -175,6 +216,9 @@ public class AppConfiguration {
     this.sampling = SAMPLING;
     this.controllers = CONTROLLERS;
     this.polling = POLLING;
+    this.reconnections = RECONNECTIONS;
+    this.reconnectionWait = RECONNECTION_WAIT;
+    this.proxy = PROXY;
   }
 
 }

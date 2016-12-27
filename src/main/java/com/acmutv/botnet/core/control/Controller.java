@@ -26,7 +26,11 @@
 
 package com.acmutv.botnet.core.control;
 
+import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.core.control.command.BotCommand;
+import com.acmutv.botnet.tool.net.HttpProxy;
+import com.acmutv.botnet.tool.time.Interval;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -37,25 +41,49 @@ import lombok.NonNull;
  * @since 1.0
  * @see BotCommand
  */
+@AllArgsConstructor
 @Data
 public class Controller {
 
   /**
-   * The resource providing configuration for bot initialization.
+   * The resource providing configuration.
    */
   @NonNull
   private final String initResource;
 
   /**
-   * The resource providing bot commands.
+   * The resource providing commands.
    */
   @NonNull
   private final String cmdResource;
 
   /**
-   * The resource to push  bot's reports to.
+   * The resource to push reports to.
    */
   @NonNull
   private final String logResource;
 
+  /**
+   * The polling period.
+   * If null, the polling period specified in {@link AppConfiguration} is used.
+   */
+  private Interval polling = null;
+
+  /**
+   * The maximum number of connection errors tolerated.
+   * If null, the number specified in {@link AppConfiguration} is used.
+   */
+  private Long reconnections = null;
+
+  /**
+   * The period between reconnections, as random number within this interval.
+   * If null, the period specified in {@link AppConfiguration} is used.
+   */
+  private Interval reconnectionWait = null;
+
+  /**
+   * The proxy server to connect through.
+   * If null, the proxy server specified in {@link AppConfiguration} is used.
+   */
+  private HttpProxy proxy = null;
 }

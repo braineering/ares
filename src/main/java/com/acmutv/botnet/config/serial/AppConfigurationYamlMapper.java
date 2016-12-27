@@ -41,12 +41,23 @@ import lombok.EqualsAndHashCode;
 public class AppConfigurationYamlMapper extends YAMLMapper {
 
   /**
-   * Initializes the JSON constructor.
+   * Initializes the YAML constructor, with no default model.
    */
   public AppConfigurationYamlMapper() {
     super();
     SimpleModule module = new SimpleModule();
-    module.addDeserializer(AppConfiguration.class, AppConfigurationDeserializer.getInstance());
+    module.addDeserializer(AppConfiguration.class, new AppConfigurationDeserializer());
+    super.registerModule(module);
+  }
+
+  /**
+   * Initializes the YAML constructor, with default model.
+   * @param defaultConfig the default model.
+   */
+  public AppConfigurationYamlMapper(AppConfiguration defaultConfig) {
+    super();
+    SimpleModule module = new SimpleModule();
+    module.addDeserializer(AppConfiguration.class, new AppConfigurationDeserializer(defaultConfig));
     super.registerModule(module);
   }
 }
