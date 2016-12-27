@@ -31,13 +31,13 @@ import com.acmutv.botnet.core.target.HttpTarget;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Duration;
+import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class realizes the JSON serializer for {@link BotCommand}.
@@ -83,13 +83,8 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
           gen.writeStringField("resource", resource);
           break;
 
-        case UPDATE:
-          @SuppressWarnings("unchecked") final Map<String,String> settings = (Map<String,String>) value.getParams().get("settings");
-          gen.writeObjectField("settings", settings);
-          break;
-
         case SLEEP:
-          final Duration sleepTimeout = (Duration) value.getParams().get("timeout");
+          final Interval sleepTimeout = (Interval) value.getParams().get("timeout");
           gen.writeStringField("timeout", sleepTimeout.toString());
           break;
 

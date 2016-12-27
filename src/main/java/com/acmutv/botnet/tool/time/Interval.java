@@ -31,6 +31,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -60,6 +61,18 @@ public class Interval {
    */
   @NonNull
   private TimeUnit unit = TimeUnit.SECONDS;
+
+  /**
+   * Returns a random {@link Duration} with amount within the interval.
+   * @return the duration.
+   */
+  public Duration getRandomDuration() {
+    final long min = this.getMin();
+    final long max = this.getMax();
+    final long amount = (min == max) ? min :
+        ThreadLocalRandom.current().nextLong(this.getMin(), this.getMax());
+    return new Duration(amount, this.getUnit());
+  }
 
   /**
    * Parses {@link Interval} from string.

@@ -117,7 +117,7 @@ public class ReflectionManager {
         .findFirst().map(PropertyDescriptor::getWriteMethod)
         .orElse(null);
     if (setter == null) {
-      throw new IntrospectionException("Cannot find setter nethod for property " + property);
+      throw new IntrospectionException("Cannot find setter method for property " + property);
     }
 
     setter.invoke(object, value);

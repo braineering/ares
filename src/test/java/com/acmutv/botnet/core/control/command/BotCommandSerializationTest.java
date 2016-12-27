@@ -38,9 +38,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -172,25 +170,7 @@ public class BotCommandSerializationTest {
   @Test
   public void test_sleep() throws IOException {
     BotCommand cmdExpected = new BotCommand(CommandScope.SLEEP);
-    cmdExpected.getParams().put("timeout", new Duration(3, TimeUnit.MINUTES));
-    ObjectMapper mapper = new BotCommandJsonMapper();
-    String jsonActual = mapper.writeValueAsString(cmdExpected);
-    BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
-    Assert.assertEquals(cmdExpected, cmdActual);
-  }
-
-  /**
-   * Tests {@link BotCommand} serialization/deserialization.
-   * Command: UPDATE
-   * @throws IOException when command cannot be serialized/deserialized.
-   */
-  @Test
-  public void test_update() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.UPDATE);
-    Map<String,String> settings = new HashMap<>();
-    settings.put("prop1", "val1");
-    settings.put("prop2", "val2");
-    cmdExpected.getParams().put("settings", settings);
+    cmdExpected.getParams().put("timeout", new Interval(3, 3, TimeUnit.MINUTES));
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
     BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);

@@ -80,12 +80,11 @@ public class BotCommandService {
    * @throws IOException if {@link BotCommand} cannot be deserialized.
    */
   public static BotCommand fromJsonResource(String resource) throws IOException {
-    LOGGER.traceEntry("resource={}", resource);
     BotCommand cmd;
     try (final InputStream in = IOManager.getInputStream(resource)) {
       cmd = fromJson(in);
     }
-    return LOGGER.traceExit(cmd);
+    return cmd;
   }
 
 }

@@ -104,24 +104,11 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           cmd.getParams().put("resource", resource);
           break;
 
-        case UPDATE:
-          if (!node.has("settings")) {
-            throw new IOException("Cannot read parameter [settings] for scope [UPDATE] (missing)");
-          }
-          Map<String,String> settings = new HashMap<>();
-          node.get("settings").fields().forEachRemaining(e -> {
-            String k = e.getKey();
-            String v = e.getValue().asText();
-            settings.put(k, v);
-          });
-          cmd.getParams().put("settings", settings);
-          break;
-
         case SLEEP:
           if (!node.has("timeout")) {
             throw new IOException("Cannot read parameter [timeout] for scope [SLEEP] (missing)");
           }
-          final Duration sleepTimeout = Duration.valueOf(node.get("timeout").asText());
+          final Interval sleepTimeout = Interval.valueOf(node.get("timeout").asText());
           cmd.getParams().put("timeout", sleepTimeout);
           break;
 

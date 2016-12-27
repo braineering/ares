@@ -43,9 +43,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -202,22 +200,7 @@ public class BotCommandServiceTest {
   public void test_fromJSONFile_sleep() throws IOException {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/sleep.json");
     BotCommand expected = new BotCommand(CommandScope.SLEEP);
-    expected.getParams().put("timeout", new Duration(3, TimeUnit.MINUTES));
-    BotCommand actual = BotCommandService.fromJson(file);
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests command parsing from a JSON file (command: SET, settings: provided).
-   */
-  @Test
-  public void test_fromJSONFile_update_settings() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/update.json");
-    BotCommand expected = new BotCommand(CommandScope.UPDATE);
-    Map<String,String> settings = new HashMap<>();
-    settings.put("prop1", "val1");
-    settings.put("prop2", "val2");
-    expected.getParams().put("settings", settings);
+    expected.getParams().put("timeout", new Interval(3, 3, TimeUnit.MINUTES));
     BotCommand actual = BotCommandService.fromJson(file);
     Assert.assertEquals(expected, actual);
   }

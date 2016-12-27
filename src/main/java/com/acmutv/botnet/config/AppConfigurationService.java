@@ -129,7 +129,6 @@ public class AppConfigurationService {
    * @throws IOException if {@link AppConfiguration} cannot be deserialized.
    */
   public static void load(final AppConfigurationFormat format, final String resource, final AppConfiguration defaultConfig) throws IOException {
-    LOGGER.traceEntry("resource={}", resource);
     final AppConfiguration config = from(format, resource, defaultConfig);
     getConfigurations().copy(config);
   }

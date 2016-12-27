@@ -40,7 +40,6 @@ import lombok.Getter;
 public enum CommandScope {
   NONE ("NONE", false),
   RESTART ("RESTART", true),
-  UPDATE ("UPDATE", true),
   SLEEP ("SLEEP", true),
   SHUTDOWN ("SHUTDOWN", true),
   KILL ("KILL", false),

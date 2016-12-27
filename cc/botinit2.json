@@ -6,13 +6,13 @@
   "sampling": "1:MINUTES",
   "controllers": [
     {
-      "init": "${RES}/cc/botinit.json",
-      "command": "${RES}/cc/botcmd.json",
-      "log": "${RES}/cc/botlog.json"
+      "init": "${PWD}/cc/botinit2.json",
+      "command": "${PWD}/cc/botcmd2.json",
+      "log": "${PWD}/cc/botlog2.json"
     }
   ],
-  "polling": "10-10:SECONDS",
+  "polling": "20-30:SECONDS",
   "reconnections": 3,
-  "reconnectionWait": "10-10:SECONDS",
+  "reconnectionWait": "30-40:SECONDS",
   "proxy": "none"
 }
