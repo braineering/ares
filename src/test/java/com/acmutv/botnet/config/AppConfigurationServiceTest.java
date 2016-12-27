@@ -26,6 +26,7 @@
 
 package com.acmutv.botnet.config;
 
+import com.acmutv.botnet.config.serial.AppConfigurationFormat;
 import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.string.TemplateEngine;
@@ -69,8 +70,8 @@ public class AppConfigurationServiceTest {
   public void test_fromJsonYaml_custom() throws IOException {
     InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom.json");
     InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom.yaml");
-    AppConfiguration actualjson = AppConfigurationService.fromJson(injson);
-    AppConfiguration actualyaml = AppConfigurationService.fromYaml(inyaml);
+    AppConfiguration actualjson = AppConfigurationService.from(AppConfigurationFormat.JSON, injson, null);
+    AppConfiguration actualyaml = AppConfigurationService.from(AppConfigurationFormat.YAML, inyaml, null);
     AppConfiguration expected = new AppConfiguration();
     expected.setSysInfo(true);
     expected.setNetInfo(true);
@@ -128,8 +129,8 @@ public class AppConfigurationServiceTest {
   public void test_fromJsonYaml_default() throws IOException {
     InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/default.json");
     InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/default.yaml");
-    AppConfiguration actualjson = AppConfigurationService.fromJson(injson);
-    AppConfiguration actualyaml = AppConfigurationService.fromYaml(inyaml);
+    AppConfiguration actualjson = AppConfigurationService.from(AppConfigurationFormat.JSON, injson, null);
+    AppConfiguration actualyaml = AppConfigurationService.from(AppConfigurationFormat.YAML, inyaml, null);
     AppConfiguration expected = new AppConfiguration();
     Assert.assertEquals(expected, actualjson);
     Assert.assertEquals(expected, actualyaml);
@@ -144,8 +145,8 @@ public class AppConfigurationServiceTest {
     InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/empty.json");
     InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/empty.yaml");
     try {
-      AppConfigurationService.fromJson(injson);
-      AppConfigurationService.fromYaml(inyaml);
+      AppConfigurationService.from(AppConfigurationFormat.JSON, injson, null);
+      AppConfigurationService.from(AppConfigurationFormat.YAML, inyaml, null);
     } catch (IOException exc) {return;}
     Assert.fail();
   }
@@ -158,8 +159,8 @@ public class AppConfigurationServiceTest {
   public void test_fromJsonYaml_partialCustom() throws IOException {
     InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/partial.json");
     InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/partial.yaml");
-    AppConfiguration actualjson = AppConfigurationService.fromJson(injson);
-    AppConfiguration actualyaml = AppConfigurationService.fromYaml(inyaml);
+    AppConfiguration actualjson = AppConfigurationService.from(AppConfigurationFormat.JSON, injson, null);
+    AppConfiguration actualyaml = AppConfigurationService.from(AppConfigurationFormat.YAML, inyaml, null);
     AppConfiguration expected = new AppConfiguration();
     expected.setNetInfo(false);
     Assert.assertEquals(expected, actualjson);

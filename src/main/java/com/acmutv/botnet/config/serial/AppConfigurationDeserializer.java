@@ -36,7 +36,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import lombok.Data;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,8 +64,10 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
    * Initializes {@link AppConfigurationDeserializer} with default deserialization.
    */
   public AppConfigurationDeserializer(AppConfiguration defaultConfig) {
-    super((Class<AppConfiguration>)null);
-    this.DEFAULT = defaultConfig;
+    this();
+    if (defaultConfig != null) {
+      this.DEFAULT = defaultConfig;
+    }
   }
 
   @Override
@@ -106,7 +107,7 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
 
     if (node.hasNonNull("reconnections")) {
       final Long reconnections = (node.get("reconnections").asLong() >= 0) ?
-          Long.valueOf(node.get("reconnections").asLong())
+          node.get("reconnections").asLong()
           :
           Long.MAX_VALUE;
       config.setReconnections(reconnections);
@@ -165,7 +166,7 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
       }
 
       if (n.hasNonNull("reconnections")) {
-        reconnections = Long.valueOf(n.get("reconnections").asLong());
+        reconnections = n.get("reconnections").asLong();
       }
 
       if (n.hasNonNull("reconnectionWait")) {

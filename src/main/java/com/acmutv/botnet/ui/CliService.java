@@ -29,6 +29,7 @@ package com.acmutv.botnet.ui;
 import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.config.AppConfigurationService;
 import com.acmutv.botnet.config.AppManifest;
+import com.acmutv.botnet.config.serial.AppConfigurationFormat;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -200,7 +201,7 @@ public class CliService {
    */
   private static void loadConfiguration(final String configPath) throws IOException {
     try(InputStream in = new FileInputStream(configPath)) {
-      AppConfigurationService.loadYaml(in);
+      AppConfigurationService.load(AppConfigurationFormat.YAML, in, null);
     }
   }
 }

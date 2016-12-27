@@ -86,6 +86,7 @@ public class HttpProxy extends Proxy {
    * @return the compact string representation.
    */
   public String toCompactString() {
+    //noinspection ConstantConditions
     if (this.equals(HttpProxy.NONE)) {
       return "none";
     } else {
