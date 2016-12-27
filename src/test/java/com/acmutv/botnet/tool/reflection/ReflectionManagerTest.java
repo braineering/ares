@@ -48,7 +48,7 @@ public class ReflectionManagerTest {
    * Utility class (for testing use only).
    */
   @Data
-  private static class CustomObject {
+  public static class CustomObject {
     private boolean propBoolean = false;
     private int propInt = 10;
     private long propLong = 10;

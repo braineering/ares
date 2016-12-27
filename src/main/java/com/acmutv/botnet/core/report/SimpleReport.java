@@ -27,6 +27,7 @@
 package com.acmutv.botnet.core.report;
 
 import com.acmutv.botnet.core.report.serial.ReportJsonMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.EqualsAndHashCode;
 
@@ -61,11 +62,11 @@ public class SimpleReport extends HashMap<String,Object> implements Report {
   /**
    * Converts the instance to a JSON.
    * @return the JSON.
+   * @throws JsonProcessingException when object cannot be serialized.
    */
   @Override
-  public String toJson() {
+  public String toJson() throws JsonProcessingException {
     ObjectMapper mapper = new ReportJsonMapper();
-    //TODO map the report to JSON
-    return null;
+    return mapper.writeValueAsString(this);
   }
 }

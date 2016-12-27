@@ -34,6 +34,7 @@ import org.junit.runners.Suite;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
+ * @see AnalyzerTest
  * @see NetworkFeaturesTest
  * @see NetworkStatisticsTest
  * @see SystemFeaturesTest
@@ -41,6 +42,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+    AnalyzerTest.class,
     NetworkFeaturesTest.class,
     NetworkStatisticsTest.class,
     SystemFeaturesTest.class,

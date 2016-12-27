@@ -32,6 +32,11 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This class realizes the JSON serializer for {@link Report}.
@@ -68,7 +73,11 @@ public class ReportSerializer extends StdSerializer<Report> {
   @Override
   public void serialize(Report value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    //TODO explicit report serialization
+    List<String> sortedKeys = new ArrayList<>();
+    value.keySet().stream().sorted().forEachOrdered(k -> sortedKeys.add(k));
+    for (String k : sortedKeys) {
+      gen.writeStringField(k, value.get(k).toString());
+    }
     gen.writeEndObject();
   }
 }

@@ -25,7 +25,12 @@
  */
 package com.acmutv.botnet.core.report;
 
+import com.acmutv.botnet.core.report.serial.ReportJsonMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.Assert;
 import org.junit.Test;
+
+import java.io.IOException;
 
 /**
  * This class realizes JUnit tests for {@link SimpleReport}.
@@ -36,8 +41,55 @@ import org.junit.Test;
  */
 public class SimpleReportTest {
 
+  /**
+   * Tests report merging.
+   */
   @Test
-  public void test() {
+  public void test_merge() {
+    Report r1 = new SimpleReport();
+    r1.put("prop1", "val1");
+    Report r2 = new SimpleReport();
+    r2.put("prop2", "val2");
+    Report r3 = new SimpleReport();
+    r2.put("prop1", "val1-bis");
 
+    Report actual = new SimpleReport();
+    actual.merge(r1);
+    actual.merge(r2);
+    actual.merge(r3);
+
+    Report expected = new SimpleReport();
+    expected.put("prop1", "val1-bis");
+    expected.put("prop2", "val2");
+
+    Assert.assertEquals(expected, actual);
+  }
+
+  /**
+   * Tests report serialization.
+   */
+  @Test
+  public void test_toJson() throws JsonProcessingException {
+    Report actual = new SimpleReport();
+    actual.put("prop1", "val1");
+    actual.put("prop2", "val2");
+
+    String actualJson = actual.toJson();
+    String expectedJson = "{\"prop1\":\"val1\",\"prop2\":\"val2\"}";
+
+    Assert.assertEquals(expectedJson, actualJson);
+  }
+
+  /**
+   * Tests report deserialization.
+   */
+  @Test
+  public void test_fromJson() throws IOException {
+    String json = "{\"prop1\":\"val1\",\"prop2\":\"val2\"}";
+    Report actual = new ReportJsonMapper().readValue(json, SimpleReport.class);
+    Report expected = new SimpleReport();
+    expected.put("prop1", "val1");
+    expected.put("prop2", "val2");
+    Assert.assertEquals(expected, actual);
   }
 }

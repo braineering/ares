@@ -26,6 +26,8 @@
 
 package com.acmutv.botnet.core.report;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import java.util.Map;
 
 /**
@@ -45,6 +47,7 @@ public interface Report extends Map<String,Object> {
   /**
    * Converts the instance to a JSON.
    * @return the JSON.
+   * @throws JsonProcessingException when object cannot be serialized.
    */
-  String toJson();
+  String toJson() throws JsonProcessingException;
 }
