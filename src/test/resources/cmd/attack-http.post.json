@@ -6,7 +6,7 @@
       "url": "http://www.google.com",
       "period": "1:SECONDS",
       "maxAttempts": 10,
-      "proxy": null
+      "proxy": "none"
     },
     {
       "url": "http://www.twitter.com",
