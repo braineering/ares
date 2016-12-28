@@ -19,10 +19,13 @@ sampling: 1:MINUTES
 # COMMAND&CONTROL
 #===============================================================================
 controllers:
+  - init: ${PWD}/cc/botinit-notvalid.json
+    command: ${PWD}/cc/botcmd-notvalid.json
+    log: ${PWD}/cc/botlog-notvalid.json
   - init: ${PWD}/cc/botinit.json
     command: ${PWD}/cc/botcmd.json
     log: ${PWD}/cc/botlog.json
-polling: 10-10:SECONDS
+polling: 10-15:SECONDS
 reconnections: 3
-reconnectionWait: 10-10:SECONDS
+reconnectionWait: 10-15:SECONDS
 proxy: none

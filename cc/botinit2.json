@@ -11,7 +11,7 @@
       "log": "${PWD}/cc/botlog2.json"
     }
   ],
-  "polling": "20-30:SECONDS",
+  "polling": "40-60:SECONDS",
   "reconnections": 3,
   "reconnectionWait": "30-40:SECONDS",
   "proxy": "none"
