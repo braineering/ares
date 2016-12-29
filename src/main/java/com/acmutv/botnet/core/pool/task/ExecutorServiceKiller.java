@@ -27,7 +27,9 @@
 package com.acmutv.botnet.core.pool.task;
 
 import com.acmutv.botnet.tool.time.Duration;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NonNull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,31 +43,37 @@ import java.util.concurrent.ExecutorService;
  * @see ExecutorService
  */
 @Data
-public class ExecutorServiceShutdown implements Runnable {
+@AllArgsConstructor
+public class ExecutorServiceKiller implements Runnable {
 
-  private static final Logger LOGGER = LogManager.getLogger(ExecutorServiceShutdown.class);
+  private static final Logger LOGGER = LogManager.getLogger(ExecutorServiceKiller.class);
 
   /**
    * The service to shutdown.
    */
-  private final ExecutorService executor;
+  @NonNull
+  private ExecutorService executor;
 
   /**
    * The shutdown timeout.
    */
-  private final Duration timeout;
+  private Duration timeout = null;
 
   /**
    * Shuts down the specified service.
    */
   @Override
   public void run() {
-    LOGGER.trace("Shutting down executor {}", this.executor);
-    this.executor.shutdown();
-    try {
-      this.executor.awaitTermination(this.getTimeout().getAmount(), this.getTimeout().getUnit());
-    } catch (InterruptedException e) {
-      e.printStackTrace();
+    if (this.timeout != null && this.timeout.getAmount() > 0) {
+      LOGGER.trace("Shutting down executor {} softly in {} {}...",
+          this.executor, this.timeout.getAmount(), this.timeout.getUnit());
+      this.executor.shutdown();
+      try {
+        this.executor.awaitTermination(this.getTimeout().getAmount(), this.getTimeout().getUnit());
+      } catch (InterruptedException ignored) {}
+    } else {
+      LOGGER.trace("Shutting down executor {} immediately...", this.executor);
+      this.executor.shutdownNow();
     }
   }
 }

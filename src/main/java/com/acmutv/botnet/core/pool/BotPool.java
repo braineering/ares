@@ -27,8 +27,7 @@
 package com.acmutv.botnet.core.pool;
 
 import com.acmutv.botnet.core.attack.Attacker;
-import com.acmutv.botnet.core.pool.task.ExecutorServiceKill;
-import com.acmutv.botnet.core.pool.task.ExecutorServiceShutdown;
+import com.acmutv.botnet.core.pool.task.ExecutorServiceKiller;
 import com.acmutv.botnet.tool.runtime.RuntimeManager;
 import com.acmutv.botnet.tool.time.Duration;
 import lombok.Data;
@@ -55,17 +54,17 @@ public class BotPool {
   public static final int SHUTDOWN_TIMEOUT_AMOUNT = 60;
   public static final TimeUnit SHUTDOWN_TIMEOUT_UNIT = TimeUnit.SECONDS;
 
-  private ExecutorService fixedThreadPool;
-  private ScheduledExecutorService scheduledThreadPool;
+  private ExecutorService attackersPool;
+  private ScheduledExecutorService samplersPool;
 
   public BotPool() {
     int cores = RuntimeManager.getCores();
-    this.fixedThreadPool = Executors.newFixedThreadPool(cores);
-    this.scheduledThreadPool = Executors.newScheduledThreadPool(1);
+    this.attackersPool = Executors.newFixedThreadPool(cores);
+    this.samplersPool = Executors.newScheduledThreadPool(1);
   }
 
   public void submit(Attacker attacker) {
-    this.getFixedThreadPool().submit(attacker);
+    this.getAttackersPool().submit(attacker);
   }
 
   public void pause(Duration timeout) {
@@ -73,13 +72,21 @@ public class BotPool {
     LOGGER.traceExit();
   }
 
-  public void shutdown(Duration timeout) {
-    new Thread(new ExecutorServiceShutdown(this.getFixedThreadPool(), timeout)).start();
-    new Thread(new ExecutorServiceShutdown(this.getScheduledThreadPool(), timeout)).start();
+  /**
+   * Kills immediately all attackers.
+   */
+  public void calmdown() {
+    new Thread(new ExecutorServiceKiller(this.getAttackersPool(), null)).start();
   }
 
-  public void kill() {
-    new Thread(new ExecutorServiceKill(this.getFixedThreadPool())).start();
-    new Thread(new ExecutorServiceKill(this.getScheduledThreadPool())).start();
+  /**
+   * Kills all threads within the specified timeout.
+   * If timeout is null, kills immediately.
+   * @param timeout the shutdown timeout.
+   */
+  public void kill(Duration timeout) {
+    new Thread(new ExecutorServiceKiller(this.getAttackersPool(), timeout)).start();
+    new Thread(new ExecutorServiceKiller(this.getSamplersPool(), timeout)).start();
   }
+
 }
