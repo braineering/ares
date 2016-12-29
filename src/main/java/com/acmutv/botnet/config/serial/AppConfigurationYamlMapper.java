@@ -27,6 +27,7 @@
 package com.acmutv.botnet.config.serial;
 
 import com.acmutv.botnet.config.AppConfiguration;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import lombok.EqualsAndHashCode;
@@ -36,6 +37,8 @@ import lombok.EqualsAndHashCode;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @since 1.0
  * @see AppConfiguration
+ * @see AppConfigurationSerializer
+ * @see AppConfigurationDeserializer
  */
 @EqualsAndHashCode(callSuper = true)
 public class AppConfigurationYamlMapper extends YAMLMapper {
@@ -44,10 +47,7 @@ public class AppConfigurationYamlMapper extends YAMLMapper {
    * Initializes the YAML constructor, with no default model.
    */
   public AppConfigurationYamlMapper() {
-    super();
-    SimpleModule module = new SimpleModule();
-    module.addDeserializer(AppConfiguration.class, new AppConfigurationDeserializer());
-    super.registerModule(module);
+    this(null);
   }
 
   /**
@@ -57,7 +57,9 @@ public class AppConfigurationYamlMapper extends YAMLMapper {
   public AppConfigurationYamlMapper(AppConfiguration defaultConfig) {
     super();
     SimpleModule module = new SimpleModule();
+    module.addSerializer(AppConfiguration.class, AppConfigurationSerializer.getInstance());
     module.addDeserializer(AppConfiguration.class, new AppConfigurationDeserializer(defaultConfig));
     super.registerModule(module);
+    super.enable(SerializationFeature.INDENT_OUTPUT);
   }
 }

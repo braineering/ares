@@ -28,15 +28,21 @@ package com.acmutv.botnet.config;
 
 import com.acmutv.botnet.config.serial.AppConfigurationFormat;
 import com.acmutv.botnet.core.control.Controller;
+import com.acmutv.botnet.tool.io.IOManager;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
+import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -62,86 +68,80 @@ public class AppConfigurationServiceTest {
   }
 
   /**
-   * Tests the app configuration parsing from an external JSON/YAML file.
+   * Tests the app configuration deserialization from a resource.
    * In this test the configuration file provides with complete custom settings.
    * The configuration file has non-null values and template string (${RES}).
    */
   @Test
-  public void test_fromJsonYaml_custom() throws IOException {
+  public void test_from_custom() throws IOException {
     InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom.json");
     InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom.yaml");
     AppConfiguration actualjson = AppConfigurationService.from(AppConfigurationFormat.JSON, injson, null);
     AppConfiguration actualyaml = AppConfigurationService.from(AppConfigurationFormat.YAML, inyaml, null);
+
     AppConfiguration expected = new AppConfiguration();
     expected.setSysInfo(true);
     expected.setNetInfo(true);
     expected.setSysStat(false);
     expected.setNetStat(false);
     expected.setSampling(new Duration(1, TimeUnit.HOURS));
-    List<Controller> controllers = new ArrayList<>();
-    controllers.add(
-        new Controller(
-            TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"),
-            TemplateEngine.getInstance().replace("${PWD}/cc/botcmd.json"),
-            TemplateEngine.getInstance().replace("${PWD}/cc/botlog.json"),
-            new Interval(10, 15, TimeUnit.SECONDS),
-            5L,
-            new Interval(10, 15, TimeUnit.SECONDS),
-            new HttpProxy("192.168.0.1", 8080)
-        )
-    );
-    controllers.add(
-        new Controller(
-            TemplateEngine.getInstance().replace("${PWD}/cc/botinit2.json"),
-            TemplateEngine.getInstance().replace("${PWD}/cc/botcmd2.json"),
-            TemplateEngine.getInstance().replace("${PWD}/cc/botlog2.json"),
-            new Interval(10, 15, TimeUnit.SECONDS),
-            5L,
-            new Interval(10, 15, TimeUnit.SECONDS),
-            HttpProxy.NONE
-        )
-    );
-    controllers.add(
-        new Controller(
-            TemplateEngine.getInstance().replace("${PWD}/cc/botinit2.json"),
-            TemplateEngine.getInstance().replace("${PWD}/cc/botcmd2.json"),
-            TemplateEngine.getInstance().replace("${PWD}/cc/botlog2.json"),
-            new Interval(10, 20, TimeUnit.SECONDS),
-            -1L,
-            new Interval(10, 20, TimeUnit.SECONDS),
-            new HttpProxy("192.168.0.1", 3000)
-        )
-    );
-    expected.setControllers(controllers);
     expected.setPolling(new Interval(10, 15, TimeUnit.SECONDS));
     expected.setReconnections(5L);
     expected.setReconnectionWait(new Interval(10, 15, TimeUnit.SECONDS));
     expected.setProxy(new HttpProxy("192.168.0.1", 8080));
+    List<Controller> controllers = new ArrayList<>();
+    Controller controller1 = new Controller(
+        TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"),
+        TemplateEngine.getInstance().replace("${PWD}/cc/botcmd.json"),
+        TemplateEngine.getInstance().replace("${PWD}/cc/botlog.json")
+    );
+    Controller controller2 = new Controller(
+        TemplateEngine.getInstance().replace("${PWD}/cc/botinit2.json"),
+        TemplateEngine.getInstance().replace("${PWD}/cc/botcmd2.json"),
+        TemplateEngine.getInstance().replace("${PWD}/cc/botlog2.json"),
+        new Interval(10, 20, TimeUnit.SECONDS),
+        -1L,
+        new Interval(10, 20, TimeUnit.SECONDS),
+        new HttpProxy("192.168.0.1", 3000)
+    );
+    Controller controller3 = new Controller(
+        TemplateEngine.getInstance().replace("${PWD}/cc/botinit3.json"),
+        TemplateEngine.getInstance().replace("${PWD}/cc/botcmd3.json"),
+        TemplateEngine.getInstance().replace("${PWD}/cc/botlog3.json")
+    );
+    controller3.setProxy(HttpProxy.NONE);
+    controllers.add(controller1);
+    controllers.add(controller2);
+    controllers.add(controller3);
+    expected.setControllers(controllers);
+
     Assert.assertEquals(expected, actualjson);
     Assert.assertEquals(expected, actualyaml);
   }
 
   /**
-   * Tests the app configuration parsing from an external JSON/YAML file.
+   * Tests the app configuration deserialization from a resource.
    * In this test the configuration file provides with complete default settings.
    */
   @Test
-  public void test_fromJsonYaml_default() throws IOException {
+  public void test_from_default() throws IOException {
     InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/default.json");
     InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/default.yaml");
     AppConfiguration actualjson = AppConfigurationService.from(AppConfigurationFormat.JSON, injson, null);
     AppConfiguration actualyaml = AppConfigurationService.from(AppConfigurationFormat.YAML, inyaml, null);
+
     AppConfiguration expected = new AppConfiguration();
+
     Assert.assertEquals(expected, actualjson);
     Assert.assertEquals(expected, actualyaml);
   }
 
   /**
-   * Tests the configuration parsing from an external JSON/YAML file.
+   * Tests the app configuration deserialization from a resource.
    * In this test the configuration file provides with empty settings.
    */
   @Test
-  public void test_fromJsonYaml_empty() throws IOException {
+  public void test_from_empty() throws IOException {
     InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/empty.json");
     InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/empty.yaml");
     try {
@@ -152,18 +152,105 @@ public class AppConfigurationServiceTest {
   }
 
   /**
-   * Tests the configuration parsing from an external JSON/YAML configuration file.
+   * Tests the app configuration deserialization from a resource.
    * In this test the configuration file provides with partial custom settings.
    */
   @Test
-  public void test_fromJsonYaml_partialCustom() throws IOException {
+  public void test_from_partialCustom() throws IOException {
     InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/partial.json");
     InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/partial.yaml");
     AppConfiguration actualjson = AppConfigurationService.from(AppConfigurationFormat.JSON, injson, null);
     AppConfiguration actualyaml = AppConfigurationService.from(AppConfigurationFormat.YAML, inyaml, null);
+
     AppConfiguration expected = new AppConfiguration();
     expected.setNetInfo(false);
+
     Assert.assertEquals(expected, actualjson);
     Assert.assertEquals(expected, actualyaml);
+  }
+
+  /**
+   * Tests the app configuration serialization from a resource.
+   * In this test the configuration file provides with complete custom settings.
+   * The configuration file has non-null values and template string (${RES}).
+   */
+  @Test
+  public void test_to_custom() throws IOException {
+    InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom.check.json");
+    InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom.check.yaml");
+
+    AppConfiguration config = new AppConfiguration();
+    config.setSysInfo(true);
+    config.setNetInfo(true);
+    config.setSysStat(false);
+    config.setNetStat(false);
+    config.setSampling(new Duration(1, TimeUnit.HOURS));
+    config.setPolling(new Interval(10, 15, TimeUnit.SECONDS));
+    config.setReconnections(5L);
+    config.setReconnectionWait(new Interval(10, 15, TimeUnit.SECONDS));
+    config.setProxy(new HttpProxy("192.168.0.1", 8080));
+    List<Controller> controllers = new ArrayList<>();
+    Controller controller1 = new Controller(
+        TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"),
+        TemplateEngine.getInstance().replace("${PWD}/cc/botcmd.json"),
+        TemplateEngine.getInstance().replace("${PWD}/cc/botlog.json")
+    );
+    Controller controller2 = new Controller(
+        TemplateEngine.getInstance().replace("${PWD}/cc/botinit2.json"),
+        TemplateEngine.getInstance().replace("${PWD}/cc/botcmd2.json"),
+        TemplateEngine.getInstance().replace("${PWD}/cc/botlog2.json"),
+        new Interval(10, 20, TimeUnit.SECONDS),
+        -1L,
+        new Interval(10, 20, TimeUnit.SECONDS),
+        new HttpProxy("192.168.0.1", 3000)
+    );
+    Controller controller3 = new Controller(
+        TemplateEngine.getInstance().replace("${PWD}/cc/botinit3.json"),
+        TemplateEngine.getInstance().replace("${PWD}/cc/botcmd3.json"),
+        TemplateEngine.getInstance().replace("${PWD}/cc/botlog3.json")
+    );
+    controller3.setProxy(HttpProxy.NONE);
+    controllers.add(controller1);
+    controllers.add(controller2);
+    controllers.add(controller3);
+    config.setControllers(controllers);
+
+    OutputStream outjson = new ByteArrayOutputStream();
+    OutputStream outyaml = new ByteArrayOutputStream();
+    AppConfigurationService.to(AppConfigurationFormat.JSON, outjson, config);
+    AppConfigurationService.to(AppConfigurationFormat.YAML, outyaml, config);
+    String actualJson = outjson.toString();
+    String actualYaml = outyaml.toString();
+
+    String expectedJson = IOUtils.toString(injson, Charset.defaultCharset());
+    String expectedYaml = IOUtils.toString(inyaml, Charset.defaultCharset());
+
+    Assert.assertEquals(expectedJson, actualJson);
+    Assert.assertEquals(expectedYaml, actualYaml);
+  }
+
+  /**
+   * Tests the app configuration serialization to a resource.
+   * In this test the configuration file provides with complete default settings.
+   */
+  @Test
+  public void test_to_default() throws IOException {
+    InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/default.check.json");
+    InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/default.check.yaml");
+
+    AppConfiguration config = new AppConfiguration();
+
+    OutputStream outjson = new ByteArrayOutputStream();
+    OutputStream outyaml = new ByteArrayOutputStream();
+    AppConfigurationService.to(AppConfigurationFormat.JSON, outjson, config);
+    AppConfigurationService.to(AppConfigurationFormat.YAML, outyaml, config);
+    String actualJson = outjson.toString();
+    String actualYaml = outyaml.toString();
+
+    String expectedJson = IOUtils.toString(injson, Charset.defaultCharset());
+    String expectedYaml = IOUtils.toString(inyaml, Charset.defaultCharset());
+
+    Assert.assertEquals(expectedJson, actualJson);
+    Assert.assertEquals(expectedYaml, actualYaml);
   }
 }

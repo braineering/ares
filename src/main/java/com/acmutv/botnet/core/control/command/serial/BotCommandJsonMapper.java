@@ -28,6 +28,7 @@ package com.acmutv.botnet.core.control.command.serial;
 
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.EqualsAndHashCode;
 
@@ -37,6 +38,8 @@ import lombok.EqualsAndHashCode;
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see BotCommand
+ * @see BotCommandSerializer
+ * @see BotCommandDeserializer
  */
 @EqualsAndHashCode(callSuper = true)
 public class BotCommandJsonMapper extends ObjectMapper {
@@ -47,8 +50,9 @@ public class BotCommandJsonMapper extends ObjectMapper {
   public BotCommandJsonMapper() {
     super();
     SimpleModule module = new SimpleModule();
-    module.addDeserializer(BotCommand.class, BotCommandDeserializer.getInstance());
     module.addSerializer(BotCommand.class, BotCommandSerializer.getInstance());
+    module.addDeserializer(BotCommand.class, BotCommandDeserializer.getInstance());
     super.registerModule(module);
+    super.enable(SerializationFeature.INDENT_OUTPUT);
   }
 }

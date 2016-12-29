@@ -182,18 +182,6 @@ public class BotCommandServiceTest {
   }
 
   /**
-   * Tests command parsing from a JSON file (command: SHUTDOWN).
-   */
-  @Test
-  public void test_fromJSONFile_shutdown() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/shutdown.json");
-    BotCommand expected = new BotCommand(CommandScope.SHUTDOWN);
-    expected.getParams().put("timeout", new Duration(3, TimeUnit.MINUTES));
-    BotCommand actual = BotCommandService.fromJson(file);
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
    * Tests command parsing from a JSON file (command: SLEEP).
    */
   @Test

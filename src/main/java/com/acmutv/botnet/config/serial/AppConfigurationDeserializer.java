@@ -125,7 +125,7 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
 
     if (node.hasNonNull("controllers")) {
       final List<Controller> controllers = parseControllers(node.get("controllers"), config);
-      if (!controllers.isEmpty()) config.setControllers(controllers);
+      config.setControllers(controllers);
     }
     return config;
   }
@@ -146,41 +146,41 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
           !n.hasNonNull("log")) {
         continue;
       }
+
       final String initResource = TemplateEngine.getInstance().replace(
           n.get("init").asText()
       );
+
       final String commandResource = TemplateEngine.getInstance().replace(
           n.get("command").asText()
       );
+
       final String logResource = TemplateEngine.getInstance().replace(
           n.get("log").asText()
       );
 
-      Interval polling = config.getPolling();
-      Long reconnections = config.getReconnections();
-      Interval reconnectionWait = config.getReconnectionWait();
-      HttpProxy proxy = config.getProxy();
+      Controller controller = new Controller(initResource, commandResource, logResource);
 
       if (n.hasNonNull("polling")) {
-        polling = Interval.valueOf(n.get("polling").asText());
+        final Interval polling = Interval.valueOf(n.get("polling").asText());
+        controller.setPolling(polling);
       }
 
       if (n.hasNonNull("reconnections")) {
-        reconnections = n.get("reconnections").asLong();
+        final Long reconnections = n.get("reconnections").asLong();
+        controller.setReconnections(reconnections);
       }
 
       if (n.hasNonNull("reconnectionWait")) {
-        reconnectionWait = Interval.valueOf(n.get("reconnectionWait").asText());
+        final Interval reconnectionWait = Interval.valueOf(n.get("reconnectionWait").asText());
+        controller.setReconnectionWait(reconnectionWait);
       }
 
       if (n.hasNonNull("proxy")) {
-        proxy = HttpProxy.valueOf(n.get("proxy").asText());
+        final HttpProxy proxy = HttpProxy.valueOf(n.get("proxy").asText());
+        controller.setProxy(proxy);
       }
 
-      Controller controller = new Controller(
-          initResource, commandResource, logResource,
-          polling, reconnections, reconnectionWait, proxy
-          );
       controllers.add(controller);
     }
     return controllers;

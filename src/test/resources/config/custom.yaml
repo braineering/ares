@@ -1,45 +1,12 @@
-#===============================================================================
-# BOT Configuration file
-#===============================================================================
-
-#===============================================================================
-# REPORT
-#===============================================================================
-sysInfo: True
-netInfo: True
-sysStat: False
-netStat: False
-sampling: "1:HOURS"
-
-#===============================================================================
-# C&C
-#===============================================================================
-controllers:
-  - init: "${PWD}/cc/botinit.json"
-    command: "${PWD}/cc/botcmd.json"
-    log: "${PWD}/cc/botlog.json"
-polling: 10-15:SECONDS
-
-#===============================================================================
-# BOT Configuration file
-#===============================================================================
-
-#===============================================================================
-# REPORT: FEATURES
-#===============================================================================
-sysInfo: True
-netInfo: True
-
-#===============================================================================
-# REPORT: STATISTICS
-#===============================================================================
-sysStat: False
-netStat: False
+sysInfo: true
+netInfo: true
+sysStat: false
+netStat: false
 sampling: 1:HOURS
-
-#===============================================================================
-# COMMAND&CONTROL
-#===============================================================================
+polling: 10-15:SECONDS
+reconnections: 5
+reconnectionWait: 10-15:SECONDS
+proxy: 192.168.0.1:8080
 controllers:
   - init: ${PWD}/cc/botinit.json
     command: ${PWD}/cc/botcmd.json
@@ -47,15 +14,11 @@ controllers:
   - init: ${PWD}/cc/botinit2.json
     command: ${PWD}/cc/botcmd2.json
     log: ${PWD}/cc/botlog2.json
-    proxy: none
-  - init: ${PWD}/cc/botinit2.json
-    command: ${PWD}/cc/botcmd2.json
-    log: ${PWD}/cc/botlog2.json
     polling: 10-20:SECONDS
     reconnections: -1
     reconnectionWait: 10-20:SECONDS
     proxy: 192.168.0.1:3000
-polling: 10-15:SECONDS
-reconnections: 5
-reconnectionWait: 10-15:SECONDS
-proxy: 192.168.0.1:8080
+  - init: ${PWD}/cc/botinit3.json
+    command: ${PWD}/cc/botcmd3.json
+    log: ${PWD}/cc/botlog3.json
+    proxy: none

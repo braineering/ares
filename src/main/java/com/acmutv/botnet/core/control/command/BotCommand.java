@@ -58,6 +58,10 @@ public class BotCommand {
   @NonNull
   private Map<String,Object> params = new HashMap<>();
 
+  /**
+   * Creates a new command with the specified scope and empty parameters.
+   * @param scope
+   */
   public BotCommand(CommandScope scope) {
     this.scope = scope;
   }

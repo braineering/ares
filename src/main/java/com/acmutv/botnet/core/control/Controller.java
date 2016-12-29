@@ -86,4 +86,52 @@ public class Controller {
    * If null, the proxy server specified in {@link AppConfiguration} is used.
    */
   private HttpProxy proxy = null;
+
+  /**
+   * Creates a new Controller with the specific resources and all other parameters set to null.
+   * @param initResource the initialization resource.
+   * @param cmdResource the command resource.
+   * @param logResource the logging resource.
+   */
+  public Controller(String initResource, String cmdResource, String logResource) {
+    this.initResource = initResource;
+    this.cmdResource = cmdResource;
+    this.logResource = logResource;
+  }
+
+  /**
+   * Returns `polling` if not null; `fallback` otherwise.
+   * @param fallback the fallback value.
+   * @return `polling` if not null; `fallback` otherwise.
+   */
+  public Interval getPolling(Interval fallback) {
+    return (this.polling != null) ? this.polling : fallback;
+  }
+
+  /**
+   * Returns `reconnections` if not null; `fallback` otherwise.
+   * @param fallback the fallback value.
+   * @return `reconnections` if not null; `fallback` otherwise.
+   */
+  public Long getReconnections(Long fallback) {
+    return (this.reconnections != null) ? this.reconnections : fallback;
+  }
+
+  /**
+   * Returns `reconnectionWait` if not null; `fallback` otherwise.
+   * @param fallback the fallback value.
+   * @return `reconnectionWait` if not null; `fallback` otherwise.
+   */
+  public Interval getReconnectionWait(Interval fallback) {
+    return (this.reconnectionWait != null) ? this.reconnectionWait : fallback;
+  }
+
+  /**
+   * Returns `proxy` if not null; `fallback` otherwise.
+   * @param fallback the fallback value.
+   * @return `proxy` if not null; `fallback` otherwise.
+   */
+  public HttpProxy getProxy(HttpProxy fallback) {
+    return (this.proxy != null) ? this.proxy : fallback;
+  }
 }

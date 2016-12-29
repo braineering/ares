@@ -1,0 +1,24 @@
+---
+sysInfo: true
+netInfo: true
+sysStat: false
+netStat: false
+sampling: "1:HOURS"
+polling: "10-15:SECONDS"
+reconnections: 5
+reconnectionWait: "10-15:SECONDS"
+proxy: "192.168.0.1:8080"
+controllers:
+- init: "/home/gmarciani/Workspace/botnet/cc/botinit.json"
+  command: "/home/gmarciani/Workspace/botnet/cc/botcmd.json"
+  log: "/home/gmarciani/Workspace/botnet/cc/botlog.json"
+- init: "/home/gmarciani/Workspace/botnet/cc/botinit2.json"
+  command: "/home/gmarciani/Workspace/botnet/cc/botcmd2.json"
+  log: "/home/gmarciani/Workspace/botnet/cc/botlog2.json"
+  polling: "10-20:SECONDS"
+  reconnections: -1
+  reconnectionWait: "10-20:SECONDS"
+  proxy: "192.168.0.1:3000"
+- init: "/home/gmarciani/Workspace/botnet/cc/botinit3.json"
+  command: "/home/gmarciani/Workspace/botnet/cc/botcmd3.json"
+  log: "/home/gmarciani/Workspace/botnet/cc/botlog3.json"

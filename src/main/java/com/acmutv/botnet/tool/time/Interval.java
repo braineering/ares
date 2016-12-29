@@ -46,6 +46,8 @@ import java.util.concurrent.TimeUnit;
 @AllArgsConstructor
 public class Interval {
 
+  public static final Interval ZERO = new Interval(0, 0, TimeUnit.SECONDS);
+
   /**
    * The amount of time (lower bound).
    */

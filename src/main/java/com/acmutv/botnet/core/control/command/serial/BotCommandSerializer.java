@@ -30,7 +30,6 @@ import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.target.HttpTarget;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
-import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -77,27 +76,14 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
     gen.writeStringField("command", value.getScope().getName());
     if (value.getScope().isWithParams()) {
       switch (value.getScope()) {
-
-        case RESTART:
-          final String resource = value.getParams().get("resource").toString();
-          gen.writeStringField("resource", resource);
-          break;
-
-        case SLEEP:
-          final Interval sleepTimeout = (Interval) value.getParams().get("timeout");
-          gen.writeStringField("timeout", sleepTimeout.toString());
-          break;
-
-        case SHUTDOWN:
-          final Duration shutdownTimeout = (Duration) value.getParams().get("timeout");
-          gen.writeStringField("timeout", shutdownTimeout.toString());
-          break;
-
         case ATTACK_HTTP:
           final HttpMethod httpMethod = (HttpMethod) value.getParams().get("method");
           @SuppressWarnings("unchecked") final List<HttpTarget> httpTargets = (List<HttpTarget>) value.getParams().get("targets");
           final HttpProxy httpProxy = (HttpProxy) value.getParams().get("proxy");
+          final Interval httpDelay = (Interval) value.getParams().get("delay");
+
           gen.writeStringField("method", httpMethod.name());
+
           gen.writeArrayFieldStart("targets");
           for (HttpTarget target : httpTargets) {
             gen.writeStartObject();
@@ -110,9 +96,71 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
             gen.writeEndObject();
           }
           gen.writeEndArray();
+
           if (httpProxy != null) {
             gen.writeStringField("proxy", httpProxy.toCompactString());
           }
+
+          if (httpDelay != null) {
+            gen.writeStringField("delay", httpDelay.toString());
+          }
+
+          break;
+
+        case CALMDOWN:
+          final Interval calmdownDelay = (Interval) value.getParams().get("delay");
+
+          if (calmdownDelay != null) {
+            gen.writeStringField("delay", calmdownDelay.toString());
+          }
+
+          break;
+
+        case KILL:
+          final Interval killTimeout = (Interval) value.getParams().get("timeout");
+          final Interval killDelay = (Interval) value.getParams().get("delay");
+
+          if (killTimeout != null) {
+            gen.writeStringField("timeout", killTimeout.toString());
+          }
+
+          if (killDelay != null) {
+            gen.writeStringField("delay", killDelay.toString());
+          }
+
+          break;
+
+        case RESTART:
+          final String resource = value.getParams().get("resource").toString();
+          final Interval restartDelay = (Interval) value.getParams().get("delay");
+
+          gen.writeStringField("resource", resource);
+
+          if (restartDelay != null) {
+            gen.writeStringField("delay", restartDelay.toString());
+          }
+
+          break;
+
+        case SAVE_CONFIG:
+          final Interval saveConfigDelay = (Interval) value.getParams().get("delay");
+
+          if (saveConfigDelay != null) {
+            gen.writeStringField("delay", saveConfigDelay.toString());
+          }
+
+          break;
+
+        case SLEEP:
+          final Interval sleepTimeout = (Interval) value.getParams().get("timeout");
+          final Interval sleepDelay = (Interval) value.getParams().get("delay");
+
+          gen.writeStringField("timeout", sleepTimeout.toString());
+
+          if (sleepDelay != null) {
+            gen.writeStringField("delay", sleepDelay.toString());
+          }
+
           break;
 
         default:

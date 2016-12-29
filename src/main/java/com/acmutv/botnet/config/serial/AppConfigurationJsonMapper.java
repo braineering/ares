@@ -28,6 +28,7 @@ package com.acmutv.botnet.config.serial;
 
 import com.acmutv.botnet.config.AppConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.EqualsAndHashCode;
 
@@ -36,6 +37,8 @@ import lombok.EqualsAndHashCode;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @since 1.0
  * @see AppConfiguration
+ * @see AppConfigurationSerializer
+ * @see AppConfigurationDeserializer
  */
 @EqualsAndHashCode(callSuper = true)
 public class AppConfigurationJsonMapper extends ObjectMapper {
@@ -44,10 +47,7 @@ public class AppConfigurationJsonMapper extends ObjectMapper {
    * Initializes the JSON constructor, with no default model.
    */
   public AppConfigurationJsonMapper() {
-    super();
-    SimpleModule module = new SimpleModule();
-    module.addDeserializer(AppConfiguration.class, new AppConfigurationDeserializer());
-    super.registerModule(module);
+    this(null);
   }
 
   /**
@@ -57,7 +57,9 @@ public class AppConfigurationJsonMapper extends ObjectMapper {
   public AppConfigurationJsonMapper(AppConfiguration defaultConfig) {
     super();
     SimpleModule module = new SimpleModule();
+    module.addSerializer(AppConfiguration.class, AppConfigurationSerializer.getInstance());
     module.addDeserializer(AppConfiguration.class, new AppConfigurationDeserializer(defaultConfig));
     super.registerModule(module);
+    super.enable(SerializationFeature.INDENT_OUTPUT);
   }
 }

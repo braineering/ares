@@ -31,12 +31,12 @@ import com.acmutv.botnet.config.serial.AppConfigurationJsonMapper;
 import com.acmutv.botnet.config.serial.AppConfigurationYamlMapper;
 import com.acmutv.botnet.tool.io.IOManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * This class realizes the app configuration services.
@@ -78,7 +78,6 @@ public class AppConfigurationService {
    * Returns the default configuration.
    */
   public static AppConfiguration fromDefault() {
-    LOGGER.traceEntry();
     final AppConfiguration config = new AppConfiguration();
     return LOGGER.traceExit(config);
   }
@@ -92,12 +91,11 @@ public class AppConfigurationService {
    * @throws IOException if {@link AppConfiguration} cannot be deserialized.
    */
   public static AppConfiguration from(final AppConfigurationFormat format, final String resource, final AppConfiguration defaultConfig) throws IOException {
-    LOGGER.traceEntry("resource={}", resource);
     AppConfiguration config;
     try (final InputStream in = IOManager.getInputStream(resource)) {
       config = from(format, in, defaultConfig);
     }
-    return LOGGER.traceExit(config);
+    return config;
   }
 
   /**
@@ -118,7 +116,9 @@ public class AppConfigurationService {
       throw new IOException("Unsupported serialization format");
     }
 
-    return mapper.readValue(in, AppConfiguration.class);
+    AppConfiguration config = mapper.readValue(in, AppConfiguration.class);
+
+    return LOGGER.traceExit(config);
   }
 
   /**
@@ -129,8 +129,9 @@ public class AppConfigurationService {
    * @throws IOException if {@link AppConfiguration} cannot be deserialized.
    */
   public static void load(final AppConfigurationFormat format, final String resource, final AppConfiguration defaultConfig) throws IOException {
-    final AppConfiguration config = from(format, resource, defaultConfig);
-    getConfigurations().copy(config);
+    try (InputStream in = IOManager.getInputStream(resource)) {
+      load(format, in, defaultConfig);
+    }
   }
 
   /**
@@ -149,7 +150,52 @@ public class AppConfigurationService {
    * Loads the default configuration.
    */
   public static void loadDefault() {
-    LOGGER.traceEntry();
     getConfigurations().toDefault();
+  }
+
+  /**
+   * Stores the current configuration.
+   * @param format the serialization format.
+   * @param resource the path to save to.
+   * @throws IOException when configuration cannot be stored.
+   */
+  public static void store(AppConfigurationFormat format, String resource) throws IOException {
+    final AppConfiguration config = getConfigurations();
+    try (OutputStream out = IOManager.getOutputStream(resource)) {
+      to(format, out, config);
+    }
+  }
+
+  /**
+   * Serialize the specified configuration to the specified path in the specified format.
+   * @param format the serialization format.
+   * @param resource the path to save to.
+   * @param config the configuration to save.
+   * @throws IOException when configuration cannot be serialized.
+   */
+  public static void to(AppConfigurationFormat format, String resource, AppConfiguration config) throws IOException {
+    try (OutputStream out = IOManager.getOutputStream(resource))  {
+      to(format, out, config);
+    }
+  }
+
+  /**
+   * Serialize the specified configuration to the specified stream in the specified format.
+   * @param format the serialization format.
+   * @param out the stream to save to.
+   * @param config the configuration to save.
+   * @throws IOException when configuration cannot be serialized.
+   */
+  public static void to(AppConfigurationFormat format, OutputStream out, AppConfiguration config) throws IOException {
+    ObjectMapper mapper;
+    if (format.equals(AppConfigurationFormat.JSON)) {
+      mapper = new AppConfigurationJsonMapper();
+    } else if (format.equals(AppConfigurationFormat.YAML)) {
+      mapper = new AppConfigurationYamlMapper();
+    } else {
+      throw new IOException("Unsupported serialization format");
+    }
+
+    mapper.writeValue(out, config);
   }
 }

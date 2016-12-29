@@ -1,0 +1,4 @@
+{
+  "command": "RESTART",
+  "resource": "${PWD}/cc/botinit.json"
+}

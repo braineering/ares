@@ -81,19 +81,16 @@ public class AppConfiguration {
    * Default value for property controllers
    */
   public static final List<Controller> CONTROLLERS = new ArrayList<>();
-  static {
-    CONTROLLERS.add(
-        new Controller(
-            TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"),
-            TemplateEngine.getInstance().replace("${PWD}/cc/botcmd.json"),
-            TemplateEngine.getInstance().replace("${PWD}/cc/botlog.json"),
-            new Interval(10, 10, TimeUnit.SECONDS),
-            3L,
-            new Interval(10, 10, TimeUnit.SECONDS),
-            HttpProxy.NONE
-        )
-    );
-  }
+
+  /**
+   * The fallback default controller.
+   * Only used when no controllers are specified.
+   */
+  public static final Controller FALLBACK_CONTROLLER = new Controller(
+      TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"),
+      TemplateEngine.getInstance().replace("${PWD}/cc/botcmd.json"),
+      TemplateEngine.getInstance().replace("${PWD}/cc/botlog.json")
+  );
 
   /**
    * Default value for property polling.

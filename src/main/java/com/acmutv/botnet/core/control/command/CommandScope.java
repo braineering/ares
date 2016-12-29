@@ -38,12 +38,13 @@ import lombok.Getter;
  */
 @Getter
 public enum CommandScope {
-  NONE ("NONE", false),
-  RESTART ("RESTART", true),
-  SLEEP ("SLEEP", true),
-  SHUTDOWN ("SHUTDOWN", true),
-  KILL ("KILL", false),
-  ATTACK_HTTP("ATTACK_HTTP", true);
+  ATTACK_HTTP ("ATTACK_HTTP", true),
+  CALMDOWN    ("CALMDOWN", true),
+  KILL        ("KILL", true),
+  NONE        ("NONE", false),
+  RESTART     ("RESTART", true),
+  SAVE_CONFIG ("SAVE_CONFIG", true),
+  SLEEP       ("SLEEP", true);
 
   private final String name;
   private final boolean withParams;

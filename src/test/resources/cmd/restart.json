@@ -1,4 +1,5 @@
 {
   "command": "RESTART",
-  "resource": "${PWD}/cc/botinit.json"
+  "resource": "${PWD}/cc/botinit.json",
+  "timeout": "3:MINUTES"
 }
