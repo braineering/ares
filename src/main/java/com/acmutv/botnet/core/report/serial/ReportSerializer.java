@@ -74,7 +74,7 @@ public class ReportSerializer extends StdSerializer<Report> {
   public void serialize(Report value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
     List<String> sortedKeys = new ArrayList<>();
-    value.keySet().stream().sorted().forEachOrdered(k -> sortedKeys.add(k));
+    value.keySet().stream().sorted().forEachOrdered(sortedKeys::add);
     for (String k : sortedKeys) {
       gen.writeStringField(k, value.get(k).toString());
     }

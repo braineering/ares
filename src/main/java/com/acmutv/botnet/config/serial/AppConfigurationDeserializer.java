@@ -57,7 +57,7 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
    */
   public AppConfigurationDeserializer() {
     super((Class<AppConfiguration>)null);
-    this.DEFAULT = new AppConfiguration();
+    DEFAULT = new AppConfiguration();
   }
 
   /**
@@ -66,13 +66,13 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
   public AppConfigurationDeserializer(AppConfiguration defaultConfig) {
     this();
     if (defaultConfig != null) {
-      this.DEFAULT = defaultConfig;
+      DEFAULT = defaultConfig;
     }
   }
 
   @Override
   public AppConfiguration deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
-    AppConfiguration config = new AppConfiguration(this.DEFAULT);
+    AppConfiguration config = new AppConfiguration(DEFAULT);
     JsonNode node = parser.getCodec().readTree(parser);
 
     if (node.hasNonNull("sysInfo")) {

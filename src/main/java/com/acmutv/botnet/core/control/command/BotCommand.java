@@ -60,7 +60,7 @@ public class BotCommand {
 
   /**
    * Creates a new command with the specified scope and empty parameters.
-   * @param scope
+   * @param scope the command scope.
    */
   public BotCommand(CommandScope scope) {
     this.scope = scope;

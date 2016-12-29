@@ -36,5 +36,5 @@ import com.acmutv.botnet.config.AppConfiguration;
  */
 public enum AppConfigurationFormat {
   JSON,
-  YAML;
+  YAML
 }
