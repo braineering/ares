@@ -135,7 +135,7 @@ public class HttpAttack implements Attacker {
 
     final int response = HttpManager.makeRequest(this.getMethod(), url, this.getProperties(), proxy);
 
-    LOGGER.info("Attack response :: {} {} :: {}", this.getMethod(), url, response);
+    LOGGER.info("HTTP Attack response :: {} {} :: {}", this.getMethod(), url, response);
   }
 
   /**

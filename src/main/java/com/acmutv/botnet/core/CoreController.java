@@ -42,6 +42,7 @@ import com.acmutv.botnet.core.pool.BotPool;
 import com.acmutv.botnet.core.report.*;
 import com.acmutv.botnet.core.state.BotState;
 import com.acmutv.botnet.core.target.HttpTarget;
+import com.acmutv.botnet.log.AppLogMarkers;
 import com.acmutv.botnet.tool.io.IOManager;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.runtime.RuntimeManager;
@@ -127,6 +128,8 @@ public class CoreController {
           BotCommand cmd = BotCommand.NONE;
           try {
             cmd = getNextCommand();
+            LOGGER.info(AppLogMarkers.COMMAND, "Received command {} with params {} from CC at {}",
+                cmd.getScope(), cmd.getParams(), CONTROLLER.getCmdResource());
             if (!cmd.getScope().equals(CommandScope.NONE)) {
               executeCommand(cmd);
               if (!cmd.getScope().equals(RESTART)) {
