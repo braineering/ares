@@ -90,6 +90,7 @@ public class AppConfigurationSerializationTest {
     configExpected.setReconnections(5L);
     configExpected.setReconnectionWait(new Interval(10, 15, TimeUnit.SECONDS));
     configExpected.setProxy(new HttpProxy("192.168.0.1", 8080));
+    configExpected.setUserAgent("Custom user agent");
     List<Controller> controllers = new ArrayList<>();
     configExpected.setControllers(controllers);
     ObjectMapper mapperJson = new AppConfigurationJsonMapper();
@@ -117,6 +118,7 @@ public class AppConfigurationSerializationTest {
     configExpected.setReconnections(5L);
     configExpected.setReconnectionWait(new Interval(10, 15, TimeUnit.SECONDS));
     configExpected.setProxy(new HttpProxy("192.168.0.1", 8080));
+    configExpected.setUserAgent(null);
     List<Controller> controllers = new ArrayList<>();
     Controller controller1 = new Controller("initCustom", "cmdCustom", "logCustom");
     Controller controller2 = new Controller("initCustom2", "cmdCustom2", "logCustom2");

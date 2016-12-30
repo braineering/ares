@@ -8,4 +8,5 @@ polling: "10-10:SECONDS"
 reconnections: 3
 reconnectionWait: "10-10:SECONDS"
 proxy: "none"
+userAgent: null
 controllers: []

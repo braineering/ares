@@ -7,6 +7,7 @@ polling: 10-15:SECONDS
 reconnections: 5
 reconnectionWait: 10-15:SECONDS
 proxy: 192.168.0.1:8080
+userAgent: Custom user agent
 controllers:
   - init: ${PWD}/cc/botinit.json
     command: ${PWD}/cc/botcmd.json

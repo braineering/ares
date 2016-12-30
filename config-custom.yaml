@@ -29,3 +29,4 @@ polling: 10-15:SECONDS
 reconnections: 3
 reconnectionWait: 10-15:SECONDS
 proxy: none
+userAgent: Bot by Marciani and Porretta

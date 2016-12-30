@@ -63,7 +63,7 @@ public class HttpManagerTest {
   }
 
   /**
-   * Tests the HTTP GET request (method:GET properties:(User-Agent) proxy:none)
+   * Tests the HTTP GET request (method:GET properties:(User-Agent:provided) proxy:none)
    * @throws ParseException when invalid weburl.
    * @throws IOException when HTTP error.
    */
@@ -72,6 +72,20 @@ public class HttpManagerTest {
     URL url = new URL("http://www.google.com");
     Map<String,String> props = new HashMap<>();
     props.put("User-Agent", "BOTNETv1.0.0");
+    int actual = HttpManager.makeRequest(HttpMethod.GET, url, props);
+    Assert.assertTrue(actual == 200 || actual == 403);
+  }
+
+  /**
+   * Tests the HTTP GET request (method:GET properties:(User-Agent:null) proxy:none)
+   * @throws ParseException when invalid weburl.
+   * @throws IOException when HTTP error.
+   */
+  @Test
+  public void test_get_props_null() throws ParseException, IOException {
+    URL url = new URL("http://www.google.com");
+    Map<String,String> props = new HashMap<>();
+    props.put("User-Agent", null);
     int actual = HttpManager.makeRequest(HttpMethod.GET, url, props);
     Assert.assertTrue(actual == 200 || actual == 403);
   }

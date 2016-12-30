@@ -53,37 +53,37 @@ import java.util.concurrent.TimeUnit;
 public class AppConfiguration {
 
   /**
-   * Default value for property sysInfo.
+   * Default value for {@code sysInfo}.
    */
   public static final boolean SYS_INFO = true;
 
   /**
-   * Default value for property netInfo.
+   * Default value for {@code netInfo} (true).
    */
   public static final boolean NET_INFO = true;
 
   /**
-   * Default value for property sysStat.
+   * Default value for {@code sysStat} (true).
    */
   public static final boolean SYS_STAT = true;
 
   /**
-   * Default value for property netStat.
+   * Default value for {@code netStat} (true).
    */
   public static final boolean NET_STAT = true;
 
   /**
-   * Default value for property sampling.
+   * Default value for {@code sampling} (1 minute).
    */
   public static final Duration SAMPLING = new Duration(1, TimeUnit.MINUTES);
 
   /**
-   * Default value for property controllers
+   * Default value for {@code controllers} (empty list).
    */
   public static final List<Controller> CONTROLLERS = new ArrayList<>();
 
   /**
-   * The fallback default controller.
+   * The fallback default controller (PWD/cc/bot{init,cmd,log}.json).
    * Only used when no controllers are specified.
    */
   public static final Controller FALLBACK_CONTROLLER = new Controller(
@@ -93,89 +93,95 @@ public class AppConfiguration {
   );
 
   /**
-   * Default value for property polling.
+   * Default value for {@code polling} (10-10 seconds).
    */
   public static final Interval POLLING = new Interval(10, 10, TimeUnit.SECONDS);
 
   /**
-   * Default value for property reconnections.
+   * Default value for {@code reconnections} (3).
    */
   public static final Long RECONNECTIONS = 3L;
 
   /**
-   * Default value for property reconnectionWait.
+   * Default value for {@code reconnectionWait} (10-10 seconds).
    */
   public static final Interval RECONNECTION_WAIT = new Interval(10,10, TimeUnit.SECONDS);
 
   /**
-   * Default value for property proxy.
+   * Default value for {@code proxy} ({@code HttpProxy.NONE}).
    */
   public static final HttpProxy PROXY = HttpProxy.NONE;
 
   /**
-   * Property sysInfo.
-   * If true, the bot sends system information to the CONTROLLERS.
-   * Default is: true.
+   * Default value for {@code userAgent} (empty).
+   */
+  public static final String USER_AGENT = null;
+
+  /**
+   * If true, the bot sends system information to the controller.
+   * Default is {@code SYS_INFO}.
    */
   private boolean sysInfo = SYS_INFO;
 
   /**
-   * Property netInfo.
-   * If true, the bot sends network information to the CONTROLLERS.
-   * Default is: true.
+   * If true, the bot sends network information to the controller.
+   * Default is {@code NET_INFO}.
    */
   private boolean netInfo = NET_INFO;
 
   /**
-   * Property sysStat.
-   * If true, the bot sends system statistics to the CONTROLLERS.
-   * Default is: true.
+   * If true, the bot sends system statistics to the controller.
+   * Default is {@code SYS_STAT}.
    */
   private boolean sysStat = SYS_STAT;
 
   /**
-   * Property netStat.
-   * If true, the bot sends network statistics to the CONTROLLERS.
-   * Default is: true.
+   * If true, the bot sends network statistics to the controller.
+   * Default is {@code NET_STAT}.
    */
   private boolean netStat = NET_STAT;
 
   /**
-   * Property sampling.
    * The bot collects system/network statistics with the specified sampling rate.
-   * Default is: 60 seconds.
+   * Default is {@code SAMPLING}.
    */
   private Duration sampling = SAMPLING;
 
   /**
-   * Property controllers.
    * The list of controllers to contact.
+   * Default is {@code CONTROLLERS}.
    */
   private List<Controller> controllers = CONTROLLERS;
 
   /**
-   * Property polling.
    * The bot polls controllers for commands with a random period within this interval.
+   * Default is {@code POLLING}.
    */
   private Interval polling = POLLING;
 
   /**
-   * Property reconnections.
-   * The maximum number of connection errors tolerated when connecting to a CC.
+   * The maximum number of connection errors tolerated when connecting to a controller.
+   * Default is {@code RECONNECTIONS}.
    */
   private Long reconnections = RECONNECTIONS;
 
   /**
-   * Property reconnectionWait.
    * The bot tries to reconnect to a controller waiting a random period within this interval.
+   * Default is {@code RECONNECTION_WAIT}.
    */
   private Interval reconnectionWait = RECONNECTION_WAIT;
 
   /**
-   * Property proxy.
    * The proxy server to contact the controllers through.
+   * Default is {@code PROXY}.
    */
   private HttpProxy proxy = PROXY;
+
+  /**
+   * The User-Agent field to use in HTTP messages.
+   * Default is {@code USER_AGENT}.
+   */
+  private String userAgent = USER_AGENT;
 
   /**
    * Constructs a configuration as a copy of the one specified.
@@ -200,6 +206,7 @@ public class AppConfiguration {
     this.reconnections = other.reconnections;
     this.reconnectionWait = other.reconnectionWait;
     this.proxy = other.proxy;
+    this.userAgent = other.userAgent;
   }
 
   /**
@@ -216,6 +223,7 @@ public class AppConfiguration {
     this.reconnections = RECONNECTIONS;
     this.reconnectionWait = RECONNECTION_WAIT;
     this.proxy = PROXY;
+    this.userAgent = USER_AGENT;
   }
 
 }

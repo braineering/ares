@@ -8,6 +8,7 @@
   "reconnections" : 5,
   "reconnectionWait" : "10-15:SECONDS",
   "proxy" : "192.168.0.1:8080",
+  "userAgent" : "Custom user agent",
   "controllers" : [ {
     "init" : "/home/gmarciani/Workspace/botnet/cc/botinit.json",
     "command" : "/home/gmarciani/Workspace/botnet/cc/botcmd.json",

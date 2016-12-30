@@ -89,6 +89,7 @@ public class AppConfigurationServiceTest {
     expected.setReconnections(5L);
     expected.setReconnectionWait(new Interval(10, 15, TimeUnit.SECONDS));
     expected.setProxy(new HttpProxy("192.168.0.1", 8080));
+    expected.setUserAgent("Custom user agent");
     List<Controller> controllers = new ArrayList<>();
     Controller controller1 = new Controller(
         TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"),
@@ -189,6 +190,7 @@ public class AppConfigurationServiceTest {
     config.setReconnections(5L);
     config.setReconnectionWait(new Interval(10, 15, TimeUnit.SECONDS));
     config.setProxy(new HttpProxy("192.168.0.1", 8080));
+    config.setUserAgent("Custom user agent");
     List<Controller> controllers = new ArrayList<>();
     Controller controller1 = new Controller(
         TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"),

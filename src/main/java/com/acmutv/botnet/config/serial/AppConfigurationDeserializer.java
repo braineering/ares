@@ -47,21 +47,25 @@ import java.util.List;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @since 1.0
  * @see AppConfiguration
+ * @see AppConfigurationSerializer
  */
 public class AppConfigurationDeserializer extends StdDeserializer<AppConfiguration> {
 
-  private static AppConfiguration DEFAULT;
+  /**
+   * The {@link AppConfiguration} to overwrite during deserialization.
+   * Default is the one created by the empty constructor {@code AppConfiguration()}.
+   */
+  private static AppConfiguration DEFAULT = new AppConfiguration();
 
   /**
-   * Initializes {@link AppConfigurationDeserializer} with no default deserialization.
+   * Initializes {@link AppConfigurationDeserializer}.
    */
   public AppConfigurationDeserializer() {
     super((Class<AppConfiguration>)null);
-    DEFAULT = new AppConfiguration();
   }
 
   /**
-   * Initializes {@link AppConfigurationDeserializer} with default deserialization.
+   * Initializes {@link AppConfigurationDeserializer} with a default deserialization.
    */
   public AppConfigurationDeserializer(AppConfiguration defaultConfig) {
     this();
@@ -121,6 +125,11 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
     if (node.hasNonNull("proxy")) {
       final HttpProxy proxy = HttpProxy.valueOf(node.get("proxy").asText());
       config.setProxy(proxy);
+    }
+
+    if (node.hasNonNull("userAgent")) {
+      final String userAgent = node.get("userAgent").asText();
+      config.setUserAgent(userAgent);
     }
 
     if (node.hasNonNull("controllers")) {

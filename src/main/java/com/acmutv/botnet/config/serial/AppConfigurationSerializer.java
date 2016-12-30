@@ -44,6 +44,7 @@ import java.util.List;
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see AppConfiguration
+ * @see AppConfigurationDeserializer
  */
 public class AppConfigurationSerializer extends StdSerializer<AppConfiguration> {
 
@@ -100,6 +101,9 @@ public class AppConfigurationSerializer extends StdSerializer<AppConfiguration> 
 
     final HttpProxy proxy = value.getProxy();
     gen.writeStringField("proxy", (proxy != null) ? proxy.toCompactString() : "none");
+
+    final String userAgent = value.getUserAgent();
+    gen.writeStringField("userAgent", userAgent);
 
     final List<Controller> controllers = value.getControllers();
     writeArrayController("controllers", controllers, gen);

@@ -14,5 +14,6 @@
   "polling": "40-60:SECONDS",
   "reconnections": 3,
   "reconnectionWait": "30-40:SECONDS",
-  "proxy": "none"
+  "proxy": "none",
+  "userAgent": "Bot by Marciani and Porretta"
 }

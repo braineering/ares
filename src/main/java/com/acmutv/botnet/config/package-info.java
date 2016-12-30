@@ -24,41 +24,10 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.config;
-
 /**
- * This class encapsulates app details.
+ * Provides the classes necessary to create and manage app configuration.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  */
-public class AppManifest {
-
-  /**
-   * The app name (BOTNET).
-   */
-  public static final String APP_NAME = "BOTNET";
-
-  /**
-   * The app version (1.0-SNAPSHOT).
-   */
-  public static final String APP_VERSION = "1.0-SNAPSHOT";
-
-  /**
-   * The app description (A botnet showcase.Coursework in Computer Security 2015/2016).
-   */
-  public static final String APP_DESCRIPTION =
-      "A botnet showcase.\n" +
-          "Coursework in Computer Security 2015/2016";
-
-  /**
-   * The app team name (ACM Rome Tor Vergata).
-   */
-  public static final String APP_TEAM_NAME = "ACM Rome Tor Vergata";
-
-  /**
-   * The app team website (http://acm.uniroma2.it).
-   */
-  public static final String APP_TEAM_URL = "http://acm.uniroma2.it";
-
-}
+package com.acmutv.botnet.config;
