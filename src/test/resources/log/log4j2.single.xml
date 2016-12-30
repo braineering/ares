@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} %method - %msg%n"/>
+        </Console>
+
+        <File name="FileAttacks" fileName="src/test/resources/log/attacks.log" append="false">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} %method - %msg%n"/>
+            <MarkerFilter marker="ATTACK" onMatch="ACCEPT" onMismatch="DENY"/>
+        </File>
+
+        <File name="FileCommands" fileName="src/test/resources/log/commands.log" append="false">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} %method - %msg%n"/>
+            <MarkerFilter marker="COMMAND" onMatch="ACCEPT" onMismatch="DENY"/>
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileAttacks"/>
+            <AppenderRef ref="FileCommands"/>
+        </Root>
+    </Loggers>
+</Configuration>

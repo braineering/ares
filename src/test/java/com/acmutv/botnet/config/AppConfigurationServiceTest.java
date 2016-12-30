@@ -92,23 +92,23 @@ public class AppConfigurationServiceTest {
     expected.setUserAgent("Custom user agent");
     List<Controller> controllers = new ArrayList<>();
     Controller controller1 = new Controller(
-        TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"),
-        TemplateEngine.getInstance().replace("${PWD}/cc/botcmd.json"),
-        TemplateEngine.getInstance().replace("${PWD}/cc/botlog.json")
+        TemplateEngine.getInstance().replace("${PWD}/data/controller/botinit.json"),
+        TemplateEngine.getInstance().replace("${PWD}/data/controller/botcmd.json"),
+        TemplateEngine.getInstance().replace("${PWD}/data/controller/botlog.json")
     );
     Controller controller2 = new Controller(
-        TemplateEngine.getInstance().replace("${PWD}/cc/botinit2.json"),
-        TemplateEngine.getInstance().replace("${PWD}/cc/botcmd2.json"),
-        TemplateEngine.getInstance().replace("${PWD}/cc/botlog2.json"),
+        TemplateEngine.getInstance().replace("${PWD}/data/controller/botinit2.json"),
+        TemplateEngine.getInstance().replace("${PWD}/data/controller/botcmd2.json"),
+        TemplateEngine.getInstance().replace("${PWD}/data/controller/botlog2.json"),
         new Interval(10, 20, TimeUnit.SECONDS),
         -1L,
         new Interval(10, 20, TimeUnit.SECONDS),
         new HttpProxy("192.168.0.1", 3000)
     );
     Controller controller3 = new Controller(
-        TemplateEngine.getInstance().replace("${PWD}/cc/botinit3.json"),
-        TemplateEngine.getInstance().replace("${PWD}/cc/botcmd3.json"),
-        TemplateEngine.getInstance().replace("${PWD}/cc/botlog3.json")
+        TemplateEngine.getInstance().replace("${PWD}/data/controller/botinit3.json"),
+        TemplateEngine.getInstance().replace("${PWD}/data/controller/botcmd3.json"),
+        TemplateEngine.getInstance().replace("${PWD}/data/controller/botlog3.json")
     );
     controller3.setProxy(HttpProxy.NONE);
     controllers.add(controller1);
@@ -193,23 +193,23 @@ public class AppConfigurationServiceTest {
     config.setUserAgent("Custom user agent");
     List<Controller> controllers = new ArrayList<>();
     Controller controller1 = new Controller(
-        TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"),
-        TemplateEngine.getInstance().replace("${PWD}/cc/botcmd.json"),
-        TemplateEngine.getInstance().replace("${PWD}/cc/botlog.json")
+        TemplateEngine.getInstance().replace("${PWD}/data/controller/botinit.json"),
+        TemplateEngine.getInstance().replace("${PWD}/data/controller/botcmd.json"),
+        TemplateEngine.getInstance().replace("${PWD}/data/controller/botlog.json")
     );
     Controller controller2 = new Controller(
-        TemplateEngine.getInstance().replace("${PWD}/cc/botinit2.json"),
-        TemplateEngine.getInstance().replace("${PWD}/cc/botcmd2.json"),
-        TemplateEngine.getInstance().replace("${PWD}/cc/botlog2.json"),
+        TemplateEngine.getInstance().replace("${PWD}/data/controller/botinit2.json"),
+        TemplateEngine.getInstance().replace("${PWD}/data/controller/botcmd2.json"),
+        TemplateEngine.getInstance().replace("${PWD}/data/controller/botlog2.json"),
         new Interval(10, 20, TimeUnit.SECONDS),
         -1L,
         new Interval(10, 20, TimeUnit.SECONDS),
         new HttpProxy("192.168.0.1", 3000)
     );
     Controller controller3 = new Controller(
-        TemplateEngine.getInstance().replace("${PWD}/cc/botinit3.json"),
-        TemplateEngine.getInstance().replace("${PWD}/cc/botcmd3.json"),
-        TemplateEngine.getInstance().replace("${PWD}/cc/botlog3.json")
+        TemplateEngine.getInstance().replace("${PWD}/data/controller/botinit3.json"),
+        TemplateEngine.getInstance().replace("${PWD}/data/controller/botcmd3.json"),
+        TemplateEngine.getInstance().replace("${PWD}/data/controller/botlog3.json")
     );
     controller3.setProxy(HttpProxy.NONE);
     controllers.add(controller1);

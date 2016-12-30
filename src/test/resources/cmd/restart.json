@@ -1,5 +1,5 @@
 {
   "command": "RESTART",
-  "resource": "${PWD}/cc/botinit.json",
+  "resource": "${PWD}/data/controller/botinit.json",
   "timeout": "3:MINUTES"
 }

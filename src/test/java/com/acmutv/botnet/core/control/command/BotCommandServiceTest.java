@@ -177,7 +177,7 @@ public class BotCommandServiceTest {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/restart.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.RESTART);
-    expected.getParams().put("resource", TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"));
+    expected.getParams().put("resource", TemplateEngine.getInstance().replace("${PWD}/data/controller/botinit.json"));
     Assert.assertEquals(expected, actual);
   }
 

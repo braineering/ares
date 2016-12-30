@@ -6,9 +6,9 @@
   "sampling": "1:MINUTES",
   "controllers": [
     {
-      "init": "${PWD}/cc/botinit.json",
-      "command": "${PWD}/cc/botcmd.json",
-      "log": "${PWD}/cc/botlog.json"
+      "init": "${PWD}/data/controller/botinit.json",
+      "command": "${PWD}/data/controller/botcmd.json",
+      "log": "${PWD}/data/controller/botlog.json"
     }
   ],
   "polling": "10:SECONDS",

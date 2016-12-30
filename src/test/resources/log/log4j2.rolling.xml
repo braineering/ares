@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} %method - %msg%n"/>
+        </Console>
+
+        <RollingFile name="FileAttacks" fileName="src/test/resources/log/attacks.log"
+                     filePattern="src/test/resources/log/attacks/$${date:yyyy-MM-dd}/attacks.log-%d{yyyy-MM-dd-HH}-%i">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} %method - %msg%n"/>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="20 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="24"/>
+            <MarkerFilter marker="ATTACK" onMatch="ACCEPT" onMismatch="DENY"/>
+        </RollingFile>
+
+        <RollingFile name="FileCommands" fileName="src/test/resources/log/commands.log"
+                     filePattern="src/test/resources/log/commands/$${date:yyyy-MM-dd}/commands.log-%d{yyyy-MM-dd-HH}-%i">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} %method - %msg%n"/>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="20 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="24"/>
+            <MarkerFilter marker="COMMAND" onMatch="ACCEPT" onMismatch="DENY"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileAttacks"/>
+            <AppenderRef ref="FileCommands"/>
+        </Root>
+    </Loggers>
+</Configuration>

@@ -27,6 +27,7 @@
 package com.acmutv.botnet.core.attack;
 
 import com.acmutv.botnet.core.target.HttpTarget;
+import com.acmutv.botnet.log.AppLogMarkers;
 import com.acmutv.botnet.tool.net.HttpManager;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
@@ -80,6 +81,7 @@ public class HttpAttack implements Attacker {
 
   /**
    * The HTTP request properties.
+   * Default is empty.
    */
   @NonNull
   private Map<String,String> properties = new HashMap<>();
@@ -99,8 +101,9 @@ public class HttpAttack implements Attacker {
 
     for (long i = 1; i <= repetitions; i++) {
       try {
-        LOGGER.info("Launching HTTP attack: {} {} with proxy {} ({}/{})",
-            method, url, proxy, i, repetitions);
+        LOGGER.info(AppLogMarkers.ATTACK,
+            "Launching HTTP attack: {} {} ({}/{}) with proxy {} and request properties {}",
+            method, url, i, repetitions, proxy, this.properties);
         this.makeAttack(url, proxy);
       } catch (IOException exc) {
         errors ++;

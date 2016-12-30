@@ -87,9 +87,9 @@ public class AppConfiguration {
    * Only used when no controllers are specified.
    */
   public static final Controller FALLBACK_CONTROLLER = new Controller(
-      TemplateEngine.getInstance().replace("${PWD}/cc/botinit.json"),
-      TemplateEngine.getInstance().replace("${PWD}/cc/botcmd.json"),
-      TemplateEngine.getInstance().replace("${PWD}/cc/botlog.json")
+      TemplateEngine.getInstance().replace("${PWD}/data/controller/botinit.json"),
+      TemplateEngine.getInstance().replace("${PWD}/data/controller/botcmd.json"),
+      TemplateEngine.getInstance().replace("${PWD}/data/controller/botlog.json")
   );
 
   /**
