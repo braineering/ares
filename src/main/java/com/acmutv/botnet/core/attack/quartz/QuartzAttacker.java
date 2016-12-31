@@ -23,38 +23,17 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
  */
-package com.acmutv.botnet;
 
-import com.acmutv.botnet.core.target.HttpTarget;
-import com.acmutv.botnet.tool.time.Interval;
-import org.junit.Test;
+package com.acmutv.botnet.core.attack.quartz;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import org.quartz.Job;
 
 /**
- * This class realizes local tests (for personal use only).
+ * This interface define the attacker task.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  */
-public class Misc {
+public interface QuartzAttacker extends Job {
 
-  @Test
-  public void test() {
-    Map<String, Object> map = new HashMap<>();
-    map.put("list", new ArrayList<Integer>());
-
-    System.out.println((List<Integer>)map.get("list"));
-
-    List<Integer> list = (List<Integer>)map.get("list");
-    list.add(1);
-
-    System.out.println((List<Integer>)map.get("list"));
-  }
 }

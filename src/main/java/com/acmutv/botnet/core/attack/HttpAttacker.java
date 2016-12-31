@@ -54,16 +54,16 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 @Data
 @AllArgsConstructor
-public class HttpAttack implements Attacker {
+public class HttpAttacker implements Attacker {
 
-  protected static final Logger LOGGER = LogManager.getLogger(HttpAttack.class);
+  protected static final Logger LOGGER = LogManager.getLogger(HttpAttacker.class);
 
   /**
    * Max number of connection failure before attack interruption.
    */
   private static final long MAX_ERRORS= 10;
 
-  public HttpAttack(HttpMethod method, HttpTarget target) {
+  public HttpAttacker(HttpMethod method, HttpTarget target) {
     this(method, target, new HashMap<>());
   }
 

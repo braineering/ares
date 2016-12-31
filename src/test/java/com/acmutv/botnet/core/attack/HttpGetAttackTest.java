@@ -40,11 +40,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class realizes JUnit tests for {@link HttpAttack}.
+ * This class realizes JUnit tests for {@link HttpAttacker}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HttpAttack
+ * @see HttpAttacker
  * @see HttpTarget
  */
 public class HttpGetAttackTest {
@@ -58,7 +58,7 @@ public class HttpGetAttackTest {
   public void test_makeAttack() throws InterruptedException, MalformedURLException {
     HttpTarget tgt = new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 1, null);
     ExecutorService executor = Executors.newFixedThreadPool(1);
-    Attacker attacker = new HttpAttack(HttpMethod.GET, tgt);
+    Attacker attacker = new HttpAttacker(HttpMethod.GET, tgt);
     executor.execute(attacker);
     executor.shutdown();
     executor.awaitTermination(60, TimeUnit.SECONDS);
