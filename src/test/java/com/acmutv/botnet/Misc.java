@@ -25,17 +25,7 @@
  */
 package com.acmutv.botnet;
 
-import com.acmutv.botnet.tool.net.HttpProxy;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.junit.Test;
-
-import java.net.Proxy;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * This class realizes local tests (for personal use only).

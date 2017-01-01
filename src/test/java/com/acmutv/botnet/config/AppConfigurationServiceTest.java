@@ -28,7 +28,6 @@ package com.acmutv.botnet.config;
 
 import com.acmutv.botnet.config.serial.AppConfigurationFormat;
 import com.acmutv.botnet.core.control.Controller;
-import com.acmutv.botnet.tool.io.IOManager;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.tool.time.Duration;
@@ -42,7 +41,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;

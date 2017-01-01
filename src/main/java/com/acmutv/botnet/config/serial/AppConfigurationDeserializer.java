@@ -43,7 +43,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * This class realizes the JSON deserializer for {@link AppConfiguration}.
+ * The JSON deserializer for {@link AppConfiguration}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @since 1.0
  * @see AppConfiguration
@@ -132,8 +132,13 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
       config.setUserAgent(userAgent);
     }
 
+    if (node.hasNonNull("sleep")) {
+      final String sleep = node.get("sleep").asText();
+      config.setSleep(sleep);
+    }
+
     if (node.hasNonNull("controllers")) {
-      final List<Controller> controllers = parseControllers(node.get("controllers"), config);
+      final List<Controller> controllers = parseControllers(node.get("controllers"));
       config.setControllers(controllers);
     }
     return config;
@@ -142,10 +147,9 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
   /**
    * Parses a list of {@link Controller} from a JSON node.
    * @param node the JSON node to parse.
-   * @param config the default configuration.
    * @return the parsed list of {@link Controller}.
    */
-  private static List<Controller> parseControllers(JsonNode node, AppConfiguration config) {
+  private static List<Controller> parseControllers(JsonNode node) {
     List<Controller> controllers = new ArrayList<>();
     Iterator<JsonNode> iter = node.elements();
     while (iter.hasNext()) {

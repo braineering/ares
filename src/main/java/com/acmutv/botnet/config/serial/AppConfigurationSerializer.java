@@ -39,7 +39,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * This class realizes the JSON serializer for {@link AppConfiguration}.
+ * The JSON serializer for {@link AppConfiguration}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
@@ -104,6 +104,9 @@ public class AppConfigurationSerializer extends StdSerializer<AppConfiguration> 
 
     final String userAgent = value.getUserAgent();
     gen.writeStringField("userAgent", userAgent);
+
+    final String sleep = value.getSleep();
+    gen.writeStringField("sleep", sleep);
 
     final List<Controller> controllers = value.getControllers();
     writeArrayController("controllers", controllers, gen);

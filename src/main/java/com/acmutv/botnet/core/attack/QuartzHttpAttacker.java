@@ -37,7 +37,6 @@ import org.quartz.*;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -61,7 +60,7 @@ public class QuartzHttpAttacker implements QuartzAttacker {
     final HttpMethod method = (HttpMethod) jobmap.get("method");
     final URL target = (URL) jobmap.get("target");
     final HttpProxy proxy = (HttpProxy) jobmap.get("proxy");
-    final Map<String,String> properties = (Map<String,String>) jobmap.get("properties");
+    @SuppressWarnings("unchecked") final Map<String,String> properties = (Map<String,String>) jobmap.get("properties");
     final int counter = (int)jobmap.getOrDefault("counter", 1);
     final int executions = jobmap.getInt("executions");
 

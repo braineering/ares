@@ -1,0 +1,6 @@
+{
+  "command": "UPDATE",
+  "settings": {
+    "prop1": "val1"
+  }
+}

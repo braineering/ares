@@ -9,5 +9,6 @@
   "reconnectionWait" : "10-10:SECONDS",
   "proxy" : "none",
   "userAgent" : null,
+  "sleep" : null,
   "controllers" : [ ]
 }

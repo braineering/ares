@@ -9,6 +9,7 @@
   "reconnectionWait" : "10-15:SECONDS",
   "proxy" : "192.168.0.1:8080",
   "userAgent" : "Custom user agent",
+  "sleep": null,
   "controllers" : [
     {
       "init" : "${PWD}/data/controller/botinit.json",

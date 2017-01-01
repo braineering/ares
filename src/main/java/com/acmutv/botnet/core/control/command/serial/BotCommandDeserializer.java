@@ -34,7 +34,6 @@ import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.command.CommandScope;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -180,6 +179,20 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
 
           break;
 
+        case UPDATE:
+          if (node.hasNonNull("settings")) {
+            final Map<String,String> settings =
+                new ObjectMapper().readValue(node.get("settings").traverse(), new TypeReference<Map<String,String>>(){});
+            cmd.getParams().put("settings", settings);
+          }
+
+          if (node.hasNonNull("delay")) {
+            final Interval updateDelay = Interval.valueOf(node.get("delay").asText());
+            cmd.getParams().put("delay", updateDelay);
+          }
+
+          break;
+
         case WAKEUP:
           if (node.hasNonNull("delay")) {
             final Interval wakeupDelay = Interval.valueOf(node.get("delay").asText());
@@ -222,7 +235,7 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
 
       if (n.hasNonNull("properties")) {
         Map<String,String> properties =
-            new ObjectMapper().readValue(n.get("properties").traverse(), new TypeReference<Map<String, String>>(){});
+            new ObjectMapper().readValue(n.get("properties").traverse(), new TypeReference<Map<String,String>>(){});
         attack.setProperties(properties);
       }
 

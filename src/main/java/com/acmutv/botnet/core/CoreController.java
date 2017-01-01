@@ -242,7 +242,7 @@ public class CoreController {
     switch (cmd.getScope()) {
 
       case ATTACK_HTTP:
-        final List<HttpAttack> httpAttacks = (List<HttpAttack>) cmd.getParams().get("attacks");
+        @SuppressWarnings("unchecked") final List<HttpAttack> httpAttacks = (List<HttpAttack>) cmd.getParams().get("attacks");
         if (httpAttacks == null) {
           throw new BotMalformedCommandException("Cannot execute command ATTACK_HTTP: param [attacks] is null");
         }
@@ -426,7 +426,7 @@ public class CoreController {
    */
   private static void sleep(Duration timeout) throws BotExecutionException {
     LOGGER.traceEntry("timeout={}", timeout);
-    if (timeout.getAmount() <= 0) {
+    if (timeout != null && timeout.getAmount() <= 0) {
       throw new BotExecutionException("Cannot sleep a negative amount of time");
     }
 

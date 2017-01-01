@@ -29,7 +29,7 @@ package com.acmutv.botnet.core.control.command;
 import lombok.Getter;
 
 /**
- * This enum enumerates bot's command types.
+ * Enumerates bot's command types.
  * These command are sent by the Controller and executed by the bot.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
@@ -45,6 +45,7 @@ public enum CommandScope {
   RESTART     ("RESTART", true),
   SAVE_CONFIG ("SAVE_CONFIG", true),
   SLEEP       ("SLEEP", true),
+  UPDATE      ("UPDATE", true),
   WAKEUP      ("WAKEUP", true);
 
   private final String name;

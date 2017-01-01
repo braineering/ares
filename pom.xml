@@ -104,7 +104,6 @@
         <project.main>com.acmutv.botnet.BotMain</project.main>
 
         <!-- Core -->
-        <quartz.version>2.2.1</quartz.version>
 
         <!-- GUI/CLI -->
         <apache.cli.version>1.3.1</apache.cli.version>
@@ -165,18 +164,6 @@
 
     <dependencies>
         <!-- Core -->
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>${quartz.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz-jobs</artifactId>
-            <version>${quartz.version}</version>
-            <scope>compile</scope>
-        </dependency>
 
         <!-- GUI/CLI -->
         <dependency>

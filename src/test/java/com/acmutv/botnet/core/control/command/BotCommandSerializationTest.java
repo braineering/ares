@@ -80,7 +80,6 @@ public class BotCommandSerializationTest {
     cmdExpected.getParams().put("attacks", attacks);
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
-    System.out.println(jsonActual);
     BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
     Assert.assertEquals(cmdExpected, cmdActual);
   }
@@ -384,6 +383,37 @@ public class BotCommandSerializationTest {
     BotCommand cmdExpected = new BotCommand(CommandScope.SLEEP);
     cmdExpected.getParams().put("timeout", new Interval(10, 15, TimeUnit.MINUTES));
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.MINUTES));
+    ObjectMapper mapper = new BotCommandJsonMapper();
+    String jsonActual = mapper.writeValueAsString(cmdExpected);
+    BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
+    Assert.assertEquals(cmdExpected, cmdActual);
+  }
+
+  /**
+   * Tests {@link BotCommand} serialization/deserialization.
+   * Command: UPDATE | Settings: provided | Delay: not provided
+   * @throws IOException when command cannot be serialized/deserialized.
+   */
+  @Test
+  public void test_update() throws IOException {
+    BotCommand cmdExpected = new BotCommand(CommandScope.UPDATE);
+    cmdExpected.getParams().put("settings", new HashMap<String,String>(){{put("prop1","val1");}});
+    ObjectMapper mapper = new BotCommandJsonMapper();
+    String jsonActual = mapper.writeValueAsString(cmdExpected);
+    BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
+    Assert.assertEquals(cmdExpected, cmdActual);
+  }
+
+  /**
+   * Tests {@link BotCommand} serialization/deserialization.
+   * Command: UPDATE | Settings: provided | Delay: provided
+   * @throws IOException when command cannot be serialized/deserialized.
+   */
+  @Test
+  public void test_update_delay() throws IOException {
+    BotCommand cmdExpected = new BotCommand(CommandScope.UPDATE);
+    cmdExpected.getParams().put("settings", new HashMap<String,String>(){{put("prop1","val1");}});
+    cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
     BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);

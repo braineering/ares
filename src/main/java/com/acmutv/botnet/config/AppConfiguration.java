@@ -113,9 +113,14 @@ public class AppConfiguration {
   public static final HttpProxy PROXY = HttpProxy.NONE;
 
   /**
-   * Default value for {@code userAgent} (empty).
+   * Default value for {@code userAgent} (null).
    */
   public static final String USER_AGENT = null;
+
+  /**
+   * Default value for {@code sleep} (null)
+   */
+  public static final String SLEEP = null;
 
   /**
    * If true, the bot sends system information to the controller.
@@ -184,6 +189,12 @@ public class AppConfiguration {
   private String userAgent = USER_AGENT;
 
   /**
+   * The cron expression that sets up the sleep mode.
+   * Default is {@code SLEEP}.
+   */
+  private String sleep = SLEEP;
+
+  /**
    * Constructs a configuration as a copy of the one specified.
    * @param other the configuration to copy.
    */
@@ -207,6 +218,7 @@ public class AppConfiguration {
     this.reconnectionWait = other.reconnectionWait;
     this.proxy = other.proxy;
     this.userAgent = other.userAgent;
+    this.sleep = other.sleep;
   }
 
   /**
@@ -224,6 +236,7 @@ public class AppConfiguration {
     this.reconnectionWait = RECONNECTION_WAIT;
     this.proxy = PROXY;
     this.userAgent = USER_AGENT;
+    this.sleep = SLEEP;
   }
 
 }

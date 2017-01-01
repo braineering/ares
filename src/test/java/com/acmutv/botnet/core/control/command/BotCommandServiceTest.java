@@ -41,7 +41,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -366,6 +365,33 @@ public class BotCommandServiceTest {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/sleep.timeout.delay.json");
     BotCommand expected = new BotCommand(CommandScope.SLEEP);
     expected.getParams().put("timeout", new Interval(10, 15, TimeUnit.SECONDS));
+    expected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
+    BotCommand actual = BotCommandService.fromJson(file);
+    Assert.assertEquals(expected, actual);
+  }
+
+  /**
+   * Tests command parsing from a JSON file.
+   * Command: UPDATE | Settings: provided | Delay: not provided
+   */
+  @Test
+  public void test_fromJSONFile_update() throws IOException {
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/update.json");
+    BotCommand expected = new BotCommand(CommandScope.UPDATE);
+    expected.getParams().put("settings", new HashMap<String,String>(){{put("prop1","val1");}});
+    BotCommand actual = BotCommandService.fromJson(file);
+    Assert.assertEquals(expected, actual);
+  }
+
+  /**
+   * Tests command parsing from a JSON file.
+   * Command: UPDATE | Settings: provided | Delay: provided
+   */
+  @Test
+  public void test_fromJSONFile_update_delay() throws IOException {
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/update.delay.json");
+    BotCommand expected = new BotCommand(CommandScope.UPDATE);
+    expected.getParams().put("settings", new HashMap<String,String>(){{put("prop1","val1");}});
     expected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     BotCommand actual = BotCommandService.fromJson(file);
     Assert.assertEquals(expected, actual);
