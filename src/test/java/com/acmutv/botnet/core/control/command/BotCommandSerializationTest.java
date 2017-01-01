@@ -25,11 +25,10 @@
  */
 package com.acmutv.botnet.core.control.command;
 
+import com.acmutv.botnet.core.attack.HttpAttack;
 import com.acmutv.botnet.core.control.command.serial.BotCommandJsonMapper;
-import com.acmutv.botnet.core.target.HttpTarget;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
-import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
@@ -38,11 +37,12 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class realizes JUnit tests for {@link BotCommand} serialization.
+ * JUnit tests for {@link BotCommand} serialization.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
@@ -53,36 +53,65 @@ public class BotCommandSerializationTest {
 
   /**
    * Tests {@link BotCommand} serialization/deserialization.
-   * Command: ATTACK_HTTP | Method: GET | Delay: not provided
+   * Command: ATTACK_HTTP | delay: not provided
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
-  public void test_attackHttpGet() throws IOException {
+  public void test_attackHttp() throws IOException {
     BotCommand cmdExpected = new BotCommand(CommandScope.ATTACK_HTTP);
-    cmdExpected.getParams().put("method", HttpMethod.GET);
-    List<HttpTarget> targets = new ArrayList<>();
-    targets.add(new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 10, null));
-    targets.add(new HttpTarget(new URL("http://www.twitter.com"), new Interval(3, 5, TimeUnit.SECONDS), 10, new HttpProxy("192.168.0.1", 80)));
-    cmdExpected.getParams().put("targets", targets);
+    List<HttpAttack> attacks = new ArrayList<>();
+    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com")));
+    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+        new HttpProxy("192.168.0.1", 8080)));
+    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+        new HttpProxy("192.168.0.1", 8080),
+        new HashMap<String, String>(){
+          {put("User-Agent","CustomUserAgent");}
+        })
+    );
+    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+        new HttpProxy("192.168.0.1", 8080),
+        new HashMap<String, String>(){
+          {put("User-Agent","CustomUserAgent");}
+        },
+        3,
+        new Interval(10, 15, TimeUnit.SECONDS)
+    ));
+    cmdExpected.getParams().put("attacks", attacks);
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
+    System.out.println(jsonActual);
     BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
     Assert.assertEquals(cmdExpected, cmdActual);
   }
 
   /**
    * Tests {@link BotCommand} serialization/deserialization.
-   * Command: ATTACK_HTTP | Method: GET | Delay: provided
+   * Command: ATTACK_HTTP | delay: provided
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
-  public void test_attackHttpGet_delay() throws IOException {
+  public void test_attackHttp_delay() throws IOException {
     BotCommand cmdExpected = new BotCommand(CommandScope.ATTACK_HTTP);
-    cmdExpected.getParams().put("method", HttpMethod.GET);
-    List<HttpTarget> targets = new ArrayList<>();
-    targets.add(new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 10, null));
-    targets.add(new HttpTarget(new URL("http://www.twitter.com"), new Interval(3, 5, TimeUnit.SECONDS), 10, new HttpProxy("192.168.0.1", 80)));
-    cmdExpected.getParams().put("targets", targets);
+    List<HttpAttack> attacks = new ArrayList<>();
+    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com")));
+    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+        new HttpProxy("192.168.0.1", 8080)));
+    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+        new HttpProxy("192.168.0.1", 8080),
+        new HashMap<String, String>(){
+          {put("User-Agent","CustomUserAgent");}
+        })
+    );
+    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+        new HttpProxy("192.168.0.1", 8080),
+        new HashMap<String, String>(){
+          {put("User-Agent","CustomUserAgent");}
+        },
+        3,
+        new Interval(10, 15, TimeUnit.SECONDS)
+    ));
+    cmdExpected.getParams().put("attacks", attacks);
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
@@ -92,46 +121,7 @@ public class BotCommandSerializationTest {
 
   /**
    * Tests {@link BotCommand} serialization/deserialization.
-   * Command: ATTACK_HTTP | Method: POST | Delay: not provided
-   * @throws IOException when command cannot be serialized/deserialized.
-   */
-  @Test
-  public void test_attackHttpPost() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.ATTACK_HTTP);
-    cmdExpected.getParams().put("method", HttpMethod.POST);
-    List<HttpTarget> targets = new ArrayList<>();
-    targets.add(new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 10, null));
-    targets.add(new HttpTarget(new URL("http://www.twitter.com"), new Interval(3, 5, TimeUnit.SECONDS), 10, new HttpProxy("192.168.0.1", 80)));
-    cmdExpected.getParams().put("targets", targets);
-    ObjectMapper mapper = new BotCommandJsonMapper();
-    String jsonActual = mapper.writeValueAsString(cmdExpected);
-    BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
-    Assert.assertEquals(cmdExpected, cmdActual);
-  }
-
-  /**
-   * Tests {@link BotCommand} serialization/deserialization.
-   * Command: ATTACK_HTTP | Method: POST | Delay: provided
-   * @throws IOException when command cannot be serialized/deserialized.
-   */
-  @Test
-  public void test_attackHttpPost_delay() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.ATTACK_HTTP);
-    cmdExpected.getParams().put("method", HttpMethod.POST);
-    List<HttpTarget> targets = new ArrayList<>();
-    targets.add(new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 10, null));
-    targets.add(new HttpTarget(new URL("http://www.twitter.com"), new Interval(3, 5, TimeUnit.SECONDS), 10, new HttpProxy("192.168.0.1", 80)));
-    cmdExpected.getParams().put("targets", targets);
-    cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
-    ObjectMapper mapper = new BotCommandJsonMapper();
-    String jsonActual = mapper.writeValueAsString(cmdExpected);
-    BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
-    Assert.assertEquals(cmdExpected, cmdActual);
-  }
-
-  /**
-   * Tests {@link BotCommand} serialization/deserialization.
-   * Command: CALMDOWN | Delay: not provived
+   * Command: CALMDOWN | Wait: not provided | Delay: not provived
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
@@ -145,12 +135,28 @@ public class BotCommandSerializationTest {
 
   /**
    * Tests {@link BotCommand} serialization/deserialization.
-   * Command: CALMDOWN | Delay: provived
+   * Command: CALMDOWN | Wait: provided | Delay: not provived
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
-  public void test_calmdown_delay() throws IOException {
+  public void test_calmdown_wait() throws IOException {
     BotCommand cmdExpected = new BotCommand(CommandScope.CALMDOWN);
+    ObjectMapper mapper = new BotCommandJsonMapper();
+    cmdExpected.getParams().put("wait", true);
+    String jsonActual = mapper.writeValueAsString(cmdExpected);
+    BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
+    Assert.assertEquals(cmdExpected, cmdActual);
+  }
+
+  /**
+   * Tests {@link BotCommand} serialization/deserialization.
+   * Command: CALMDOWN | Wait: provided | Delay: provived
+   * @throws IOException when command cannot be serialized/deserialized.
+   */
+  @Test
+  public void test_calmdown_waitDelay() throws IOException {
+    BotCommand cmdExpected = new BotCommand(CommandScope.CALMDOWN);
+    cmdExpected.getParams().put("wait", true);
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
@@ -175,7 +181,7 @@ public class BotCommandSerializationTest {
 
   /**
    * Tests {@link BotCommand} serialization/deserialization.
-   * Command: KILL | Timeout: not provided | Delay: not provived
+   * Command: KILL | Wait: not provided | Delay: not provived
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
@@ -189,22 +195,7 @@ public class BotCommandSerializationTest {
 
   /**
    * Tests {@link BotCommand} serialization/deserialization.
-   * Command: KILL | Timeout: provided | Delay: not provived
-   * @throws IOException when command cannot be serialized/deserialized.
-   */
-  @Test
-  public void test_kill_timeout() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.KILL);
-    cmdExpected.getParams().put("timeout", new Interval(10, 15, TimeUnit.SECONDS));
-    ObjectMapper mapper = new BotCommandJsonMapper();
-    String jsonActual = mapper.writeValueAsString(cmdExpected);
-    BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
-    Assert.assertEquals(cmdExpected, cmdActual);
-  }
-
-  /**
-   * Tests {@link BotCommand} serialization/deserialization.
-   * Command: KILL | Timeout: not provided | Delay: provived
+   * Command: KILL | Wait: not provided | Delay: provived
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
@@ -219,13 +210,28 @@ public class BotCommandSerializationTest {
 
   /**
    * Tests {@link BotCommand} serialization/deserialization.
-   * Command: KILL | Timeout: provided | Delay: provived
+   * Command: KILL | wait: provided | Delay: not provived
+   * @throws IOException when command cannot be serialized/deserialized.
+   */
+  @Test
+  public void test_kill_wait() throws IOException {
+    BotCommand cmdExpected = new BotCommand(CommandScope.KILL);
+    cmdExpected.getParams().put("wait", true);
+    ObjectMapper mapper = new BotCommandJsonMapper();
+    String jsonActual = mapper.writeValueAsString(cmdExpected);
+    BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
+    Assert.assertEquals(cmdExpected, cmdActual);
+  }
+
+  /**
+   * Tests {@link BotCommand} serialization/deserialization.
+   * Command: KILL | Wait: provided | Delay: provived
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
   public void test_kill_timeoutDelay() throws IOException {
     BotCommand cmdExpected = new BotCommand(CommandScope.KILL);
-    cmdExpected.getParams().put("timeout", new Interval(10, 15, TimeUnit.SECONDS));
+    cmdExpected.getParams().put("wait", true);
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
@@ -249,7 +255,7 @@ public class BotCommandSerializationTest {
 
   /**
    * Tests {@link BotCommand} serialization/deserialization.
-   * Command: RESTART | Delay: not provided
+   * Command: RESTART | Wait: not provided | Delay: not provided
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
@@ -264,13 +270,30 @@ public class BotCommandSerializationTest {
 
   /**
    * Tests {@link BotCommand} serialization/deserialization.
-   * Command: RESTART | Delay: provided
+   * Command: RESTART | Wait: provided | Delay: not provided
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
-  public void test_restart_delay() throws IOException {
+  public void test_restart_wait() throws IOException {
     BotCommand cmdExpected = new BotCommand(CommandScope.RESTART);
     cmdExpected.getParams().put("resource", "Custom");
+    cmdExpected.getParams().put("wait", true);
+    ObjectMapper mapper = new BotCommandJsonMapper();
+    String jsonActual = mapper.writeValueAsString(cmdExpected);
+    BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
+    Assert.assertEquals(cmdExpected, cmdActual);
+  }
+
+  /**
+   * Tests {@link BotCommand} serialization/deserialization.
+   * Command: RESTART | Wait: provided | Delay: provided
+   * @throws IOException when command cannot be serialized/deserialized.
+   */
+  @Test
+  public void test_restart_waitDelay() throws IOException {
+    BotCommand cmdExpected = new BotCommand(CommandScope.RESTART);
+    cmdExpected.getParams().put("resource", "Custom");
+    cmdExpected.getParams().put("wait", true);
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
@@ -309,13 +332,12 @@ public class BotCommandSerializationTest {
 
   /**
    * Tests {@link BotCommand} serialization/deserialization.
-   * Command: SLEEP | Delay: not provided
+   * Command: SLEEP | Timeout: not provided | Delay: not provided
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
   public void test_sleep() throws IOException {
     BotCommand cmdExpected = new BotCommand(CommandScope.SLEEP);
-    cmdExpected.getParams().put("timeout", new Interval(3, 3, TimeUnit.MINUTES));
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
     BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
@@ -324,14 +346,73 @@ public class BotCommandSerializationTest {
 
   /**
    * Tests {@link BotCommand} serialization/deserialization.
-   * Command: SLEEP | Delay: provided
+   * Command: SLEEP | Timeout: not provided | Delay: provided
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
   public void test_sleep_delay() throws IOException {
     BotCommand cmdExpected = new BotCommand(CommandScope.SLEEP);
-    cmdExpected.getParams().put("timeout", new Interval(3, 3, TimeUnit.MINUTES));
+    cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
+    ObjectMapper mapper = new BotCommandJsonMapper();
+    String jsonActual = mapper.writeValueAsString(cmdExpected);
+    BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
+    Assert.assertEquals(cmdExpected, cmdActual);
+  }
+
+  /**
+   * Tests {@link BotCommand} serialization/deserialization.
+   * Command: SLEEP | Timeout: provided | Delay: not provided
+   * @throws IOException when command cannot be serialized/deserialized.
+   */
+  @Test
+  public void test_sleep_timeout() throws IOException {
+    BotCommand cmdExpected = new BotCommand(CommandScope.SLEEP);
+    cmdExpected.getParams().put("timeout", new Interval(10, 15, TimeUnit.MINUTES));
+    ObjectMapper mapper = new BotCommandJsonMapper();
+    String jsonActual = mapper.writeValueAsString(cmdExpected);
+    BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
+    Assert.assertEquals(cmdExpected, cmdActual);
+  }
+
+  /**
+   * Tests {@link BotCommand} serialization/deserialization.
+   * Command: SLEEP | Timeout: provided | Delay: provided
+   * @throws IOException when command cannot be serialized/deserialized.
+   */
+  @Test
+  public void test_sleep_timeoutDelay() throws IOException {
+    BotCommand cmdExpected = new BotCommand(CommandScope.SLEEP);
+    cmdExpected.getParams().put("timeout", new Interval(10, 15, TimeUnit.MINUTES));
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.MINUTES));
+    ObjectMapper mapper = new BotCommandJsonMapper();
+    String jsonActual = mapper.writeValueAsString(cmdExpected);
+    BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
+    Assert.assertEquals(cmdExpected, cmdActual);
+  }
+
+  /**
+   * Tests {@link BotCommand} serialization/deserialization.
+   * Command: WAKEUP | Timeout: not provided | Delay: not provided
+   * @throws IOException when command cannot be serialized/deserialized.
+   */
+  @Test
+  public void test_wakeup() throws IOException {
+    BotCommand cmdExpected = new BotCommand(CommandScope.WAKEUP);
+    ObjectMapper mapper = new BotCommandJsonMapper();
+    String jsonActual = mapper.writeValueAsString(cmdExpected);
+    BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
+    Assert.assertEquals(cmdExpected, cmdActual);
+  }
+
+  /**
+   * Tests {@link BotCommand} serialization/deserialization.
+   * Command: WAKEUP | Timeout: not provided | Delay: provided
+   * @throws IOException when command cannot be serialized/deserialized.
+   */
+  @Test
+  public void test_wakeup_delay() throws IOException {
+    BotCommand cmdExpected = new BotCommand(CommandScope.WAKEUP);
+    cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
     BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);

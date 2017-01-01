@@ -28,7 +28,7 @@ package com.acmutv.botnet.core.control;
 import org.junit.Test;
 
 /**
- * This class realizes JUnit tests for {@link Controller}.
+ * JUnit tests for {@link Controller}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

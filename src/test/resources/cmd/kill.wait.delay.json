@@ -1,0 +1,5 @@
+{
+  "command": "KILL",
+  "wait": true,
+  "delay": "10-15:SECONDS"
+}

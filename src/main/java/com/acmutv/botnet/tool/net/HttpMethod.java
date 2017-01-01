@@ -46,8 +46,8 @@ public enum HttpMethod {
   public static HttpMethod from(Object obj) {
     try {
       return HttpMethod.valueOf(obj.toString());
-    } catch (IllegalArgumentException e) {
-      return HttpMethod.GET;
+    } catch (IllegalArgumentException exc) {
+      return null;
     }
   }
 }

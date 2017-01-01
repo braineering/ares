@@ -1,0 +1,4 @@
+{
+  "command": "SLEEP",
+  "timeout": "10-15:SECONDS"
+}

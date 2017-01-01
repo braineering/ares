@@ -25,17 +25,17 @@
  */
 package com.acmutv.botnet;
 
-import com.acmutv.botnet.core.target.HttpTarget;
-import com.acmutv.botnet.tool.time.Interval;
+import com.acmutv.botnet.tool.net.HttpProxy;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.junit.Test;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class realizes local tests (for personal use only).
@@ -47,14 +47,5 @@ public class Misc {
 
   @Test
   public void test() {
-    Map<String, Object> map = new HashMap<>();
-    map.put("list", new ArrayList<Integer>());
-
-    System.out.println((List<Integer>)map.get("list"));
-
-    List<Integer> list = (List<Integer>)map.get("list");
-    list.add(1);
-
-    System.out.println((List<Integer>)map.get("list"));
   }
 }

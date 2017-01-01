@@ -1,4 +1,3 @@
 {
-  "command": "SLEEP",
-  "timeout": "3:MINUTES"
+  "command": "SLEEP"
 }

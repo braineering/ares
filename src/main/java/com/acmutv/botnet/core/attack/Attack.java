@@ -24,21 +24,13 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.target;
-
-import org.junit.Test;
+package com.acmutv.botnet.core.attack;
 
 /**
- * This class realizes JUnit tests for {@link HttpTarget}.
+ * The attack details.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HttpTarget
  */
-public class HttpTargetTest {
-
-  @Test
-  public void test() {
-    //TODO
-  }
+public interface Attack {
 }

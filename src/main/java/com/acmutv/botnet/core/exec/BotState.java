@@ -1,20 +1,20 @@
 /*
   The MIT License (MIT)
-  <p>
+
   Copyright (c) 2016 Giacomo Marciani and Michele Porretta
-  <p>
+
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
   in the Software without restriction, including without limitation the rights
   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
   copies of the Software, and to permit persons to whom the Software is
   furnished to do so, subject to the following conditions:
-  <p>
-  <p>
+
+
   The above copyright notice and this permission notice shall be included in
   all copies or substantial portions of the Software.
-  <p>
-  <p>
+
+
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -24,33 +24,32 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.state;
+package com.acmutv.botnet.core.exec;
 
-import org.junit.Assert;
-import org.junit.Test;
+import com.acmutv.botnet.core.control.command.CommandScope;
+import lombok.Getter;
 
 /**
- * This class realizes JUnit tests for {@link BotState}.
+ * This enum enumerates states of bot's FSA.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see BotState
+ * @see CommandScope
  */
-public class BotStateTest {
+@Getter
+public enum BotState {
+  INIT ("INIT"),
+  JOIN ("JOIN"),
+  SLEEP ("SLEEP"),
+  SHUTDOWN ("SHUTDOWN"),
+  KILL ("KILL"),
+  DEAD ("DEAD"),
+  EXECUTION("EXECUTION");
 
-  /**
-   * Tests the string representation.
-   */
-  @Test
-  public void test_toString() {
-    for (BotState state : BotState.values()) {
-      final String expected = String.format("%s", state.getName());
-      final String actual1 = String.format("%s", state.name());
-      final String actual2 = String.format("%s", state.toString());
-      final String actual3 = String.format("%s", state);
-      Assert.assertEquals(expected, actual1);
-      Assert.assertEquals(expected, actual2);
-      Assert.assertEquals(expected, actual3);
-    }
+  private final String name;
+
+  BotState(final String name) {
+    this.name = name;
   }
+
 }

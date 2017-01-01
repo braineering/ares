@@ -28,38 +28,30 @@ package com.acmutv.botnet.core;
 
 import com.acmutv.botnet.core.analysis.TestAllAnalysis;
 import com.acmutv.botnet.core.control.TestAllControl;
-import com.acmutv.botnet.core.pool.TestAllPool;
-import com.acmutv.botnet.core.state.TestAllState;
+import com.acmutv.botnet.core.exec.TestAllPool;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import com.acmutv.botnet.core.attack.TestAllAttack;
 import com.acmutv.botnet.core.report.TestAllReport;
-import com.acmutv.botnet.core.target.TestAllTarget;
 
 /**
- * This class realizes JUnit test suite for core services.
+ * JUnit test suite for core services.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see CoreControllerTest
  * @see TestAllAnalysis
  * @see TestAllAttack
  * @see TestAllControl
  * @see TestAllPool
  * @see TestAllReport
- * @see TestAllState
- * @see TestAllTarget
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    CoreControllerTest.class,
     TestAllAnalysis.class,
     TestAllAttack.class,
     TestAllControl.class,
     TestAllPool.class,
-    TestAllReport.class,
-    TestAllState.class,
-    TestAllTarget.class
+    TestAllReport.class
 })
 public class TestAllCore {
 

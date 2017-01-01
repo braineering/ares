@@ -26,28 +26,28 @@
 
 package com.acmutv.botnet.core.attack;
 
-import com.acmutv.botnet.core.target.HttpTarget;
 import com.acmutv.botnet.tool.net.ConnectionManager;
 import com.acmutv.botnet.tool.net.HttpMethod;
+import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Interval;
 import org.junit.Before;
 import org.junit.Test;
+import org.quartz.*;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class realizes JUnit tests for {@link HttpAttacker}.
+ * JUnit tests for {@link QuartzHttpAttacker}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
- * * @author Michele Porretta {@literal <mporretta@acm.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HttpAttacker
- * @see HttpTarget
+ * @see QuartzAttacker
+ * @see QuartzHttpAttacker
  */
-public class HttpGetAttackTest {
+public class HttpAttackerTest {
 
   @Before
   public void setup() {
@@ -55,12 +55,44 @@ public class HttpGetAttackTest {
   }
 
   @Test
-  public void test_makeAttack() throws InterruptedException, MalformedURLException {
-    HttpTarget tgt = new HttpTarget(new URL("http://www.google.com"), new Interval(1, 1, TimeUnit.SECONDS), 1, null);
-    ExecutorService executor = Executors.newFixedThreadPool(1);
-    Attacker attacker = new HttpAttacker(HttpMethod.GET, tgt);
-    executor.execute(attacker);
-    executor.shutdown();
-    executor.awaitTermination(60, TimeUnit.SECONDS);
+  public void test_get() throws InterruptedException, MalformedURLException, SchedulerException {
+    HttpAttack attack = new HttpAttack(
+        HttpMethod.GET, new URL("http://www.google.it"),
+        HttpProxy.NONE,
+        new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
+        3,
+        new Interval(1, 2, TimeUnit.SECONDS)
+    );
+
+    SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
+
+    Scheduler sched = schedFact.getScheduler();
+
+    JobDataMap jdata = new JobDataMap();
+    jdata.put("method", attack.getMethod());
+    jdata.put("target", attack.getTarget());
+    jdata.put("proxy", attack.getProxy());
+    jdata.put("properties", attack.getProperties());
+    jdata.put("executions", attack.getExecutions());
+
+    JobDetail job = JobBuilder.newJob(QuartzHttpAttacker.class)
+        .withIdentity("myJob", "group1")
+        .usingJobData(jdata)
+        .build();
+
+    Trigger trigger = TriggerBuilder.newTrigger()
+        .withIdentity("myTrigger", "group1")
+        .withSchedule(SimpleScheduleBuilder.simpleSchedule()
+            .withRepeatCount(attack.getExecutions() - 1)
+            .withIntervalInMilliseconds(attack.getPeriod().getRandomDuration().toMillis()))
+        .build();
+
+    sched.scheduleJob(job, trigger);
+
+    sched.start();
+
+    Thread.sleep(8000);
+
+    sched.shutdown(true);
   }
 }

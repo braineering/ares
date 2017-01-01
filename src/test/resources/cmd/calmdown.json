@@ -1,4 +1,3 @@
 {
-  "command": "CALMDOWN",
-  "timeout": "3:MINUTES"
+  "command": "CALMDOWN"
 }

@@ -56,6 +56,14 @@ public class Duration {
   private TimeUnit unit = TimeUnit.SECONDS;
 
   /**
+   * Converts the duration in millis.
+   * @return the millis duration.
+   */
+  public long toMillis() {
+    return this.getUnit().toMillis(this.getAmount());
+  }
+
+  /**
    * Parses {@link Duration} from string.
    * @param string the string to parse.
    * @return the parsed {@link Duration}; null if cannot be parsed.

@@ -24,26 +24,20 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core;
+package com.acmutv.botnet.core.exec;
 
-import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
- * This class realizes JUnit tests for core controller services.
+ * JUnit test suite for bot's pool.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see CoreController
  */
-public class CoreControllerTest {
-
-  /**
-   * Tests the bot initialization.
-   */
-  @Test
-  public void test_initBot() {
-    //TODO
-  }
-
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+})
+public class TestAllPool {
 
 }

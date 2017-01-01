@@ -30,17 +30,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * This class realizes JUnit test suite for all attacks.
+ * JUnit test suite for all attacks.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HttpGetAttackTest
- * @see HttpPostAttackTest
+ * @see HttpAttackerTest
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    HttpGetAttackTest.class,
-    HttpPostAttackTest.class
+    HttpAttackerTest.class,
 })
 public class TestAllAttack {
 

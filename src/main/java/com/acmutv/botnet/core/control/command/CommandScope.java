@@ -44,7 +44,8 @@ public enum CommandScope {
   NONE        ("NONE", false),
   RESTART     ("RESTART", true),
   SAVE_CONFIG ("SAVE_CONFIG", true),
-  SLEEP       ("SLEEP", true);
+  SLEEP       ("SLEEP", true),
+  WAKEUP      ("WAKEUP", true);
 
   private final String name;
   private final boolean withParams;

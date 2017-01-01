@@ -28,6 +28,8 @@ package com.acmutv.botnet.tool.net;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.net.Proxy;
+
 /**
  * This class realizes JUnit tests for {@link HttpProxy}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}

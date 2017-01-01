@@ -23,24 +23,17 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
  */
-package com.acmutv.botnet.core.pool;
+package com.acmutv.botnet.core.exec;
 
+import lombok.Data;
 import lombok.Setter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.quartz.*;
-import org.quartz.impl.triggers.SimpleTriggerImpl;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * This class realizes samples using the Quartz framework.
+ * Samples using the Quartz framework.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
@@ -125,7 +118,7 @@ public class QuartzSample {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
       JobDataMap jobmap = context.getJobDetail().getJobDataMap();
-      final String out = String.format("ComplexTask (%d/%d) : %s", this.iter, this.maxIterations, this.message);
+      final String out = String.format("(%d/%d) : %s", this.iter, this.maxIterations, this.message);
       LOGGER.info(out);
       jobmap.put("iter", ++this.iter);
     }
@@ -195,6 +188,59 @@ public class QuartzSample {
 
     // if pause time is less than 1 MINUTE, all misfire triggers are fired at once.
     sched.resumeAll();
+
+    Thread.sleep(3000);
+
+    sched.shutdown(true);
+  }
+
+  @Setter
+  @PersistJobDataAfterExecution
+  @DisallowConcurrentExecution
+  public static class CompositeTask implements Job {
+
+    private static final Logger LOGGER = LogManager.getLogger(ComplexTask.class);
+
+    CustomObject object;
+    String message;
+
+    @Override
+    public void execute(JobExecutionContext context) throws JobExecutionException {
+      final String out = String.format("%s : %s",
+          this.message, this.object);
+      LOGGER.info(out);
+    }
+  }
+
+  @Data
+  private static class CustomObject  {
+    private final int a;
+    private final int b;
+  }
+
+  @Test
+  public void sample_composite_one() throws SchedulerException, InterruptedException {
+    SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
+
+    Scheduler sched = schedFact.getScheduler();
+
+    JobDataMap jmap = new JobDataMap();
+    jmap.put("message", "Hello World!");
+    jmap.put("object", new CustomObject(10, 20));
+
+    JobDetail job = JobBuilder.newJob(CompositeTask.class)
+        .withIdentity("myJob", "group1")
+        .usingJobData(jmap)
+        .build();
+
+    Trigger trigger = TriggerBuilder.newTrigger()
+        .withIdentity("myTrigger", "group1")
+        .startNow()
+        .build();
+
+    sched.scheduleJob(job, trigger);
+
+    sched.start();
 
     Thread.sleep(3000);
 

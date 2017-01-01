@@ -26,7 +26,6 @@
 
 package com.acmutv.botnet.tool.time;
 
-import com.acmutv.botnet.core.target.HttpTarget;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
@@ -39,7 +38,6 @@ import java.util.concurrent.TimeUnit;
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HttpTarget
  * @see TimeUnit
  */
 @Data
