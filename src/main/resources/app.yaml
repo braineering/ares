@@ -27,3 +27,4 @@
 #reconnectionWait: 10-10:SECONDS
 #proxy: null
 #userAgent: null
+#sleep: null

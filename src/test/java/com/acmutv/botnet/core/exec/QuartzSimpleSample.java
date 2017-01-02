@@ -33,14 +33,14 @@ import org.junit.Test;
 import org.quartz.*;
 
 /**
- * Samples using the Quartz framework.
+ * Samples using the Quartz framework (Simple scheduler).
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  */
-public class QuartzSample {
+public class QuartzSimpleSample {
 
-  private static final Logger LOGGER = LogManager.getLogger(QuartzSample.class);
+  private static final Logger LOGGER = LogManager.getLogger(QuartzSimpleSample.class);
 
   public static class SimpleTask implements Job {
 

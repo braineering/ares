@@ -33,8 +33,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.calendar.CronCalendar;
 import org.quartz.impl.matchers.GroupMatcher;
 
+import java.text.ParseException;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -49,7 +51,10 @@ public class QuartzPool {
 
   private static final Logger LOGGER = LogManager.getLogger(QuartzPool.class);
 
-  private static final String JOB_GROUP_ATTACKS_HTTP = "ATTACK_HTTP";
+  /**
+   * The name of the job group of all jobs performing HTTP attacks.
+   */
+  private static final String JOB_GROUP_ATTACKS_HTTP = "jobs.attack.http";
 
   /**
    * The jobs search key that matches all jobs.
@@ -57,14 +62,14 @@ public class QuartzPool {
   private static final GroupMatcher<JobKey> JOB_GROUP_ALL = GroupMatcher.anyJobGroup();
 
   /**
-   * The job search key that matches ATTACK* jobs.
+   * The job search key that matches alla attack jobs.
    */
-  private static final GroupMatcher<JobKey> JOB_GROUP_ATTACKS = GroupMatcher.jobGroupStartsWith("ATTACK");
+  private static final GroupMatcher<JobKey> JOB_GROUP_ATTACKS = GroupMatcher.jobGroupStartsWith("jobs.attack");
 
   /**
-   * The job search key that matches SAMPLER* jobs.
+   * The name of the calendar that blocks all trigger
    */
-  private static final GroupMatcher<JobKey> JOB_GROUP_SAMPLERS = GroupMatcher.jobGroupStartsWith("SAMPLER");
+  private static final String CALENDAR_SLEEP = "calendar.sleep";
 
   /**
    * The Quartz scheduler.
@@ -113,7 +118,6 @@ public class QuartzPool {
 
     this.scheduler.scheduleJob(job, trigger);
   }
-
 
   /**
    * Pauses all jobs in pool.
@@ -171,4 +175,31 @@ public class QuartzPool {
     LOGGER.trace("Scheduler data cleared");
   }
 
+  /**
+   * Schedules the sleep mode with cron expression {@code cronexpr}.
+   * @param cronexpr the cron expression for the sleep mode.
+   * @throws ParseException when {@code cronexpr} is not a valid cron expression.
+   * @throws SchedulerException when the sleep mode cannot be scheduled.
+   */
+  public void setSleepMode(CronExpression cronexpr) throws ParseException, SchedulerException {
+    LOGGER.trace("Setting sleep mode with cron-expression {}...",
+        cronexpr.getCronExpression());
+    CronCalendar croncal = new CronCalendar(cronexpr.getCronExpression());
+    this.scheduler.addCalendar(CALENDAR_SLEEP, croncal, true, true);
+    LOGGER.trace("Sleep mode set");
+  }
+
+  /**
+   * Removes the sleep mode.
+   * @throws SchedulerException when the sleep mode cannot be removed.
+   */
+  public void removeSleepMode() throws SchedulerException {
+    LOGGER.trace("Removing sleep mode...");
+    for (TriggerKey tk : this.scheduler.getTriggerKeys(GroupMatcher.anyTriggerGroup())) {
+      Trigger t = this.scheduler.getTrigger(tk);
+      this.scheduler.rescheduleJob(tk, t.getTriggerBuilder().startNow().modifiedByCalendar(null).build());
+    }
+    this.scheduler.deleteCalendar(CALENDAR_SLEEP);
+    LOGGER.trace("Sleep mode removed");
+  }
 }

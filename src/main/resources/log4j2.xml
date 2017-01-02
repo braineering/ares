@@ -23,5 +23,6 @@
             <AppenderRef ref="FileAttacks"/>
             <AppenderRef ref="FileCommands"/>
         </Root>
+        <Logger name="org.quartz" level="OFF"/>
     </Loggers>
 </Configuration>

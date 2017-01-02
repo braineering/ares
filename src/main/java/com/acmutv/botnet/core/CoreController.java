@@ -50,13 +50,16 @@ import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.quartz.CronExpression;
 import org.quartz.SchedulerException;
 
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.acmutv.botnet.core.control.command.CommandScope.*;
@@ -323,6 +326,18 @@ public class CoreController {
 
         break;
 
+      case UPDATE:
+        final Map<String,String> settings = (Map<String,String>) cmd.getParams().get("settings");
+
+        final Interval updateDelay = (Interval) cmd.getParams().get("delay");
+        if (updateDelay != null) {
+          delayCommand(updateDelay.getRandomDuration(), UPDATE);
+        }
+
+        update(settings);
+
+        break;
+
       case WAKEUP:
         final Interval wakeupDelay = (Interval) cmd.getParams().get("delay");
         if (wakeupDelay != null) {
@@ -451,6 +466,33 @@ public class CoreController {
       changeState(BotState.EXECUTION);
     }
     LOGGER.traceExit();
+  }
+
+
+  /**
+   * Executes command {@code UPDATE}.
+   * @param settings the settings to update.
+   * @throws BotExecutionException when invalid update.
+   */
+  private static void update(Map<String,String> settings) throws BotExecutionException {
+    LOGGER.info("Updating settings {}...", settings);
+
+    if (settings.containsKey("sleep")) {
+      final CronExpression sleep;
+      try {
+        sleep = new CronExpression(settings.get("sleep"));
+        if (sleep == null) {
+          POOL.removeSleepMode();
+        } else {
+          POOL.setSleepMode(sleep);
+        }
+      } catch (ParseException|SchedulerException exc) {
+        throw new BotExecutionException("Cannot update [sleep]. %s", exc.getMessage());
+      }
+      AppConfigurationService.getConfigurations().setSleep(sleep);
+    }
+
+    LOGGER.info("Settings updated");
   }
 
   /**

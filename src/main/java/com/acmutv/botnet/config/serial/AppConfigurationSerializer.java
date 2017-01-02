@@ -34,6 +34,7 @@ import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import org.quartz.CronExpression;
 
 import java.io.IOException;
 import java.util.List;
@@ -105,8 +106,12 @@ public class AppConfigurationSerializer extends StdSerializer<AppConfiguration> 
     final String userAgent = value.getUserAgent();
     gen.writeStringField("userAgent", userAgent);
 
-    final String sleep = value.getSleep();
-    gen.writeStringField("sleep", sleep);
+    final CronExpression sleep = value.getSleep();
+    if (sleep == null) {
+      gen.writeStringField("sleep", null);
+    } else {
+      gen.writeStringField("sleep", sleep.getCronExpression());
+    }
 
     final List<Controller> controllers = value.getControllers();
     writeArrayController("controllers", controllers, gen);

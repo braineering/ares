@@ -26,6 +26,9 @@
 package com.acmutv.botnet;
 
 import org.junit.Test;
+import org.quartz.CronExpression;
+
+import java.text.ParseException;
 
 /**
  * This class realizes local tests (for personal use only).
@@ -36,6 +39,8 @@ import org.junit.Test;
 public class Misc {
 
   @Test
-  public void test() {
+  public void test() throws ParseException {
+    CronExpression expr = new CronExpression("0 0 12 * * ?");
+    System.out.println(expr.getCronExpression());
   }
 }

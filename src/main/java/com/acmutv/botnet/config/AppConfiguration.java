@@ -34,6 +34,7 @@ import com.acmutv.botnet.tool.time.Interval;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.quartz.CronExpression;
 import org.yaml.snakeyaml.Yaml;
 
 import java.util.ArrayList;
@@ -120,7 +121,7 @@ public class AppConfiguration {
   /**
    * Default value for {@code sleep} (null)
    */
-  public static final String SLEEP = null;
+  public static final CronExpression SLEEP = null;
 
   /**
    * If true, the bot sends system information to the controller.
@@ -192,7 +193,7 @@ public class AppConfiguration {
    * The cron expression that sets up the sleep mode.
    * Default is {@code SLEEP}.
    */
-  private String sleep = SLEEP;
+  private CronExpression sleep = SLEEP;
 
   /**
    * Constructs a configuration as a copy of the one specified.

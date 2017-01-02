@@ -10,5 +10,6 @@
         <Root level="ALL">
             <AppenderRef ref="Console"/>
         </Root>
+        <Logger name="org.quartz" level="OFF" />
     </Loggers>
 </Configuration>

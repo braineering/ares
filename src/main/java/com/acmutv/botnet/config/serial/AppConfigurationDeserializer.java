@@ -36,8 +36,10 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import org.quartz.CronExpression;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -133,7 +135,12 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
     }
 
     if (node.hasNonNull("sleep")) {
-      final String sleep = node.get("sleep").asText();
+      final CronExpression sleep;
+      try {
+        sleep = new CronExpression(node.get("sleep").asText());
+      } catch (ParseException exc) {
+        throw new IOException("Cannot deserialize cron expression [sleep]. " + exc.getMessage());
+      }
       config.setSleep(sleep);
     }
 

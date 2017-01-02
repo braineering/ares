@@ -8,5 +8,6 @@
   "reconnections": 3,
   "reconnectionWait": "10-10:SECONDS",
   "proxy": null,
-  "userAgent": null
+  "userAgent": null,
+  "sleep": null
 }

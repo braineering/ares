@@ -15,5 +15,6 @@
   "reconnections": 3,
   "reconnectionWait": "30-40:SECONDS",
   "proxy": "none",
-  "userAgent": "Bot by Marciani and Porretta"
+  "userAgent": "Bot by Marciani and Porretta",
+  "sleep": "* * * ? * * *"
 }
