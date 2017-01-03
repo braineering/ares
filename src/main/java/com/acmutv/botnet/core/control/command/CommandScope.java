@@ -42,6 +42,7 @@ public enum CommandScope {
   CALMDOWN    ("CALMDOWN", true, true),
   KILL        ("KILL", true, true),
   NONE        ("NONE", false, false),
+  REPORT      ("REPORT", true, false),
   RESTART     ("RESTART", true, false),
   SAVE_CONFIG ("SAVE_CONFIG", true, true),
   SLEEP       ("SLEEP", true, false),

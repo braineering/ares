@@ -269,6 +269,31 @@ public class BotCommandServiceTest {
 
   /**
    * Tests command parsing from a JSON file.
+   * Command: REPORT | Delay: not provided
+   */
+  @Test
+  public void test_fromJSONFile_report() throws IOException {
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/report.json");
+    BotCommand actual = BotCommandService.fromJson(file);
+    BotCommand expected = new BotCommand(CommandScope.REPORT);
+    Assert.assertEquals(expected, actual);
+  }
+
+  /**
+   * Tests command parsing from a JSON file.
+   * Command: REPORT | Delay: not provided
+   */
+  @Test
+  public void test_fromJSONFile_report_delay() throws IOException {
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/report.delay.json");
+    BotCommand actual = BotCommandService.fromJson(file);
+    BotCommand expected = new BotCommand(CommandScope.REPORT);
+    expected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
+    Assert.assertEquals(expected, actual);
+  }
+
+  /**
+   * Tests command parsing from a JSON file.
    * Command: RESTART | Wait: not provided | Delay not provided
    */
   @Test

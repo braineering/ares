@@ -41,8 +41,6 @@ import java.net.UnknownHostException;
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see SystemFeatures
- * @see SystemStatistics
- * @see NetworkStatistics
  */
 @Data
 @AllArgsConstructor

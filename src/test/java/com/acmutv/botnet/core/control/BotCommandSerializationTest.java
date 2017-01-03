@@ -55,7 +55,7 @@ public class BotCommandSerializationTest {
 
   /**
    * Tests {@link BotCommand} serialization/deserialization.
-   * Command: ATTACK_HTTP | delay: not provided
+   * Command: ATTACK_HTTP | Delay: not provided
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
@@ -88,7 +88,7 @@ public class BotCommandSerializationTest {
 
   /**
    * Tests {@link BotCommand} serialization/deserialization.
-   * Command: ATTACK_HTTP | delay: provided
+   * Command: ATTACK_HTTP | Delay: provided
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
@@ -248,6 +248,35 @@ public class BotCommandSerializationTest {
   @Test
   public void test_none() throws IOException {
     BotCommand cmdExpected = new BotCommand();
+    ObjectMapper mapper = new BotCommandJsonMapper();
+    String jsonActual = mapper.writeValueAsString(cmdExpected);
+    BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
+    Assert.assertEquals(cmdExpected, cmdActual);
+  }
+
+  /**
+   * Tests {@link BotCommand} serialization/deserialization.
+   * Command: REPORT | Delay: not provided
+   * @throws IOException when command cannot be serialized/deserialized.
+   */
+  @Test
+  public void test_report() throws IOException {
+    BotCommand cmdExpected = new BotCommand(CommandScope.REPORT);
+    ObjectMapper mapper = new BotCommandJsonMapper();
+    String jsonActual = mapper.writeValueAsString(cmdExpected);
+    BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
+    Assert.assertEquals(cmdExpected, cmdActual);
+  }
+
+  /**
+   * Tests {@link BotCommand} serialization/deserialization.
+   * Command: REPORT | Delay: not provided
+   * @throws IOException when command cannot be serialized/deserialized.
+   */
+  @Test
+  public void test_report_delay() throws IOException {
+    BotCommand cmdExpected = new BotCommand(CommandScope.REPORT);
+    cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
     BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);

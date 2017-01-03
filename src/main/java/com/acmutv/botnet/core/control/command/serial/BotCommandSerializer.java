@@ -116,6 +116,15 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
 
           break;
 
+        case REPORT:
+          final Interval reportDelay = (Interval) value.getParams().get("delay");
+
+          if (reportDelay != null) {
+            gen.writeStringField("delay", reportDelay.toString());
+          }
+
+          break;
+
         case RESTART:
           final String resource = value.getParams().get("resource").toString();
           final Boolean restartWait = (Boolean) value.getParams().get("wait");

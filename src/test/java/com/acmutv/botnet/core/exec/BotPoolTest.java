@@ -39,8 +39,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 /**
  * JUnit test for {@link BotPool}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}

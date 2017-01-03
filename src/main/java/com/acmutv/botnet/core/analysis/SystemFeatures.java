@@ -37,8 +37,6 @@ import lombok.NoArgsConstructor;
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see NetworkFeatures
- * @see SystemStatistics
- * @see NetworkStatistics
  */
 @Data
 @AllArgsConstructor

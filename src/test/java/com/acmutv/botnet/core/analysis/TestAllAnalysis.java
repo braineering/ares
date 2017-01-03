@@ -36,17 +36,13 @@ import org.junit.runners.Suite;
  * @since 1.0
  * @see AnalyzerTest
  * @see NetworkFeaturesTest
- * @see NetworkStatisticsTest
  * @see SystemFeaturesTest
- * @see SystemStatisticsTest
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     AnalyzerTest.class,
     NetworkFeaturesTest.class,
-    NetworkStatisticsTest.class,
-    SystemFeaturesTest.class,
-    SystemStatisticsTest.class
+    SystemFeaturesTest.class
 })
 public class TestAllAnalysis {
 

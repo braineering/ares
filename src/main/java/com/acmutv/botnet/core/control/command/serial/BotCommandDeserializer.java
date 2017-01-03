@@ -138,6 +138,14 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
 
           break;
 
+        case REPORT:
+          if (node.hasNonNull("delay")) {
+            final Interval reportDelay = Interval.valueOf(node.get("delay").asText());
+            cmd.getParams().put("delay", reportDelay);
+          }
+
+          break;
+
         case RESTART:
           if (!node.has("resource")) {
             throw new IOException("Cannot read parameter [resource] for scope [RESTART] (missing)");

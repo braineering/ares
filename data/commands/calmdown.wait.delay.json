@@ -1,0 +1,5 @@
+{
+  "command": "CALMDOWN",
+  "wait": true,
+  "delay": "10-15:SECONDS"
+}
