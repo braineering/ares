@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet.core.report;
 
-import com.acmutv.botnet.core.report.serial.ReportJsonMapper;
+import com.acmutv.botnet.core.report.serial.SimpleReportJsonMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.EqualsAndHashCode;
@@ -42,6 +42,10 @@ import java.util.Map;
  */
 @EqualsAndHashCode(callSuper = true)
 public class SimpleReport extends HashMap<String,Object> implements Report {
+
+  public static final String KEY_CONFIGURATION = "config";
+
+  public static final String KEY_ATTACKS_HTTP = "attacks-http";
 
   public SimpleReport(Map<? extends String,?> map) {
     super(map);
@@ -66,7 +70,7 @@ public class SimpleReport extends HashMap<String,Object> implements Report {
    */
   @Override
   public String toJson() throws JsonProcessingException {
-    ObjectMapper mapper = new ReportJsonMapper();
+    ObjectMapper mapper = new SimpleReportJsonMapper();
     return mapper.writeValueAsString(this);
   }
 }

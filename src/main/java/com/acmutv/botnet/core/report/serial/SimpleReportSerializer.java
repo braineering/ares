@@ -27,7 +27,9 @@
 package com.acmutv.botnet.core.report.serial;
 
 import com.acmutv.botnet.config.AppConfiguration;
+import com.acmutv.botnet.core.attack.HttpAttack;
 import com.acmutv.botnet.core.report.Report;
+import com.acmutv.botnet.core.report.SimpleReport;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
@@ -37,51 +39,61 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class realizes the JSON serializer for {@link Report}.
+ * This class realizes the JSON serializer for {@link SimpleReport}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see Report
+ * @see SimpleReport
  */
-public class ReportSerializer extends StdSerializer<Report> {
+public class SimpleReportSerializer extends StdSerializer<SimpleReport> {
 
   /**
-   * The singleton of {@link ReportSerializer}.
+   * The singleton of {@link SimpleReportSerializer}.
    */
-  private static ReportSerializer instance;
+  private static SimpleReportSerializer instance;
 
   /**
-   * Returns the singleton of {@link ReportSerializer}.
+   * Returns the singleton of {@link SimpleReportSerializer}.
    * @return the singleton.
    */
-  public static ReportSerializer getInstance() {
+  public static SimpleReportSerializer getInstance() {
     if (instance == null) {
-      instance = new ReportSerializer();
+      instance = new SimpleReportSerializer();
     }
     return instance;
   }
 
   /**
-   * Initializes the singleton of {@link ReportSerializer}.
+   * Initializes the singleton of {@link SimpleReportSerializer}.
    */
-  private ReportSerializer() {
-    super((Class<Report>) null);
+  private SimpleReportSerializer() {
+    super((Class<SimpleReport>) null);
   }
 
   @Override
-  public void serialize(Report value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+  public void serialize(SimpleReport value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
 
-    if (value.containsKey("config")) {
-      final AppConfiguration config = (AppConfiguration) value.get("config");
-      gen.writeFieldName("config");
+    if (value.containsKey(SimpleReport.KEY_CONFIGURATION)) {
+      final AppConfiguration config = (AppConfiguration) value.get(SimpleReport.KEY_CONFIGURATION);
+      gen.writeFieldName(SimpleReport.KEY_CONFIGURATION);
       provider.findValueSerializer(AppConfiguration.class).serialize(config, gen, provider);
+    }
+
+    if (value.containsKey(SimpleReport.KEY_ATTACKS_HTTP)) {
+      final List<HttpAttack> attacksHttp = (List<HttpAttack>) value.get(SimpleReport.KEY_ATTACKS_HTTP);
+      gen.writeArrayFieldStart(SimpleReport.KEY_ATTACKS_HTTP);
+      for (HttpAttack attack : attacksHttp) {
+        provider.findValueSerializer(HttpAttack.class).serialize(attack, gen, provider);
+      }
+      gen.writeEndArray();
     }
 
     List<String> sortedKeys = new ArrayList<>();
     value.keySet().stream()
         .sorted()
-        .filter((String k) ->!k.equals("config") && !k.equals("attacks"))
+        .filter((String k) ->!k.equals(SimpleReport.KEY_CONFIGURATION) &&
+            !k.equals(SimpleReport.KEY_ATTACKS_HTTP))
         .forEachOrdered(sortedKeys::add);
     for (String k : sortedKeys) {
       gen.writeStringField(k, value.get(k).toString());

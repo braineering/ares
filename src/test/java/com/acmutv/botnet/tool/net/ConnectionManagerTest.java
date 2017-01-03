@@ -27,6 +27,7 @@
 package com.acmutv.botnet.tool.net;
 
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,7 +45,7 @@ public class ConnectionManagerTest {
 
   @Before
   public void setup() {
-    org.junit.Assume.assumeTrue(ConnectionManager.checkConnection());
+    Assume.assumeTrue(ConnectionManager.checkConnection());
   }
 
   /**

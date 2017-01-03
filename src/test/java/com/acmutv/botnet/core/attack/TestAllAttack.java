@@ -35,10 +35,12 @@ import org.junit.runners.Suite;
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see HttpAttackerTest
+ * @see HttpAttackSerializationTest
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     HttpAttackerTest.class,
+    HttpAttackSerializationTest.class
 })
 public class TestAllAttack {
 

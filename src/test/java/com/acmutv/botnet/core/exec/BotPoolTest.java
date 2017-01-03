@@ -27,16 +27,21 @@
 package com.acmutv.botnet.core.exec;
 
 import com.acmutv.botnet.core.attack.HttpAttack;
+import com.acmutv.botnet.tool.net.ConnectionManager;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Interval;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 import org.quartz.SchedulerException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -79,31 +84,46 @@ public class BotPoolTest {
    */
   @Test
   public void test_schedulingAttack() throws SchedulerException, MalformedURLException, InterruptedException {
+    Assume.assumeTrue(ConnectionManager.checkConnection());
+    Set<HttpAttack> attacks = new HashSet<HttpAttack>(){{
+      add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com")));
+      add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+          new HttpProxy("31.220.56.101", 80))
+      );
+      add(
+          new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+              new HashMap<String,String>(){{put("User-Agent", "CustomUSerAgent");}})
+      );
+      add(
+          new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+              new HttpProxy("31.220.56.101", 80),
+              new HashMap<String,String>(){{put("User-Agent", "CustomUSerAgent");}})
+      );
+      add(
+          new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+              new HttpProxy("31.220.56.101", 80),
+              new HashMap<String,String>(){{put("User-Agent", "CustomUSerAgent");}},
+              3, new Interval(2, 3, TimeUnit.SECONDS))
+      );
+    }};
+
     BotPool pool = new BotPool();
-    pool.scheduleAttackHttp(
-        new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"))
-    );
-    pool.scheduleAttackHttp(
-        new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
-            new HttpProxy("31.220.56.101", 80))
-    );
-    pool.scheduleAttackHttp(
-        new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
-            new HashMap<String,String>(){{put("User-Agent", "CustomUSerAgent");}})
-    );
-    pool.scheduleAttackHttp(
-        new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
-            new HttpProxy("31.220.56.101", 80),
-            new HashMap<String,String>(){{put("User-Agent", "CustomUSerAgent");}})
-    );
-    pool.scheduleAttackHttp(
-        new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
-            new HttpProxy("31.220.56.101", 80),
-            new HashMap<String,String>(){{put("User-Agent", "CustomUSerAgent");}},
-        3, new Interval(2, 3, TimeUnit.SECONDS))
-    );
-    Thread.sleep(10000);
+
+    pool.getScheduler().standby();
+
+    for (HttpAttack attack : attacks) {
+      pool.scheduleAttackHttp(attack);
+    }
+
+    List<HttpAttack> scheduled = pool.getScheduledHttpAttacks();
+    Assert.assertTrue(scheduled.containsAll(attacks));
+
+    pool.getScheduler().start();
+
+    Thread.sleep(15000);
+
     pool.destroy(true);
+
     Assert.assertTrue(pool.isShutdown());
   }
 }

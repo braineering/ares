@@ -24,39 +24,43 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.control.command.serial;
+package com.acmutv.botnet.core.report.serial;
 
+import com.acmutv.botnet.config.AppConfiguration;
+import com.acmutv.botnet.config.serial.AppConfigurationDeserializer;
+import com.acmutv.botnet.config.serial.AppConfigurationSerializer;
 import com.acmutv.botnet.core.attack.HttpAttack;
 import com.acmutv.botnet.core.attack.serial.HttpAttackDeserializer;
 import com.acmutv.botnet.core.attack.serial.HttpAttackSerializer;
-import com.acmutv.botnet.core.control.command.BotCommand;
+import com.acmutv.botnet.core.report.Report;
+import com.acmutv.botnet.core.report.SimpleReport;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.EqualsAndHashCode;
 
 /**
- * This class realizes the JSON constructor for {@link BotCommand}.
+ * This class realizes the JSON constructor for {@link Report}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see BotCommand
- * @see BotCommandSerializer
- * @see BotCommandDeserializer
+ * @see Report
  */
 @EqualsAndHashCode(callSuper = true)
-public class BotCommandJsonMapper extends ObjectMapper {
+public class SimpleReportJsonMapper extends ObjectMapper {
 
   /**
    * Initializes the JSON constructor.
    */
-  public BotCommandJsonMapper() {
+  public SimpleReportJsonMapper() {
     super();
     SimpleModule module = new SimpleModule();
-    module.addSerializer(BotCommand.class, BotCommandSerializer.getInstance());
-    module.addSerializer(HttpAttack.class, HttpAttackSerializer.getInstance());
-    module.addDeserializer(BotCommand.class, BotCommandDeserializer.getInstance());
+    module.addDeserializer(SimpleReport.class, SimpleReportDeserializer.getInstance());
+    module.addDeserializer(AppConfiguration.class, AppConfigurationDeserializer.getInstance());
     module.addDeserializer(HttpAttack.class, HttpAttackDeserializer.getInstance());
+    module.addSerializer(SimpleReport.class, SimpleReportSerializer.getInstance());
+    module.addSerializer(AppConfiguration.class, AppConfigurationSerializer.getInstance());
+    module.addSerializer(HttpAttack.class, HttpAttackSerializer.getInstance());
     super.registerModule(module);
     super.enable(SerializationFeature.INDENT_OUTPUT);
   }

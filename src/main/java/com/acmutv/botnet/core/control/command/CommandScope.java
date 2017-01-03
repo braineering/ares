@@ -40,7 +40,7 @@ import lombok.Getter;
 public enum CommandScope {
   ATTACK_HTTP ("ATTACK_HTTP", true, true),
   CALMDOWN    ("CALMDOWN", true, true),
-  KILL        ("KILL", true, true),
+  KILL        ("KILL", true, false),
   NONE        ("NONE", false, false),
   REPORT      ("REPORT", true, false),
   RESTART     ("RESTART", true, false),

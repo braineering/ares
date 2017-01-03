@@ -1,7 +1,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2016 Giacomo Marciani and Michele Porretta
+  Copyright (c) 2016 Giacomo Marciani
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -24,37 +24,33 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.report.serial;
+package com.acmutv.botnet.core.attack.serial;
 
-import com.acmutv.botnet.config.AppConfiguration;
-import com.acmutv.botnet.config.serial.AppConfigurationDeserializer;
-import com.acmutv.botnet.config.serial.AppConfigurationSerializer;
-import com.acmutv.botnet.core.report.Report;
+import com.acmutv.botnet.core.attack.HttpAttack;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.EqualsAndHashCode;
 
 /**
- * This class realizes the JSON constructor for {@link Report}.
+ * This class realizes the JSON constructor for {@link HttpAttack}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
- * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see Report
+ * @see HttpAttack
+ * @see HttpAttackSerializer
+ * @see HttpAttackDeserializer
  */
 @EqualsAndHashCode(callSuper = true)
-public class ReportJsonMapper extends ObjectMapper {
+public class HttpAttackJsonMapper extends ObjectMapper {
 
   /**
    * Initializes the JSON constructor.
    */
-  public ReportJsonMapper() {
+  public HttpAttackJsonMapper() {
     super();
     SimpleModule module = new SimpleModule();
-    module.addDeserializer(Report.class, ReportDeserializer.getInstance());
-    module.addDeserializer(AppConfiguration.class, AppConfigurationDeserializer.getInstance());
-    module.addSerializer(Report.class, ReportSerializer.getInstance());
-    module.addSerializer(AppConfiguration.class, AppConfigurationSerializer.getInstance());
+    module.addSerializer(HttpAttack.class, HttpAttackSerializer.getInstance());
+    module.addDeserializer(HttpAttack.class, HttpAttackDeserializer.getInstance());
     super.registerModule(module);
     super.enable(SerializationFeature.INDENT_OUTPUT);
   }

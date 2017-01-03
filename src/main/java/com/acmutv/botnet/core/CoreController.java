@@ -98,9 +98,12 @@ public class CoreController {
    */
   private static Controller CONTROLLER;
 
-  static {
-    RuntimeManager.registerShutdownHooks(new ResourceReleaser(POOL));
-  }
+  /**
+   * The list of shutdown hooks.
+   */
+  private static List<Runnable> SHUTDOWN_HOOKS = new ArrayList<Runnable>(){{
+    add(new ResourceReleaser(POOL));
+  }};
 
   /**
    * The bot entry-point.
@@ -202,6 +205,10 @@ public class CoreController {
       generateId();
     } catch (SocketException | UnknownHostException exc) {
       throw new BotInitializationException("Cannot generated bot ID. %s", exc.getMessage());
+    }
+    for (Runnable hook : SHUTDOWN_HOOKS) {
+      Thread thread = new Thread(hook);
+      Runtime.getRuntime().addShutdownHook(thread);
     }
     LOGGER.info("Bot initialized with ID={}", ID);
     changeState(BotState.JOIN);
@@ -456,11 +463,11 @@ public class CoreController {
   private static void report() throws BotExecutionException {
     LOGGER.trace("Producing report...");
     Report report = new SimpleReport();
-    report.put("config", AppConfigurationService.getConfigurations());
+    report.put(SimpleReport.KEY_CONFIGURATION, AppConfigurationService.getConfigurations());
     try {
-      report.put("attacks", POOL.getScheduledAttacks());
+      report.put(SimpleReport.KEY_ATTACKS_HTTP, POOL.getScheduledHttpAttacks());
     } catch (SchedulerException exc) {
-      throw new BotExecutionException("Cannot retrieve scheduled attack. %s", exc.getMessage());
+      throw new BotExecutionException("Cannot retrieve scheduled http attack. %s", exc.getMessage());
     }
     for (Analyzer analyzer : ANALYZERS) {
       final String analyzerName = analyzer.getName();

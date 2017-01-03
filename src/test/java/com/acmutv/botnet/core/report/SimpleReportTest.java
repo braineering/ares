@@ -27,14 +27,19 @@ package com.acmutv.botnet.core.report;
 
 import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.config.AppConfigurationServiceTest;
-import com.acmutv.botnet.core.report.serial.ReportJsonMapper;
+import com.acmutv.botnet.core.attack.Attack;
+import com.acmutv.botnet.core.attack.HttpAttack;
+import com.acmutv.botnet.core.report.serial.SimpleReportJsonMapper;
+import com.acmutv.botnet.tool.net.HttpMethod;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 
 /**
  * JUnit tests for {@link SimpleReport}.
@@ -66,70 +71,6 @@ public class SimpleReportTest {
     expected.put("prop1", "val1-bis");
     expected.put("prop2", "val2");
 
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests report serialization.
-   * @throws IOException when report cannot be serialized.
-   */
-  @Test
-  public void test_toJson() throws IOException {
-    InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/report/report.json");
-    Report actual = new SimpleReport();
-    actual.put("prop1", "val1");
-    actual.put("prop2", "val2");
-
-    String actualJson = actual.toJson();
-    String expectedJson = IOUtils.toString(injson, Charset.defaultCharset());
-
-    Assert.assertEquals(expectedJson, actualJson);
-  }
-
-  /**
-   * Tests report serialization with {@link AppConfiguration}.
-   * @throws IOException when report cannot be serialized.
-   */
-  @Test
-  public void test_toJson_withAppConfiguration() throws IOException {
-    InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/report/report.withconfig.json");
-    Report actual = new SimpleReport();
-    actual.put("config", new AppConfiguration());
-    actual.put("prop1", "val1");
-    actual.put("prop2", "val2");
-
-    String actualJson = actual.toJson();
-    String expectedJson = IOUtils.toString(injson, Charset.defaultCharset());
-
-    Assert.assertEquals(expectedJson, actualJson);
-  }
-
-  /**
-   * Tests report deserialization.
-   * @throws IOException when report cannot be deserialized.
-   */
-  @Test
-  public void test_fromJson() throws IOException {
-    InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/report/report.json");
-    Report actual = new ReportJsonMapper().readValue(injson, Report.class);
-    Report expected = new SimpleReport();
-    expected.put("prop1", "val1");
-    expected.put("prop2", "val2");
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests report deserialization with {@link AppConfiguration}.
-   * @throws IOException when report cannot be deserialized.
-   */
-  @Test
-  public void test_fromJson_withAppConfiguration() throws IOException {
-    InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/report/report.withconfig.json");
-    Report actual = new ReportJsonMapper().readValue(injson, Report.class);
-    Report expected = new SimpleReport();
-    expected.put("config", new AppConfiguration());
-    expected.put("prop1", "val1");
-    expected.put("prop2", "val2");
     Assert.assertEquals(expected, actual);
   }
 
