@@ -44,21 +44,13 @@ import lombok.EqualsAndHashCode;
 public class AppConfigurationJsonMapper extends ObjectMapper {
 
   /**
-   * Initializes the JSON constructor, with no default model.
+   * Initializes the JSON constructor.
    */
   public AppConfigurationJsonMapper() {
-    this(null);
-  }
-
-  /**
-   * Initializes the JSON constructor, with default model.
-   * @param defaultConfig the default model.
-   */
-  public AppConfigurationJsonMapper(AppConfiguration defaultConfig) {
     super();
     SimpleModule module = new SimpleModule();
     module.addSerializer(AppConfiguration.class, AppConfigurationSerializer.getInstance());
-    module.addDeserializer(AppConfiguration.class, new AppConfigurationDeserializer(defaultConfig));
+    module.addDeserializer(AppConfiguration.class, AppConfigurationDeserializer.getInstance());
     super.registerModule(module);
     super.enable(SerializationFeature.INDENT_OUTPUT);
   }

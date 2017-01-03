@@ -31,7 +31,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- * This class realizes JUnit tests for {@link TemplateEngine}.
+ * JUnit tests for {@link TemplateEngine}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

@@ -1,7 +1,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2016 Giacomo Marciani and Michele Porretta
+  Copyright (c) 2017 Giacomo Marciani and Michele Porretta
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -23,41 +23,11 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
  */
-package com.acmutv.botnet.tool.time;
-
-import org.junit.Assert;
-import org.junit.Test;
-
-import java.util.concurrent.TimeUnit;
 
 /**
- * JUnit tests for {@link Interval}.
+ * This package contains JUnit tests for bot multithreaded life cycle.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see Interval
  */
-public class IntervalTest {
-
-  /**
-   * Tests parsing from string representation.
-   */
-  @Test
-  public void test_valueOf() {
-    String string = "1:SECONDS";
-    Interval actual = Interval.valueOf(string);
-    Interval expected = new Interval(1,1, TimeUnit.SECONDS);
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests parsing from string representation.
-   */
-  @Test
-  public void test_valueOf_compact() {
-    String string = "1-3:SECONDS";
-    Interval actual = Interval.valueOf(string);
-    Interval expected = new Interval(1,3, TimeUnit.SECONDS);
-    Assert.assertEquals(expected, actual);
-  }
-}
+package com.acmutv.botnet.core.exec;

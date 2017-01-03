@@ -53,31 +53,32 @@ import java.util.List;
 public class AppConfigurationDeserializer extends StdDeserializer<AppConfiguration> {
 
   /**
-   * The {@link AppConfiguration} to overwrite during deserialization.
-   * Default is the one created by the empty constructor {@code AppConfiguration()}.
+   * The singleton of {@link AppConfigurationDeserializer}.
    */
-  private static AppConfiguration DEFAULT = new AppConfiguration();
+  private static AppConfigurationDeserializer instance;
 
   /**
-   * Initializes {@link AppConfigurationDeserializer}.
+   * Returns the singleton of {@link AppConfigurationDeserializer}.
+   * @return the singleton.
    */
-  public AppConfigurationDeserializer() {
-    super((Class<AppConfiguration>)null);
-  }
-
-  /**
-   * Initializes {@link AppConfigurationDeserializer} with a default deserialization.
-   */
-  public AppConfigurationDeserializer(AppConfiguration defaultConfig) {
-    this();
-    if (defaultConfig != null) {
-      DEFAULT = defaultConfig;
+  public static AppConfigurationDeserializer getInstance() {
+    if (instance == null) {
+      instance = new AppConfigurationDeserializer();
     }
+    return instance;
   }
+
+  /**
+   * Initializes the singleton of {@link AppConfigurationDeserializer}.
+   */
+  private AppConfigurationDeserializer() {
+    super((Class<AppConfiguration>) null);
+  }
+
 
   @Override
   public AppConfiguration deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
-    AppConfiguration config = new AppConfiguration(DEFAULT);
+    AppConfiguration config = new AppConfiguration();
     JsonNode node = parser.getCodec().readTree(parser);
 
     if (node.hasNonNull("sysInfo")) {

@@ -31,7 +31,7 @@ import org.junit.Test;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class realizes JUnit tests for {@link Duration}.
+ * JUnit tests for {@link Duration}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

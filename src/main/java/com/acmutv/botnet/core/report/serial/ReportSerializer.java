@@ -26,8 +26,11 @@
 
 package com.acmutv.botnet.core.report.serial;
 
+import com.acmutv.botnet.config.AppConfiguration;
+import com.acmutv.botnet.config.serial.AppConfigurationJsonMapper;
 import com.acmutv.botnet.core.report.Report;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
@@ -70,11 +73,23 @@ public class ReportSerializer extends StdSerializer<Report> {
   @Override
   public void serialize(Report value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
+
+    if (value.containsKey("config")) {
+      final AppConfiguration config = (AppConfiguration) value.get("config");
+      gen.writeFieldName("config");
+      provider.findValueSerializer(AppConfiguration.class).serialize(config, gen, provider);
+      //new AppConfigurationJsonMapper().writeValue(gen, config);
+    }
+
     List<String> sortedKeys = new ArrayList<>();
-    value.keySet().stream().sorted().forEachOrdered(sortedKeys::add);
+    value.keySet().stream()
+        .sorted()
+        .filter((String k) ->!k.equals("config"))
+        .forEachOrdered(sortedKeys::add);
     for (String k : sortedKeys) {
       gen.writeStringField(k, value.get(k).toString());
     }
+
     gen.writeEndObject();
   }
 }

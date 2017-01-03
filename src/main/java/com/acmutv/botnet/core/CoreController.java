@@ -202,7 +202,7 @@ public class CoreController {
       final String initResource = controller.getInitResource();
       LOGGER.info("Loading bot configuration from C&C at {}...", initResource);
       try {
-        AppConfigurationService.load(AppConfigurationFormat.JSON, initResource, null);
+        AppConfigurationService.load(AppConfigurationFormat.JSON, initResource);
         controllerId = 0;
         controller = AppConfigurationService.getConfigurations().getControllers().get(controllerId);
         success = true;
@@ -408,7 +408,7 @@ public class CoreController {
     LOGGER.info("Restarting bot with CC at {}...", resource);
     AppConfiguration newConfig;
     try {
-      newConfig = AppConfigurationService.from(AppConfigurationFormat.JSON, resource, null);
+      newConfig = AppConfigurationService.from(AppConfigurationFormat.JSON, resource);
     } catch (IOException exc) {
       throw new BotExecutionException("Cannot restart bot with C&C at %s. %s", resource, exc.getMessage());
     }
@@ -563,6 +563,7 @@ public class CoreController {
   private static Report makeReport() throws BotAnalysisException {
     LOGGER.trace("Producing host analysis report...");
     Report report = new SimpleReport();
+    report.put("config", AppConfigurationService.getConfigurations());
     for (Analyzer analyzer : ANALYZERS) {
       final Report analysisReport = analyzer.makeReport();
       report.merge(analysisReport);

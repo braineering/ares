@@ -73,8 +73,8 @@ public class AppConfigurationServiceTest {
   public void test_from_custom() throws IOException {
     InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom.json");
     InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom.yaml");
-    AppConfiguration actualjson = AppConfigurationService.from(AppConfigurationFormat.JSON, injson, null);
-    AppConfiguration actualyaml = AppConfigurationService.from(AppConfigurationFormat.YAML, inyaml, null);
+    AppConfiguration actualjson = AppConfigurationService.from(AppConfigurationFormat.JSON, injson);
+    AppConfiguration actualyaml = AppConfigurationService.from(AppConfigurationFormat.YAML, inyaml);
 
     AppConfiguration expected = new AppConfiguration();
     expected.setSysInfo(false);
@@ -122,8 +122,8 @@ public class AppConfigurationServiceTest {
   public void test_from_default() throws IOException {
     InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/default.json");
     InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/default.yaml");
-    AppConfiguration actualjson = AppConfigurationService.from(AppConfigurationFormat.JSON, injson, null);
-    AppConfiguration actualyaml = AppConfigurationService.from(AppConfigurationFormat.YAML, inyaml, null);
+    AppConfiguration actualjson = AppConfigurationService.from(AppConfigurationFormat.JSON, injson);
+    AppConfiguration actualyaml = AppConfigurationService.from(AppConfigurationFormat.YAML, inyaml);
 
     AppConfiguration expected = new AppConfiguration();
 
@@ -140,8 +140,8 @@ public class AppConfigurationServiceTest {
     InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/empty.json");
     InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/empty.yaml");
     try {
-      AppConfigurationService.from(AppConfigurationFormat.JSON, injson, null);
-      AppConfigurationService.from(AppConfigurationFormat.YAML, inyaml, null);
+      AppConfigurationService.from(AppConfigurationFormat.JSON, injson);
+      AppConfigurationService.from(AppConfigurationFormat.YAML, inyaml);
     } catch (IOException exc) {return;}
     Assert.fail();
   }
@@ -154,8 +154,8 @@ public class AppConfigurationServiceTest {
   public void test_from_partialCustom() throws IOException {
     InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/partial.json");
     InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/partial.yaml");
-    AppConfiguration actualjson = AppConfigurationService.from(AppConfigurationFormat.JSON, injson, null);
-    AppConfiguration actualyaml = AppConfigurationService.from(AppConfigurationFormat.YAML, inyaml, null);
+    AppConfiguration actualjson = AppConfigurationService.from(AppConfigurationFormat.JSON, injson);
+    AppConfiguration actualyaml = AppConfigurationService.from(AppConfigurationFormat.YAML, inyaml);
 
     AppConfiguration expected = new AppConfiguration();
     expected.setNetInfo(false);

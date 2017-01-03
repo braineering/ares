@@ -29,7 +29,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * This class realizes JUnit tests for {@link HttpProxy}.
+ * JUnit tests for {@link HttpProxy}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
@@ -49,6 +49,17 @@ public class HttpProxyTest {
   }
 
   /**
+   * Tests proxy's compact string representation (NONE).
+   */
+  @Test
+  public void test_toCompactString_none() {
+    HttpProxy proxy = HttpProxy.NONE;
+    String actual = proxy.toCompactString();
+    String expected = "none";
+    Assert.assertEquals(expected, actual);
+  }
+
+  /**
    * Tests parsing from string representation.
    */
   @Test
@@ -56,6 +67,17 @@ public class HttpProxyTest {
     String string = "192.168.0.1:80";
     HttpProxy actual = HttpProxy.valueOf(string);
     HttpProxy expected = new HttpProxy("192.168.0.1", 80);
+    Assert.assertEquals(expected, actual);
+  }
+
+  /**
+   * Tests parsing from string representation (NONE).
+   */
+  @Test
+  public void test_valueOf_none() {
+    String string = "none";
+    HttpProxy actual = HttpProxy.valueOf(string);
+    HttpProxy expected = HttpProxy.NONE;
     Assert.assertEquals(expected, actual);
   }
 }

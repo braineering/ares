@@ -35,7 +35,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 /**
- * This class realizes JUnit tests for {@link ConnectionManager}.
+ * JUnit tests for {@link ConnectionManager}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

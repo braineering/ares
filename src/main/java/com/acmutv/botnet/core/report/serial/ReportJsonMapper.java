@@ -26,8 +26,13 @@
 
 package com.acmutv.botnet.core.report.serial;
 
+import com.acmutv.botnet.config.AppConfiguration;
+import com.acmutv.botnet.config.serial.AppConfigurationDeserializer;
+import com.acmutv.botnet.config.serial.AppConfigurationSerializer;
 import com.acmutv.botnet.core.report.Report;
+import com.acmutv.botnet.core.report.SimpleReport;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.EqualsAndHashCode;
 
@@ -48,7 +53,10 @@ public class ReportJsonMapper extends ObjectMapper {
     super();
     SimpleModule module = new SimpleModule();
     module.addDeserializer(Report.class, ReportDeserializer.getInstance());
+    module.addDeserializer(AppConfiguration.class, AppConfigurationDeserializer.getInstance());
     module.addSerializer(Report.class, ReportSerializer.getInstance());
+    module.addSerializer(AppConfiguration.class, AppConfigurationSerializer.getInstance());
     super.registerModule(module);
+    super.enable(SerializationFeature.INDENT_OUTPUT);
   }
 }

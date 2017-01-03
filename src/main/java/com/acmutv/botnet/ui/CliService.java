@@ -201,7 +201,7 @@ public class CliService {
    */
   private static void loadConfiguration(final String configPath) throws IOException {
     try(InputStream in = new FileInputStream(configPath)) {
-      AppConfigurationService.load(AppConfigurationFormat.YAML, in, null);
+      AppConfigurationService.load(AppConfigurationFormat.YAML, in);
     }
   }
 }

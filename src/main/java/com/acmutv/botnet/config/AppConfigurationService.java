@@ -86,14 +86,13 @@ public class AppConfigurationService {
    * Deserializes {@link AppConfiguration} from an input.
    * @param format the serialization format.
    * @param resource the resource providing the specified serialization.
-   * @param defaultConfig the default configuration.
    * @return the parsed configuration.
    * @throws IOException if {@link AppConfiguration} cannot be deserialized.
    */
-  public static AppConfiguration from(final AppConfigurationFormat format, final String resource, final AppConfiguration defaultConfig) throws IOException {
+  public static AppConfiguration from(final AppConfigurationFormat format, final String resource) throws IOException {
     AppConfiguration config;
     try (final InputStream in = IOManager.getInputStream(resource)) {
-      config = from(format, in, defaultConfig);
+      config = from(format, in);
     }
     return config;
   }
@@ -102,16 +101,15 @@ public class AppConfigurationService {
    * Deserializes {@link AppConfiguration} from a stream.
    * @param format the serialization format.
    * @param in the stream providing the serialization.
-   * @param defaultConfig the default configuration.
    * @return the parsed configuration.
    * @throws IOException if {@link AppConfiguration} cannot be deserialized.
    */
-  public static AppConfiguration from(final AppConfigurationFormat format, final InputStream in, final AppConfiguration defaultConfig) throws IOException {
+  public static AppConfiguration from(final AppConfigurationFormat format, final InputStream in) throws IOException {
     ObjectMapper mapper;
     if (format.equals(AppConfigurationFormat.JSON)) {
-      mapper = new AppConfigurationJsonMapper(defaultConfig);
+      mapper = new AppConfigurationJsonMapper();
     } else if (format.equals(AppConfigurationFormat.YAML)) {
-      mapper = new AppConfigurationYamlMapper(defaultConfig);
+      mapper = new AppConfigurationYamlMapper();
     } else {
       throw new IOException("Unsupported serialization format");
     }
@@ -125,12 +123,11 @@ public class AppConfigurationService {
    * Loads {@link AppConfiguration} from a resource.
    * @param format the serialization format.
    * @param resource the resource providing the serialization.
-   * @param defaultConfig the default configuration.
    * @throws IOException if {@link AppConfiguration} cannot be deserialized.
    */
-  public static void load(final AppConfigurationFormat format, final String resource, final AppConfiguration defaultConfig) throws IOException {
+  public static void load(final AppConfigurationFormat format, final String resource) throws IOException {
     try (InputStream in = IOManager.getInputStream(resource)) {
-      load(format, in, defaultConfig);
+      load(format, in);
     }
   }
 
@@ -138,11 +135,10 @@ public class AppConfigurationService {
    * Loads {@link AppConfiguration} from a stream.
    * @param format the serialization format.
    * @param in the stream providing the serialization.
-   * @param defaultConfig the default configuration.
    * @throws IOException if {@link AppConfiguration} cannot be deserialized.
    */
-  public static void load(final AppConfigurationFormat format, final InputStream in, final AppConfiguration defaultConfig) throws IOException {
-    final AppConfiguration config = from(format, in, defaultConfig);
+  public static void load(final AppConfigurationFormat format, final InputStream in) throws IOException {
+    final AppConfiguration config = from(format, in);
     getConfigurations().copy(config);
   }
 

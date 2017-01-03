@@ -1,7 +1,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2016 Giacomo Marciani and Michele Porretta
+  Copyright (c) 2017 Giacomo Marciani and Michele Porretta
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -23,21 +23,11 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
  */
-package com.acmutv.botnet.core.control;
-
-import org.junit.Test;
 
 /**
- * JUnit tests for {@link Controller}.
+ * This package contains JUnit tests for bot reporting.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see Controller
  */
-public class ControllerTest {
-
-  @Test
-  public void test() {
-    //TODO
-  }
-}
+package com.acmutv.botnet.core.report;

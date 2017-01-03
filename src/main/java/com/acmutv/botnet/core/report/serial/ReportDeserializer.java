@@ -26,14 +26,28 @@
 
 package com.acmutv.botnet.core.report.serial;
 
+import com.acmutv.botnet.config.AppConfiguration;
+import com.acmutv.botnet.config.serial.AppConfigurationJsonMapper;
+import com.acmutv.botnet.core.analysis.SystemAnalyzer;
 import com.acmutv.botnet.core.report.Report;
 import com.acmutv.botnet.core.report.SimpleReport;
-import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.type.ResolvedType;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * This class realizes the JSON deserializer for {@link Report}.
@@ -43,6 +57,8 @@ import java.io.IOException;
  * @see Report
  */
 public class ReportDeserializer extends StdDeserializer<Report> {
+
+  private static final Logger LOGGER = LogManager.getLogger(ReportDeserializer.class);
 
   /**
    * The singleton of {@link ReportDeserializer}.
@@ -71,7 +87,19 @@ public class ReportDeserializer extends StdDeserializer<Report> {
   public Report deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
     JsonNode node = parser.getCodec().readTree(parser);
     Report report = new SimpleReport();
-    node.fields().forEachRemaining(e -> report.put(e.getKey(), e.getValue()));
+
+    if (node.hasNonNull("config")) {
+      final AppConfiguration config =
+          ctx.readValue(node.get("config").traverse(parser.getCodec()), AppConfiguration.class);
+      report.put("config", config);
+    }
+
+    node.fields().forEachRemaining(f -> {
+      if (!f.getKey().equals("config")) {
+        report.put(f.getKey(), f.getValue().asText());
+      }
+    });
+
     return report;
   }
 }
