@@ -28,7 +28,6 @@ package com.acmutv.botnet.core.report.serial;
 
 import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.core.attack.HttpAttack;
-import com.acmutv.botnet.core.report.Report;
 import com.acmutv.botnet.core.report.SimpleReport;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -81,7 +80,7 @@ public class SimpleReportSerializer extends StdSerializer<SimpleReport> {
     }
 
     if (value.containsKey(SimpleReport.KEY_ATTACKS_HTTP)) {
-      final List<HttpAttack> attacksHttp = (List<HttpAttack>) value.get(SimpleReport.KEY_ATTACKS_HTTP);
+      @SuppressWarnings("unchecked") final List<HttpAttack> attacksHttp = (List<HttpAttack>) value.get(SimpleReport.KEY_ATTACKS_HTTP);
       gen.writeArrayFieldStart(SimpleReport.KEY_ATTACKS_HTTP);
       for (HttpAttack attack : attacksHttp) {
         provider.findValueSerializer(HttpAttack.class).serialize(attack, gen, provider);

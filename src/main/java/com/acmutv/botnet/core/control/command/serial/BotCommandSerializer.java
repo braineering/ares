@@ -34,7 +34,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -203,38 +202,4 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
     gen.writeEndObject();
   }
 
-  /**
-   * Serializes a list of {@link HttpAttack}.
-   * @param fieldName the field to serialize into.
-   * @param gen the generator to serialize with.
-   * @param attacks the list of attacks to serialize.
-   * @throws IOException when the list of {@link HttpAttack} cannot be serialized.
-
-  private void serializeHttpAttacks(String fieldName, JsonGenerator gen, List<HttpAttack> attacks) throws IOException {
-    gen.writeArrayFieldStart(fieldName);
-    for (HttpAttack attack : attacks) {
-      gen.writeStartObject();
-      gen.writeStringField("method", attack.getMethod().name());
-      gen.writeStringField("target", attack.getTarget().toString());
-      if (attack.getProxy() != null) {
-        gen.writeStringField("proxy", attack.getProxy().toCompactString());
-      }
-      if (attack.getProperties() != null) {
-        gen.writeObjectFieldStart("properties");
-        List<String> sortedKeys = new ArrayList<>();
-        attack.getProperties().keySet().stream().sorted().forEachOrdered(sortedKeys::add);
-        for (String k : sortedKeys) {
-          gen.writeStringField(k, attack.getProperties().get(k));
-        }
-        gen.writeEndObject();
-      }
-      gen.writeNumberField("executions", attack.getExecutions());
-      if (attack.getPeriod() != null) {
-        gen.writeStringField("period", attack.getPeriod().toString());
-      }
-      gen.writeEndObject();
-    }
-    gen.writeEndArray();
-  }
-   */
 }

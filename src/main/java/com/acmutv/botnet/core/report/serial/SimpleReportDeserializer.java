@@ -28,7 +28,6 @@ package com.acmutv.botnet.core.report.serial;
 
 import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.core.attack.HttpAttack;
-import com.acmutv.botnet.core.report.Report;
 import com.acmutv.botnet.core.report.SimpleReport;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.DeserializationContext;

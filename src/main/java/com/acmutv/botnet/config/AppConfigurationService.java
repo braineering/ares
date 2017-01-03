@@ -105,17 +105,8 @@ public class AppConfigurationService {
    * @throws IOException if {@link AppConfiguration} cannot be deserialized.
    */
   public static AppConfiguration from(final AppConfigurationFormat format, final InputStream in) throws IOException {
-    ObjectMapper mapper;
-    if (format.equals(AppConfigurationFormat.JSON)) {
-      mapper = new AppConfigurationJsonMapper();
-    } else if (format.equals(AppConfigurationFormat.YAML)) {
-      mapper = new AppConfigurationYamlMapper();
-    } else {
-      throw new IOException("Unsupported serialization format");
-    }
-
+    ObjectMapper mapper = getMapper(format);
     AppConfiguration config = mapper.readValue(in, AppConfiguration.class);
-
     return LOGGER.traceExit(config);
   }
 
@@ -183,6 +174,17 @@ public class AppConfigurationService {
    * @throws IOException when configuration cannot be serialized.
    */
   public static void to(AppConfigurationFormat format, OutputStream out, AppConfiguration config) throws IOException {
+    ObjectMapper mapper = getMapper(format);
+    mapper.writeValue(out, config);
+  }
+
+  /**
+   * Returns the mapper for the serialization {@code format}.
+   * @param format the serialization format.
+   * @return the mapper for the serialization format.
+   * @throws IOException when the mapper cannot be retrieved due to unavailable {@code format}.
+   */
+  private static ObjectMapper getMapper(AppConfigurationFormat format) throws IOException {
     ObjectMapper mapper;
     if (format.equals(AppConfigurationFormat.JSON)) {
       mapper = new AppConfigurationJsonMapper();
@@ -191,7 +193,6 @@ public class AppConfigurationService {
     } else {
       throw new IOException("Unsupported serialization format");
     }
-
-    mapper.writeValue(out, config);
+    return mapper;
   }
 }

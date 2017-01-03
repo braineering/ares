@@ -271,7 +271,7 @@ public class BotPool {
         attack.setProxy(proxy);
       }
       if (jmap.containsKey("properties")) {
-        final Map<String,String> properties = (Map<String,String>) jmap.get("properties");
+        @SuppressWarnings("unchecked") final Map<String,String> properties = (Map<String,String>) jmap.get("properties");
         attack.setProperties(properties);
       }
       if (jmap.containsKey("executions")) {

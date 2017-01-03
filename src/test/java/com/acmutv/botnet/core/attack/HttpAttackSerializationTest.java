@@ -26,9 +26,6 @@
 package com.acmutv.botnet.core.attack;
 
 import com.acmutv.botnet.core.attack.serial.HttpAttackJsonMapper;
-import com.acmutv.botnet.core.control.command.BotCommand;
-import com.acmutv.botnet.core.control.command.CommandScope;
-import com.acmutv.botnet.core.control.command.serial.BotCommandJsonMapper;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Interval;
@@ -38,9 +35,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**

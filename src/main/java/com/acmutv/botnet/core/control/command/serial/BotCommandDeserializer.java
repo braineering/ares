@@ -27,8 +27,6 @@
 package com.acmutv.botnet.core.control.command.serial;
 
 import com.acmutv.botnet.core.attack.HttpAttack;
-import com.acmutv.botnet.tool.net.HttpMethod;
-import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.command.CommandScope;
@@ -41,7 +39,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 
 /**

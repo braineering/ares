@@ -25,21 +25,8 @@
  */
 package com.acmutv.botnet.core.report;
 
-import com.acmutv.botnet.config.AppConfiguration;
-import com.acmutv.botnet.config.AppConfigurationServiceTest;
-import com.acmutv.botnet.core.attack.Attack;
-import com.acmutv.botnet.core.attack.HttpAttack;
-import com.acmutv.botnet.core.report.serial.SimpleReportJsonMapper;
-import com.acmutv.botnet.tool.net.HttpMethod;
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
 
 /**
  * JUnit tests for {@link SimpleReport}.
