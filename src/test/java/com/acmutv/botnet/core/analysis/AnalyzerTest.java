@@ -39,7 +39,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 /**
- * This class realizes JUnit tests for {@link Analyzer}.
+ * JUnit tests for {@link Analyzer}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

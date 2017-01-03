@@ -29,7 +29,6 @@ package com.acmutv.botnet.config;
 import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.string.TemplateEngine;
-import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -62,21 +61,6 @@ public class AppConfiguration {
    * Default value for {@code netInfo} (true).
    */
   public static final boolean NET_INFO = true;
-
-  /**
-   * Default value for {@code sysStat} (true).
-   */
-  public static final boolean SYS_STAT = true;
-
-  /**
-   * Default value for {@code netStat} (true).
-   */
-  public static final boolean NET_STAT = true;
-
-  /**
-   * Default value for {@code sampling} (1 minute).
-   */
-  public static final Duration SAMPLING = new Duration(1, TimeUnit.MINUTES);
 
   /**
    * Default value for {@code controllers} (empty list).
@@ -136,24 +120,6 @@ public class AppConfiguration {
   private boolean netInfo = NET_INFO;
 
   /**
-   * If true, the bot sends system statistics to the controller.
-   * Default is {@code SYS_STAT}.
-   */
-  private boolean sysStat = SYS_STAT;
-
-  /**
-   * If true, the bot sends network statistics to the controller.
-   * Default is {@code NET_STAT}.
-   */
-  private boolean netStat = NET_STAT;
-
-  /**
-   * The bot collects system/network statistics with the specified sampling rate.
-   * Default is {@code SAMPLING}.
-   */
-  private Duration sampling = SAMPLING;
-
-  /**
    * The list of controllers to contact.
    * Default is {@code CONTROLLERS}.
    */
@@ -210,9 +176,6 @@ public class AppConfiguration {
   public void copy(AppConfiguration other) {
     this.sysInfo = other.sysInfo;
     this.netInfo = other.netInfo;
-    this.sysStat = other.sysStat;
-    this.netStat = other.netStat;
-    this.sampling = other.sampling;
     this.controllers = other.controllers;
     this.polling = other.polling;
     this.reconnections = other.reconnections;
@@ -228,9 +191,6 @@ public class AppConfiguration {
   public void toDefault() {
     this.sysInfo = SYS_INFO;
     this.netInfo = NET_INFO;
-    this.sysStat = SYS_STAT;
-    this.netStat = NET_STAT;
-    this.sampling = SAMPLING;
     this.controllers = CONTROLLERS;
     this.polling = POLLING;
     this.reconnections = RECONNECTIONS;

@@ -30,7 +30,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * This class realizes JUnit test suite for configuration.
+ * JUnit test suite for configuration.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @see AppConfigurationSerializationTest

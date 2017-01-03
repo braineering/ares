@@ -29,7 +29,7 @@ package com.acmutv.botnet.core.analysis;
 import org.junit.Test;
 
 /**
- * This class realizes JUnit tests for {@link NetworkStatistics}.
+ * JUnit tests for {@link NetworkStatistics}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

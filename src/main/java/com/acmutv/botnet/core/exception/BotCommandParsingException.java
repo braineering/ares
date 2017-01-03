@@ -27,7 +27,7 @@
 package com.acmutv.botnet.core.exception;
 
 /**
- * Thrown when a bot command cannot be correctly read.
+ * Thrown when a command cannot be correctly read.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

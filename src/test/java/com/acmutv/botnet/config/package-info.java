@@ -1,7 +1,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2016 Giacomo Marciani and Michele Porretta
+  Copyright (c) 2017 Giacomo Marciani and Michele Porretta
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -24,22 +24,10 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.analysis;
-
-import com.acmutv.botnet.core.analysis.SystemFeatures;
-import org.junit.Test;
-
 /**
- * JUnit tests for {@link SystemFeatures}.
+ * This package contains JUnit tests for configuration management.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see SystemFeatures
  */
-public class SystemFeaturesTest {
-
-  @Test
-  public void test() {
-    //TODO
-  }
-}
+package com.acmutv.botnet.config;

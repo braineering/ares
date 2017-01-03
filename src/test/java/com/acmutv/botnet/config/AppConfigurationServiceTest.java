@@ -30,7 +30,6 @@ import com.acmutv.botnet.config.serial.AppConfigurationFormat;
 import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.string.TemplateEngine;
-import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
@@ -46,7 +45,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class realizes JUnit tests for {@link AppConfigurationService}.
+ * JUnit tests for {@link AppConfigurationService}.
  * and {@link AppConfiguration}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
@@ -78,11 +77,8 @@ public class AppConfigurationServiceTest {
     AppConfiguration actualyaml = AppConfigurationService.from(AppConfigurationFormat.YAML, inyaml, null);
 
     AppConfiguration expected = new AppConfiguration();
-    expected.setSysInfo(true);
-    expected.setNetInfo(true);
-    expected.setSysStat(false);
-    expected.setNetStat(false);
-    expected.setSampling(new Duration(1, TimeUnit.HOURS));
+    expected.setSysInfo(false);
+    expected.setNetInfo(false);
     expected.setPolling(new Interval(10, 15, TimeUnit.SECONDS));
     expected.setReconnections(5L);
     expected.setReconnectionWait(new Interval(10, 15, TimeUnit.SECONDS));
@@ -179,11 +175,8 @@ public class AppConfigurationServiceTest {
     InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom.check.yaml");
 
     AppConfiguration config = new AppConfiguration();
-    config.setSysInfo(true);
-    config.setNetInfo(true);
-    config.setSysStat(false);
-    config.setNetStat(false);
-    config.setSampling(new Duration(1, TimeUnit.HOURS));
+    config.setSysInfo(false);
+    config.setNetInfo(false);
     config.setPolling(new Interval(10, 15, TimeUnit.SECONDS));
     config.setReconnections(5L);
     config.setReconnectionWait(new Interval(10, 15, TimeUnit.SECONDS));

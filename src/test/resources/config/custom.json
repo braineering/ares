@@ -1,9 +1,6 @@
 {
-  "sysInfo" : true,
-  "netInfo" : true,
-  "sysStat" : false,
-  "netStat" : false,
-  "sampling" : "1:HOURS",
+  "sysInfo" : false,
+  "netInfo" : false,
   "polling" : "10-15:SECONDS",
   "reconnections" : 5,
   "reconnectionWait" : "10-15:SECONDS",

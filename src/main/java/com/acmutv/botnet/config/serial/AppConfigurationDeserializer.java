@@ -30,7 +30,6 @@ import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.string.TemplateEngine;
-import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -89,21 +88,6 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
     if (node.hasNonNull("netInfo")) {
       final boolean netInfo = node.get("netInfo").asBoolean();
       config.setNetInfo(netInfo);
-    }
-
-    if (node.hasNonNull("sysStat")) {
-      final boolean sysStat = node.get("sysStat").asBoolean();
-      config.setSysStat(sysStat);
-    }
-
-    if (node.hasNonNull("netStat")) {
-      final boolean netStat = node.get("netStat").asBoolean();
-      config.setNetStat(netStat);
-    }
-
-    if (node.hasNonNull("sampling")) {
-      final Duration sampling = Duration.valueOf(node.get("sampling").asText());
-      config.setSampling(sampling);
     }
 
     if (node.hasNonNull("polling")) {

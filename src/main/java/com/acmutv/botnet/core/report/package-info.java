@@ -1,7 +1,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2016 Giacomo Marciani and Michele Porretta
+  Copyright (c) 2017 Giacomo Marciani and Michele Porretta
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -24,24 +24,10 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.control.command;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
 /**
- * JUnit test suite for bot's commands.
+ * This package contains classes that realize bot reporting.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see BotCommandSerializationTest
- * @see BotCommandServiceTest
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    BotCommandSerializationTest.class,
-    BotCommandServiceTest.class
-})
-public class TestAllCommand {
-
-}
+package com.acmutv.botnet.core.report;

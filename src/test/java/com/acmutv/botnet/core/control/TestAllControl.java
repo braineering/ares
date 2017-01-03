@@ -26,22 +26,23 @@
 
 package com.acmutv.botnet.core.control;
 
-import com.acmutv.botnet.core.control.command.TestAllCommand;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * JUnit test suite for bot controls.
+ * JUnit test suite for bot-controller interaction.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see ControllerTest
- * @see TestAllCommand
+ * @see BotCommandSerializationTest
+ * @see BotCommandServiceTest
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     ControllerTest.class,
-    TestAllCommand.class
+    BotCommandSerializationTest.class,
+    BotCommandServiceTest.class
 })
 public class TestAllControl {
 

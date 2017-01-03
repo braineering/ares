@@ -23,13 +23,13 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
  */
+
 package com.acmutv.botnet.config;
 
 import com.acmutv.botnet.config.serial.AppConfigurationJsonMapper;
 import com.acmutv.botnet.config.serial.AppConfigurationYamlMapper;
 import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.tool.net.HttpProxy;
-import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class realizes JUnit tests for {@link AppConfiguration} serialization.
+ * JUnit tests for {@link AppConfiguration} serialization.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
@@ -77,9 +77,8 @@ public class AppConfigurationSerializationTest {
   @Test
   public void test_custom_noControllers() throws IOException {
     AppConfiguration configExpected = new AppConfiguration();
-    configExpected.setSysStat(false);
-    configExpected.setNetStat(false);
-    configExpected.setSampling(new Duration(10, TimeUnit.SECONDS));
+    configExpected.setSysInfo(false);
+    configExpected.setNetInfo(false);
     configExpected.setPolling(new Interval(10, 15, TimeUnit.SECONDS));
     configExpected.setReconnections(5L);
     configExpected.setReconnectionWait(new Interval(10, 15, TimeUnit.SECONDS));
@@ -105,9 +104,8 @@ public class AppConfigurationSerializationTest {
   @Test
   public void test_custom_withControllers() throws IOException {
     AppConfiguration configExpected = new AppConfiguration();
-    configExpected.setSysStat(false);
-    configExpected.setNetStat(false);
-    configExpected.setSampling(new Duration(10, TimeUnit.SECONDS));
+    configExpected.setSysInfo(false);
+    configExpected.setNetInfo(false);
     configExpected.setPolling(new Interval(10, 15, TimeUnit.SECONDS));
     configExpected.setReconnections(5L);
     configExpected.setReconnectionWait(new Interval(10, 15, TimeUnit.SECONDS));
@@ -137,9 +135,8 @@ public class AppConfigurationSerializationTest {
   @Test
   public void test_custom_withControllersCustomized() throws IOException {
     AppConfiguration configExpected = new AppConfiguration();
-    configExpected.setSysStat(false);
-    configExpected.setNetStat(false);
-    configExpected.setSampling(new Duration(10, TimeUnit.SECONDS));
+    configExpected.setSysInfo(false);
+    configExpected.setNetInfo(false);
     configExpected.setPolling(new Interval(10, 15, TimeUnit.SECONDS));
     configExpected.setReconnections(5L);
     configExpected.setReconnectionWait(new Interval(10, 15, TimeUnit.SECONDS));

@@ -478,12 +478,13 @@ public class CoreController {
     LOGGER.info("Updating settings {}...", settings);
 
     if (settings.containsKey("sleep")) {
-      final CronExpression sleep;
+      final String sleepString = settings.get("sleep");
+      CronExpression sleep = null;
       try {
-        sleep = new CronExpression(settings.get("sleep"));
-        if (sleep == null) {
+        if (sleepString == null) {
           POOL.removeSleepMode();
         } else {
+          sleep = new CronExpression(settings.get("sleep"));
           POOL.setSleepMode(sleep);
         }
       } catch (ParseException|SchedulerException exc) {
@@ -631,26 +632,14 @@ public class CoreController {
     LOGGER.trace("Initializing analyzers");
     if (AppConfigurationService.getConfigurations().isSysInfo()) {
       Analyzer systemAnalyzer = new SystemAnalyzer();
-      //TODO configure system features analyzer
       ANALYZERS.add(systemAnalyzer);
     }
 
     if (AppConfigurationService.getConfigurations().isNetInfo()) {
       Analyzer networkAnalyzer = new NetworkAnalyzer();
-      //TODO configure network features analyzer
       ANALYZERS.add(networkAnalyzer);
     }
     LOGGER.trace("Analyzers initialized");
-
-    LOGGER.trace("Initializing samplers...");
-    if (AppConfigurationService.getConfigurations().isSysStat()) {
-      //TODO configure system statistics analyzer
-    }
-
-    if (AppConfigurationService.getConfigurations().isNetStat()) {
-      //TODO configure network statistics analyzer
-    }
-    LOGGER.trace("Samplers initialized");
 
     LOGGER.trace("Resources allocated");
   }

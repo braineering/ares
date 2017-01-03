@@ -29,7 +29,6 @@ package com.acmutv.botnet.config.serial;
 import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.tool.net.HttpProxy;
-import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -81,15 +80,6 @@ public class AppConfigurationSerializer extends StdSerializer<AppConfiguration> 
 
     final boolean netInfo = value.isNetInfo();
     gen.writeBooleanField("netInfo", netInfo);
-
-    final boolean sysStat = value.isSysStat();
-    gen.writeBooleanField("sysStat", sysStat);
-
-    final boolean netStat = value.isNetStat();
-    gen.writeBooleanField("netStat", netStat);
-
-    final Duration sampling = value.getSampling();
-    gen.writeStringField("sampling", sampling.toString());
 
     final Interval polling = value.getPolling();
     gen.writeStringField("polling", polling.toString());

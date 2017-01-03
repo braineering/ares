@@ -1,8 +1,6 @@
 {
   "sysInfo": true,
   "netInfo": true,
-  "sysStat": true,
-  "netStat": true,
   "controllers": [
     {
       "init": "${PWD}/cc/botinit.json",
@@ -10,7 +8,6 @@
       "log": "${PWD}/cc/botlog.json"
     }
   ],
-  "sampling": "1:MINUTES",
   "polling": "20-30:SECONDS",
   "reconnections": 3,
   "reconnectionWait": "10-10:SECONDS",

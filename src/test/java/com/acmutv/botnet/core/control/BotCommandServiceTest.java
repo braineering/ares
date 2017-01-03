@@ -24,9 +24,12 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.control.command;
+package com.acmutv.botnet.core.control;
 
 import com.acmutv.botnet.core.attack.HttpAttack;
+import com.acmutv.botnet.core.control.command.BotCommand;
+import com.acmutv.botnet.core.control.command.BotCommandService;
+import com.acmutv.botnet.core.control.command.CommandScope;
 import com.acmutv.botnet.core.control.command.serial.BotCommandJsonMapper;
 import com.acmutv.botnet.tool.io.IOManager;
 import com.acmutv.botnet.tool.net.HttpMethod;
@@ -47,7 +50,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class realizes JUnit tests for {@link BotCommandService}.
+ * JUnit tests for {@link BotCommandService}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

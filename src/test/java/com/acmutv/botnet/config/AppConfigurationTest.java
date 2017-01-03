@@ -31,7 +31,7 @@ import org.junit.Test;
 
 
 /**
- * This class realizes JUnit tests for {@link AppConfiguration}.
+ * JUnit tests for {@link AppConfiguration}.
  * and {@link AppConfiguration}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
@@ -46,7 +46,7 @@ public class AppConfigurationTest {
   @Test
   public void test_toDefault() {
     AppConfiguration actual = new AppConfiguration();
-    actual.setNetStat(false);
+    actual.setSysInfo(false);
     actual.toDefault();
     final AppConfiguration expected = new AppConfiguration();
     Assert.assertEquals(expected, actual);

@@ -30,7 +30,7 @@ import com.acmutv.botnet.core.analysis.NetworkFeatures;
 import org.junit.Test;
 
 /**
- * This class realizes JUnit tests for {@link NetworkFeatures}.
+ * JUnit tests for {@link NetworkFeatures}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
