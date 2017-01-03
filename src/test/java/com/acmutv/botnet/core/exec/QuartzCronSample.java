@@ -30,14 +30,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.quartz.*;
-import org.quartz.impl.StdSchedulerFactory;
-import org.quartz.impl.calendar.BaseCalendar;
 import org.quartz.impl.calendar.CronCalendar;
 import org.quartz.impl.matchers.GroupMatcher;
 
 import java.text.ParseException;
 import java.util.Properties;
-import java.util.TimeZone;
 
 /**
  * Samples using the Quartz framework (Cron scheduler).
@@ -67,8 +64,7 @@ public class QuartzCronSample {
     SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
 
     Scheduler sched = schedFact.getScheduler();
-    if (croncal != null)
-      sched.addCalendar("CALENDAR_SLEEP", croncal, true, true);
+    sched.addCalendar("CALENDAR_SLEEP", croncal, true, true);
 
     JobDetail job = JobBuilder.newJob(SimpleTask.class)
         .withIdentity("myJob", "group1")

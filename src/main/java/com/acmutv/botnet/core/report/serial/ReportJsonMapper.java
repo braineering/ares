@@ -30,7 +30,6 @@ import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.config.serial.AppConfigurationDeserializer;
 import com.acmutv.botnet.config.serial.AppConfigurationSerializer;
 import com.acmutv.botnet.core.report.Report;
-import com.acmutv.botnet.core.report.SimpleReport;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;

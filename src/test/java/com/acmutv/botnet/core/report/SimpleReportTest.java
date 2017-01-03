@@ -28,7 +28,6 @@ package com.acmutv.botnet.core.report;
 import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.config.AppConfigurationServiceTest;
 import com.acmutv.botnet.core.report.serial.ReportJsonMapper;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;

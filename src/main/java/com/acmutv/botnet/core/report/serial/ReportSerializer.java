@@ -27,10 +27,8 @@
 package com.acmutv.botnet.core.report.serial;
 
 import com.acmutv.botnet.config.AppConfiguration;
-import com.acmutv.botnet.config.serial.AppConfigurationJsonMapper;
 import com.acmutv.botnet.core.report.Report;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 

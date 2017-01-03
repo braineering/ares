@@ -327,7 +327,7 @@ public class CoreController {
         break;
 
       case UPDATE:
-        final Map<String,String> settings = (Map<String,String>) cmd.getParams().get("settings");
+        @SuppressWarnings("unchecked") final Map<String,String> settings = (Map<String,String>) cmd.getParams().get("settings");
 
         final Interval updateDelay = (Interval) cmd.getParams().get("delay");
         if (updateDelay != null) {

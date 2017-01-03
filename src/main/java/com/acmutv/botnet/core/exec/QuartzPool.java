@@ -94,7 +94,7 @@ public class QuartzPool {
     final JobKey jobKey = JobKey.jobKey(JOB_GROUP_ATTACKS_HTTP);
     final TriggerKey triggerKey = TriggerKey.triggerKey(JOB_GROUP_ATTACKS_HTTP);
 
-    JobDataMap jdata = new JobDataMap();
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection") JobDataMap jdata = new JobDataMap();
     jdata.put("method", attack.getMethod());
     jdata.put("target", attack.getTarget());
     jdata.put("proxy", attack.getProxy());
