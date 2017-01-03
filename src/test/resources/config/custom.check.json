@@ -8,20 +8,21 @@
   "userAgent" : "Custom user agent",
   "sleep" : null,
   "controllers" : [ {
-    "init" : "/home/gmarciani/Workspace/botnet/data/controller/botinit.json",
-    "command" : "/home/gmarciani/Workspace/botnet/data/controller/botcmd.json",
-    "log" : "/home/gmarciani/Workspace/botnet/data/controller/botlog.json"
+    "init" : "data/controller/1/botinit.json",
+    "command" : "data/controller/1/botcmd.json",
+    "log" : "data/controller/1/botlog.json"
   }, {
-    "init" : "/home/gmarciani/Workspace/botnet/data/controller/botinit2.json",
-    "command" : "/home/gmarciani/Workspace/botnet/data/controller/botcmd2.json",
-    "log" : "/home/gmarciani/Workspace/botnet/data/controller/botlog2.json",
+    "init" : "data/controller/2/botinit.json",
+    "command" : "data/controller/2/botcmd.json",
+    "log" : "data/controller/2/botlog.json",
     "polling" : "10-20:SECONDS",
     "reconnections" : -1,
     "reconnectionWait" : "10-20:SECONDS",
     "proxy" : "192.168.0.1:3000"
   }, {
-    "init" : "/home/gmarciani/Workspace/botnet/data/controller/botinit3.json",
-    "command" : "/home/gmarciani/Workspace/botnet/data/controller/botcmd3.json",
-    "log" : "/home/gmarciani/Workspace/botnet/data/controller/botlog3.json"
+    "init" : "data/controller/3/botinit.json",
+    "command" : "data/controller/3/botcmd.json",
+    "log" : "data/controller/3/botlog.json",
+    "proxy" : "none"
   } ]
 }

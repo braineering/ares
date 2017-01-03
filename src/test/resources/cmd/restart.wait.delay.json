@@ -1,6 +1,6 @@
 {
   "command": "RESTART",
-  "resource": "${PWD}/data/controller/botinit.json",
+  "resource": "data/controller/1/botinit.json",
   "wait": true,
   "delay": "10-15:SECONDS"
 }

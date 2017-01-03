@@ -38,7 +38,7 @@ import java.net.Proxy;
  */
 public class HttpProxy extends Proxy {
 
-  public static final HttpProxy NONE = null;
+  public static final HttpProxy NONE = new HttpProxy("", 0);
 
   public HttpProxy(String address, int port) {
     super(Type.HTTP, new InetSocketAddress(address, port));

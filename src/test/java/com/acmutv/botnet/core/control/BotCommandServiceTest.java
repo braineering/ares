@@ -276,7 +276,7 @@ public class BotCommandServiceTest {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/restart.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.RESTART);
-    expected.getParams().put("resource", TemplateEngine.getInstance().replace("${PWD}/data/controller/botinit.json"));
+    expected.getParams().put("resource", TemplateEngine.getInstance().replace("data/controller/1/botinit.json"));
     Assert.assertEquals(expected, actual);
   }
 
@@ -289,7 +289,7 @@ public class BotCommandServiceTest {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/restart.wait.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.RESTART);
-    expected.getParams().put("resource", TemplateEngine.getInstance().replace("${PWD}/data/controller/botinit.json"));
+    expected.getParams().put("resource", TemplateEngine.getInstance().replace("data/controller/1/botinit.json"));
     expected.getParams().put("wait", true);
     Assert.assertEquals(expected, actual);
   }
@@ -303,7 +303,7 @@ public class BotCommandServiceTest {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/restart.wait.delay.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.RESTART);
-    expected.getParams().put("resource", TemplateEngine.getInstance().replace("${PWD}/data/controller/botinit.json"));
+    expected.getParams().put("resource", TemplateEngine.getInstance().replace("data/controller/1/botinit.json"));
     expected.getParams().put("wait", true);
     expected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     Assert.assertEquals(expected, actual);

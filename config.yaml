@@ -3,25 +3,18 @@
 #===============================================================================
 
 #===============================================================================
-# REPORT: FEATURES
+# REPORT
 #===============================================================================
 sysInfo: True
 netInfo: True
 
 #===============================================================================
-# REPORT: STATISTICS
-#===============================================================================
-sysStat: True
-netStat: True
-sampling: 1:MINUTES
-
-#===============================================================================
 # COMMAND&CONTROL
 #===============================================================================
 controllers:
-  - init: ${PWD}/cc/botinit.json
-    command: ${PWD}/cc/botcmd.json
-    log: ${PWD}/cc/botlog.json
+  - init: data/controller/1/botinit.json
+    command: data/controller/1/botcmd.json
+    log: data/controller/1/botlog.json
 polling: 10-10:SECONDS
 reconnections: 3
 reconnectionWait: 10-10:SECONDS
