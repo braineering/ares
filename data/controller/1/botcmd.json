@@ -1,4 +1,3 @@
 {
-  "command":"RESTART",
-  "resource": "data/controller/2/botinit.json"
+  "command" : "NONE"
 }

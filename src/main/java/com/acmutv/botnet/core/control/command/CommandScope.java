@@ -38,21 +38,23 @@ import lombok.Getter;
  */
 @Getter
 public enum CommandScope {
-  ATTACK_HTTP ("ATTACK_HTTP", true),
-  CALMDOWN    ("CALMDOWN", true),
-  KILL        ("KILL", true),
-  NONE        ("NONE", false),
-  RESTART     ("RESTART", true),
-  SAVE_CONFIG ("SAVE_CONFIG", true),
-  SLEEP       ("SLEEP", true),
-  UPDATE      ("UPDATE", true),
-  WAKEUP      ("WAKEUP", true);
+  ATTACK_HTTP ("ATTACK_HTTP", true, true),
+  CALMDOWN    ("CALMDOWN", true, true),
+  KILL        ("KILL", true, true),
+  NONE        ("NONE", false, false),
+  RESTART     ("RESTART", true, false),
+  SAVE_CONFIG ("SAVE_CONFIG", true, true),
+  SLEEP       ("SLEEP", true, false),
+  UPDATE      ("UPDATE", true, true),
+  WAKEUP      ("WAKEUP", true, true);
 
   private final String name;
   private final boolean withParams;
+  private final boolean sendReportAfter;
 
-  CommandScope(final String name, final boolean withParams) {
+  CommandScope(final String name, final boolean withParams, final boolean sendReportAfter) {
     this.name = name;
     this.withParams = withParams;
+    this.sendReportAfter = sendReportAfter;
   }
 }

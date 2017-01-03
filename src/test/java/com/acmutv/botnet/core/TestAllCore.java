@@ -28,7 +28,7 @@ package com.acmutv.botnet.core;
 
 import com.acmutv.botnet.core.analysis.TestAllAnalysis;
 import com.acmutv.botnet.core.control.TestAllControl;
-import com.acmutv.botnet.core.exec.TestAllPool;
+import com.acmutv.botnet.core.exec.TestAllExec;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import com.acmutv.botnet.core.attack.TestAllAttack;
@@ -42,7 +42,7 @@ import com.acmutv.botnet.core.report.TestAllReport;
  * @see TestAllAnalysis
  * @see TestAllAttack
  * @see TestAllControl
- * @see TestAllPool
+ * @see TestAllExec
  * @see TestAllReport
  */
 @RunWith(Suite.class)
@@ -50,7 +50,7 @@ import com.acmutv.botnet.core.report.TestAllReport;
     TestAllAnalysis.class,
     TestAllAttack.class,
     TestAllControl.class,
-    TestAllPool.class,
+    TestAllExec.class,
     TestAllReport.class
 })
 public class TestAllCore {

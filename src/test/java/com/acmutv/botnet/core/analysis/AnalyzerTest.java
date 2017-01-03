@@ -31,6 +31,7 @@ import com.acmutv.botnet.core.report.Report;
 import com.acmutv.botnet.core.report.SimpleReport;
 import com.acmutv.botnet.tool.reflection.ReflectionManager;
 import lombok.Data;
+import lombok.NonNull;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -62,7 +63,11 @@ public class AnalyzerTest {
   /**
    * Utility class (for testing use only).
    */
+  @Data
   public static class CustomAnalyzer implements Analyzer {
+
+    @NonNull
+    private String name = CustomAnalyzer.class.getSimpleName();
 
     @Override
     public Report makeReport() throws BotAnalysisException {

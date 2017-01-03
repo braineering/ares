@@ -51,12 +51,13 @@ import java.util.Map;
 @DisallowConcurrentExecution
 public class QuartzHttpAttacker implements QuartzAttacker {
 
-  protected static final Logger LOGGER = LogManager.getLogger(QuartzHttpAttacker.class);
+  private static final Logger LOGGER = LogManager.getLogger(QuartzHttpAttacker.class);
 
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
+    LOGGER.traceEntry();
     JobDataMap jobmap = context.getJobDetail().getJobDataMap();
-
+    LOGGER.trace("With jobmap {}", jobmap);
     final HttpMethod method = (HttpMethod) jobmap.get("method");
     final URL target = (URL) jobmap.get("target");
     final HttpProxy proxy = (HttpProxy) jobmap.get("proxy");
@@ -65,6 +66,8 @@ public class QuartzHttpAttacker implements QuartzAttacker {
     final int executions = jobmap.getInt("executions");
 
     jobmap.put("counter", counter+1);
+
+    LOGGER.trace("Execution {}", counter);
 
     LOGGER.info(AppLogMarkers.ATTACK,
         "Launching HTTP attack: {} {} ({}/{}) with proxy {} and request properties {}",

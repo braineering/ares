@@ -12,14 +12,14 @@ netInfo: False
 # COMMAND&CONTROL
 #===============================================================================
 controllers:
-  - init: data/controller/3/botinit-notvalid.json
-    command: data/controller/3/botcmd-notvalid.json
-    log: data/controller/3/botlog-notvalid.json
+#  - init: data/controller/3/botinit-notvalid.json
+#    command: data/controller/3/botcmd-notvalid.json
+#    log: data/controller/3/botlog-notvalid.json
   - init: data/controller/1/botinit.json
     command: data/controller/1/botcmd.json
     log: data/controller/1/botlog.json
 polling: 10-15:SECONDS
 reconnections: 3
-reconnectionWait: 10-15:SECONDS
+reconnectionWait: 2-5:SECONDS
 proxy: none
 userAgent: Bot by Marciani and Porretta

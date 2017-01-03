@@ -29,12 +29,19 @@ import com.acmutv.botnet.core.exception.BotAnalysisException;
 import com.acmutv.botnet.core.report.Report;
 
 /**
- * This interface defines the basic host analyzer.
+ * The basic host analyzer.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  */
 public interface Analyzer {
+
+  /**
+   * Returns analyzer's name.
+   * If name has not been set, the class name is retrieved.
+   * @return analyzer's name.
+   */
+  String getName();
 
   /**
    * Produces a {@link Report}.

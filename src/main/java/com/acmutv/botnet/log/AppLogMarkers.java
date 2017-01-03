@@ -40,4 +40,6 @@ public class AppLogMarkers {
   public static final Marker ATTACK = MarkerManager.getMarker("ATTACK");
 
   public static final Marker COMMAND = MarkerManager.getMarker("COMMAND");
+
+  public static final Marker REPORT = MarkerManager.getMarker("REPORT");
 }

@@ -1,1 +1,21 @@
-{}
+{
+  "config" : {
+    "sysInfo" : true,
+    "netInfo" : true,
+    "polling" : "20-30:SECONDS",
+    "reconnections" : 3,
+    "reconnectionWait" : "2-5:SECONDS",
+    "proxy" : "none",
+    "userAgent" : null,
+    "sleep" : null,
+    "controllers" : [ {
+      "init" : "data/controller/1/botinit.json",
+      "command" : "data/controller/1/botcmd.json",
+      "log" : "data/controller/1/botlog.json"
+    } ]
+  },
+  "MAC" : "20-68-9D-C3-76-EB",
+  "ip" : "127.0.1.1",
+  "kernel" : "A cool kernel",
+  "os" : "A cool OS"
+}

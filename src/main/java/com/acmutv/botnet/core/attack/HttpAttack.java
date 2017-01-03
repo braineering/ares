@@ -64,10 +64,31 @@ public class HttpAttack implements Attack {
    * Constructs a new attack with no proxy, empty properties and one execution.
    * @param method the HTTP request method.
    * @param target the target to attack.
+   * @param executions the number of executions.
+   * @param period the period of executions.
+   */
+  public HttpAttack(HttpMethod method, URL target, int executions, Interval period) {
+    this(method, target, HttpProxy.NONE, new HashMap<>(), executions, period);
+  }
+
+  /**
+   * Constructs a new attack with no proxy, empty properties and one execution.
+   * @param method the HTTP request method.
+   * @param target the target to attack.
    */
   public HttpAttack(HttpMethod method, URL target, HttpProxy proxy) {
     this(method, target, proxy, new HashMap<>(), 1, null);
   }
+  /**
+   * Constructs a new attack with no proxy and one execution.
+   * @param method the HTTP request method.
+   * @param target the target to attack.
+   * @param properties the HTTP request properties.
+   */
+  public HttpAttack(HttpMethod method, URL target, Map<String,String> properties) {
+    this(method, target, HttpProxy.NONE, properties, 1, null);
+  }
+
 
   /**
    * Constructs a new attack with no proxy, empty properties and one execution.

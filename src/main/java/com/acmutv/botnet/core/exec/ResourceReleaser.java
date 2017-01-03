@@ -24,44 +24,40 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.analysis;
+package com.acmutv.botnet.core.exec;
 
-import com.acmutv.botnet.core.exception.BotAnalysisException;
-import com.acmutv.botnet.tool.time.Duration;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.util.concurrent.TimeUnit;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.quartz.SchedulerException;
 
 /**
- * This class realizes the model of system statistics.
+ * A shutdown hook that releases all bot resources.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see SystemFeatures
- * @see NetworkFeatures
- * @see NetworkStatistics
  */
 @Data
-@AllArgsConstructor
-public class SystemStatistics {
+public class ResourceReleaser implements Runnable {
+
+  private static final Logger LOGGER = LogManager.getLogger(ResourceReleaser.class);
+
+  private final BotPool pool;
 
   /**
-   * The Operating System's uptime.
+   * Releases resources.
    */
-  private Duration uptime;
-
-  /**
-   * Returns local system statistics.
-   * @return local system statistics.
-   * @throws BotAnalysisException when some system statistics cannot be determined.
-   */
-  public static SystemStatistics getLocal() throws BotAnalysisException {
-    Duration uptime;
-
-    //TODO implement for real (this is only a placeholder implementation)
-    uptime = new Duration(1, TimeUnit.HOURS);
-
-    return new SystemStatistics(uptime);
+  @Override
+  public void run() {
+    LOGGER.trace("Releasing resources ...");
+    try {
+      if (this.getPool() != null &&
+          !this.getPool().isShutdown()) {
+        this.getPool().destroy(false);
+      }
+    } catch (SchedulerException exc) {
+      LOGGER.error("Scheduler cannot be shut down. {}", exc.getMessage());
+    }
+    LOGGER.trace("Resources released");
   }
 }

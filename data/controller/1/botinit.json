@@ -10,7 +10,7 @@
   ],
   "polling": "20-30:SECONDS",
   "reconnections": 3,
-  "reconnectionWait": "10-10:SECONDS",
+  "reconnectionWait": "2-5:SECONDS",
   "proxy": null,
   "userAgent": null,
   "sleep": null

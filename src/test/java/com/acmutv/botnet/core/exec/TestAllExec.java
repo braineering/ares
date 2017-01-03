@@ -24,44 +24,22 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.analysis;
+package com.acmutv.botnet.core.exec;
 
-import com.acmutv.botnet.core.exception.BotAnalysisException;
-import com.acmutv.botnet.tool.time.Duration;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-import java.util.concurrent.TimeUnit;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
- * This class realizes the model fo network statistics.
+ * JUnit test suite for bot multithreaded life cycle.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see SystemFeatures
- * @see NetworkFeatures
- * @see SystemStatistics
+ * @see BotPoolTest
  */
-@Data
-@AllArgsConstructor
-public class NetworkStatistics {
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    BotPoolTest.class
+})
+public class TestAllExec {
 
-  /**
-   * The network uptime.
-   */
-  private Duration uptime;
-
-  /**
-   * Returns local network statistics.
-   * @return local network statistics.
-   * @throws BotAnalysisException when some network statistics cannot be determined.
-   */
-  public static NetworkStatistics getLocal() throws BotAnalysisException {
-    Duration uptime;
-
-    //TODO implement for real (this is only a placeholder implementation)
-    uptime = new Duration(1, TimeUnit.HOURS);
-
-    return new NetworkStatistics(uptime);
-  }
 }

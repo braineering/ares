@@ -58,6 +58,8 @@ public class QuartzSimpleSample {
 
     Scheduler sched = schedFact.getScheduler();
 
+    sched.start();
+
     JobDetail job = JobBuilder.newJob(SimpleTask.class)
         .withIdentity("myJob", "group1")
         .build();
@@ -68,8 +70,6 @@ public class QuartzSimpleSample {
         .build();
 
     sched.scheduleJob(job, trigger);
-
-    sched.start();
 
     Thread.sleep(3000);
 

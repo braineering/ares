@@ -27,6 +27,7 @@
 package com.acmutv.botnet.core.report.serial;
 
 import com.acmutv.botnet.config.AppConfiguration;
+import com.acmutv.botnet.core.attack.Attack;
 import com.acmutv.botnet.core.report.Report;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -76,13 +77,12 @@ public class ReportSerializer extends StdSerializer<Report> {
       final AppConfiguration config = (AppConfiguration) value.get("config");
       gen.writeFieldName("config");
       provider.findValueSerializer(AppConfiguration.class).serialize(config, gen, provider);
-      //new AppConfigurationJsonMapper().writeValue(gen, config);
     }
 
     List<String> sortedKeys = new ArrayList<>();
     value.keySet().stream()
         .sorted()
-        .filter((String k) ->!k.equals("config"))
+        .filter((String k) ->!k.equals("config") && !k.equals("attacks"))
         .forEachOrdered(sortedKeys::add);
     for (String k : sortedKeys) {
       gen.writeStringField(k, value.get(k).toString());

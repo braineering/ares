@@ -30,6 +30,9 @@ import com.acmutv.botnet.core.exception.BotAnalysisException;
 import com.acmutv.botnet.core.report.Report;
 import com.acmutv.botnet.core.report.SimpleReport;
 import com.acmutv.botnet.tool.reflection.ReflectionManager;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NonNull;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
@@ -42,9 +45,13 @@ import java.util.Map;
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see NetworkFeatures
- * @see NetworkStatistics
  */
+@Data
+@AllArgsConstructor
 public class NetworkAnalyzer implements Analyzer {
+
+  @NonNull
+  private String name = NetworkAnalyzer.class.getSimpleName();
 
   /**
    * Produces a {@link Report}.

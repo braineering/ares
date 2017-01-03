@@ -6,22 +6,28 @@
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} %method - %msg%n"/>
         </Console>
 
+        <File name="FileCommands" fileName="data/log/commands.log" append="false">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level - %msg%n"/>
+            <MarkerFilter marker="COMMAND" onMatch="ACCEPT" onMismatch="DENY"/>
+        </File>
+
         <File name="FileAttacks" fileName="data/log/attacks.log" append="false">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} %method - %msg%n"/>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level - %msg%n"/>
             <MarkerFilter marker="ATTACK" onMatch="ACCEPT" onMismatch="DENY"/>
         </File>
 
-        <File name="FileCommands" fileName="data/log/commands.log" append="false">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} %method - %msg%n"/>
-            <MarkerFilter marker="COMMAND" onMatch="ACCEPT" onMismatch="DENY"/>
+        <File name="FileReports" fileName="data/log/reports.log" append="false">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level - %msg%n"/>
+            <MarkerFilter marker="REPORT" onMatch="ACCEPT" onMismatch="DENY"/>
         </File>
     </Appenders>
 
     <Loggers>
         <Root level="INFO">
             <AppenderRef ref="Console"/>
-            <AppenderRef ref="FileAttacks"/>
             <AppenderRef ref="FileCommands"/>
+            <AppenderRef ref="FileAttacks"/>
+            <AppenderRef ref="FileReports"/>
         </Root>
         <Logger name="org.quartz" level="OFF"/>
     </Loggers>
