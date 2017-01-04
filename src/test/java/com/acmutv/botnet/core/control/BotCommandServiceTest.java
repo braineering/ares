@@ -34,7 +34,6 @@ import com.acmutv.botnet.core.control.command.serial.BotCommandJsonMapper;
 import com.acmutv.botnet.tool.io.IOManager;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
-import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.tool.time.Interval;
 import org.junit.After;
 import org.junit.Assert;
@@ -60,7 +59,7 @@ public class BotCommandServiceTest {
 
   @Before
   public void before() throws IOException {
-    String resource = BotCommandServiceTest.class.getResource("/cmd/consume.json").getPath();
+    String resource = BotCommandServiceTest.class.getResource("/command/consume.json").getPath();
     BotCommand cmd = new BotCommand(CommandScope.KILL);
     String json = new BotCommandJsonMapper().writeValueAsString(cmd);
     IOManager.writeResource(resource, json);
@@ -71,7 +70,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_consumeJsonResource() throws IOException {
-    String resource = BotCommandServiceTest.class.getResource("/cmd/consume.json").getPath();
+    String resource = BotCommandServiceTest.class.getResource("/command/consume.json").getPath();
     BotCommand actual = BotCommandService.consumeJsonResource(resource);
     BotCommand expected = new BotCommand(CommandScope.KILL);
     Assert.assertEquals(expected, actual);
@@ -82,7 +81,7 @@ public class BotCommandServiceTest {
 
   @After
   public void after() throws IOException {
-    String resource = BotCommandServiceTest.class.getResource("/cmd/consume.json").getPath();
+    String resource = BotCommandServiceTest.class.getResource("/command/consume.json").getPath();
     BotCommand cmd = new BotCommand(CommandScope.KILL);
     String json = new BotCommandJsonMapper().writeValueAsString(cmd);
     IOManager.writeResource(resource, json);
@@ -94,7 +93,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJsonResource_attackHTTP() throws IOException {
-    String resource = BotCommandServiceTest.class.getResource("/cmd/attack-http.json").getPath();
+    String resource = BotCommandServiceTest.class.getResource("/command/attack-http.json").getPath();
     BotCommand actual = BotCommandService.fromJsonResource(resource);
     BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
     List<HttpAttack> attacks = new ArrayList<>();
@@ -125,7 +124,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJsonResource_attackHTTP_delay() throws IOException {
-    String resource = BotCommandServiceTest.class.getResource("/cmd/attack-http.delay.json").getPath();
+    String resource = BotCommandServiceTest.class.getResource("/command/attack-http.delay.json").getPath();
     BotCommand actual = BotCommandService.fromJsonResource(resource);
     BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
     List<HttpAttack> attacks = new ArrayList<>();
@@ -157,7 +156,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJsonResource_calmdown() throws IOException {
-    String resource = BotCommandServiceTest.class.getResource("/cmd/calmdown.json").getPath();
+    String resource = BotCommandServiceTest.class.getResource("/command/calmdown.json").getPath();
     BotCommand actual = BotCommandService.fromJsonResource(resource);
     BotCommand expected = new BotCommand(CommandScope.CALMDOWN);
     Assert.assertEquals(expected, actual);
@@ -169,7 +168,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJsonResource_calmdown_wait() throws IOException {
-    String resource = BotCommandServiceTest.class.getResource("/cmd/calmdown.wait.json").getPath();
+    String resource = BotCommandServiceTest.class.getResource("/command/calmdown.wait.json").getPath();
     BotCommand actual = BotCommandService.fromJsonResource(resource);
     BotCommand expected = new BotCommand(CommandScope.CALMDOWN);
     expected.getParams().put("wait", true);
@@ -182,7 +181,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJsonResource_calmdown_waitDelay() throws IOException {
-    String resource = BotCommandServiceTest.class.getResource("/cmd/calmdown.wait.delay.json").getPath();
+    String resource = BotCommandServiceTest.class.getResource("/command/calmdown.wait.delay.json").getPath();
     BotCommand actual = BotCommandService.fromJsonResource(resource);
     BotCommand expected = new BotCommand(CommandScope.CALMDOWN);
     expected.getParams().put("wait", true);
@@ -196,7 +195,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJsonResource_empty() {
-    String resource = BotCommandServiceTest.class.getResource("/cmd/empty.json").getPath();
+    String resource = BotCommandServiceTest.class.getResource("/command/empty.json").getPath();
     try {
       BotCommandService.fromJsonResource(resource);
     } catch (IOException exc) { return; }
@@ -209,7 +208,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJsonResource_kill() throws IOException {
-    String resource = BotCommandServiceTest.class.getResource("/cmd/kill.json").getPath();
+    String resource = BotCommandServiceTest.class.getResource("/command/kill.json").getPath();
     BotCommand actual = BotCommandService.fromJsonResource(resource);
     BotCommand expected = new BotCommand(CommandScope.KILL);
     Assert.assertEquals(expected, actual);
@@ -221,7 +220,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJsonResource_kill_wait() throws IOException {
-    String resource = BotCommandServiceTest.class.getResource("/cmd/kill.wait.json").getPath();
+    String resource = BotCommandServiceTest.class.getResource("/command/kill.wait.json").getPath();
     BotCommand actual = BotCommandService.fromJsonResource(resource);
     BotCommand expected = new BotCommand(CommandScope.KILL);
     expected.getParams().put("wait", true);
@@ -234,7 +233,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJsonResource_kill_waitDelay() throws IOException {
-    String resource = BotCommandServiceTest.class.getResource("/cmd/kill.wait.delay.json").getPath();
+    String resource = BotCommandServiceTest.class.getResource("/command/kill.wait.delay.json").getPath();
     BotCommand actual = BotCommandService.fromJsonResource(resource);
     BotCommand expected = new BotCommand(CommandScope.KILL);
     expected.getParams().put("wait", true);
@@ -248,7 +247,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJsonResource_none() throws IOException {
-    String resource = BotCommandServiceTest.class.getResource("/cmd/none.json").getPath();
+    String resource = BotCommandServiceTest.class.getResource("/command/none.json").getPath();
     BotCommand actual = BotCommandService.fromJsonResource(resource);
     BotCommand expected = new BotCommand(CommandScope.NONE);
     Assert.assertEquals(expected, actual);
@@ -260,7 +259,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_null() {
-    String resource = BotCommandServiceTest.class.getResource("/cmd/null.json").getPath();
+    String resource = BotCommandServiceTest.class.getResource("/command/null.json").getPath();
     try {
       BotCommandService.fromJsonResource(resource);
     } catch (IOException exc) { return; }
@@ -273,7 +272,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_report() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/report.json");
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/report.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.REPORT);
     Assert.assertEquals(expected, actual);
@@ -285,7 +284,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_report_delay() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/report.delay.json");
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/report.delay.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.REPORT);
     expected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
@@ -298,10 +297,10 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_restart() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/restart.json");
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/restart.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.RESTART);
-    expected.getParams().put("resource", TemplateEngine.getInstance().replace("data/controller/1/botinit.json"));
+    expected.getParams().put("resource", "data/samples/controllers/1/botinit.json");
     Assert.assertEquals(expected, actual);
   }
 
@@ -311,10 +310,10 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_restart_wait() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/restart.wait.json");
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/restart.wait.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.RESTART);
-    expected.getParams().put("resource", TemplateEngine.getInstance().replace("data/controller/1/botinit.json"));
+    expected.getParams().put("resource", "data/samples/controllers/1/botinit.json");
     expected.getParams().put("wait", true);
     Assert.assertEquals(expected, actual);
   }
@@ -325,10 +324,10 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_restart_waitDelay() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/restart.wait.delay.json");
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/restart.wait.delay.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.RESTART);
-    expected.getParams().put("resource", TemplateEngine.getInstance().replace("data/controller/1/botinit.json"));
+    expected.getParams().put("resource", "data/samples/controllers/1/botinit.json");
     expected.getParams().put("wait", true);
     expected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     Assert.assertEquals(expected, actual);
@@ -340,7 +339,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_saveConfig() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/save-config.json");
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/save-config.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.SAVE_CONFIG);
     Assert.assertEquals(expected, actual);
@@ -352,7 +351,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_saveConfig_delay() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/save-config.delay.json");
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/save-config.delay.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.SAVE_CONFIG);
     expected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
@@ -365,7 +364,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_sleep() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/sleep.json");
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/sleep.json");
     BotCommand expected = new BotCommand(CommandScope.SLEEP);
     BotCommand actual = BotCommandService.fromJson(file);
     Assert.assertEquals(expected, actual);
@@ -377,7 +376,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_sleep_timeout() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/sleep.timeout.json");
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/sleep.timeout.json");
     BotCommand expected = new BotCommand(CommandScope.SLEEP);
     expected.getParams().put("timeout", new Interval(10, 15, TimeUnit.SECONDS));
     BotCommand actual = BotCommandService.fromJson(file);
@@ -390,7 +389,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_sleep_timeoutDelay() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/sleep.timeout.delay.json");
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/sleep.timeout.delay.json");
     BotCommand expected = new BotCommand(CommandScope.SLEEP);
     expected.getParams().put("timeout", new Interval(10, 15, TimeUnit.SECONDS));
     expected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
@@ -404,7 +403,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_update() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/update.json");
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/update.json");
     BotCommand expected = new BotCommand(CommandScope.UPDATE);
     expected.getParams().put("settings", new HashMap<String,String>(){{put("prop1","val1");}});
     BotCommand actual = BotCommandService.fromJson(file);
@@ -417,7 +416,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_update_delay() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/update.delay.json");
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/update.delay.json");
     BotCommand expected = new BotCommand(CommandScope.UPDATE);
     expected.getParams().put("settings", new HashMap<String,String>(){{put("prop1","val1");}});
     expected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
@@ -431,7 +430,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_wakeup() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/wakeup.json");
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/wakeup.json");
     BotCommand expected = new BotCommand(CommandScope.WAKEUP);
     BotCommand actual = BotCommandService.fromJson(file);
     Assert.assertEquals(expected, actual);
@@ -443,7 +442,7 @@ public class BotCommandServiceTest {
    */
   @Test
   public void test_fromJSONFile_wakeup_delay() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/cmd/wakeup.delay.json");
+    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/wakeup.delay.json");
     BotCommand expected = new BotCommand(CommandScope.WAKEUP);
     expected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     BotCommand actual = BotCommandService.fromJson(file);

@@ -12,9 +12,9 @@
 # COMMAND&CONTROL
 #===============================================================================
 #controllers:
-#  - init: ${PWD}/data/controller/botinit.json
-#    command: ${PWD}/data/controller/botcmd.json
-#    log: ${PWD}/data/controller/botlog.json
+#  - init: data/samples/controllers/1/botinit.json
+#    command: data/samples/controllers/1/botcmd.json
+#    log: data/samples/controllers/1/botlog.json
 #polling: 10-10:SECONDS
 #reconnections: 3
 #reconnectionWait: 10-10:SECONDS

@@ -1,0 +1,5 @@
+{
+  "command": "RESTART",
+  "resource": "data/samples/controller/1/botinit.json",
+  "wait": true
+}

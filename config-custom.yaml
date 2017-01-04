@@ -12,12 +12,12 @@ netInfo: False
 # COMMAND&CONTROL
 #===============================================================================
 controllers:
-#  - init: data/controller/3/botinit-notvalid.json
-#    command: data/controller/3/botcmd-notvalid.json
-#    log: data/controller/3/botlog-notvalid.json
-  - init: data/controller/1/botinit.json
-    command: data/controller/1/botcmd.json
-    log: data/controller/1/botlog.json
+#  - init: data/samples/controllers/3/botinit-notvalid.json
+#    command: data/samples/controllers/3/botcmd-notvalid.json
+#    log: data/samples/controllers/3/botlog-notvalid.json
+  - init: data/samples/controllers/1/botinit.json
+    command: data/samples/controllers/1/botcmd.json
+    log: data/samples/controllers/1/botlog.json
 polling: 10-15:SECONDS
 reconnections: 3
 reconnectionWait: 2-5:SECONDS

@@ -6,20 +6,20 @@
   "sampling": "1:HOURS",
   "controllers": [
     {
-      "init": "${PWD}/data/controller/botinit.json",
-      "command": "${PWD}/data/controller/botcmd.json",
-      "log": "${PWD}/data/controller/botlog.json"
+      "init": "data/samples/controllers/1/botinit.json",
+      "command": "data/samples/controllers/1/botcmd.json",
+      "log": "data/samples/controllers/1/botlog.json"
     },
     {
-      "init": "${PWD}/data/controller/botinit2.json",
-      "command": "${PWD}/data/controller/botcmd2.json",
-      "log": "${PWD}/data/controller/botlog2.json",
+      "init": "data/samples/controllers/2/botinit.json",
+      "command": "data/samples/controllers/2/botcmd.json",
+      "log": "data/samples/controllers/2/botlog.json",
       "proxy": "none"
     },
     {
-      "init": "${PWD}/data/controller/botinit2.json",
-      "command": "${PWD}/data/controller/botcmd2.json",
-      "log": "${PWD}/data/controller/botlog2.json",
+      "init": "data/samples/controllers/2/botinit.json",
+      "command": "data/samples/controllers/2/botcmd.json",
+      "log": "data/samples/controllers/2/botlog.json",
       "polling": "10-20:SECONDS",
       "reconnections": 10,
       "reconnectionWait": "10-20:SECONDS",

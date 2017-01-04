@@ -68,13 +68,13 @@ public class AppConfiguration {
   public static final List<Controller> CONTROLLERS = new ArrayList<>();
 
   /**
-   * The fallback default controller (PWD/cc/bot{init,cmd,log}.json).
+   * The fallback default controller (data/samples/controllers/1//bot{init,cmd,log}.json).
    * Only used when no controllers are specified.
    */
   public static final Controller FALLBACK_CONTROLLER = new Controller(
-      TemplateEngine.getInstance().replace("${PWD}/data/controller/botinit.json"),
-      TemplateEngine.getInstance().replace("${PWD}/data/controller/botcmd.json"),
-      TemplateEngine.getInstance().replace("${PWD}/data/controller/botlog.json")
+      TemplateEngine.getInstance().replace("data/samples/controllers/1/botinit.json"),
+      TemplateEngine.getInstance().replace("data/samples/controllers/1/botcmd.json"),
+      TemplateEngine.getInstance().replace("data/samples/controllers/1/botlog.json")
   );
 
   /**
@@ -126,7 +126,7 @@ public class AppConfiguration {
   private List<Controller> controllers = CONTROLLERS;
 
   /**
-   * The bot polls controllers for commands with a random period within this interval.
+   * The bot polls controllers for command with a random period within this interval.
    * Default is {@code POLLING}.
    */
   private Interval polling = POLLING;

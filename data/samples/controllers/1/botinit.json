@@ -3,9 +3,9 @@
   "netInfo": true,
   "controllers": [
     {
-      "init": "data/controller/1/botinit.json",
-      "command": "data/controller/1/botcmd.json",
-      "log": "data/controller/1/botlog.json"
+      "init": "data/samples/controllers/1/botinit.json",
+      "command": "data/samples/controllers/1/botcmd.json",
+      "log": "data/samples/controllers/1/botlog.json"
     }
   ],
   "polling": "20-30:SECONDS",

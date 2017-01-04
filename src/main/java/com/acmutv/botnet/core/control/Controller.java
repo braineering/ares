@@ -52,7 +52,7 @@ public class Controller {
   private final String initResource;
 
   /**
-   * The resource providing commands.
+   * The resource providing command.
    */
   @NonNull
   private final String cmdResource;

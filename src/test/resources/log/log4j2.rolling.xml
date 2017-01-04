@@ -18,7 +18,7 @@
         </RollingFile>
 
         <RollingFile name="FileCommands" fileName="src/test/resources/log/commands.log"
-                     filePattern="src/test/resources/log/commands/$${date:yyyy-MM-dd}/commands.log-%d{yyyy-MM-dd-HH}-%i">
+                     filePattern="src/test/resources/log/command/$${date:yyyy-MM-dd}/commands.log-%d{yyyy-MM-dd-HH}-%i">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} %method - %msg%n"/>
             <Policies>
                 <OnStartupTriggeringPolicy />
