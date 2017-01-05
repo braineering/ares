@@ -30,7 +30,10 @@ import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -85,16 +88,44 @@ public class RuntimeManager {
   /**
    * Executes the given command and arguments.
    * @param command The command to execute. Arguments must be given as a separated strings.
-   *                E.g.: BashExecutor.run("ls", "-la") or BashExecutor.run("ls", "-l", "-a")
+   *                E.g.: BashExecutor.runCommand("ls", "-la") or BashExecutor.runCommand("ls", "-l", "-a")
    * @return The command output as a string.
    * @throws IOException when error in process generation or output.
    */
-  public static String run(String ...command) throws IOException {
+  public static String runCommand(String ...command) throws IOException {
     LOGGER.traceEntry("command={}", Arrays.asList(command));
+    String out;
     ProcessBuilder pb = new ProcessBuilder(command);
     Process p = pb.start();
-    String out = IOUtils.toString(p.getInputStream(), Charset.defaultCharset());
+    try (InputStream in = p.getInputStream()) {
+      out = IOUtils.toString(in, Charset.defaultCharset());
+    }
     return out.trim();
+  }
+
+  /**
+   * A method that runs a command on the command line of the host and captures the result from the console
+   * @param command command
+   * @return output of the executed system command
+   */
+  public static String runCmd(String command) {
+    String cmdOutput = "";
+    String s;
+
+    try {
+      Process p = Runtime.getRuntime().exec(command);
+      BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+      while ((s = stdInput.readLine()) != null)
+      {
+        cmdOutput += s+"\n";
+      }
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+      System.exit(-1);
+    }
+    return cmdOutput;
   }
 
   /**

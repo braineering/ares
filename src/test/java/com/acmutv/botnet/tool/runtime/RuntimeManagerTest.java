@@ -26,12 +26,10 @@
 
 package com.acmutv.botnet.tool.runtime;
 
-import com.acmutv.botnet.tool.runtime.RuntimeManager;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * JUnit tests for {@link RuntimeManager}.
@@ -43,13 +41,15 @@ import static org.junit.Assert.assertEquals;
 public class RuntimeManagerTest {
 
   /**
-   * Tests the BashExecutor run method with the command `echo`.
+   * Tests the BashExecutor runCommand method with the command `echo`.
    */
   @Test
-  public void test_run_echo() throws IOException {
-    String output = RuntimeManager.run("echo", "Hello World");
+  public void test_runCommand_echo() throws IOException {
+    String actual1 = RuntimeManager.runCommand("echo", "Hello World");
+    String actual2 = RuntimeManager.runCmd("echo Hello World");
     String expected = "Hello World";
-    assertEquals(expected, output);
+    Assert.assertEquals(expected, actual1);
+    Assert.assertEquals(expected, actual2.trim());
   }
 
 }

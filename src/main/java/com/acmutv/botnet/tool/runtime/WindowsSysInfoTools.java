@@ -1,6 +1,4 @@
-package com.acmutv.botnet.core.analysis;
-
-import com.acmutv.botnet.tool.runtime.RunCmdTools;
+package com.acmutv.botnet.tool.runtime;
 
 public class WindowsSysInfoTools {
 	
@@ -11,7 +9,7 @@ public class WindowsSysInfoTools {
 	 * @return kernel Version
 	 */
 	public String getKernelVersion(){
-		return RunCmdTools.runCmd("");
+		return RuntimeManager.runCmd("");
 	}
 	
 	/**
@@ -19,7 +17,7 @@ public class WindowsSysInfoTools {
 	 * @return hostname
 	 */
 	public String getHostName(){
-		return RunCmdTools.runCmd("");
+		return RuntimeManager.runCmd("");
 	}
 	
 	/**
@@ -27,7 +25,7 @@ public class WindowsSysInfoTools {
 	 * @return username
 	 */
 	public String getUserName(){
-		return RunCmdTools.runCmd("");
+		return RuntimeManager.runCmd("");
 	}
 	
 	/**
@@ -35,7 +33,7 @@ public class WindowsSysInfoTools {
 	 * @return network info
 	 */
 	public String getNetworkData(){
-		return RunCmdTools.runCmd("");
+		return RuntimeManager.runCmd("");
 	}
 	
 	/**
@@ -43,7 +41,7 @@ public class WindowsSysInfoTools {
 	 * @return applications list
 	 */
 	public String getApplications(){
-		return RunCmdTools.runCmd("");
+		return RuntimeManager.runCmd("");
 	}
 	
 	/**
@@ -51,7 +49,7 @@ public class WindowsSysInfoTools {
 	 * @return local connections list
 	 */
 	public String getNetworkLocations(){
-		return RunCmdTools.runCmd("");
+		return RuntimeManager.runCmd("");
 	}
 	
 	/**
@@ -59,6 +57,6 @@ public class WindowsSysInfoTools {
 	 * @return browsers list
 	 */
 	public String getBrowsers(){
-		return RunCmdTools.runCmd("");
+		return RuntimeManager.runCmd("");
 	}	
 }
