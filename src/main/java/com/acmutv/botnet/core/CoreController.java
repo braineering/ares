@@ -463,11 +463,15 @@ public class CoreController {
   private static void report() throws BotExecutionException {
     LOGGER.trace("Producing report...");
     Report report = new SimpleReport();
-    report.put(SimpleReport.KEY_CONFIGURATION, AppConfigurationService.getConfigurations());
-    try {
-      report.put(SimpleReport.KEY_ATTACKS_HTTP, POOL.getScheduledHttpAttacks());
-    } catch (SchedulerException exc) {
-      throw new BotExecutionException("Cannot retrieve scheduled http attack. %s", exc.getMessage());
+    if (AppConfigurationService.getConfigurations().isCnfInfo()) {
+      report.put(SimpleReport.KEY_CONFIGURATION, AppConfigurationService.getConfigurations());
+    }
+    if (AppConfigurationService.getConfigurations().isTgtInfo()) {
+      try {
+        report.put(SimpleReport.KEY_ATTACKS_HTTP, POOL.getScheduledHttpAttacks());
+      } catch (SchedulerException exc) {
+        throw new BotExecutionException("Cannot retrieve scheduled http attack. %s", exc.getMessage());
+      }
     }
     for (Analyzer analyzer : ANALYZERS) {
       final String analyzerName = analyzer.getName();

@@ -53,6 +53,16 @@ import java.util.concurrent.TimeUnit;
 public class AppConfiguration {
 
   /**
+   * Default value for {@code cnfInfo}.
+   */
+  public static final boolean CNF_INFO = true;
+
+  /**
+   * Default value for {@code tgtInfo} (true).
+   */
+  public static final boolean TGT_INFO = true;
+
+  /**
    * Default value for {@code sysInfo}.
    */
   public static final boolean SYS_INFO = true;
@@ -106,6 +116,18 @@ public class AppConfiguration {
    * Default value for {@code sleep} (null)
    */
   public static final CronExpression SLEEP = null;
+
+  /**
+   * If true, the bot sends configuration information to the controller.
+   * Default is {@code CNF_INFO}.
+   */
+  private boolean cnfInfo = CNF_INFO;
+
+  /**
+   * If true, the bot sends attack targets information to the controller.
+   * Default is {@code TGT_INFO}.
+   */
+  private boolean tgtInfo = TGT_INFO;
 
   /**
    * If true, the bot sends system information to the controller.
@@ -174,6 +196,8 @@ public class AppConfiguration {
    * @param other the configuration to copy.
    */
   public void copy(AppConfiguration other) {
+    this.cnfInfo = other.cnfInfo;
+    this.tgtInfo = other.tgtInfo;
     this.sysInfo = other.sysInfo;
     this.netInfo = other.netInfo;
     this.controllers = other.controllers;
@@ -189,6 +213,8 @@ public class AppConfiguration {
    * Restores the default configuration settings.
    */
   public void toDefault() {
+    this.cnfInfo = CNF_INFO;
+    this.tgtInfo = TGT_INFO;
     this.sysInfo = SYS_INFO;
     this.netInfo = NET_INFO;
     this.controllers = CONTROLLERS;

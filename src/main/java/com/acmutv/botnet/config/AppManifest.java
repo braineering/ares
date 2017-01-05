@@ -27,7 +27,7 @@
 package com.acmutv.botnet.config;
 
 /**
- * This class encapsulates app details.
+ * The application details.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
@@ -35,20 +35,20 @@ package com.acmutv.botnet.config;
 public class AppManifest {
 
   /**
-   * The app name (BOTNET).
+   * The app name (BOT).
    */
-  public static final String APP_NAME = "BOTNET";
+  public static final String APP_NAME = "BOT";
 
   /**
-   * The app version (1.0-SNAPSHOT).
+   * The app version (1.0).
    */
-  public static final String APP_VERSION = "1.0-SNAPSHOT";
+  public static final String APP_VERSION = "1.0";
 
   /**
-   * The app description (A botnet showcase.Coursework in Computer Security 2015/2016).
+   * The app description (A bot showcase.Coursework in Computer Security 2015/2016).
    */
   public static final String APP_DESCRIPTION =
-      "A botnet showcase.\n" +
+      "A bot showcase.\n" +
           "Coursework in Computer Security 2015/2016";
 
   /**

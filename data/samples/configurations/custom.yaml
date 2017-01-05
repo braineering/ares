@@ -5,21 +5,24 @@
 #===============================================================================
 # REPORT
 #===============================================================================
-#cnfInfo: True
-#tgtInfo: True
-#sysInfo: True
-#netInfo: True
+cnfInfo: True
+tgtInfo: False
+sysInfo: True
+netInfo: False
 
 #===============================================================================
 # CONTROL
 #===============================================================================
-#controllers:
-#  - init: data/samples/controllers/1/botinit.json
-#    command: data/samples/controllers/1/botcmd.json
-#    log: data/samples/controllers/1/botlog.json
-#polling: 10-10:SECONDS
-#reconnections: 3
-#reconnectionWait: 10-10:SECONDS
-#proxy: null
-#userAgent: null
-#sleep: null
+controllers:
+  - init: data/samples/controllers/notvalid/botinit.json
+    command: data/samples/controllers/notvalid/botcmd.json
+    log: data/samples/controllers/notvalid/botlog.json
+  - init: data/samples/controllers/1/botinit.json
+    command: data/samples/controllers/1/botcmd.json
+    log: data/samples/controllers/1/botlog.json
+polling: 10-20:SECONDS
+reconnections: 3
+reconnectionWait: 3-5:SECONDS
+proxy: none
+userAgent: BotShowcase
+sleep: * * * ? * SAT,SUN

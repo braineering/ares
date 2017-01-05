@@ -1,6 +1,8 @@
 {
-  "sysInfo" : false,
-  "netInfo" : false,
+  "cnfInfo": true,
+  "tgtInfo": true,
+  "sysInfo": false,
+  "netInfo": false,
   "polling" : "10-15:SECONDS",
   "reconnections" : 5,
   "reconnectionWait" : "10-15:SECONDS",

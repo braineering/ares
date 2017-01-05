@@ -1,3 +1,5 @@
+cnfInfo: true
+tgtInfo: true
 sysInfo: true
 netInfo: true
 polling: 10-10:SECONDS

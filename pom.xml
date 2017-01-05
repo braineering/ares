@@ -6,12 +6,12 @@
 
     <groupId>com.acmutv</groupId>
     <artifactId>botnet</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>Botnet</name>
     <description>
-        A botnet showcase.
+        A bot showcase.
         Coursework in Computer Security 2015/2016.
     </description>
     <url>http://gitlab.com/acm-utv/botnet</url>
@@ -300,7 +300,7 @@
                                     <proguardVersion>${proguard.tool.version}</proguardVersion>
                                     <obfuscate>true</obfuscate>
                                     <injar>${project.build.finalName}.jar</injar>
-                                    <outjar>${project.build.finalName}-small.jar</outjar>
+                                    <outjar>${project.build.finalName}-optimized.jar</outjar>
                                     <outputDirectory>${project.build.directory}</outputDirectory>
                                     <proguardInclude>${basedir}/proguard.conf</proguardInclude>
                                     <libs>

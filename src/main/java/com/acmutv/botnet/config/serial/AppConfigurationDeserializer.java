@@ -81,6 +81,16 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
     AppConfiguration config = new AppConfiguration();
     JsonNode node = parser.getCodec().readTree(parser);
 
+    if (node.hasNonNull("cnfInfo")) {
+      final boolean cnfInfo = node.get("cnfInfo").asBoolean();
+      config.setCnfInfo(cnfInfo);
+    }
+
+    if (node.hasNonNull("tgtInfo")) {
+      final boolean tgtInfo = node.get("tgtInfo").asBoolean();
+      config.setTgtInfo(tgtInfo);
+    }
+
     if (node.hasNonNull("sysInfo")) {
       final boolean sysInfo = node.get("sysInfo").asBoolean();
       config.setSysInfo(sysInfo);

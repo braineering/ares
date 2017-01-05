@@ -1,4 +1,6 @@
 {
+  "cnfInfo" : true,
+  "tgtInfo" : true,
   "sysInfo" : false,
   "netInfo" : false,
   "polling" : "10-15:SECONDS",

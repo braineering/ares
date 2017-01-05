@@ -75,6 +75,12 @@ public class AppConfigurationSerializer extends StdSerializer<AppConfiguration> 
   public void serialize(AppConfiguration value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
 
+    final boolean cnfInfo = value.isCnfInfo();
+    gen.writeBooleanField("cnfInfo", cnfInfo);
+
+    final boolean tgtInfo = value.isTgtInfo();
+    gen.writeBooleanField("tgtInfo", tgtInfo);
+
     final boolean sysInfo = value.isSysInfo();
     gen.writeBooleanField("sysInfo", sysInfo);
 

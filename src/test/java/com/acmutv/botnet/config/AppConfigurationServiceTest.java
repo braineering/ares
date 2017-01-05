@@ -76,6 +76,8 @@ public class AppConfigurationServiceTest {
     AppConfiguration actualyaml = AppConfigurationService.from(AppConfigurationFormat.YAML, inyaml);
 
     AppConfiguration expected = new AppConfiguration();
+    expected.setCnfInfo(true);
+    expected.setTgtInfo(true);
     expected.setSysInfo(false);
     expected.setNetInfo(false);
     expected.setPolling(new Interval(10, 15, TimeUnit.SECONDS));
@@ -174,6 +176,8 @@ public class AppConfigurationServiceTest {
     InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom.check.yaml");
 
     AppConfiguration config = new AppConfiguration();
+    config.setCnfInfo(true);
+    config.setTgtInfo(true);
     config.setSysInfo(false);
     config.setNetInfo(false);
     config.setPolling(new Interval(10, 15, TimeUnit.SECONDS));

@@ -77,6 +77,8 @@ public class AppConfigurationSerializationTest {
   @Test
   public void test_custom_noControllers() throws IOException {
     AppConfiguration configExpected = new AppConfiguration();
+    configExpected.setCnfInfo(true);
+    configExpected.setTgtInfo(true);
     configExpected.setSysInfo(false);
     configExpected.setNetInfo(false);
     configExpected.setPolling(new Interval(10, 15, TimeUnit.SECONDS));
@@ -104,6 +106,8 @@ public class AppConfigurationSerializationTest {
   @Test
   public void test_custom_withControllers() throws IOException {
     AppConfiguration configExpected = new AppConfiguration();
+    configExpected.setCnfInfo(true);
+    configExpected.setTgtInfo(true);
     configExpected.setSysInfo(false);
     configExpected.setNetInfo(false);
     configExpected.setPolling(new Interval(10, 15, TimeUnit.SECONDS));
@@ -135,6 +139,8 @@ public class AppConfigurationSerializationTest {
   @Test
   public void test_custom_withControllersCustomized() throws IOException {
     AppConfiguration configExpected = new AppConfiguration();
+    configExpected.setCnfInfo(true);
+    configExpected.setTgtInfo(true);
     configExpected.setSysInfo(false);
     configExpected.setNetInfo(false);
     configExpected.setPolling(new Interval(10, 15, TimeUnit.SECONDS));
