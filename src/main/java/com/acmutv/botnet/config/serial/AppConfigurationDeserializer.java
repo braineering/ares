@@ -29,7 +29,6 @@ package com.acmutv.botnet.config.serial;
 import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.tool.net.HttpProxy;
-import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -162,17 +161,11 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
         continue;
       }
 
-      final String initResource = TemplateEngine.getInstance().replace(
-          n.get("init").asText()
-      );
+      final String initResource = n.get("init").asText();
 
-      final String commandResource = TemplateEngine.getInstance().replace(
-          n.get("command").asText()
-      );
+      final String commandResource = n.get("command").asText();
 
-      final String logResource = TemplateEngine.getInstance().replace(
-          n.get("log").asText()
-      );
+      final String logResource = n.get("log").asText();
 
       Controller controller = new Controller(initResource, commandResource, logResource);
 

@@ -30,7 +30,6 @@ import com.acmutv.botnet.tool.io.TestAllToolIO;
 import com.acmutv.botnet.tool.net.TestAllToolNet;
 import com.acmutv.botnet.tool.reflection.TestAllToolReflection;
 import com.acmutv.botnet.tool.runtime.TestAllToolRuntime;
-import com.acmutv.botnet.tool.string.TestAllToolString;
 import com.acmutv.botnet.tool.time.TestAllToolTime;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -44,7 +43,6 @@ import org.junit.runners.Suite;
  * @see TestAllToolNet
  * @see TestAllToolReflection
  * @see TestAllToolRuntime
- * @see TestAllToolString
  * @see TestAllToolTime
  */
 @RunWith(Suite.class)
@@ -53,7 +51,6 @@ import org.junit.runners.Suite;
     TestAllToolNet.class,
     TestAllToolReflection.class,
     TestAllToolRuntime.class,
-    TestAllToolString.class,
     TestAllToolTime.class
 })
 public class TestAllTool {

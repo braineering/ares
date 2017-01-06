@@ -110,7 +110,6 @@
 
         <!-- Data Structures -->
         <apache.lang.version>3.5</apache.lang.version>
-        <joda.time.version>2.9.6</joda.time.version>
 
         <!-- I/O -->
         <apache.io.version>2.5</apache.io.version>
@@ -179,12 +178,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${apache.lang.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>${joda.time.version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -291,7 +284,7 @@
                         <version>${proguard.version}</version>
                         <executions>
                             <execution>
-                                <id>obfuscation-packaging</id>
+                                <id>optimized-packaging</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>proguard</goal>
@@ -302,19 +295,7 @@
                                     <injar>${project.build.finalName}.jar</injar>
                                     <outjar>${project.build.finalName}-optimized.jar</outjar>
                                     <outputDirectory>${project.build.directory}</outputDirectory>
-                                    <proguardInclude>${basedir}/proguard.conf</proguardInclude>
-                                    <libs>
-                                        <lib>${java.home}/lib/rt.jar</lib>
-                                        <lib>${java.home}/lib/jsse.jar</lib>
-                                    </libs>
-                                    <options>
-                                        <option>-allowaccessmodification</option>
-                                        <option>-optimizationpasses 3</option>
-                                        <option>-overloadaggressively</option>
-                                        <option>-overloadaggressively</option>
-                                        <option>-overloadaggressively</option>
-                                        <option>-keep public class ${project.main} { public static void main(java.lang.String[]); }</option>
-                                    </options>
+                                    <proguardInclude>${basedir}/config.pro</proguardInclude>
                                 </configuration>
                             </execution>
                         </executions>

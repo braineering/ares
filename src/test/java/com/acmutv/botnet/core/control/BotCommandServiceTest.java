@@ -35,9 +35,7 @@ import com.acmutv.botnet.tool.io.IOManager;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Interval;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -57,34 +55,20 @@ import java.util.concurrent.TimeUnit;
  */
 public class BotCommandServiceTest {
 
-  @Before
-  public void before() throws IOException {
-    String resource = BotCommandServiceTest.class.getResource("/command/consume.json").getPath();
-    BotCommand cmd = new BotCommand(CommandScope.KILL);
-    String json = new BotCommandJsonMapper().writeValueAsString(cmd);
-    IOManager.writeResource(resource, json);
-  }
-
   /**
    * Tests command consume from a JSON resource.
    */
   @Test
   public void test_consumeJsonResource() throws IOException {
     String resource = BotCommandServiceTest.class.getResource("/command/consume.json").getPath();
+    IOManager.writeResource(resource, new BotCommandJsonMapper().writeValueAsString(new BotCommand(CommandScope.KILL)));
     BotCommand actual = BotCommandService.consumeJsonResource(resource);
     BotCommand expected = new BotCommand(CommandScope.KILL);
     Assert.assertEquals(expected, actual);
     String actualJson = IOManager.readResource(resource);
     String expectedJson = new BotCommandJsonMapper().writeValueAsString(BotCommand.NONE);
     Assert.assertEquals(expectedJson, actualJson);
-  }
-
-  @After
-  public void after() throws IOException {
-    String resource = BotCommandServiceTest.class.getResource("/command/consume.json").getPath();
-    BotCommand cmd = new BotCommand(CommandScope.KILL);
-    String json = new BotCommandJsonMapper().writeValueAsString(cmd);
-    IOManager.writeResource(resource, json);
+    IOManager.writeResource(resource, new BotCommandJsonMapper().writeValueAsString(new BotCommand(CommandScope.KILL)));
   }
 
   /**

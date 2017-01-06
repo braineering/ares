@@ -28,7 +28,6 @@ package com.acmutv.botnet.config;
 
 import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.tool.net.HttpProxy;
-import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.tool.time.Interval;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -82,9 +81,9 @@ public class AppConfiguration {
    * Only used when no controllers are specified.
    */
   public static final Controller FALLBACK_CONTROLLER = new Controller(
-      TemplateEngine.getInstance().replace("data/samples/controllers/1/botinit.json"),
-      TemplateEngine.getInstance().replace("data/samples/controllers/1/botcmd.json"),
-      TemplateEngine.getInstance().replace("data/samples/controllers/1/botlog.json")
+      "data/samples/controllers/1/botinit.json",
+      "data/samples/controllers/1/botcmd.json",
+      "data/samples/controllers/1/botlog.json"
   );
 
   /**

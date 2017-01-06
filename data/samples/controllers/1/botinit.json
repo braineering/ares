@@ -10,7 +10,7 @@
       "log": "data/samples/controllers/1/botlog.json"
     }
   ],
-  "polling": "20-30:SECONDS",
+  "polling": "10-20:SECONDS",
   "reconnections": 3,
   "reconnectionWait": "2-5:SECONDS",
   "proxy": null,

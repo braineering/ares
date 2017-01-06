@@ -27,7 +27,6 @@
 package com.acmutv.botnet.core.control.command.serial;
 
 import com.acmutv.botnet.core.attack.HttpAttack;
-import com.acmutv.botnet.tool.string.TemplateEngine;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.command.CommandScope;
 import com.acmutv.botnet.tool.time.Interval;
@@ -153,7 +152,7 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           if (!node.has("resource")) {
             throw new IOException("Cannot read parameter [resource] for scope [RESTART] (missing)");
           }
-          final String resource = TemplateEngine.getInstance().replace(node.get("resource").asText());
+          final String resource = node.get("resource").asText();
 
           if (node.hasNonNull("wait")) {
             final boolean restartWait = node.get("wait").asBoolean();
