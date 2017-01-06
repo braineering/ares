@@ -291,9 +291,6 @@
                                 </goals>
                                 <configuration>
                                     <proguardVersion>${proguard.tool.version}</proguardVersion>
-                                    <obfuscate>true</obfuscate>
-                                    <injar>${project.build.finalName}.jar</injar>
-                                    <outjar>${project.build.finalName}-optimized.jar</outjar>
                                     <outputDirectory>${project.build.directory}</outputDirectory>
                                     <proguardInclude>${basedir}/config.pro</proguardInclude>
                                 </configuration>
