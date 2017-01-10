@@ -1,19 +1,22 @@
 {
   "config" : {
+    "cnfInfo" : true,
+    "tgtInfo" : true,
     "sysInfo" : true,
     "netInfo" : true,
-    "polling" : "20-30:SECONDS",
+    "polling" : "90-120:SECONDS",
     "reconnections" : 3,
     "reconnectionWait" : "2-5:SECONDS",
     "proxy" : "none",
-    "userAgent" : null,
+    "userAgent" : "MyAwesomeBot",
     "sleep" : null,
     "controllers" : [ {
-      "init" : "data/controller/1/botinit.json",
-      "command" : "data/controller/1/botcmd.json",
-      "log" : "data/controller/1/botlog.json"
+      "init" : "data/samples/controllers/1/botinit.json",
+      "command" : "data/samples/controllers/1/botcmd.json",
+      "log" : "data/samples/controllers/1/botlog.json"
     } ]
   },
+  "attacks-http" : [ ],
   "network-analysis" : "{MAC=20-68-9D-C3-76-EB, ip=127.0.1.1}",
   "system-analysis" : "{os=A cool OS, kernel=A cool kernel}"
 }

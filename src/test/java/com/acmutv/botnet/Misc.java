@@ -25,10 +25,13 @@
  */
 package com.acmutv.botnet;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.quartz.CronExpression;
 
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class realizes local tests (for personal use only).
@@ -40,7 +43,10 @@ public class Misc {
 
   @Test
   public void test() throws ParseException {
-    CronExpression expr = new CronExpression("0 0 12 * * ?");
-    System.out.println(expr.getCronExpression());
+    Map<String, Object> m = new HashMap<>();
+    m.put("b", true);
+
+    final Boolean b = (Boolean) m.get("b");
+    Assert.assertTrue(b);
   }
 }

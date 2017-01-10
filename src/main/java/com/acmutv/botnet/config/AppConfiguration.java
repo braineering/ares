@@ -178,7 +178,7 @@ public class AppConfiguration {
 
   /**
    * The cron expression that sets up the sleep mode.
-   * Default is {@code SLEEP}.
+   * Default is {@code ASLEEP}.
    */
   private CronExpression sleep = SLEEP;
 

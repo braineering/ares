@@ -38,13 +38,11 @@ import lombok.Getter;
  */
 @Getter
 public enum BotState {
-  INIT ("INIT"),
-  JOIN ("JOIN"),
-  SLEEP ("SLEEP"),
-  SHUTDOWN ("SHUTDOWN"),
-  KILL ("KILL"),
-  DEAD ("DEAD"),
-  EXECUTION("EXECUTION");
+  INIT      ("INIT"),
+  JOIN      ("JOIN"),
+  ASLEEP    ("ASLEEP"),
+  DEAD      ("DEAD"),
+  EXECUTION ("EXECUTION");
 
   private final String name;
 

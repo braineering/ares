@@ -1,0 +1,8 @@
+{
+  "command": "UPDATE",
+  "settings": {
+    "prop1": "val1"
+  },
+  "delay": "10-15:SECONDS",
+  "report": true
+}

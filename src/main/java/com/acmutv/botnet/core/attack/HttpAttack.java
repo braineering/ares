@@ -40,7 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The details of a HTTP attack. Used by {@link QuartzHttpAttacker} to perform the attack.
+ * The details of a HTTP attack. Used by {@link HttpAttacker} to perform the attack.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

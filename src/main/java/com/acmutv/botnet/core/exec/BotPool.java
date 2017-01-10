@@ -27,7 +27,7 @@
 package com.acmutv.botnet.core.exec;
 
 import com.acmutv.botnet.core.attack.HttpAttack;
-import com.acmutv.botnet.core.attack.QuartzHttpAttacker;
+import com.acmutv.botnet.core.attack.HttpAttacker;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Interval;
@@ -159,7 +159,7 @@ public class BotPool {
     jdata.put("executions", attack.getExecutions());
     jdata.put("period", attack.getPeriod());
 
-    JobDetail job = JobBuilder.newJob(QuartzHttpAttacker.class)
+    JobDetail job = JobBuilder.newJob(HttpAttacker.class)
         .withIdentity(jobKey)
         .usingJobData(jdata)
         .build();

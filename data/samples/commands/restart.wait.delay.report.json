@@ -2,5 +2,6 @@
   "command": "RESTART",
   "resource": "data/samples/controllers/1/botinit.json",
   "wait": true,
-  "delay": "10-15:SECONDS"
+  "delay": "10-15:SECONDS",
+  "report": true
 }

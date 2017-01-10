@@ -10,10 +10,10 @@
       "log": "data/samples/controllers/1/botlog.json"
     }
   ],
-  "polling": "10-20:SECONDS",
+  "polling": "90-120:SECONDS",
   "reconnections": 3,
   "reconnectionWait": "2-5:SECONDS",
   "proxy": null,
-  "userAgent": null,
+  "userAgent": "MyAwesomeBot",
   "sleep": null
 }

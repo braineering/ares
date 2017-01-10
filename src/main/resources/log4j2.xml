@@ -7,12 +7,12 @@
         </Console>
 
         <File name="FileCommands" fileName="data/log/commands.log" append="false">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level - %msg%n"/>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %msg%n"/>
             <MarkerFilter marker="COMMAND" onMatch="ACCEPT" onMismatch="DENY"/>
         </File>
 
         <File name="FileAttacks" fileName="data/log/attacks.log" append="false">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level - %msg%n"/>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %msg%n"/>
             <MarkerFilter marker="ATTACK" onMatch="ACCEPT" onMismatch="DENY"/>
         </File>
 

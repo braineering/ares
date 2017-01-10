@@ -14,14 +14,14 @@ netInfo: True
 # COMMAND&CONTROL
 #===============================================================================
 controllers:
-  - init: data/samples/controllers/3/botinit-notvalid.json
-    command: data/samples/controllers/3/botcmd-notvalid.json
-    log: data/samples/controllers/3/botlog-notvalid.json
+  - init: data/samples/controllers/invalid/botinit.json
+    command: data/samples/controllers/invalid/botcmd.json
+    log: data/samples/controllers/invalid/botlog.json
   - init: data/samples/controllers/1/botinit.json
     command: data/samples/controllers/1/botcmd.json
     log: data/samples/controllers/1/botlog.json
-polling: 5-10:SECONDS
+polling: 90-120:SECONDS
 reconnections: 3
 reconnectionWait: 2-5:SECONDS
 proxy: none
-userAgent: Bot by Marciani and Porretta
+userAgent: MyAwesomeBot

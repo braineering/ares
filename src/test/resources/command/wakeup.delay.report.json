@@ -1,0 +1,5 @@
+{
+  "command": "WAKEUP",
+  "delay": "10-15:SECONDS",
+  "report": true
+}

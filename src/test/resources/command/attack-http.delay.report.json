@@ -1,0 +1,34 @@
+{
+  "command": "ATTACK_HTTP",
+  "attacks": [
+    {
+      "method": "GET",
+      "target": "http://www.google.com"
+    },
+    {
+      "method": "GET",
+      "target": "http://www.google.com",
+      "proxy": "192.168.0.1:8080"
+    },
+    {
+      "method": "GET",
+      "target": "http://www.google.com",
+      "proxy": "192.168.0.1:8080",
+      "properties": {
+        "User-Agent": "CustomUserAgent"
+      }
+    },
+    {
+      "method": "GET",
+      "target": "http://www.google.com",
+      "proxy": "192.168.0.1:8080",
+      "properties": {
+        "User-Agent": "CustomUserAgent"
+      },
+      "executions": 3,
+      "period": "10-15:SECONDS"
+    }
+  ],
+  "delay": "10-15:SECONDS",
+  "report": true
+}

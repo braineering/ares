@@ -1,0 +1,6 @@
+{
+  "command": "SLEEP",
+  "timeout": "10-15:SECONDS",
+  "delay": "10-15:SECONDS",
+  "report": true
+}

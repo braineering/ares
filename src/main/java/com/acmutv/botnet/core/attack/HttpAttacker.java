@@ -49,9 +49,9 @@ import java.util.Map;
 @Getter
 @PersistJobDataAfterExecution
 @DisallowConcurrentExecution
-public class QuartzHttpAttacker implements QuartzAttacker {
+public class HttpAttacker implements QuartzAttacker {
 
-  private static final Logger LOGGER = LogManager.getLogger(QuartzHttpAttacker.class);
+  private static final Logger LOGGER = LogManager.getLogger(HttpAttacker.class);
 
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -70,12 +70,12 @@ public class QuartzHttpAttacker implements QuartzAttacker {
     LOGGER.trace("Execution {}", counter);
 
     LOGGER.info(AppLogMarkers.ATTACK,
-        "Launching HTTP attack: {} {} ({}/{}) with proxy {} and request properties {}",
+        "Launching HTTP attack: {} {} ({}/{}) behind proxy {} with request params {}",
         method, target, counter, executions, (proxy == null)?"none":proxy.toCompactString(), properties);
 
     try {
       final int response = HttpManager.makeRequest(method, target, properties, proxy);
-      LOGGER.info("HTTP Attack response :: {} {} :: {}", method, target, response);
+      LOGGER.trace("HTTP Attack response :: {} {} :: {}", method, target, response);
     } catch (IOException exc) {
       LOGGER.warn(exc.getMessage());
     }

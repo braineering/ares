@@ -78,6 +78,7 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
         case ATTACK_HTTP:
           @SuppressWarnings("unchecked") final List<HttpAttack> httpAttacks = (List<HttpAttack>) value.getParams().get("attacks");
           final Interval httpDelay = (Interval) value.getParams().get("delay");
+          final Boolean httpReport = (Boolean) value.getParams().get("report");
 
           gen.writeArrayFieldStart("attacks");
           for (HttpAttack attack : httpAttacks) {
@@ -89,11 +90,16 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
             gen.writeStringField("delay", httpDelay.toString());
           }
 
+          if (httpReport != null) {
+            gen.writeBooleanField("report", httpReport);
+          }
+
           break;
 
         case CALMDOWN:
           final Boolean calmdownWait = (Boolean) value.getParams().get("wait");
           final Interval calmdownDelay = (Interval) value.getParams().get("delay");
+          final Boolean calmdownReport = (Boolean) value.getParams().get("report");
 
           if (calmdownWait != null) {
             gen.writeBooleanField("wait", calmdownWait);
@@ -103,11 +109,16 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
             gen.writeStringField("delay", calmdownDelay.toString());
           }
 
+          if (calmdownReport != null) {
+            gen.writeBooleanField("report", calmdownReport);
+          }
+
           break;
 
         case KILL:
           final Boolean killWait = (Boolean) value.getParams().get("wait");
           final Interval killDelay = (Interval) value.getParams().get("delay");
+          final Boolean killReport = (Boolean) value.getParams().get("report");
 
           if (killWait != null) {
             gen.writeBooleanField("wait", killWait);
@@ -115,6 +126,10 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
 
           if (killDelay != null) {
             gen.writeStringField("delay", killDelay.toString());
+          }
+
+          if (killReport != null) {
+            gen.writeBooleanField("report", killReport);
           }
 
           break;
@@ -132,6 +147,7 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
           final String resource = value.getParams().get("resource").toString();
           final Boolean restartWait = (Boolean) value.getParams().get("wait");
           final Interval restartDelay = (Interval) value.getParams().get("delay");
+          final Boolean restartReport = (Boolean) value.getParams().get("report");
 
           gen.writeStringField("resource", resource);
 
@@ -143,13 +159,22 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
             gen.writeStringField("delay", restartDelay.toString());
           }
 
+          if (restartReport != null) {
+            gen.writeBooleanField("report", restartReport);
+          }
+
           break;
 
         case SAVE_CONFIG:
           final Interval saveConfigDelay = (Interval) value.getParams().get("delay");
+          final Boolean saveConfigReport = (Boolean) value.getParams().get("report");
 
           if (saveConfigDelay != null) {
             gen.writeStringField("delay", saveConfigDelay.toString());
+          }
+
+          if (saveConfigReport != null) {
+            gen.writeBooleanField("report", saveConfigReport);
           }
 
           break;
@@ -157,6 +182,7 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
         case SLEEP:
           final Interval sleepTimeout = (Interval) value.getParams().get("timeout");
           final Interval sleepDelay = (Interval) value.getParams().get("delay");
+          final Boolean sleepReport = (Boolean) value.getParams().get("report");
 
           if (sleepTimeout != null) {
             gen.writeStringField("timeout", sleepTimeout.toString());
@@ -166,11 +192,16 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
             gen.writeStringField("delay", sleepDelay.toString());
           }
 
+          if (sleepReport != null) {
+            gen.writeBooleanField("report", sleepReport);
+          }
+
           break;
 
         case UPDATE:
           final Interval updateDelay = (Interval) value.getParams().get("delay");
           @SuppressWarnings("unchecked") final Map<String,String> settings = (Map<String,String>) value.getParams().get("settings");
+          final Boolean updateReport = (Boolean) value.getParams().get("report");
 
           if (settings != null) {
             gen.writeObjectFieldStart("settings");
@@ -184,13 +215,22 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
             gen.writeStringField("delay", updateDelay.toString());
           }
 
+          if (updateReport != null) {
+            gen.writeBooleanField("report", updateReport);
+          }
+
           break;
 
         case WAKEUP:
           final Interval wakeupDelay = (Interval) value.getParams().get("delay");
+          final Boolean wakeupReport = (Boolean) value.getParams().get("report");
 
           if (wakeupDelay != null) {
             gen.writeStringField("delay", wakeupDelay.toString());
+          }
+
+          if (wakeupReport != null) {
+            gen.writeBooleanField("report", wakeupReport);
           }
 
           break;
