@@ -17,7 +17,7 @@
         </File>
 
         <File name="FileReports" fileName="data/log/reports.log" append="false">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level - %msg%n"/>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %msg%n"/>
             <MarkerFilter marker="REPORT" onMatch="ACCEPT" onMismatch="DENY"/>
         </File>
     </Appenders>

@@ -114,7 +114,7 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           }
 
           if (node.hasNonNull("report")) {
-            final Boolean attackhttpReport = Boolean.valueOf(node.get("report").asBoolean());
+            final Boolean attackhttpReport = node.get("report").asBoolean();
             cmd.getParams().put("report", attackhttpReport);
           }
 
@@ -132,7 +132,7 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           }
 
           if (node.hasNonNull("report")) {
-            final Boolean calmdownReport = Boolean.valueOf(node.get("report").asBoolean());
+            final Boolean calmdownReport = node.get("report").asBoolean();
             cmd.getParams().put("report", calmdownReport);
           }
 
@@ -150,7 +150,7 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           }
 
           if (node.hasNonNull("report")) {
-            final Boolean killReport = Boolean.valueOf(node.get("report").asBoolean());
+            final Boolean killReport = node.get("report").asBoolean();
             cmd.getParams().put("report", killReport);
           }
 
@@ -183,7 +183,7 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           }
 
           if (node.hasNonNull("report")) {
-            final Boolean restartReport = Boolean.valueOf(node.get("report").asBoolean());
+            final Boolean restartReport = node.get("report").asBoolean();
             cmd.getParams().put("report", restartReport);
           }
 
@@ -196,7 +196,7 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           }
 
           if (node.hasNonNull("report")) {
-            final Boolean saveConfigReport = Boolean.valueOf(node.get("report").asBoolean());
+            final Boolean saveConfigReport = node.get("report").asBoolean();
             cmd.getParams().put("report", saveConfigReport);
           }
 
@@ -214,7 +214,7 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           }
 
           if (node.hasNonNull("report")) {
-            final Boolean sleepReport = Boolean.valueOf(node.get("report").asBoolean());
+            final Boolean sleepReport = node.get("report").asBoolean();
             cmd.getParams().put("report", sleepReport);
           }
 
@@ -235,7 +235,7 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           }
 
           if (node.hasNonNull("report")) {
-            final Boolean updateReport = Boolean.valueOf(node.get("report").asBoolean());
+            final Boolean updateReport = node.get("report").asBoolean();
             cmd.getParams().put("report", updateReport);
           }
 
@@ -248,7 +248,7 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           }
 
           if (node.hasNonNull("report")) {
-            final Boolean wakeupReport = Boolean.valueOf(node.get("report").asBoolean());
+            final Boolean wakeupReport = node.get("report").asBoolean();
             cmd.getParams().put("report", wakeupReport);
           }
 

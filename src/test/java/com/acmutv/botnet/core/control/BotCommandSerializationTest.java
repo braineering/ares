@@ -536,6 +536,7 @@ public class BotCommandSerializationTest {
     BotCommand cmdExpected = new BotCommand(CommandScope.UPDATE);
     cmdExpected.getParams().put("settings", new HashMap<String,String>(){{put("prop1","val1");}});
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
+    cmdExpected.getParams().put("report", true);
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
     BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
