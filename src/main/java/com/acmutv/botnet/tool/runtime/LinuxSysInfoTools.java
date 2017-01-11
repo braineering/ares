@@ -33,7 +33,7 @@ public class LinuxSysInfoTools {
 	 * @return osName
 	 */
 	public String getOsName(){
-		return RunCmdTools.runCmd("uname -o");
+		return RunCmdTool.runCmd("uname -o");
 	}
 
 	/**
@@ -41,7 +41,7 @@ public class LinuxSysInfoTools {
 	 * @return kernel Version
 	 */
 	public String getKernelVersion(){
-		return RunCmdTools.runCmd("uname -r");
+		return RunCmdTool.runCmd("uname -r");
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class LinuxSysInfoTools {
 	 * @return hostname
 	 */
 	public String getHostName(){
-		return RunCmdTools.runCmd("uname -n");
+		return RunCmdTool.runCmd("uname -n");
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class LinuxSysInfoTools {
 	 * @return username
 	 */
 	public String getUserName(){
-		return RunCmdTools.runCmd("echo $USER");
+		return RunCmdTool.runCmd("echo $USER");
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class LinuxSysInfoTools {
 	 * @return network info
 	 */
 	public String getNetworkData(){
-		return RunCmdTools.runCmd("");
+		return RunCmdTool.runCmd("");
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class LinuxSysInfoTools {
 	 * @return applications list
 	 */
 	public String getApplications(){
-		return RunCmdTools.runCmd("dpkg --get-selections");
+		return RunCmdTool.runCmd("dpkg --get-selections");
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class LinuxSysInfoTools {
 	 * @return local connections list
 	 */
 	public String getNetworkLocations(){
-		return RunCmdTools.runCmd("");
+		return RunCmdTool.runCmd("");
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class LinuxSysInfoTools {
 	 * @return browsers list
 	 */
 	public String getBrowsers(){
-		String app = RunCmdTools.runCmd("dpkg --get-selections");
+		String app = RunCmdTool.runCmd("dpkg --get-selections");
 		String browsers = "";
 
 		if(app.contains("Chrome"))

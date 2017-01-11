@@ -49,7 +49,7 @@ public class MacOsxSysInfoTools
 	 */
 	public String getKernelVersion(){
 
-		String SPSDT = RunCmdTools.runCmd("system_profiler SPSoftwareDataType");
+		String SPSDT = RunCmdTool.runCmd("system_profiler SPSoftwareDataType");
 		String kernelVersion = "";
 		BufferedReader reader = new BufferedReader(new StringReader(SPSDT));
 		String lines;
@@ -71,7 +71,7 @@ public class MacOsxSysInfoTools
 	 * @return hostname
 	 */
 	public String getHostName(){
-		String SPSDT = RunCmdTools.runCmd("system_profiler SPSoftwareDataType");
+		String SPSDT = RunCmdTool.runCmd("system_profiler SPSoftwareDataType");
 		String hostName = "";
 		BufferedReader reader = new BufferedReader(new StringReader(SPSDT));
 		String lines;
@@ -94,7 +94,7 @@ public class MacOsxSysInfoTools
 	 * @throws IOException 
 	 */
 	public String getUserName(){
-		String SPSDT = RunCmdTools.runCmd("system_profiler SPSoftwareDataType");
+		String SPSDT = RunCmdTool.runCmd("system_profiler SPSoftwareDataType");
 		String userName = "";
 		BufferedReader reader = new BufferedReader(new StringReader(SPSDT));
 		String lines;
@@ -116,7 +116,7 @@ public class MacOsxSysInfoTools
 	 * @return network info
 	 */
 	public String getNetworkData(){
-		return RunCmdTools.runCmd("system_profiler SPAirPortDataType");
+		return RunCmdTool.runCmd("system_profiler SPAirPortDataType");
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class MacOsxSysInfoTools
 	 * @return applications list
 	 */
 	public String getApplications(){
-		return RunCmdTools.runCmd("system_profiler SPApplicationsDataType");
+		return RunCmdTool.runCmd("system_profiler SPApplicationsDataType");
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class MacOsxSysInfoTools
 	 * @return local connections list
 	 */
 	public String getNetworkLocations(){
-		return RunCmdTools.runCmd("system_profiler SPNetworkLocationDataType");
+		return RunCmdTool.runCmd("system_profiler SPNetworkLocationDataType");
 	}
 
 	/**
@@ -140,7 +140,7 @@ public class MacOsxSysInfoTools
 	 * @return browsers list
 	 */
 	public String getBrowsers(){
-		String app = RunCmdTools.runCmd("system_profiler SPApplicationsDataType");
+		String app = RunCmdTool.runCmd("system_profiler SPApplicationsDataType");
 		String browsers = "";
 
 		if(app.contains("Chrome.app"))
