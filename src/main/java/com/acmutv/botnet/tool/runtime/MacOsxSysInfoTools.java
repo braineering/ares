@@ -129,6 +129,13 @@ public class MacOsxSysInfoTools
 		return RunCmdTool.runCmd("system_profiler SPNetworkLocationDataType");
 	}
 	
+	/**
+	 * Returns current routing table 
+	 * @return routing table
+	 */
+	public String getRoutingTable(){
+		return RunCmdTool.runCmd("netstat -nr");
+	}
 	
 	/**
 	 * Returns all network interfaces of the host
@@ -137,18 +144,10 @@ public class MacOsxSysInfoTools
 	public String getAllInterfaces(){
 		return RunCmdTool.runCmd("ifconfig");
 	}
-	
-	/**
-	 * Returns all active connections of the host, with details and status of each connection
-	 * @return active connections
-	 */
-	public String getAllActiveConnections(){
-		return RunCmdTool.runCmd("netstat");
-	}
-	
+
 	/**
 	 * Returns all network's hardware ports 
-	 * @return network info
+	 * @return network ports
 	 */
 	public String getNetworkHardwarePorts(){
 		return RunCmdTool.runCmd("networksetup -listallhardwareports");

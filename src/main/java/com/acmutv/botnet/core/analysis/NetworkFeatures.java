@@ -76,14 +76,14 @@ public class NetworkFeatures {
 	private String NetworkInterfaces;
 
 	/**
-	 * Active Connections
-	 */
-	private String ActiveConnections;
-
-	/**
 	 * Network Hardware Ports
 	 */
 	private String NetworkPorts;
+	
+	/**
+	 * Current Routing Table
+	 */
+	private String RoutingTable;
 
 
 	/**
@@ -100,9 +100,8 @@ public class NetworkFeatures {
 		String currentNetworkInformation = null;
 		String networkServices = null;
 		String networkInterfaces = null;
-		String activeConnections = null;
 		String networkPorts = null;
-
+		String routingTable = null;
 
 		try {
 			ip = ConnectionManager.getIP();
@@ -121,8 +120,8 @@ public class NetworkFeatures {
 			currentNetworkInformation = osx.getCurrentNetworkInformation();
 			networkServices = osx.getLocalNetworkServices();
 			networkInterfaces = osx.getAllInterfaces();
-			activeConnections = osx.getAllActiveConnections();
 			networkPorts = osx.getNetworkHardwarePorts();
+			routingTable = osx.getRoutingTable();
 			
 		}else if (osName.toUpperCase().equals("LINUX")){
 
@@ -133,6 +132,6 @@ public class NetworkFeatures {
 
 		}
 
-		return new NetworkFeatures(ip, mac, currentNetworkInformation, networkServices, networkInterfaces, activeConnections,networkPorts);
+		return new NetworkFeatures(ip, mac, currentNetworkInformation, networkServices, networkInterfaces, networkPorts,routingTable);
 	}
 }
