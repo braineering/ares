@@ -1,0 +1,101 @@
+\section{Configuration}
+\label{sec:configuration}
+
+The bot behaviour is ruled by a fully customizable configuration. When no custom configuration is specified, the bot looks for a YAML file named \texttt{config.yaml} in the present working directory. If not there, the bot loads the default one, which is hardly wired in code. For details about how to submit a custom configuration, please refer to \ref{sec:usage}.
+
+We now show the configuration components,the YAML configuration schema to express them and a tool to generate configurations.
+
+\begin{description}
+  \setlength\itemsep{1em}
+
+  \item[cnfInfo] if true, reports include the current bot configuration.
+
+  \item[tgtInfo] if true, reports include details about the targets to attack.
+
+  \item[sysInfo] if true, reports include details about the localhost system.
+
+  \item[netInfo] if true, the bot report includes details about the network the localhost is attached to.
+
+  \item[polling] period between consecutive requests to the controller for the next command to execute. The polling period is a random amount of time within a certain time interval. The randomness of period guarantees a greater variance in bots behaviour.
+
+  \item[reconnections] number of times the bot tries to connect to an unreacheable controller.
+
+  \item[reconnectionWait] period between reconnections. The reconnection period is a random amount of time within a certain time interval. The period randomness guarantees a greater variance in bots behaviour.
+
+  \item[proxy] HTTP proxy behind which the bot contacts remote controllers and targets. The default configuration has no proxy.
+
+  \item[sleep] calendar for the sleeping mode. The default configuration has no sleep calendar.
+
+  \item[controllers] list of controllers to contact. The default configuration has an empty list of controller and a code wired fallback controller \texttt{data/samples/controllers/1/bot{init,cmd,log}.json}.
+
+  \item[userAgent] the default User-Agent to use in HTTP interactions both with the controller and targets.
+\end{description}
+
+The configuration is given in YAML format. The schema shows some non primitive data types that deserves further attention.
+
+\begin{verbatim}
+  cnfInfo: True|False
+  tgtInfo: True|False
+  sysInfo: True|False
+  netInfo: True|False
+  polling: time-expression
+  reconnections: integer in [0,65535]
+  reconnectionWait: time-expression
+  proxy: proxy-expression
+  sleep: cron-expression
+  userAgent: string
+  controllers:
+    - controller-object
+\end{verbatim}
+
+A \texttt{time-expression} represents a temporal interval — e.g. a value in seconds between 3 and 5 seconds. This expression is a string in the form \texttt{min-max:unit}, where \texttt{min} is a positive long, \texttt{max} is a positive long greater than or equal to \texttt{min}, and \texttt{unit} is the string representation of a standard Java TimeUnit\footnote{i.e. NANOSECONDS, MICROSECONDS, MILLISECONDS, SECONDS, MINUTES, HOURS, DAYS.}. If \texttt{min} and \texttt{max} are both equal to a positive long \texttt{amount}, the time interval could be representaed both by the redundant expression \texttt{amount-amount:unit} and by the more compact expression \texttt{amount:unit}.
+
+A \texttt{proxy-expression} represents a HTTP proxy — e.g. the proxy 123.123.123.123 with port 3000. This expression is a string in the form \texttt{address:port}, where \texttt{addres} is an IPv4 address and \texttt{port} is a port number. The expression can also be a string \texttt{none}, meaning that no proxy should be used, and \texttt{null}, meaning that any default proxy should be used.
+
+A \texttt{cron-expression} represents a calendar — e.g. every Wednesday between 10 PM and 11PM. This expression is a standard Unix CRON expression. For details about the standard, please refer to \cite{cron-expression}.
+
+A \texttt{controller-object} represents a bot controller — e.g. a controller with init interface X command interface Y and log interface Z. A controller is expressed in the following form:
+
+\begin{verbatim}
+  init: resource expression
+  cmd:  resource expression
+  log:  resource expression
+\end{verbatim}
+
+where a \texttt{resource expression} represents a readable local or remote resource — i.e. a standard file pathname or a remote Web URL.
+
+Here we show a sample configuration for reader's convenience. Other sample configurations can be found in \texttt{data/samples/configurations}.
+
+\begin{verbatim}
+  cnfInfo: True
+  tgtInfo: False
+  sysInfo: True
+  netInfo: False
+  polling: 10-15:SECONDS
+  reconnections: 3
+  reconnectionWait: 3-5:SECONDS
+  proxy: 123.123.123.123:3000
+  sleep: * * * SAT-SUN * ?
+  userAgent: BOTAgent
+  controllers:
+    - init: data/samples/controllers/1/botinit.json
+      command: data/samples/controllers/1/botcmd.json
+      log: data/samples/controllers/1/botlog.json
+    - init: data/samples/controllers/2/botinit.json
+      command: data/samples/controllers/2/botcmd.json
+      log: data/samples/controllers/2/botlog.json
+\end{verbatim}
+
+\subsection{Configuration WUI}
+\label{sec:configuration-wui}
+
+\textcolor{green}{\lipsum[1]}
+
+\begin{figure}[tp]
+  \centering
+  \includegraphics{./fig/acmlarge-mouse}
+  \caption{\textcolor{green}{The Web User Interface to build configurations.}}
+    \label{fig:configuration-wui}
+\end{figure}
+
+\textcolor{green}{\lipsum[1]}

@@ -1,0 +1,122 @@
+\section{Bot}
+\label{sec:bot}
+
+The bot life cycle is modeled as a Finite State Automaton (FSA) with the state space defined as follows and depicted in \ref{fig:bot-fsa}.
+
+\begin{figure}[tp]
+  \centering
+  \includegraphics{./fig/acmlarge-mouse}
+  \caption{The bot's finite state automaton (FSA).}
+    \label{fig:bot-fsa}
+\end{figure}
+
+\begin{description}
+  \setlength\itemsep{1em}
+
+  \item[INIT] the bot generates a unique identifier in the form \texttt{MAC:JVM}, where \texttt{MAC} is the local MAC address and \texttt{JVM} is the name of the Java Virtual Machine currently running the bot; it then allocates basic resources (e.g. shutdown hooks for resource releasing); it tries to join a botnet using the specified list of controllers.
+  Errors in this state are considered fatal, so they would cause bot termination. The pseudocode of this state is shown in \ref{alg:state-init-pseudocode}.
+
+  \item[EXECUTION] the bot polls the controller for the next command; it waits a delay before command execution (if required); it executes the command; it produces the report and sends it to the controller (if required); it waits for the next polling.
+  Errors in this state are considered warnings: they are handled and never cause bot termination. The pseudocode of this state is shown in \ref{alg:state-execution-pseudocode}.
+
+  \item[SLEEP] no reports are sent to the controller nor attacks are executed. The bot polls the controller for the next command, waiting for a \texttt{WAKEUP} (it would transit to state \texttt{EXECUTION}) or a \texttt{KILL} (it would transit to state \texttt{DEAD}).
+  In this state errors are considered warning: they are handled and never cause bot termination. The pseudocode of this state is shown in \ref{alg:state-sleep-pseudocode}.
+
+  \item[DEAD] attacks are unscheduled, resources are released and the bot terminates. In this state all errors are ignored, because no one of them could never compromise the state purpose. The pseudocode of this state is shown in \ref{alg:state-dead-pseudocode}.
+
+\end{description}
+
+\bigskip
+
+\begin{algorithm}[H]
+  \SetAlgoNoLine
+  $mac \leftarrow$ getMACAddress() \\
+  $jvm \leftarrow$ getJVMName() \\
+  $id \leftarrow$ concat($mac$,$jvm$) \\
+  setBotId($id$)
+  $controller \leftarrow$ None \\
+  $joined \leftarrow$ False \\
+  $controllerIdx \leftarrow$ 0 \\
+  $reconnections \leftarrow$ 0 \\
+  $maxReconnections \leftarrow$ getBotConfig(RECONNECTIONS) \\
+  $reconnectionWaitInterval \leftarrow$ getBotConfig(RECONNECTION-WAIT) \\
+  \While{ not $joined$ } {
+    $currentController \leftarrow$ getBotConfig(CONTROLLERS,$controllerIdx$)
+    \If{ canLoadConfig($currentController$) } {
+      loadConfig($currentController$)
+      $controller \leftarrow$ $currentController$
+      $joined \leftarrow$ True
+    } \Else {
+      $reconnections \leftarrow reconnections + 1$
+      \If { $reconnections <= maxReconnections$ } {
+        $reconnectionWait \leftarrow$ randomWithin($reconnectionWaitInterval$) \\
+        wait($reconnectionWait$)
+      } \Else {
+        $controllerIdx \leftarrow controllerIdx + 1$
+      }
+    }
+  }
+  \caption{Pseudocode for state \texttt{INIT}}
+  \label[alg]{alg:state-init-pseudocode}
+\end{algorithm}
+
+\bigskip
+
+\begin{algorithm}[H]
+  \SetAlgoNoLine
+  $controller \leftarrow$ getBotConfig(CONTROLLER) \\
+  $pollWaitInterval \leftarrow$ getBotConfig(POLL-WAIT) \\
+  $reportType \leftarrow$ getBotConfig(REPORT-TYPE) \\
+  $command \leftarrow$ getNextCommand() \\
+  \If{requiresDelay($command$)} {
+    $cmdDelayInterval \leftarrow$ getCommandParam($command$,DELAY-INTERVAL) \\
+    $cmdDelay \leftarrow$ randomWithin($cmdDelayInterval$) \\
+    wait($cmdDelay$)
+  }
+  executeCommand($command$)
+  \If{requiresReport($command$)} {
+    generateReport($reportType$) \\
+    sendReportTo($controller$)
+  }
+  $pollWait \leftarrow$ randomWithin($pollWaitInterval$) \\
+  wait($pollWait$)
+  \caption{Pseudocode for state \texttt{EXECUTION}}
+  \label[alg]{alg:state-execution-pseudocode}
+\end{algorithm}
+
+\bigskip
+
+\begin{algorithm}[H]
+  \SetAlgoNoLine
+  $controller \leftarrow$ getBotConfig(CONTROLLER) \\
+  $pollWaitInterval \leftarrow$ getBotConfig(POLL-WAIT) \\
+  $reportType \leftarrow$ getBotConfig(REPORT-TYPE) \\
+  $command \leftarrow$ getNextCommand() \\
+  \If{$command =$ WAKEUP $command =$ KILL} {
+    \If{requiresDelay($command$)} {
+      $cmdDelayInterval \leftarrow$ getCommandParam($command$,DELAY-INTERVAL) \\
+      $cmdDelay \leftarrow$ randomWithin($cmdDelayInterval$) \\
+      wait($cmdDelay$)
+    }
+  }
+  executeCommand($command$)
+  $pollWait \leftarrow$ randomIn($pollWaitInterval$) \\
+  wait($pollWait$)
+  \caption{Pseudocode for state \texttt{SLEEP}}
+  \label[alg]{alg:state-sleep-pseudocode}
+\end{algorithm}
+
+\bigskip
+
+\begin{algorithm}[H]
+  \SetAlgoNoLine
+  $waitJobs \leftarrow$ getBotConfig(WAIT-JOBS) \\
+  stopScheduler($waitJobs$) \\
+  freeScheduler() \\
+  freeIOResources() \\
+  interruptBotLoop() \\
+  executeShutdownHooks() \\
+  exit()
+  \caption{Pseudocode for state \texttt{DEAD}}
+  \label[alg]{alg:state-dead-pseudocode}
+\end{algorithm}

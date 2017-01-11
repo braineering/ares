@@ -1,0 +1,86 @@
+\section{Implementation}
+\label{sec:implementation}
+
+The bot has been realized as a Java\footnote{Oracle Java SE 8} desktop application, packaged with Maven into a self-contained\footnote{fat jar encapsulating all external dependencies.} jar with shrunk and obfuscated code.
+
+Basically, the bot implements the finite state automaton (\ref{sec:bot}) and the functionalities required for configuration parsing (\ref{sec:configuration}), commands execution (\ref{sec:commands}) and logging. All functionalities has been tested carefully against 123 total JUnit tests.
+
+\textcolor{green}{WEB INTERFACE IMPLEMENTATION \lipsum[1]}
+
+Our bot and web user interfaces leverage some of well known technologies. Here we present them, giving an idea about how they have been used in our implementation. The reader may refer to the open source code of the project and the corresponding Javadocs to get into implementation details.
+
+\begin{description}
+  \setlength\itemsep{1em}
+
+  \item[QUARTZ] job scheduling framework developed by the Terracotta Inc \cite{quartz-scheduler}.
+  It is a widely adopted solution to support process workflow and system management in enterprise applications.
+  In our application it is used to implement the bot thread pool for both attacks and sleep mode scheduling.
+
+  \item[LOG4J2] logging framework developed by the Apache Software Foundation \cite{log4j2}.
+  It is a de facto standard for logging in Java\footnote{together with its main competitor, Logback.}, tipically used as a SLF4J binding\footnote{SLF4J is a widely adopted Java logging facade.}.
+  In our application, it is used both for console and file logging.
+
+  \item[COMMONS CLI] command line parsing framework developed by the Apache Software Foundation as a part of the bigger Jakarta project\cite{commons-cli}.
+  It is a well known solution for argument parsing in CLI based Java applications.
+
+  \item[JACKSON] serialization framework developed by the Fasterxml team \cite{jackson}.
+  It supports most of the widespread serialization format, such as JSON, XML, YAML and so on.
+  In our application it is used to serialize/deserialize configuration (in YAML) and commands (in JSON).
+
+  \item[LOMBOK] framework of annotations for the encapsulation of boilerplates and simple patterns \cite{lombok}.
+  In our application it is used to generate constructors getters/setters toString/hashCode methods. As such a generation is evaluated at compile time, the code of entity classes is considerably reduced.
+
+  \item[BOOTSTRAP] \textcolor{green}{\lipsum[1]}
+
+  \item[JQUERY] \textcolor{green}{\lipsum[1]}
+
+\end{description}
+
+
+\subsection{Concealment}
+\label{sec:concealment}
+
+Since the bot is a malware, its first priority is not to be discovered by the victim's system. Just like any malware, bots should be easily distributed, act covertly and evade the health checks of the infected system. The concealment can be achieved, in the first instance, by making the code minimal, efficient and obfuscated.
+
+\textit{Code minimization} allows to distribute the bot in a small sized package, which is easy to conceal in an infection vector, easy to trasmit and whose installation on the system goes unnoticed.
+\textit{Code efficiency} allows the bot to act in a minimally invasive way in terms of memory usage, access to local resources, external communications and sub-processes creation.
+\textit{Code obfuscation} allows the bot to evade traditional health checks based on code patterns analysis. As a beneficial side effect, an obfuscation dictionary with short words can assist code minimization.
+
+All of these aspects have been implemented leveraging \textit{ProGuard}, the most popular Java bytecode optimizer developed by the GuardSquare Inc. \cite{proguard}. This tool realizes code shrinking, optimization and obfuscation. It can make Java applications up to 90\% smaller, up to 20\% faster and protected against reverse engineering\cite{guardsquare}.
+
+In our application, ProGuard has been embedded into the Maven packaging life-cycle via an ad-hoc plugin \cite{proguard-maven-plugin}. The adopted configuration of ProGuard behaviour can be found in \texttt{config.pro}. From this configuration a conservative approach may be noticed. The widespread use of reflection, serialization and annotations in the framework the bot code depends on, makes it necessary to limit both the shrinking and the obfuscation of these frameworks. A deeper code inspection on these frameworks would allow a more aggressive approach, thus obtaining a more minimized and obfuscated code. \footnote{Code obfuscation is subjected to a crucial tradeoff, because the excessive or naive code obfuscation may have collateral side effects. The obfuscation of the whole legitimate code may arouse suspicion of a meticolous checks, because only a legitimate program of high industrial value has no dependency on legitimate clear code. On the other hand, legitimate code letting guess actions of malicious program should never left clear.}.
+
+
+\subsection{Logging}
+\label{sec:logging}
+
+Our bot records events both on console and file adopting a logging discipline that depends on the chosen execution mode. The \texttt{default} mode prints in console the strictly relevant output and produces log files. The \texttt{trace} mode prints in console a detailed tracing output and produces log files. The \texttt{silent} mode does neither print anything in console nor produce any log file.
+To run the program in one of these modes, specify the corresponding option, as indicated in \ref{sec:usage}.
+
+Console logging prints events on the standard output\footnote{standard error is never used, neither in case of warnings nor errors.}.
+File logging deals with three types of events: it appends commands-related events on \texttt{data/log/commands.log}, attacks-related ones on \texttt{data/log/attacks.log} and report-related ones on \texttt{data/log/reports.log}. These two files are emptied every time the bot is started.
+
+A general log message printed to console has the following pattern
+
+\begin{verbatim}
+  [timestamp] [tread-name] [log-level] [class] [method] - [message]
+\end{verbatim}
+
+A log message on file about commands has the following pattern
+
+\begin{verbatim}
+  [timestamp] Received [COMMAND] with [PARAMS] from C&C at [CC-RESOURCE]
+\end{verbatim}
+
+A log message on file about attacks has the following pattern
+
+\begin{verbatim}
+  [timestamp] Launching HTTP attack: [HTTP-METHOD] [TARGET] ([ITER]/[ITERS])
+              behind proxy [ADDR:PORT] with request params [HTTP-REQUEST-PROPS]
+\end{verbatim}
+
+A log message on file about reports has the following pattern
+
+\begin{verbatim}
+  [timestamp] Report sent to C&C at [CC-RESOURCE] [REPORT]
+\end{verbatim}

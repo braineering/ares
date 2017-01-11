@@ -1,0 +1,18 @@
+\section{Architecture}
+\label{sec:architecture}
+
+Since the development of a real botnet goes beyond the scope of this work, we adhered to an architecture that allowed us to focus on the development of a bot thought for testing and educational showcase, but actually ready for a real scenario. \ref{fig:botnet-architecture} shows the reference architecture.
+
+\begin{figure}[tp]
+  \centering
+  \includegraphics{./fig/acmlarge-mouse}
+  \caption{The botnet architecture. In the real scenario, the bot interacts with a web server - e.g. a web server exposing REST APIs. In the testing scenario, the bot mimics the bot-controller interactions, reading/writing local files.}
+    \label{fig:botnet-architecture}
+\end{figure}
+
+The reference architecture models a bot that can be instructed by a centralized C\&C server.
+Here, the controller is defined giving three interfaces: the \textit{init interface} is the one from which the bot loads the configuration to join the botnet; the \textit{command interface} from which the bot loads commands to execute; the \textit{log interface} is the one that the bot submits reports to.
+
+Such a model makes our bot is suitable both for \textit{local testing}, where interfaces are local files, and \textit{real bot-controller interaction}, where interfaces are web interfaces. In the following we often says "the bot receives from the controller" and "the bot sends to the controller", meaning that "the bot reads from command interface" and "the bot write to log interface", respectively.
+
+Our bot is configured providing a YAML configuration file and executes commands given in JSON format. Both can be produced by convenient web-based interfaces presented in \ref{sec:configuration-wui} \ref{sec:commands-wui}, respectively.

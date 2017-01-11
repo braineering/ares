@@ -27,6 +27,7 @@
 package com.acmutv.botnet;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.text.ParseException;
@@ -42,6 +43,7 @@ import java.util.Map;
 public class Misc {
 
   @Test
+  @Ignore
   public void test() throws ParseException {
     Map<String, Object> m = new HashMap<>();
     m.put("b", true);

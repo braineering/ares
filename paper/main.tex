@@ -1,0 +1,134 @@
+%*******************************************************************************
+% Title: A bot showcase
+%
+% Series: Courseworks in Computer Security
+%
+% Author: Giacomo Marciani <gmarciani@acm.org>
+% Author: Michele Porretta <mporretta@acm.org>
+%
+% Institution: Department of Civil Engineering and Computer Science Engineering,
+% University of Rome Tor Vergata, Italy
+%
+% Style: ACM-UTV Large VERSION 2017
+%*******************************************************************************
+
+\documentclass[acmlarge]{acmart}
+
+%*******************************************************************************
+% Packages
+%*******************************************************************************
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{lipsum}
+\usepackage{xr}
+\usepackage{color}
+
+%*******************************************************************************
+% Meta
+%*******************************************************************************
+\acmJournal{ACMROME-CP}
+\acmVolume{1}
+\acmNumber{1}
+\acmArticle{1}
+\acmYear{2017}
+\acmMonth{2}
+\acmArticleSeq{11}
+\acmDOI{0000001.0000001}
+\acmPrice{0.00}
+\received[accepted]{February 2017}
+
+%*******************************************************************************
+% Copyright
+%*******************************************************************************
+\setcopyright{rightsretained}
+
+%*******************************************************************************
+% Algorithm
+%*******************************************************************************
+\usepackage[ruled]{algorithm2e}
+\renewcommand{\algorithmcfname}{ALGORITHM}
+\SetAlFnt{\small}
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetAlCapHSkip{0pt}
+\IncMargin{-\parindent}
+
+%*******************************************************************************
+% Numbering
+%*******************************************************************************
+\numberwithin{equation}{section}
+
+%*******************************************************************************
+% References
+%*******************************************************************************
+\externaldocument{sec/introduction}
+\externaldocument{sec/botnets}
+\externaldocument{sec/architecture}
+\externaldocument{sec/bot}
+\externaldocument{sec/configuration}
+\externaldocument{sec/commands}
+\externaldocument{sec/reports}
+\externaldocument{sec/implementation}
+\externaldocument{sec/usage}
+\externaldocument{sec/sample-execution}
+\externaldocument{sec/further-improvements}
+\externaldocument{sec/conclusions}
+
+\begin{document}
+%*******************************************************************************
+% Title and Authors
+%*******************************************************************************
+\title{A bot showcase}
+\author{Giacomo Marciani}
+\orcid{0000-0002-3675-8804}
+\affiliation{%
+  \institution{University of Rome Tor Vergata}
+  \streetaddress{Via del Politecnico 1}
+  \city{Rome}
+  \state{RM}
+  \postcode{00133}
+  \country{IT}}
+\author{Michele Porretta}
+\orcid{0000-0000-0000-0000}
+\affiliation{%
+  \institution{University of Rome Tor Vergata}
+  \streetaddress{Via del Politecnico 1}
+  \city{Rome}
+  \state{RM}
+  \postcode{00133}
+  \country{IT}}
+
+%*******************************************************************************
+% Front
+%*******************************************************************************
+\input{sec/abstract}
+\input{sec/ccs-keywords}
+
+\maketitle
+
+\renewcommand{\shortauthors}{G. Marciani and M. Porretta}
+
+%*******************************************************************************
+% Core Content
+%*******************************************************************************
+\input{sec/introduction}
+\input{sec/botnets}
+\input{sec/architecture}
+\input{sec/bot}
+\input{sec/configuration}
+\input{sec/commands}
+\input{sec/reports}
+\input{sec/implementation}
+\input{sec/usage}
+\input{sec/sample-execution}
+\input{sec/further-improvements}
+\input{sec/conclusions}
+
+%*******************************************************************************
+% Bibliography
+%*******************************************************************************
+\bibliographystyle{acmreferences}
+\bibliography{ref/biblio}
+
+\end{document}
