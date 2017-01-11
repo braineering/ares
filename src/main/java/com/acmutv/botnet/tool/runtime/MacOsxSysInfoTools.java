@@ -113,28 +113,47 @@ public class MacOsxSysInfoTools
 
 	/**
 	 * Returns info of the network it is connected to the system
+	 * e.g. Wi-Fi Interface info & all Wi-Fi networks
 	 * @return network info
 	 */
-	public String getNetworkData(){
+	public String getCurrentNetworkInformation(){
 		return RunCmdTool.runCmd("system_profiler SPAirPortDataType");
 	}
 
 	/**
-	 * Returns the list of applications installed on the system
-	 * @return applications list
+	 * Returns the local network services of the system
+	 * e.g. Wi-Fi info, Bluetooth Info, Ethernet Info...etc.
+	 * @return local network services
 	 */
-	public String getApplications(){
-		return RunCmdTool.runCmd("system_profiler SPApplicationsDataType");
-	}
-
-	/**
-	 * Returns the local connections of the system
-	 * @return local connections list
-	 */
-	public String getNetworkLocations(){
+	public String getLocalNetworkServices(){
 		return RunCmdTool.runCmd("system_profiler SPNetworkLocationDataType");
 	}
-
+	
+	
+	/**
+	 * Returns all network interfaces of the host
+	 * @return network interfaces
+	 */
+	public String getAllInterfaces(){
+		return RunCmdTool.runCmd("ifconfig");
+	}
+	
+	/**
+	 * Returns all active connections of the host, with details and status of each connection
+	 * @return active connections
+	 */
+	public String getAllActiveConnections(){
+		return RunCmdTool.runCmd("netstat");
+	}
+	
+	/**
+	 * Returns all network's hardware ports 
+	 * @return network info
+	 */
+	public String getNetworkHardwarePorts(){
+		return RunCmdTool.runCmd("networksetup -listallhardwareports");
+	}
+	
 	/**
 	 * Returns the list of browsers installed on the system
 	 * @return browsers list
@@ -153,5 +172,13 @@ public class MacOsxSysInfoTools
 			browsers +=" Opera ";
 
 		return browsers;
-	}	
+	}
+	
+	/**
+	 * Returns the list of applications installed on the system
+	 * @return applications list
+	 */
+	public String getApplications(){
+		return RunCmdTool.runCmd("system_profiler SPApplicationsDataType");
+	}
 }

