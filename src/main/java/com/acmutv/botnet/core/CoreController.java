@@ -64,7 +64,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class realizes the core business logic.
+ * The core business logic.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

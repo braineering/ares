@@ -34,7 +34,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.*;
 
 /**
- * This class realizes bot command services.
+ * The bot command services.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

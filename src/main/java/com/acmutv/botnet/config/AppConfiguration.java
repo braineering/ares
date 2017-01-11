@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class realizes the app configuration model.
+ * The app configuration model.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

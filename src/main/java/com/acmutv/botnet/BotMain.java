@@ -33,7 +33,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This class realizes the app entry-point.
+ * The application entry-point.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
@@ -54,6 +54,7 @@ public class BotMain {
       CoreController.startBot();
     } catch (BotFatalException exc) {
       LOGGER.error(exc.getMessage());
+      System.exit(-1);
     }
 
     System.exit(0);

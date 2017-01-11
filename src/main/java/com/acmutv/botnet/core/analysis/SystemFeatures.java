@@ -32,7 +32,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * This class realizes the model of system information.
+ * The model of system information.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

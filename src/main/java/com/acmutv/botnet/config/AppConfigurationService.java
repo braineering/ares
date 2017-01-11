@@ -39,7 +39,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * This class realizes the app configuration services.
+ * I/O services for app configuration.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

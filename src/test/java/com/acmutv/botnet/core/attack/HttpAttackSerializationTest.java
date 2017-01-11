@@ -23,6 +23,7 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
  */
+
 package com.acmutv.botnet.core.attack;
 
 import com.acmutv.botnet.core.attack.serial.HttpAttackJsonMapper;

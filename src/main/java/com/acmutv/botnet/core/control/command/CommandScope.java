@@ -30,7 +30,6 @@ import lombok.Getter;
 
 /**
  * Enumerates bot's command types.
- * These command are sent by the Controller and executed by the bot.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

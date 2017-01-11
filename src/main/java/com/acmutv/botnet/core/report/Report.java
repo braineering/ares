@@ -31,7 +31,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 
 /**
- * This interface defines a generic bot response report.
+ * A generic bot response report.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

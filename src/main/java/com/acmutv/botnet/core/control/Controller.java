@@ -35,7 +35,7 @@ import lombok.Data;
 import lombok.NonNull;
 
 /**
- * This class realizes a simple Command and Control.
+ * A simple Command and Control model.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

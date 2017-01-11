@@ -44,7 +44,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * This class realizes the Command Line Interface services.
+ * The Command Line Interface services.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

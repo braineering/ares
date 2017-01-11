@@ -40,7 +40,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.EqualsAndHashCode;
 
 /**
- * This class realizes the JSON constructor for {@link Report}.
+ * The JSON constructor for {@link Report}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

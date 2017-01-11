@@ -30,8 +30,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 /**
- * This class realizes the command line interface options of the whole application.
- * The class is implemented as a singleton.
+ * The command line interface options of the whole application.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0

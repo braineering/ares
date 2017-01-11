@@ -36,7 +36,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 /**
- * This class realizes the model of network information.
+ * The model of network information.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
