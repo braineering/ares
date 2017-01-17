@@ -61,7 +61,6 @@ public class HttpAttacker implements QuartzAttacker {
     final HttpMethod method = (HttpMethod) jobmap.get("method");
     final URL target = (URL) jobmap.get("target");
     final HttpProxy proxy = (HttpProxy) jobmap.get("proxy");
-    @SuppressWarnings("unchecked") final Map<String,String> properties = (Map<String,String>) jobmap.get("properties");
     final int counter = (int)jobmap.getOrDefault("counter", 1);
     final int executions = jobmap.getInt("executions");
 
@@ -70,11 +69,11 @@ public class HttpAttacker implements QuartzAttacker {
     LOGGER.trace("Execution {}", counter);
 
     LOGGER.info(AppLogMarkers.ATTACK,
-        "Launching HTTP attack: {} {} ({}/{}) behind proxy {} with request params {}",
-        method, target, counter, executions, (proxy == null)?"none":proxy.toCompactString(), properties);
+        "Launching HTTP attack: {} {} ({}/{}) behind proxy {}",
+        method, target, counter, executions, (proxy == null)?"none":proxy.toCompactString());
 
     try {
-      final int response = HttpManager.makeRequest(method, target, properties, proxy);
+      final int response = HttpManager.makeRequest(method, target, proxy);
       LOGGER.trace("HTTP Attack response :: {} {} :: {}", method, target, response);
     } catch (IOException exc) {
       LOGGER.warn(exc.getMessage());
