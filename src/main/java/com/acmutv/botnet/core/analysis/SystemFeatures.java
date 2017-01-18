@@ -27,12 +27,15 @@
 package com.acmutv.botnet.core.analysis;
 
 import com.acmutv.botnet.core.exception.BotAnalysisException;
+import com.acmutv.botnet.tool.runtime.LinuxSysInfoTools;
+import com.acmutv.botnet.tool.runtime.MacOsxSysInfoTools;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The model of system information.
+ * This class realizes the model of system information.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
@@ -43,31 +46,88 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SystemFeatures {
 
-  /**
-   * The Operating System's name.
-   */
-  private String os;
+	/**
+	 * The Operating System's name.
+	 */
+	private String Os;
 
-  /**
-   * The kernel's name.
-   */
-  private String kernel;
+	/**
+	 * The Architecture's name.
+	 */
+	private String OsArch;
 
-  /**
-   * Returns local system features.
-   * @return local system features.
-   * @throws BotAnalysisException when some system features cannot be determined.
-   */
-  public static SystemFeatures getLocal() throws BotAnalysisException {
-    String os;
-    String kernel;
+	/**
+	 * The Operating System's version name.
+	 */
+	private String OsVersion;
 
-    //TODO implement for real (this is only a placeholder implementation)
-    os = "A cool OS";
+	/**
+	 * The kernel's name.
+	 */
+	private String Kernel;
 
-    //TODO implement for real (this is only a placeholder implementation)
-    kernel = "A cool kernel";
+	/**
+	 * The Host's name.
+	 */
+	private String HostName;
 
-    return new SystemFeatures(os, kernel);
-  }
+	/**
+	 * The User's name.
+	 */
+	private String UserName;
+
+	/**
+	 * Installed browsers on the host
+	 */
+	private String Browsers;
+	
+	/**
+	 * Returns local system features.
+	 * @return local system features.
+	 * @throws BotAnalysisException when some system features cannot be determined.
+	 */
+	public static SystemFeatures getLocal() throws BotAnalysisException {
+		String osName = System.getProperty ("os.name");
+		String osArch = null;
+		String osVersion = null;
+		String kernelVersion = null;
+		String browsers = null;
+		String hostName = null;
+		String userName = null;
+		
+		if(osName.toUpperCase().equals("MAC OS X")){
+			MacOsxSysInfoTools mac = new MacOsxSysInfoTools();
+			osArch = System.getProperty ("os.arch"); 
+			osVersion = System.getProperty ("os.version");
+			kernelVersion   = mac.getKernelVersion();
+			browsers 	  	  = mac.getBrowsers();
+			hostName 	  	  = mac.getHostName();
+			userName 	 	  = mac.getUserName();
+		}else if (osName.toUpperCase().equals("LINUX")){
+			LinuxSysInfoTools linux = new LinuxSysInfoTools();
+			osArch = System.getProperty ("os.arch"); 
+			osVersion = System.getProperty ("os.version");
+			kernelVersion   = linux.getKernelVersion();
+			browsers 	  	  = linux.getBrowsers();
+			hostName 	  	  = linux.getHostName();
+			userName 	 	  = linux.getUserName();  
+		}
+		else if (osName.toUpperCase().equals("WINDOWS")){
+			osArch = ""; 
+			osVersion = "";
+			kernelVersion   = "";
+			browsers 	  	  = "";
+			hostName 	  	  = "";
+			userName 	 	  = ""; 
+		}else{
+			osArch = "Not Found"; 
+			osVersion = "Not Found";
+			kernelVersion   = "Not Found";
+			browsers 	  	  = "Not Found";
+			hostName 	  	  = "Not Found";
+			userName 	 	  = "Not Found"; 
+		}
+		
+		return new SystemFeatures(osName, osArch, osVersion, kernelVersion, hostName, userName, browsers);
+	}
 }
