@@ -41,7 +41,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * This class realizes the JSON deserializer for {@link BotCommand}.
+ * The JSON deserializer for {@link BotCommand}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
