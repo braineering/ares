@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet.core.exec;
 
-import com.acmutv.botnet.core.attack.HttpAttack;
+import com.acmutv.botnet.core.attack.SynFloodAttack;
 import com.acmutv.botnet.tool.net.ConnectionManager;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
@@ -85,24 +85,14 @@ public class BotPoolTest {
   @Test
   public void test_schedulingAttack() throws SchedulerException, MalformedURLException, InterruptedException {
     Assume.assumeTrue(ConnectionManager.checkConnection());
-    Set<HttpAttack> attacks = new HashSet<HttpAttack>(){{
-      add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com")));
-      add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+    Set<SynFloodAttack> attacks = new HashSet<SynFloodAttack>(){{
+      add(new SynFloodAttack(new URL("http://www.gmarciani.com")));
+      add(new SynFloodAttack(new URL("http://www.gmarciani.com"),
           new HttpProxy("31.220.56.101", 80))
       );
       add(
-          new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
-              new HashMap<String,String>(){{put("User-Agent", "CustomUSerAgent");}})
-      );
-      add(
-          new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+          new SynFloodAttack(new URL("http://www.gmarciani.com"),
               new HttpProxy("31.220.56.101", 80),
-              new HashMap<String,String>(){{put("User-Agent", "CustomUSerAgent");}})
-      );
-      add(
-          new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
-              new HttpProxy("31.220.56.101", 80),
-              new HashMap<String,String>(){{put("User-Agent", "CustomUSerAgent");}},
               3, new Interval(2, 3, TimeUnit.SECONDS))
       );
     }};
@@ -111,11 +101,11 @@ public class BotPoolTest {
 
     pool.getScheduler().standby();
 
-    for (HttpAttack attack : attacks) {
+    for (SynFloodAttack attack : attacks) {
       pool.scheduleAttackHttp(attack);
     }
 
-    List<HttpAttack> scheduled = pool.getScheduledHttpAttacks();
+    List<SynFloodAttack> scheduled = pool.getScheduledHttpAttacks();
     Assert.assertTrue(scheduled.containsAll(attacks));
 
     pool.getScheduler().start();

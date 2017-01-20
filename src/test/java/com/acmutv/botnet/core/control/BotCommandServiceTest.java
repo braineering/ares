@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet.core.control;
 
-import com.acmutv.botnet.core.attack.HttpAttack;
+import com.acmutv.botnet.core.attack.SynFloodAttack;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.command.BotCommandService;
 import com.acmutv.botnet.core.control.command.CommandScope;
@@ -73,28 +73,19 @@ public class BotCommandServiceTest {
 
   /**
    * Tests command parsing from a JSON resource.
-   * Command: ATTACK_HTTP | Delay: not provided | Report: not provided
+   * Command: ATTACK_SYNFLOOD | Delay: not provided | Report: not provided
    */
   @Test
   public void test_fromJsonResource_attackHTTP() throws IOException {
-    String resource = BotCommandServiceTest.class.getResource("/command/attack-http.json").getPath();
+    String resource = BotCommandServiceTest.class.getResource("/command/attack.json").getPath();
     BotCommand actual = BotCommandService.fromJsonResource(resource);
-    BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
-    List<HttpAttack> attacks = new ArrayList<>();
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com")));
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+    BotCommand expected = new BotCommand(CommandScope.ATTACK_SYNFLOOD);
+    List<SynFloodAttack> attacks = new ArrayList<>();
+    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com")));
+    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080)));
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080),
-        new HashMap<String, String>(){
-          {put("User-Agent","CustomUserAgent");}
-        })
-    );
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
-        new HttpProxy("192.168.0.1", 8080),
-        new HashMap<String, String>(){
-          {put("User-Agent","CustomUserAgent");}
-        },
         3,
         new Interval(10, 15, TimeUnit.SECONDS)
     ));
@@ -104,28 +95,19 @@ public class BotCommandServiceTest {
 
   /**
    * Tests command parsing from a JSON resource.
-   * Command: ATTACK_HTTP | Delay: provided | Report: not provided
+   * Command: ATTACK_SYNFLOOD | Delay: provided | Report: not provided
    */
   @Test
   public void test_fromJsonResource_attackHTTP_delay() throws IOException {
-    String resource = BotCommandServiceTest.class.getResource("/command/attack-http.delay.json").getPath();
+    String resource = BotCommandServiceTest.class.getResource("/command/attack.delay.json").getPath();
     BotCommand actual = BotCommandService.fromJsonResource(resource);
-    BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
-    List<HttpAttack> attacks = new ArrayList<>();
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com")));
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+    BotCommand expected = new BotCommand(CommandScope.ATTACK_SYNFLOOD);
+    List<SynFloodAttack> attacks = new ArrayList<>();
+    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com")));
+    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080)));
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080),
-        new HashMap<String, String>(){
-          {put("User-Agent","CustomUserAgent");}
-        })
-    );
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
-        new HttpProxy("192.168.0.1", 8080),
-        new HashMap<String, String>(){
-          {put("User-Agent","CustomUserAgent");}
-        },
         3,
         new Interval(10, 15, TimeUnit.SECONDS)
     ));
@@ -136,28 +118,19 @@ public class BotCommandServiceTest {
 
   /**
    * Tests command parsing from a JSON resource.
-   * Command: ATTACK_HTTP | Delay: provided | Report: provided
+   * Command: ATTACK_SYNFLOOD | Delay: provided | Report: provided
    */
   @Test
   public void test_fromJsonResource_attackHTTP_delayReport() throws IOException {
-    String resource = BotCommandServiceTest.class.getResource("/command/attack-http.delay.report.json").getPath();
+    String resource = BotCommandServiceTest.class.getResource("/command/attack.delay.report.json").getPath();
     BotCommand actual = BotCommandService.fromJsonResource(resource);
-    BotCommand expected = new BotCommand(CommandScope.ATTACK_HTTP);
-    List<HttpAttack> attacks = new ArrayList<>();
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com")));
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+    BotCommand expected = new BotCommand(CommandScope.ATTACK_SYNFLOOD);
+    List<SynFloodAttack> attacks = new ArrayList<>();
+    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com")));
+    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080)));
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080),
-        new HashMap<String, String>(){
-          {put("User-Agent","CustomUserAgent");}
-        })
-    );
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
-        new HttpProxy("192.168.0.1", 8080),
-        new HashMap<String, String>(){
-          {put("User-Agent","CustomUserAgent");}
-        },
         3,
         new Interval(10, 15, TimeUnit.SECONDS)
     ));
@@ -391,45 +364,6 @@ public class BotCommandServiceTest {
     BotCommand expected = new BotCommand(CommandScope.RESTART);
     expected.getParams().put("resource", "data/samples/controllers/1/botinit.json");
     expected.getParams().put("wait", true);
-    expected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
-    expected.getParams().put("report", true);
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests command parsing from a JSON file.
-   * Command: SAVE_CONFIG | Delay: not provided | Report: not provided
-   */
-  @Test
-  public void test_fromJSONFile_saveConfig() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/save-config.json");
-    BotCommand actual = BotCommandService.fromJson(file);
-    BotCommand expected = new BotCommand(CommandScope.SAVE_CONFIG);
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests command parsing from a JSON file.
-   * Command: SAVE_CONFIG | Delay: provided | Report: not provided
-   */
-  @Test
-  public void test_fromJSONFile_saveConfig_delay() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/save-config.delay.json");
-    BotCommand actual = BotCommandService.fromJson(file);
-    BotCommand expected = new BotCommand(CommandScope.SAVE_CONFIG);
-    expected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
-    Assert.assertEquals(expected, actual);
-  }
-
-  /**
-   * Tests command parsing from a JSON file.
-   * Command: SAVE_CONFIG | Delay: provided | Report: provided
-   */
-  @Test
-  public void test_fromJSONFile_saveConfig_delayReport() throws IOException {
-    InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/save-config.delay.report.json");
-    BotCommand actual = BotCommandService.fromJson(file);
-    BotCommand expected = new BotCommand(CommandScope.SAVE_CONFIG);
     expected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     expected.getParams().put("report", true);
     Assert.assertEquals(expected, actual);

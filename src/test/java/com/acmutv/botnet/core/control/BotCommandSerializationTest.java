@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet.core.control;
 
-import com.acmutv.botnet.core.attack.HttpAttack;
+import com.acmutv.botnet.core.attack.SynFloodAttack;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.command.CommandScope;
 import com.acmutv.botnet.core.control.command.serial.BotCommandJsonMapper;
@@ -56,27 +56,18 @@ public class BotCommandSerializationTest {
 
   /**
    * Tests {@link BotCommand} serialization/deserialization.
-   * Command: ATTACK_HTTP | Delay: not provided | Report: not provided
+   * Command: ATTACK_SYNFLOOD | Delay: not provided | Report: not provided
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
   public void test_attackHttp() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.ATTACK_HTTP);
-    List<HttpAttack> attacks = new ArrayList<>();
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com")));
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+    BotCommand cmdExpected = new BotCommand(CommandScope.ATTACK_SYNFLOOD);
+    List<SynFloodAttack> attacks = new ArrayList<>();
+    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com")));
+    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080)));
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080),
-        new HashMap<String, String>(){
-          {put("User-Agent","CustomUserAgent");}
-        })
-    );
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
-        new HttpProxy("192.168.0.1", 8080),
-        new HashMap<String, String>(){
-          {put("User-Agent","CustomUserAgent");}
-        },
         3,
         new Interval(10, 15, TimeUnit.SECONDS)
     ));
@@ -89,27 +80,18 @@ public class BotCommandSerializationTest {
 
   /**
    * Tests {@link BotCommand} serialization/deserialization.
-   * Command: ATTACK_HTTP | Delay: provided | Report: not provided
+   * Command: ATTACK_SYNFLOOD | Delay: provided | Report: not provided
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
   public void test_attackHttp_delay() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.ATTACK_HTTP);
-    List<HttpAttack> attacks = new ArrayList<>();
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com")));
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+    BotCommand cmdExpected = new BotCommand(CommandScope.ATTACK_SYNFLOOD);
+    List<SynFloodAttack> attacks = new ArrayList<>();
+    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com")));
+    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080)));
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080),
-        new HashMap<String, String>(){
-          {put("User-Agent","CustomUserAgent");}
-        })
-    );
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
-        new HttpProxy("192.168.0.1", 8080),
-        new HashMap<String, String>(){
-          {put("User-Agent","CustomUserAgent");}
-        },
         3,
         new Interval(10, 15, TimeUnit.SECONDS)
     ));
@@ -123,27 +105,18 @@ public class BotCommandSerializationTest {
 
   /**
    * Tests {@link BotCommand} serialization/deserialization.
-   * Command: ATTACK_HTTP | Delay: provided | Report: provided
+   * Command: ATTACK_SYNFLOOD | Delay: provided | Report: provided
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
   public void test_attackHttp_delayReport() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.ATTACK_HTTP);
-    List<HttpAttack> attacks = new ArrayList<>();
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com")));
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+    BotCommand cmdExpected = new BotCommand(CommandScope.ATTACK_SYNFLOOD);
+    List<SynFloodAttack> attacks = new ArrayList<>();
+    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com")));
+    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080)));
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080),
-        new HashMap<String, String>(){
-          {put("User-Agent","CustomUserAgent");}
-        })
-    );
-    attacks.add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
-        new HttpProxy("192.168.0.1", 8080),
-        new HashMap<String, String>(){
-          {put("User-Agent","CustomUserAgent");}
-        },
         3,
         new Interval(10, 15, TimeUnit.SECONDS)
     ));
@@ -396,51 +369,6 @@ public class BotCommandSerializationTest {
     BotCommand cmdExpected = new BotCommand(CommandScope.RESTART);
     cmdExpected.getParams().put("resource", "Custom");
     cmdExpected.getParams().put("wait", true);
-    cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
-    cmdExpected.getParams().put("report", true);
-    ObjectMapper mapper = new BotCommandJsonMapper();
-    String jsonActual = mapper.writeValueAsString(cmdExpected);
-    BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
-    Assert.assertEquals(cmdExpected, cmdActual);
-  }
-
-  /**
-   * Tests {@link BotCommand} serialization/deserialization.
-   * Command: SAVE_CONFIG | Delay: not provided | Report: not provided
-   * @throws IOException when command cannot be serialized/deserialized.
-   */
-  @Test
-  public void test_saveConfig() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.SAVE_CONFIG);
-    ObjectMapper mapper = new BotCommandJsonMapper();
-    String jsonActual = mapper.writeValueAsString(cmdExpected);
-    BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
-    Assert.assertEquals(cmdExpected, cmdActual);
-  }
-
-  /**
-   * Tests {@link BotCommand} serialization/deserialization.
-   * Command: SAVE_CONFIG | Delay: provided | Report: not provided
-   * @throws IOException when command cannot be serialized/deserialized.
-   */
-  @Test
-  public void test_saveConfig_delay() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.SAVE_CONFIG);
-    cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
-    ObjectMapper mapper = new BotCommandJsonMapper();
-    String jsonActual = mapper.writeValueAsString(cmdExpected);
-    BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
-    Assert.assertEquals(cmdExpected, cmdActual);
-  }
-
-  /**
-   * Tests {@link BotCommand} serialization/deserialization.
-   * Command: SAVE_CONFIG | Delay: provided | Report: provided
-   * @throws IOException when command cannot be serialized/deserialized.
-   */
-  @Test
-  public void test_saveConfig_delayReport() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.SAVE_CONFIG);
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     cmdExpected.getParams().put("report", true);
     ObjectMapper mapper = new BotCommandJsonMapper();

@@ -33,10 +33,10 @@ import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.quartz.CronExpression;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The JSON serializer for {@link AppConfiguration}.
@@ -99,64 +99,26 @@ public class AppConfigurationSerializer extends StdSerializer<AppConfiguration> 
     final HttpProxy proxy = value.getProxy();
     gen.writeStringField("proxy", (proxy != null) ? proxy.toCompactString() : "none");
 
-    final String userAgent = value.getUserAgent();
-    gen.writeStringField("userAgent", userAgent);
+    final String sleep = value.getSleep();
+    gen.writeStringField("sleep", sleep);
 
-    final CronExpression sleep = value.getSleep();
-    if (sleep == null) {
-      gen.writeStringField("sleep", null);
-    } else {
-      gen.writeStringField("sleep", sleep.getCronExpression());
+    final Map<String,String> authentication = value.getAuthentication();
+    if (authentication != null) {
+      gen.writeObjectFieldStart("authentication");
+      for (Map.Entry<String,String> property : authentication.entrySet()) {
+        gen.writeStringField(property.getKey(), property.getValue());
+      }
+      gen.writeEndObject();
     }
 
     final List<Controller> controllers = value.getControllers();
-    writeArrayController("controllers", controllers, gen);
-
-    gen.writeEndObject();
-  }
-
-  /**
-   * Serializes the list of `controllers` to the specified `fieldName` with the specified generator `gen`.
-   * @param fieldName the filed name to serialize into.
-   * @param controllers the list of controllers to serialize.
-   * @param gen the generator to serialize with.
-   * @throws IOException when serialization cannot be executed.
-   */
-  private void writeArrayController(String fieldName, List<Controller> controllers, JsonGenerator gen) throws IOException {
-    gen.writeArrayFieldStart(fieldName);
+    gen.writeArrayFieldStart("controllers");
     for (Controller controller : controllers) {
-      gen.writeStartObject();
-      final String controllerInit = controller.getInitResource();
-      final String controllerCommand = controller.getCmdResource();
-      final String controllerLog = controller.getLogResource();
-      final Interval controllerPolling = controller.getPolling();
-      final Long controllerReconnections = controller.getReconnections();
-      final Interval controllerReconnectionWait = controller.getReconnectionWait();
-      final HttpProxy controllerProxy = controller.getProxy();
-
-      gen.writeStringField("init", controllerInit);
-      gen.writeStringField("command", controllerCommand);
-      gen.writeStringField("log", controllerLog);
-
-      if (controllerPolling != null) {
-        gen.writeStringField("polling", controllerPolling.toString());
-      }
-
-      if (controllerReconnections != null) {
-        gen.writeNumberField("reconnections", controllerReconnections);
-      }
-
-      if (controllerReconnectionWait != null) {
-        gen.writeStringField("reconnectionWait", controllerReconnectionWait.toString());
-      }
-
-      if (controllerProxy != null) {
-        gen.writeStringField("proxy", controllerProxy.toCompactString());
-      }
-
-      gen.writeEndObject();
+      provider.findValueSerializer(Controller.class).serialize(controller, gen, provider);
     }
     gen.writeEndArray();
+
+    gen.writeEndObject();
   }
 
 }

@@ -40,14 +40,14 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- * JUnit tests for {@link HttpAttacker}.
+ * JUnit tests for {@link SynFloodAttacker}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see QuartzAttacker
- * @see HttpAttacker
+ * @see SynFloodAttacker
  */
-public class HttpAttackerTest {
+public class SynFloodAttackerTest {
 
   @Before
   public void setup() {
@@ -56,10 +56,9 @@ public class HttpAttackerTest {
 
   @Test
   public void test_get() throws InterruptedException, MalformedURLException, SchedulerException {
-    HttpAttack attack = new HttpAttack(
-        HttpMethod.GET, new URL("http://www.google.it"),
+    SynFloodAttack attack = new SynFloodAttack(
+        new URL("http://www.gmarciani.com"),
         HttpProxy.NONE,
-        new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
         3,
         new Interval(1, 2, TimeUnit.SECONDS)
     );
@@ -69,13 +68,11 @@ public class HttpAttackerTest {
     Scheduler sched = schedFact.getScheduler();
 
     JobDataMap jdata = new JobDataMap();
-    jdata.put("method", attack.getMethod());
     jdata.put("target", attack.getTarget());
     jdata.put("proxy", attack.getProxy());
-    jdata.put("properties", attack.getProperties());
     jdata.put("executions", attack.getExecutions());
 
-    JobDetail job = JobBuilder.newJob(HttpAttacker.class)
+    JobDetail job = JobBuilder.newJob(SynFloodAttacker.class)
         .withIdentity("myJob", "group1")
         .usingJobData(jdata)
         .build();

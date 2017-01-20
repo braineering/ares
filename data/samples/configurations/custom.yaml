@@ -2,17 +2,17 @@
 # BOT Configuration file
 #===============================================================================
 
-#===============================================================================
-# REPORT
-#===============================================================================
-cnfInfo: True
-tgtInfo: False
-sysInfo: True
-netInfo: False
-
-#===============================================================================
-# CONTROL
-#===============================================================================
+cnfInfo: true
+tgtInfo: true
+sysInfo: true
+netInfo: true
+polling: "10-20:SECONDS"
+reconnections: 3
+reconnectionWait: "10-20:SECONDS"
+proxy: "none"
+sleep: "* * * ? * SAT,SUN"
+authentication:
+  User-Agent: CustomUserAgent
 controllers:
   - init: data/samples/controllers/notvalid/botinit.json
     command: data/samples/controllers/notvalid/botcmd.json
@@ -20,9 +20,3 @@ controllers:
   - init: data/samples/controllers/1/botinit.json
     command: data/samples/controllers/1/botcmd.json
     log: data/samples/controllers/1/botlog.json
-polling: 10-20:SECONDS
-reconnections: 3
-reconnectionWait: 3-5:SECONDS
-proxy: none
-userAgent: BotShowcase
-sleep: * * * ? * SAT,SUN

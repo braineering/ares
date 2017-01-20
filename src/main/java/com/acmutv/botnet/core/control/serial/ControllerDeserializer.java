@@ -24,9 +24,8 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.config.serial;
+package com.acmutv.botnet.core.control.serial;
 
-import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Interval;
@@ -36,112 +35,92 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * The JSON deserializer for {@link AppConfiguration}.
+ * The JSON deserializer for {@link Controller}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see AppConfiguration
- * @see AppConfigurationSerializer
+ * @see Controller
+ * @see ControllerSerializer
  */
-public class AppConfigurationDeserializer extends StdDeserializer<AppConfiguration> {
+public class ControllerDeserializer extends StdDeserializer<Controller> {
 
   /**
-   * The singleton of {@link AppConfigurationDeserializer}.
+   * The singleton of {@link ControllerDeserializer}.
    */
-  private static AppConfigurationDeserializer instance;
+  private static ControllerDeserializer instance;
 
   /**
-   * Returns the singleton of {@link AppConfigurationDeserializer}.
+   * Returns the singleton of {@link ControllerDeserializer}.
    * @return the singleton.
    */
-  public static AppConfigurationDeserializer getInstance() {
+  public static ControllerDeserializer getInstance() {
     if (instance == null) {
-      instance = new AppConfigurationDeserializer();
+      instance = new ControllerDeserializer();
     }
     return instance;
   }
 
   /**
-   * Initializes the singleton of {@link AppConfigurationDeserializer}.
+   * Initializes the singleton of {@link ControllerDeserializer}.
    */
-  private AppConfigurationDeserializer() {
-    super((Class<AppConfiguration>) null);
+  private ControllerDeserializer() {
+    super((Class<Controller>) null);
   }
 
 
   @Override
-  public AppConfiguration deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
-    AppConfiguration config = new AppConfiguration();
+  public Controller deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
     JsonNode node = parser.getCodec().readTree(parser);
 
-    if (node.hasNonNull("cnfInfo")) {
-      final boolean cnfInfo = node.get("cnfInfo").asBoolean();
-      config.setCnfInfo(cnfInfo);
+    if (!node.hasNonNull("init") ||
+        !node.hasNonNull("command") ||
+        !node.hasNonNull("log")) {
+      throw new IOException("[init,command,log] must be there");
     }
 
-    if (node.hasNonNull("tgtInfo")) {
-      final boolean tgtInfo = node.get("tgtInfo").asBoolean();
-      config.setTgtInfo(tgtInfo);
-    }
+    final String initResource = node.get("init").asText();
 
-    if (node.hasNonNull("sysInfo")) {
-      final boolean sysInfo = node.get("sysInfo").asBoolean();
-      config.setSysInfo(sysInfo);
-    }
+    final String commandResource = node.get("command").asText();
 
-    if (node.hasNonNull("netInfo")) {
-      final boolean netInfo = node.get("netInfo").asBoolean();
-      config.setNetInfo(netInfo);
-    }
+    final String logResource = node.get("log").asText();
+
+    Controller controller = new Controller(initResource, commandResource, logResource);
 
     if (node.hasNonNull("polling")) {
       final Interval polling = Interval.valueOf(node.get("polling").asText());
-      config.setPolling(polling);
+      controller.setPolling(polling);
     }
 
     if (node.hasNonNull("reconnections")) {
-      final Long reconnections = (node.get("reconnections").asLong() >= 0) ?
-          node.get("reconnections").asLong()
-          :
-          Long.MAX_VALUE;
-      config.setReconnections(reconnections);
+      final Long reconnections = node.get("reconnections").asLong();
+      controller.setReconnections(reconnections);
     }
 
     if (node.hasNonNull("reconnectionWait")) {
       final Interval reconnectionWait = Interval.valueOf(node.get("reconnectionWait").asText());
-      config.setReconnectionWait(reconnectionWait);
+      controller.setReconnectionWait(reconnectionWait);
     }
 
     if (node.hasNonNull("proxy")) {
       final HttpProxy proxy = HttpProxy.valueOf(node.get("proxy").asText());
-      config.setProxy(proxy);
+      controller.setProxy(proxy);
     }
 
     if (node.hasNonNull("sleep")) {
       final String sleep = node.get("sleep").asText();
-      config.setSleep(sleep);
+      controller.setSleep(sleep);
     }
 
     if (node.hasNonNull("authentication")) {
       Map<String,String> authentication = new HashMap<>();
       node.get("authentication").fields().forEachRemaining(f -> authentication.put(f.getKey(), f.getValue().asText()));
-      config.setAuthentication(authentication);
+      controller.setAuthentication(authentication);
     }
 
-    if (node.hasNonNull("controllers")) {
-      List<Controller> controllers = new ArrayList<>();
-      Iterator<JsonNode> iter = node.get("controllers").elements();
-      while (iter.hasNext()) {
-        JsonNode n = iter.next();
-        Controller controller = ctx.readValue(n.traverse(parser.getCodec()), Controller.class);
-        controllers.add(controller);
-      }
-      config.setControllers(controllers);
-    }
-
-    return config;
+    return controller;
   }
 }

@@ -24,24 +24,18 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.attack;
+package com.acmutv.botnet.core.control.serial;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.acmutv.botnet.config.AppConfiguration;
+import com.acmutv.botnet.core.control.ControllerProperties;
 
 /**
- * JUnit test suite for all attacks.
+ * This enum enumerates the supported deserialization formats for {@link ControllerProperties}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see SynFloodAttackerTest
- * @see SynFloodAttackSerializationTest
+ * @see ControllerProperties
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    SynFloodAttackerTest.class,
-    SynFloodAttackSerializationTest.class
-})
-public class TestAllAttack {
-
+public enum ControllerPropertiesFormat {
+  JSON
 }

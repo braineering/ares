@@ -26,8 +26,7 @@
 
 package com.acmutv.botnet.core.attack.serial;
 
-import com.acmutv.botnet.core.attack.HttpAttack;
-import com.acmutv.botnet.tool.net.HttpMethod;
+import com.acmutv.botnet.core.attack.SynFloodAttack;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonParser;
@@ -37,64 +36,55 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
 
 /**
- * The JSON deserializer for {@link HttpAttack}.
+ * The JSON deserializer for {@link SynFloodAttack}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HttpAttack
- * @see HttpAttackSerializer
+ * @see SynFloodAttack
+ * @see SynFloodAttackSerializer
  */
-public class HttpAttackDeserializer extends StdDeserializer<HttpAttack> {
+public class SynFloodAttackDeserializer extends StdDeserializer<SynFloodAttack> {
 
   /**
-   * The singleton of {@link HttpAttackDeserializer}.
+   * The singleton of {@link SynFloodAttackDeserializer}.
    */
-  private static HttpAttackDeserializer instance;
+  private static SynFloodAttackDeserializer instance;
 
   /**
-   * Returns the singleton of {@link HttpAttackDeserializer}.
+   * Returns the singleton of {@link SynFloodAttackDeserializer}.
    * @return the singleton.
    */
-  public static HttpAttackDeserializer getInstance() {
+  public static SynFloodAttackDeserializer getInstance() {
     if (instance == null) {
-      instance = new HttpAttackDeserializer();
+      instance = new SynFloodAttackDeserializer();
     }
     return instance;
   }
 
   /**
-   * Initializes the singleton of {@link HttpAttackDeserializer}.
+   * Initializes the singleton of {@link SynFloodAttackDeserializer}.
    */
-  private HttpAttackDeserializer() {
-    super((Class<HttpAttack>) null);
+  private SynFloodAttackDeserializer() {
+    super((Class<SynFloodAttack>) null);
   }
 
 
   @Override
-  public HttpAttack deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
+  public SynFloodAttack deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
     JsonNode node = parser.getCodec().readTree(parser);
 
-    if (!node.hasNonNull("method") || !node.hasNonNull("target")) {
-      throw new IOException("[method,target] required");
+    if (!node.hasNonNull("target")) {
+      throw new IOException("[target] required");
     }
-
-    final HttpMethod method = HttpMethod.valueOf(node.get("method").asText());
     final URL target = new URL(node.get("target").asText());
 
-    HttpAttack attack = new HttpAttack(method, target);
+    SynFloodAttack attack = new SynFloodAttack(target);
 
     if (node.has("proxy")) {
       final HttpProxy proxy = HttpProxy.valueOf(node.get("proxy").asText());
       attack.setProxy(proxy);
-    }
-
-    if (node.hasNonNull("properties")) {
-      Map<String,String> properties = new HashMap<>();
-      node.get("properties").fields().forEachRemaining(f -> properties.put(f.getKey(), f.getValue().asText()));
-      attack.setProperties(properties);
     }
 
     if (node.hasNonNull("executions")) {

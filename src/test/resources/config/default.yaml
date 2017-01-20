@@ -2,10 +2,10 @@ cnfInfo: true
 tgtInfo: true
 sysInfo: true
 netInfo: true
-polling: 10-10:SECONDS
+polling: "10-10:SECONDS"
 reconnections: 3
-reconnectionWait: 10-10:SECONDS
-proxy: null
-userAgent: null
+reconnectionWait: "10-10:SECONDS"
+proxy: "none"
 sleep: null
+authentication: {}
 controllers: []

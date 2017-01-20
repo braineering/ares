@@ -29,9 +29,9 @@ package com.acmutv.botnet.core.report.serial;
 import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.config.serial.AppConfigurationDeserializer;
 import com.acmutv.botnet.config.serial.AppConfigurationSerializer;
-import com.acmutv.botnet.core.attack.HttpAttack;
-import com.acmutv.botnet.core.attack.serial.HttpAttackDeserializer;
-import com.acmutv.botnet.core.attack.serial.HttpAttackSerializer;
+import com.acmutv.botnet.core.attack.SynFloodAttack;
+import com.acmutv.botnet.core.attack.serial.SynFloodAttackDeserializer;
+import com.acmutv.botnet.core.attack.serial.SynFloodAttackSerializer;
 import com.acmutv.botnet.core.report.Report;
 import com.acmutv.botnet.core.report.SimpleReport;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,10 +57,10 @@ public class SimpleReportJsonMapper extends ObjectMapper {
     SimpleModule module = new SimpleModule();
     module.addDeserializer(SimpleReport.class, SimpleReportDeserializer.getInstance());
     module.addDeserializer(AppConfiguration.class, AppConfigurationDeserializer.getInstance());
-    module.addDeserializer(HttpAttack.class, HttpAttackDeserializer.getInstance());
+    module.addDeserializer(SynFloodAttack.class, SynFloodAttackDeserializer.getInstance());
     module.addSerializer(SimpleReport.class, SimpleReportSerializer.getInstance());
     module.addSerializer(AppConfiguration.class, AppConfigurationSerializer.getInstance());
-    module.addSerializer(HttpAttack.class, HttpAttackSerializer.getInstance());
+    module.addSerializer(SynFloodAttack.class, SynFloodAttackSerializer.getInstance());
     super.registerModule(module);
     super.enable(SerializationFeature.INDENT_OUTPUT);
   }

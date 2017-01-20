@@ -24,38 +24,33 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.control.command.serial;
+package com.acmutv.botnet.core.attack.serial;
 
 import com.acmutv.botnet.core.attack.SynFloodAttack;
-import com.acmutv.botnet.core.attack.serial.SynFloodAttackDeserializer;
-import com.acmutv.botnet.core.attack.serial.SynFloodAttackSerializer;
-import com.acmutv.botnet.core.control.command.BotCommand;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.EqualsAndHashCode;
 
 /**
- * The JSON constructor for {@link BotCommand}.
+ * The JSON constructor for {@link SynFloodAttack}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see BotCommand
- * @see BotCommandSerializer
- * @see BotCommandDeserializer
+ * @see SynFloodAttack
+ * @see SynFloodAttackSerializer
+ * @see SynFloodAttackDeserializer
  */
 @EqualsAndHashCode(callSuper = true)
-public class BotCommandJsonMapper extends ObjectMapper {
+public class SynFloodAttackJsonMapper extends ObjectMapper {
 
   /**
    * Initializes the JSON constructor.
    */
-  public BotCommandJsonMapper() {
+  public SynFloodAttackJsonMapper() {
     super();
     SimpleModule module = new SimpleModule();
-    module.addSerializer(BotCommand.class, BotCommandSerializer.getInstance());
     module.addSerializer(SynFloodAttack.class, SynFloodAttackSerializer.getInstance());
-    module.addDeserializer(BotCommand.class, BotCommandDeserializer.getInstance());
     module.addDeserializer(SynFloodAttack.class, SynFloodAttackDeserializer.getInstance());
     super.registerModule(module);
     super.enable(SerializationFeature.INDENT_OUTPUT);

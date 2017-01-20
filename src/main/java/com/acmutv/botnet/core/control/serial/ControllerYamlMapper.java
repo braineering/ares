@@ -24,39 +24,37 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.control.command.serial;
+package com.acmutv.botnet.core.control.serial;
 
-import com.acmutv.botnet.core.attack.SynFloodAttack;
-import com.acmutv.botnet.core.attack.serial.SynFloodAttackDeserializer;
-import com.acmutv.botnet.core.attack.serial.SynFloodAttackSerializer;
-import com.acmutv.botnet.core.control.command.BotCommand;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.acmutv.botnet.config.AppConfiguration;
+import com.acmutv.botnet.config.serial.AppConfigurationDeserializer;
+import com.acmutv.botnet.config.serial.AppConfigurationSerializer;
+import com.acmutv.botnet.core.control.Controller;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import lombok.EqualsAndHashCode;
 
 /**
- * The JSON constructor for {@link BotCommand}.
+ * The YAML constructor for {@link Controller}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see BotCommand
- * @see BotCommandSerializer
- * @see BotCommandDeserializer
+ * @see Controller
+ * @see ControllerSerializer
+ * @see ControllerDeserializer
  */
 @EqualsAndHashCode(callSuper = true)
-public class BotCommandJsonMapper extends ObjectMapper {
+public class ControllerYamlMapper extends YAMLMapper {
 
   /**
-   * Initializes the JSON constructor.
+   * Initializes the YAML constructor.
    */
-  public BotCommandJsonMapper() {
+  public ControllerYamlMapper() {
     super();
     SimpleModule module = new SimpleModule();
-    module.addSerializer(BotCommand.class, BotCommandSerializer.getInstance());
-    module.addSerializer(SynFloodAttack.class, SynFloodAttackSerializer.getInstance());
-    module.addDeserializer(BotCommand.class, BotCommandDeserializer.getInstance());
-    module.addDeserializer(SynFloodAttack.class, SynFloodAttackDeserializer.getInstance());
+    module.addSerializer(Controller.class, ControllerSerializer.getInstance());
+    module.addDeserializer(Controller.class, ControllerDeserializer.getInstance());
     super.registerModule(module);
     super.enable(SerializationFeature.INDENT_OUTPUT);
   }

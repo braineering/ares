@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet.core.attack;
 
-import com.acmutv.botnet.core.attack.serial.HttpAttackJsonMapper;
+import com.acmutv.botnet.core.attack.serial.SynFloodAttackJsonMapper;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Interval;
@@ -40,116 +40,92 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- * JUnit tests for {@link HttpAttack} serialization.
+ * JUnit tests for {@link SynFloodAttack} serialization.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HttpAttack
- * @see HttpAttackJsonMapper
+ * @see SynFloodAttack
+ * @see SynFloodAttackJsonMapper
  */
-public class HttpAttackSerializationTest {
+public class SynFloodAttackSerializationTest {
 
   /**
-   * Tests {@link HttpAttack} serialization/deserialization.
-   * Method: provided | Target: provided | Proxy: not provided
-   * Properties: not provided | Executions: not provided | Period: not provided
+   * Tests {@link SynFloodAttack} serialization/deserialization.
+   * Target: provided | Proxy: not provided | Executions: not provided | Period: not provided
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
   public void test_simple() throws IOException {
-    HttpAttack attackExpected = new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"));
-    ObjectMapper mapper = new HttpAttackJsonMapper();
+    SynFloodAttack attackExpected = new SynFloodAttack(new URL("http://www.gmarciani.com"));
+    ObjectMapper mapper = new SynFloodAttackJsonMapper();
     String jsonActual = mapper.writeValueAsString(attackExpected);
-    HttpAttack attackActual = mapper.readValue(jsonActual, HttpAttack.class);
+    SynFloodAttack attackActual = mapper.readValue(jsonActual, SynFloodAttack.class);
     Assert.assertEquals(attackExpected, attackActual);
   }
 
   /**
-   * Tests {@link HttpAttack} serialization/deserialization.
-   * Method: provided | Target: provided | Proxy: null
-   * Properties: not provided | Executions: not provided | Period: not provided
+   * Tests {@link SynFloodAttack} serialization/deserialization.
+   * Target: provided | Proxy: null | Executions: not provided | Period: not provided
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
   public void test_proxyNull() throws IOException {
-    HttpAttack attackExpected = new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+    SynFloodAttack attackExpected = new SynFloodAttack(new URL("http://www.gmarciani.com"),
         (HttpProxy) null
     );
-    ObjectMapper mapper = new HttpAttackJsonMapper();
+    ObjectMapper mapper = new SynFloodAttackJsonMapper();
     String jsonActual = mapper.writeValueAsString(attackExpected);
-    HttpAttack attackActual = mapper.readValue(jsonActual, HttpAttack.class);
+    SynFloodAttack attackActual = mapper.readValue(jsonActual, SynFloodAttack.class);
     Assert.assertEquals(attackExpected, attackActual);
   }
 
   /**
-   * Tests {@link HttpAttack} serialization/deserialization.
-   * Method: provided | Target: provided | Proxy: NONE
-   * Properties: not provided | Executions: not provided | Period: not provided
+   * Tests {@link SynFloodAttack} serialization/deserialization.
+   * Target: provided | Proxy: NONE | Executions: not provided | Period: not provided
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
   public void test_proxyNone() throws IOException {
-    HttpAttack attackExpected = new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+    SynFloodAttack attackExpected = new SynFloodAttack(new URL("http://www.gmarciani.com"),
         HttpProxy.NONE
     );
-    ObjectMapper mapper = new HttpAttackJsonMapper();
+    ObjectMapper mapper = new SynFloodAttackJsonMapper();
     String jsonActual = mapper.writeValueAsString(attackExpected);
-    HttpAttack attackActual = mapper.readValue(jsonActual, HttpAttack.class);
+    SynFloodAttack attackActual = mapper.readValue(jsonActual, SynFloodAttack.class);
     Assert.assertEquals(attackExpected, attackActual);
   }
 
   /**
-   * Tests {@link HttpAttack} serialization/deserialization.
-   * Method: provided | Target: provided | Proxy: provided
-   * Properties: not provided | Executions: not provided | Period: not provided
+   * Tests {@link SynFloodAttack} serialization/deserialization.
+   * Target: provided | Proxy: provided | Executions: not provided | Period: not provided
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
   public void test_proxy() throws IOException {
-    HttpAttack attackExpected = new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+    SynFloodAttack attackExpected = new SynFloodAttack(new URL("http://www.gmarciani.com"),
       new HttpProxy("192.168.0.1", 8080)
     );
-    ObjectMapper mapper = new HttpAttackJsonMapper();
+    ObjectMapper mapper = new SynFloodAttackJsonMapper();
     String jsonActual = mapper.writeValueAsString(attackExpected);
-    HttpAttack attackActual = mapper.readValue(jsonActual, HttpAttack.class);
+    SynFloodAttack attackActual = mapper.readValue(jsonActual, SynFloodAttack.class);
     Assert.assertEquals(attackExpected, attackActual);
   }
 
   /**
-   * Tests {@link HttpAttack} serialization/deserialization.
-   * Method: provided | Target: provided | Proxy: provided
-   * Properties: provided | Executions: not provided | Period: not provided
-   * @throws IOException when command cannot be serialized/deserialized.
-   */
-  @Test
-  public void test_proxyProperties() throws IOException {
-    HttpAttack attackExpected = new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
-        new HttpProxy("192.168.0.1", 8080),
-        new HashMap<String,String>(){{put("prop1", "val1");}}
-    );
-    ObjectMapper mapper = new HttpAttackJsonMapper();
-    String jsonActual = mapper.writeValueAsString(attackExpected);
-    HttpAttack attackActual = mapper.readValue(jsonActual, HttpAttack.class);
-    Assert.assertEquals(attackExpected, attackActual);
-  }
-
-  /**
-   * Tests {@link HttpAttack} serialization/deserialization.
-   * Method: provided | Target: provided | Proxy: provided
-   * Properties: provided | Executions: provided | Period: provided
+   * Tests {@link SynFloodAttack} serialization/deserialization.
+   * Method: provided | Target: provided | Proxy: provided | Executions: provided | Period: provided
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
   public void test_proxyPropertiesExecutions() throws IOException {
-    HttpAttack attackExpected = new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+    SynFloodAttack attackExpected = new SynFloodAttack(new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080),
-        new HashMap<String,String>(){{put("prop1", "val1");}},
         3,
         new Interval(10, 15, TimeUnit.SECONDS)
     );
-    ObjectMapper mapper = new HttpAttackJsonMapper();
+    ObjectMapper mapper = new SynFloodAttackJsonMapper();
     String jsonActual = mapper.writeValueAsString(attackExpected);
-    HttpAttack attackActual = mapper.readValue(jsonActual, HttpAttack.class);
+    SynFloodAttack attackActual = mapper.readValue(jsonActual, SynFloodAttack.class);
     Assert.assertEquals(attackExpected, attackActual);
   }
 

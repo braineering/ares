@@ -36,11 +36,13 @@ import org.junit.runners.Suite;
  * @since 1.0
  * @see BotCommandSerializationTest
  * @see BotCommandServiceTest
+ * @see ControllerSerializationTest
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     BotCommandSerializationTest.class,
-    BotCommandServiceTest.class
+    BotCommandServiceTest.class,
+    ControllerSerializationTest.class
 })
 public class TestAllControl {
 

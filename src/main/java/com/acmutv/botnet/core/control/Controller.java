@@ -33,6 +33,9 @@ import com.acmutv.botnet.tool.time.Interval;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
+import org.quartz.CronExpression;
+
+import java.util.Map;
 
 /**
  * A simple Command and Control model.
@@ -44,6 +47,10 @@ import lombok.NonNull;
 @AllArgsConstructor
 @Data
 public class Controller {
+
+  public static final String PROPERTY_SLEEP = "sleep";
+
+  public static final String AUTHENTICATION_USER_AGENT = "User-Agent";
 
   /**
    * The resource providing configuration.
@@ -65,27 +72,33 @@ public class Controller {
 
   /**
    * The polling period.
-   * If null, the polling period specified in {@link AppConfiguration} is used.
    */
   private Interval polling = null;
 
   /**
    * The maximum number of connection errors tolerated.
-   * If null, the number specified in {@link AppConfiguration} is used.
    */
   private Long reconnections = null;
 
   /**
    * The period between reconnections, as random number within this interval.
-   * If null, the period specified in {@link AppConfiguration} is used.
    */
   private Interval reconnectionWait = null;
 
   /**
    * The proxy server to connect through.
-   * If null, the proxy server specified in {@link AppConfiguration} is used.
    */
   private HttpProxy proxy = null;
+
+  /**
+   * The cron expression that sets up the sleep mode.
+   */
+  private String sleep = null;
+
+  /**
+   * The controller authentication fields.
+   */
+  private Map<String,String> authentication = null;
 
   /**
    * Creates a new Controller with the specific resources and all other parameters set to null.
@@ -133,5 +146,23 @@ public class Controller {
    */
   public HttpProxy getProxy(HttpProxy fallback) {
     return (this.proxy != null) ? this.proxy : fallback;
+  }
+
+  /**
+   * Returns `sleep` if not null; `fallback` otherwise.
+   * @param fallback the fallback value.
+   * @return `proxy` if not null; `fallback` otherwise.
+   */
+  public String getSleep(String fallback) {
+    return (this.sleep != null) ? this.sleep : fallback;
+  }
+
+  /**
+   * Returns `properties` if not null; `fallback` otherwise.
+   * @param fallback the fallback value.
+   * @return `proxy` if not null; `fallback` otherwise.
+   */
+  public Map<String,String> getAuthentication(Map<String,String> fallback) {
+    return (this.authentication != null) ? this.authentication : fallback;
   }
 }

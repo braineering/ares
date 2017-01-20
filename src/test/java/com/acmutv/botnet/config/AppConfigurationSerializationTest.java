@@ -36,7 +36,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -85,7 +87,6 @@ public class AppConfigurationSerializationTest {
     configExpected.setReconnections(5L);
     configExpected.setReconnectionWait(new Interval(10, 15, TimeUnit.SECONDS));
     configExpected.setProxy(new HttpProxy("192.168.0.1", 8080));
-    configExpected.setUserAgent("Custom user agent");
     List<Controller> controllers = new ArrayList<>();
     configExpected.setControllers(controllers);
     ObjectMapper mapperJson = new AppConfigurationJsonMapper();
@@ -114,12 +115,13 @@ public class AppConfigurationSerializationTest {
     configExpected.setReconnections(5L);
     configExpected.setReconnectionWait(new Interval(10, 15, TimeUnit.SECONDS));
     configExpected.setProxy(new HttpProxy("192.168.0.1", 8080));
-    configExpected.setUserAgent(null);
     List<Controller> controllers = new ArrayList<>();
-    Controller controller1 = new Controller("initCustom", "cmdCustom", "logCustom");
-    Controller controller2 = new Controller("initCustom2", "cmdCustom2", "logCustom2");
+    Controller controller1 = new Controller("init", "cmd", "log");
+    Controller controller2 = new Controller("init2", "cmd2", "log2");
+    Controller controller3 = new Controller("init3", "cmd3", "log3");
     controllers.add(controller1);
     controllers.add(controller2);
+    controllers.add(controller3);
     configExpected.setControllers(controllers);
     ObjectMapper mapperJson = new AppConfigurationJsonMapper();
     ObjectMapper mapperYaml = new AppConfigurationYamlMapper();
@@ -137,7 +139,7 @@ public class AppConfigurationSerializationTest {
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
-  public void test_custom_withControllersCustomized() throws IOException {
+  public void test_custom_withControllersCustomized() throws IOException, ParseException {
     AppConfiguration configExpected = new AppConfiguration();
     configExpected.setCnfInfo(true);
     configExpected.setTgtInfo(true);
@@ -147,19 +149,29 @@ public class AppConfigurationSerializationTest {
     configExpected.setReconnections(5L);
     configExpected.setReconnectionWait(new Interval(10, 15, TimeUnit.SECONDS));
     configExpected.setProxy(new HttpProxy("192.168.0.1", 8080));
+    configExpected.setAuthentication(new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}});
     List<Controller> controllers = new ArrayList<>();
-    Controller controller1 = new Controller("initCustom", "cmdCustom", "logCustom");
+    Controller controller1 = new Controller(
+        "init", "cmd", "log");
     Controller controller2 = new Controller(
-        "initCustom2", "cmdCustom2", "logCustom2",
-        new Interval(10, 15, TimeUnit.SECONDS),
+        "init2", "cmd2", "log2",
+        new Interval(10, 20, TimeUnit.SECONDS),
         10L,
-        new Interval(10, 15, TimeUnit.SECONDS),
-        new HttpProxy("192.168.0.1", 8080));
+        new Interval(10, 20, TimeUnit.SECONDS),
+        HttpProxy.NONE,
+        null,
+        null);
     Controller controller3 = new Controller(
-        "initCustom3", "cmdCustom3", "logCustom3");
-    controller3.setProxy(HttpProxy.NONE);
+        "init3", "cmd3", "log3",
+        new Interval(10, 20, TimeUnit.SECONDS),
+        10L,
+        new Interval(10, 20, TimeUnit.SECONDS),
+        new HttpProxy("192.168.0.1", 8080),
+        "* * * ? * SAT,SUN",
+        new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}});
     controllers.add(controller1);
     controllers.add(controller2);
+    controllers.add(controller3);
     configExpected.setControllers(controllers);
     ObjectMapper mapperJson = new AppConfigurationJsonMapper();
     ObjectMapper mapperYaml = new AppConfigurationYamlMapper();

@@ -39,7 +39,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -69,7 +71,7 @@ public class AppConfigurationServiceTest {
    * The configuration file has non-null values and template string (${RES}).
    */
   @Test
-  public void test_from_custom() throws IOException {
+  public void test_from_custom() throws IOException, ParseException {
     InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom.json");
     InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom.yaml");
     AppConfiguration actualjson = AppConfigurationService.from(AppConfigurationFormat.JSON, injson);
@@ -84,28 +86,26 @@ public class AppConfigurationServiceTest {
     expected.setReconnections(5L);
     expected.setReconnectionWait(new Interval(10, 15, TimeUnit.SECONDS));
     expected.setProxy(new HttpProxy("192.168.0.1", 8080));
-    expected.setUserAgent("Custom user agent");
+    expected.setAuthentication(new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}});
     List<Controller> controllers = new ArrayList<>();
     Controller controller1 = new Controller(
-        "data/samples/controllers/1/botinit.json",
-        "data/samples/controllers/1/botcmd.json",
-        "data/samples/controllers/1/botlog.json"
-    );
+        "init", "cmd", "log");
     Controller controller2 = new Controller(
-        "data/samples/controllers/2/botinit.json",
-        "data/samples/controllers/2/botcmd.json",
-        "data/samples/controllers/2/botlog.json",
+        "init2", "cmd2", "log2",
         new Interval(10, 20, TimeUnit.SECONDS),
-        -1L,
+        10L,
         new Interval(10, 20, TimeUnit.SECONDS),
-        new HttpProxy("192.168.0.1", 3000)
-    );
+        HttpProxy.NONE,
+        null,
+        null);
     Controller controller3 = new Controller(
-        "data/samples/controllers/3/botinit.json",
-        "data/samples/controllers/3/botcmd.json",
-        "data/samples/controllers/3/botlog.json"
-    );
-    controller3.setProxy(HttpProxy.NONE);
+        "init3", "cmd3", "log3",
+        new Interval(10, 20, TimeUnit.SECONDS),
+        10L,
+        new Interval(10, 20, TimeUnit.SECONDS),
+        new HttpProxy("192.168.0.1", 8080),
+        "* * * ? * SAT,SUN",
+        new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}});
     controllers.add(controller1);
     controllers.add(controller2);
     controllers.add(controller3);
@@ -171,50 +171,48 @@ public class AppConfigurationServiceTest {
    * The configuration file has non-null values and template string (${RES}).
    */
   @Test
-  public void test_to_custom() throws IOException {
+  public void test_to_custom() throws IOException, ParseException {
     InputStream injson = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom.check.json");
     InputStream inyaml = AppConfigurationServiceTest.class.getResourceAsStream("/config/custom.check.yaml");
 
-    AppConfiguration config = new AppConfiguration();
-    config.setCnfInfo(true);
-    config.setTgtInfo(true);
-    config.setSysInfo(false);
-    config.setNetInfo(false);
-    config.setPolling(new Interval(10, 15, TimeUnit.SECONDS));
-    config.setReconnections(5L);
-    config.setReconnectionWait(new Interval(10, 15, TimeUnit.SECONDS));
-    config.setProxy(new HttpProxy("192.168.0.1", 8080));
-    config.setUserAgent("Custom user agent");
+    AppConfiguration expected = new AppConfiguration();
+    expected.setCnfInfo(true);
+    expected.setTgtInfo(true);
+    expected.setSysInfo(false);
+    expected.setNetInfo(false);
+    expected.setPolling(new Interval(10, 15, TimeUnit.SECONDS));
+    expected.setReconnections(5L);
+    expected.setReconnectionWait(new Interval(10, 15, TimeUnit.SECONDS));
+    expected.setProxy(new HttpProxy("192.168.0.1", 8080));
+    expected.setAuthentication(new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}});
     List<Controller> controllers = new ArrayList<>();
     Controller controller1 = new Controller(
-        "data/samples/controllers/1/botinit.json",
-        "data/samples/controllers/1/botcmd.json",
-        "data/samples/controllers/1/botlog.json"
-    );
+        "init", "cmd", "log");
     Controller controller2 = new Controller(
-        "data/samples/controllers/2/botinit.json",
-        "data/samples/controllers/2/botcmd.json",
-        "data/samples/controllers/2/botlog.json",
+        "init2", "cmd2", "log2",
         new Interval(10, 20, TimeUnit.SECONDS),
-        -1L,
+        10L,
         new Interval(10, 20, TimeUnit.SECONDS),
-        new HttpProxy("192.168.0.1", 3000)
-    );
+        HttpProxy.NONE,
+        null,
+        null);
     Controller controller3 = new Controller(
-        "data/samples/controllers/3/botinit.json",
-        "data/samples/controllers/3/botcmd.json",
-        "data/samples/controllers/3/botlog.json"
-    );
-    controller3.setProxy(HttpProxy.NONE);
+        "init3", "cmd3", "log3",
+        new Interval(10, 20, TimeUnit.SECONDS),
+        10L,
+        new Interval(10, 20, TimeUnit.SECONDS),
+        new HttpProxy("192.168.0.1", 8080),
+        "* * * ? * SAT,SUN",
+        new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}});
     controllers.add(controller1);
     controllers.add(controller2);
     controllers.add(controller3);
-    config.setControllers(controllers);
+    expected.setControllers(controllers);
 
     OutputStream outjson = new ByteArrayOutputStream();
     OutputStream outyaml = new ByteArrayOutputStream();
-    AppConfigurationService.to(AppConfigurationFormat.JSON, outjson, config);
-    AppConfigurationService.to(AppConfigurationFormat.YAML, outyaml, config);
+    AppConfigurationService.to(AppConfigurationFormat.JSON, outjson, expected);
+    AppConfigurationService.to(AppConfigurationFormat.YAML, outyaml, expected);
     String actualJson = outjson.toString();
     String actualYaml = outyaml.toString();
 

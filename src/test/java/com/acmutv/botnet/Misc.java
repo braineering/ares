@@ -29,7 +29,9 @@ package com.acmutv.botnet;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.quartz.CronExpression;
 
+import java.net.Socket;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,12 +45,7 @@ import java.util.Map;
 public class Misc {
 
   @Test
-  @Ignore
   public void test() throws ParseException {
-    Map<String, Object> m = new HashMap<>();
-    m.put("b", true);
 
-    final Boolean b = (Boolean) m.get("b");
-    Assert.assertTrue(b);
   }
 }
