@@ -28,6 +28,7 @@ package com.acmutv.botnet.core.report;
 
 import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
+import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.core.report.serial.SimpleReportJsonMapper;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
@@ -91,7 +92,26 @@ public class ReportSerializationTest {
     SimpleReport reportExpected = new SimpleReport();
     reportExpected.put("prop1", "val1");
     reportExpected.put("prop2", "val2");
-    reportExpected.put(SimpleReport.KEY_CONFIGURATION, new AppConfiguration());
+    reportExpected.put(SimpleReport.KEY_CONFIG_APP, new AppConfiguration());
+    ObjectMapper mapper = new SimpleReportJsonMapper();
+    String jsonActual = mapper.writeValueAsString(reportExpected);
+    SimpleReport reportActual = mapper.readValue(jsonActual, SimpleReport.class);
+    Assert.assertEquals(reportExpected, reportActual);
+  }
+
+  /**
+   * Tests {@link SimpleReport} serialization/deserialization.
+   * Properties: provided | Configuration: provided | Attacks: not provided
+   * @throws IOException when command cannot be serialized/deserialized.
+   */
+  @Test
+  public void test_propertiesConfiguration2() throws IOException {
+    SimpleReport reportExpected = new SimpleReport();
+    reportExpected.put("prop1", "val1");
+    reportExpected.put("prop2", "val2");
+    reportExpected.put(SimpleReport.KEY_CONFIG_APP, new AppConfiguration());
+    reportExpected.put(SimpleReport.KEY_CONFIG_CONTROLLER,
+        new Controller("init", "cmd", "log"));
     ObjectMapper mapper = new SimpleReportJsonMapper();
     String jsonActual = mapper.writeValueAsString(reportExpected);
     SimpleReport reportActual = mapper.readValue(jsonActual, SimpleReport.class);
@@ -108,8 +128,8 @@ public class ReportSerializationTest {
     SimpleReport reportExpected = new SimpleReport();
     reportExpected.put("prop1", "val1");
     reportExpected.put("prop2", "val2");
-    reportExpected.put(SimpleReport.KEY_CONFIGURATION, new AppConfiguration());
-    reportExpected.put(SimpleReport.KEY_ATTACKS_HTTP, new ArrayList<HttpFloodAttack>(){{
+    reportExpected.put(SimpleReport.KEY_CONFIG_APP, new AppConfiguration());
+    reportExpected.put(SimpleReport.KEY_ATTACKS, new ArrayList<HttpFloodAttack>(){{
       add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com")));
       add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
           (HttpProxy) null

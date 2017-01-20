@@ -30,6 +30,7 @@ import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
 import com.acmutv.botnet.core.attack.flooding.HttpFloodAttacker;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
+import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
@@ -168,11 +169,11 @@ public class BotPool {
     TriggerBuilder tb = TriggerBuilder.newTrigger().withIdentity(triggerKey);
 
     if (attack.getExecutions() > 1) {
-      final long intervalMillis = attack.getPeriod().getRandomDuration().toMillis();
+      final Duration period = attack.getPeriod().getRandomDuration();
       final int repetitions = attack.getExecutions() - 1;
 
       tb.withSchedule(SimpleScheduleBuilder.simpleSchedule()
-              .withIntervalInMilliseconds(intervalMillis)
+              .withIntervalInMilliseconds(period.toMillis())
               .withRepeatCount(repetitions)
       );
     } else {

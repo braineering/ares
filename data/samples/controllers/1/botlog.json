@@ -1,1 +1,87 @@
-{}
+{
+  "config.app" : {
+    "cnfInfo" : true,
+    "tgtInfo" : true,
+    "sysInfo" : true,
+    "netInfo" : true,
+    "polling" : "10-20:SECONDS",
+    "reconnections" : 3,
+    "reconnectionWait" : "10-20:SECONDS",
+    "proxy" : "none",
+    "sleep" : "* * * ? * SAT,SUN",
+    "authentication" : {
+      "User-Agent" : "CustomUserAgent"
+    },
+    "controllers" : [ {
+      "init" : "data/samples/controllers/notvalid/botinit.json",
+      "command" : "data/samples/controllers/notvalid/botcmd.json",
+      "log" : "data/samples/controllers/notvalid/botlog.json"
+    }, {
+      "init" : "data/samples/controllers/1/botinit.json",
+      "command" : "data/samples/controllers/1/botcmd.json",
+      "log" : "data/samples/controllers/1/botlog.json",
+      "authentication" : {
+        "auth.user-agent" : "BotAgent1"
+      }
+    } ]
+  },
+  "config.controller" : {
+    "init" : "data/samples/controllers/1/botinit.json",
+    "command" : "data/samples/controllers/1/botcmd.json",
+    "log" : "data/samples/controllers/1/botlog.json",
+    "authentication" : {
+      "auth.user-agent" : "BotAgent1"
+    }
+  },
+  "attacks" : [ {
+    "method" : "GET",
+    "target" : "http://www.gmarciani.com",
+    "proxy" : "192.168.0.1:8080",
+    "executions" : 3,
+    "period" : "10-15:SECONDS",
+    "header" : {
+      "User-Agent" : "CustomUserAgent"
+    },
+    "params" : {
+      "foo1" : "bar1"
+    }
+  }, {
+    "method" : "GET",
+    "target" : "http://www.gmarciani.com",
+    "proxy" : "none",
+    "executions" : 1,
+    "period" : null,
+    "header" : { },
+    "params" : { }
+  }, {
+    "method" : "GET",
+    "target" : "http://www.gmarciani.com",
+    "proxy" : "192.168.0.1:8080",
+    "executions" : 3,
+    "period" : "10-15:SECONDS",
+    "header" : { },
+    "params" : { }
+  }, {
+    "method" : "GET",
+    "target" : "http://www.gmarciani.com",
+    "proxy" : "192.168.0.1:8080",
+    "executions" : 1,
+    "period" : null,
+    "header" : { },
+    "params" : { }
+  }, {
+    "method" : "POST",
+    "target" : "http://www.gmarciani.com",
+    "proxy" : "192.168.0.1:8080",
+    "executions" : 3,
+    "period" : "10-15:SECONDS",
+    "header" : {
+      "User-Agent" : "CustomUserAgent"
+    },
+    "params" : {
+      "foo1" : "bar1"
+    }
+  } ],
+  "network-analysis" : "{networkInterfaces=null, activeConnections=null, networkPorts=null, currentNetworkInformation=null, ip=127.0.1.1, MAC=20-68-9D-C3-76-EB, networkServices=null}",
+  "system-analysis" : "{hostName=debian\n, os=Linux, osVersion=3.16.0-4-amd64, kernel=3.16.0-4-amd64\n, osArch=amd64, userName=$USER\n, browsers=}"
+}

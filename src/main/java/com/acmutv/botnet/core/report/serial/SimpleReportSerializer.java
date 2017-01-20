@@ -28,6 +28,7 @@ package com.acmutv.botnet.core.report.serial;
 
 import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
+import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.core.report.SimpleReport;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -73,15 +74,21 @@ public class SimpleReportSerializer extends StdSerializer<SimpleReport> {
   public void serialize(SimpleReport value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
 
-    if (value.containsKey(SimpleReport.KEY_CONFIGURATION)) {
-      final AppConfiguration config = (AppConfiguration) value.get(SimpleReport.KEY_CONFIGURATION);
-      gen.writeFieldName(SimpleReport.KEY_CONFIGURATION);
+    if (value.containsKey(SimpleReport.KEY_CONFIG_APP)) {
+      final AppConfiguration config = (AppConfiguration) value.get(SimpleReport.KEY_CONFIG_APP);
+      gen.writeFieldName(SimpleReport.KEY_CONFIG_APP);
       provider.findValueSerializer(AppConfiguration.class).serialize(config, gen, provider);
     }
 
-    if (value.containsKey(SimpleReport.KEY_ATTACKS_HTTP)) {
-      @SuppressWarnings("unchecked") final List<HttpFloodAttack> attacksHttp = (List<HttpFloodAttack>) value.get(SimpleReport.KEY_ATTACKS_HTTP);
-      gen.writeArrayFieldStart(SimpleReport.KEY_ATTACKS_HTTP);
+    if (value.containsKey(SimpleReport.KEY_CONFIG_CONTROLLER)) {
+      final Controller controller = (Controller) value.get(SimpleReport.KEY_CONFIG_CONTROLLER);
+      gen.writeFieldName(SimpleReport.KEY_CONFIG_CONTROLLER);
+      provider.findValueSerializer(Controller.class).serialize(controller, gen, provider);
+    }
+
+    if (value.containsKey(SimpleReport.KEY_ATTACKS)) {
+      @SuppressWarnings("unchecked") final List<HttpFloodAttack> attacksHttp = (List<HttpFloodAttack>) value.get(SimpleReport.KEY_ATTACKS);
+      gen.writeArrayFieldStart(SimpleReport.KEY_ATTACKS);
       for (HttpFloodAttack attack : attacksHttp) {
         provider.findValueSerializer(HttpFloodAttack.class).serialize(attack, gen, provider);
       }
@@ -91,8 +98,11 @@ public class SimpleReportSerializer extends StdSerializer<SimpleReport> {
     List<String> sortedKeys = new ArrayList<>();
     value.keySet().stream()
         .sorted()
-        .filter((String k) ->!k.equals(SimpleReport.KEY_CONFIGURATION) &&
-            !k.equals(SimpleReport.KEY_ATTACKS_HTTP))
+        .filter((String k) ->
+            !k.equals(SimpleReport.KEY_CONFIG_APP) &&
+            !k.equals(SimpleReport.KEY_CONFIG_CONTROLLER) &&
+            !k.equals(SimpleReport.KEY_ATTACKS)
+        )
         .forEachOrdered(sortedKeys::add);
     for (String k : sortedKeys) {
       gen.writeStringField(k, value.get(k).toString());
