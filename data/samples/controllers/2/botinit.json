@@ -1,5 +1,4 @@
 {
-  "authentication": {
-    "User-Agent": "BotAgent2"
-  }
+  "auth.user-agent": "BotAgent2",
+  "life.sleep": null
 }

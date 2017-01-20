@@ -76,7 +76,7 @@ public class ControllerSerializationTest {
         new Interval(10, 15, TimeUnit.SECONDS),
         HttpProxy.NONE,
         null,
-        new HashMap<String,String>(){{put(Controller.AUTHENTICATION_USER_AGENT, "CustomUserAgent");}});
+        new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}});
     ObjectMapper mapper = new ControllerJsonMapper();
     String jsonActual = mapper.writeValueAsString(ctrlExpected);
     Controller ctrlActual = mapper.readValue(jsonActual, Controller.class);
@@ -96,7 +96,7 @@ public class ControllerSerializationTest {
         new Interval(10, 15, TimeUnit.SECONDS),
         new HttpProxy("192.168.0.1", 8080),
         "* * * ? * SAT,SUN",
-        new HashMap<String,String>(){{put(Controller.AUTHENTICATION_USER_AGENT, "CustomUserAgent");}});
+        new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}});
     ObjectMapper mapper = new ControllerJsonMapper();
     String jsonActual = mapper.writeValueAsString(ctrlExpected);
     Controller ctrlActual = mapper.readValue(jsonActual, Controller.class);

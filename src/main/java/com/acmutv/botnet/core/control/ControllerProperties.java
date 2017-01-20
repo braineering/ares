@@ -36,9 +36,9 @@ import java.util.Map;
  */
 public class ControllerProperties extends HashMap<String,String> {
 
-  public static final String PROPERTY_SLEEP = "sleep";
+  public static final String PROPERTY_SLEEP = "life.sleep";
 
-  public static final String USER_AGENT = "User-Agent";
+  public static final String USER_AGENT = "auth.user-agent";
 
   public static final String AUTHENTICATION[] = {USER_AGENT};
 
