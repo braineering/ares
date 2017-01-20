@@ -1,7 +1,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2016 Giacomo Marciani and Michele Porretta
+  Copyright (c) 2017 Giacomo Marciani and Michele Porretta
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -24,35 +24,22 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.attack.serial;
-
-import com.acmutv.botnet.core.attack.SynFloodAttack;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import lombok.EqualsAndHashCode;
+package com.acmutv.botnet.core.attack;
 
 /**
- * The JSON constructor for {@link SynFloodAttack}.
+ * Enumerates the available attacks types.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see SynFloodAttack
- * @see SynFloodAttackSerializer
- * @see SynFloodAttackDeserializer
  */
-@EqualsAndHashCode(callSuper = true)
-public class SynFloodAttackJsonMapper extends ObjectMapper {
+public enum AttackType {
 
-  /**
-   * Initializes the JSON constructor.
-   */
-  public SynFloodAttackJsonMapper() {
-    super();
-    SimpleModule module = new SimpleModule();
-    module.addSerializer(SynFloodAttack.class, SynFloodAttackSerializer.getInstance());
-    module.addDeserializer(SynFloodAttack.class, SynFloodAttackDeserializer.getInstance());
-    super.registerModule(module);
-    super.enable(SerializationFeature.INDENT_OUTPUT);
+  FLOOD_HTTP ("HTTP Flooding");
+
+  private final String name;
+
+  AttackType(String name) {
+    this.name = name;
   }
+
 }

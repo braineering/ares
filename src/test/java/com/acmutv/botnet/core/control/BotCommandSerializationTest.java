@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet.core.control;
 
-import com.acmutv.botnet.core.attack.SynFloodAttack;
+import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.command.CommandScope;
 import com.acmutv.botnet.core.control.command.serial.BotCommandJsonMapper;
@@ -56,18 +56,25 @@ public class BotCommandSerializationTest {
 
   /**
    * Tests {@link BotCommand} serialization/deserialization.
-   * Command: ATTACK_SYNFLOOD | Delay: not provided | Report: not provided
+   * Command: ATTACK_HTTPFLOOD | Delay: not provided | Report: not provided
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
   public void test_attackHttp() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.ATTACK_SYNFLOOD);
-    List<SynFloodAttack> attacks = new ArrayList<>();
-    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com")));
-    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com"),
+    BotCommand cmdExpected = new BotCommand(CommandScope.ATTACK_HTTPFLOOD);
+    List<HttpFloodAttack> attacks = new ArrayList<>();
+    attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com")));
+    attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080)));
-    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com"),
+    attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080),
+        3,
+        new Interval(10, 15, TimeUnit.SECONDS)
+    ));
+    attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
+        new HttpProxy("192.168.0.1", 8080),
+        new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
+        new HashMap<String,String>(){{put("foo1", "bar1");}},
         3,
         new Interval(10, 15, TimeUnit.SECONDS)
     ));
@@ -80,18 +87,25 @@ public class BotCommandSerializationTest {
 
   /**
    * Tests {@link BotCommand} serialization/deserialization.
-   * Command: ATTACK_SYNFLOOD | Delay: provided | Report: not provided
+   * Command: ATTACK_HTTPFLOOD | Delay: provided | Report: not provided
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
   public void test_attackHttp_delay() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.ATTACK_SYNFLOOD);
-    List<SynFloodAttack> attacks = new ArrayList<>();
-    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com")));
-    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com"),
+    BotCommand cmdExpected = new BotCommand(CommandScope.ATTACK_HTTPFLOOD);
+    List<HttpFloodAttack> attacks = new ArrayList<>();
+    attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com")));
+    attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080)));
-    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com"),
+    attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080),
+        3,
+        new Interval(10, 15, TimeUnit.SECONDS)
+    ));
+    attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
+        new HttpProxy("192.168.0.1", 8080),
+        new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
+        new HashMap<String,String>(){{put("foo1", "bar1");}},
         3,
         new Interval(10, 15, TimeUnit.SECONDS)
     ));
@@ -105,18 +119,25 @@ public class BotCommandSerializationTest {
 
   /**
    * Tests {@link BotCommand} serialization/deserialization.
-   * Command: ATTACK_SYNFLOOD | Delay: provided | Report: provided
+   * Command: ATTACK_HTTPFLOOD | Delay: provided | Report: provided
    * @throws IOException when command cannot be serialized/deserialized.
    */
   @Test
   public void test_attackHttp_delayReport() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.ATTACK_SYNFLOOD);
-    List<SynFloodAttack> attacks = new ArrayList<>();
-    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com")));
-    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com"),
+    BotCommand cmdExpected = new BotCommand(CommandScope.ATTACK_HTTPFLOOD);
+    List<HttpFloodAttack> attacks = new ArrayList<>();
+    attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com")));
+    attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080)));
-    attacks.add(new SynFloodAttack(new URL("http://www.gmarciani.com"),
+    attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080),
+        3,
+        new Interval(10, 15, TimeUnit.SECONDS)
+    ));
+    attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
+        new HttpProxy("192.168.0.1", 8080),
+        new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
+        new HashMap<String,String>(){{put("foo1", "bar1");}},
         3,
         new Interval(10, 15, TimeUnit.SECONDS)
     ));

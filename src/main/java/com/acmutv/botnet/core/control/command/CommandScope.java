@@ -37,7 +37,7 @@ import lombok.Getter;
  */
 @Getter
 public enum CommandScope {
-  ATTACK_SYNFLOOD("ATTACK_SYNFLOOD", true, false),
+  ATTACK_HTTPFLOOD("ATTACK_HTTPFLOOD", true, false),
   CALMDOWN    ("CALMDOWN", true, false),
   KILL        ("KILL", true, false),
   NONE        ("NONE", false, false),

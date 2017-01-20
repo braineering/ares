@@ -27,7 +27,7 @@
 package com.acmutv.botnet.core.report.serial;
 
 import com.acmutv.botnet.config.AppConfiguration;
-import com.acmutv.botnet.core.attack.SynFloodAttack;
+import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
 import com.acmutv.botnet.core.report.SimpleReport;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -87,11 +87,11 @@ public class SimpleReportDeserializer extends StdDeserializer<SimpleReport> {
     }
 
     if (node.hasNonNull(SimpleReport.KEY_ATTACKS_HTTP)) {
-      List<SynFloodAttack> httpAttacks = new ArrayList<>();
+      List<HttpFloodAttack> httpAttacks = new ArrayList<>();
       Iterator<JsonNode> iter = node.get(SimpleReport.KEY_ATTACKS_HTTP).elements();
       while (iter.hasNext()) {
         JsonNode n = iter.next();
-        SynFloodAttack attack = ctx.readValue(n.traverse(parser.getCodec()), SynFloodAttack.class);
+        HttpFloodAttack attack = ctx.readValue(n.traverse(parser.getCodec()), HttpFloodAttack.class);
         httpAttacks.add(attack);
       }
       report.put(SimpleReport.KEY_ATTACKS_HTTP, httpAttacks);

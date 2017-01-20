@@ -26,11 +26,22 @@
 
 package com.acmutv.botnet.core.attack;
 
+import com.acmutv.botnet.tool.net.HttpProxy;
+
+import java.net.URL;
+
 /**
- * The attack details.
+ * A general attack against a {@code URL} target.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  */
 public interface Attack {
+
+  AttackType getType();
+
+  URL getTarget();
+
+  HttpProxy getProxy();
+
 }

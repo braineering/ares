@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet.core.control.command.serial;
 
-import com.acmutv.botnet.core.attack.SynFloodAttack;
+import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -75,14 +75,14 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
     gen.writeStringField("command", value.getScope().getName());
     if (value.getScope().isWithParams()) {
       switch (value.getScope()) {
-        case ATTACK_SYNFLOOD:
-          @SuppressWarnings("unchecked") final List<SynFloodAttack> attacks = (List<SynFloodAttack>) value.getParams().get("attacks");
+        case ATTACK_HTTPFLOOD:
+          @SuppressWarnings("unchecked") final List<HttpFloodAttack> attacks = (List<HttpFloodAttack>) value.getParams().get("attacks");
           final Interval attackDelay = (Interval) value.getParams().get("delay");
           final Boolean attackReport = (Boolean) value.getParams().get("report");
 
           gen.writeArrayFieldStart("attacks");
-          for (SynFloodAttack attack : attacks) {
-            provider.findValueSerializer(SynFloodAttack.class).serialize(attack, gen, provider);
+          for (HttpFloodAttack attack : attacks) {
+            provider.findValueSerializer(HttpFloodAttack.class).serialize(attack, gen, provider);
           }
           gen.writeEndArray();
 

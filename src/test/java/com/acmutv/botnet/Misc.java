@@ -31,10 +31,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.quartz.CronExpression;
 
+import java.net.MalformedURLException;
 import java.net.Socket;
+import java.net.URL;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This class realizes local tests (for personal use only).
@@ -45,7 +48,18 @@ import java.util.Map;
 public class Misc {
 
   @Test
-  public void test() throws ParseException {
+  public void test() throws ParseException, MalformedURLException {
+    URL resource = new URL("http://www.gmarciani.com");
+    String formattedUrl = resource.toString();
+    Map<String,String> params = new HashMap<>();
+    params.put("param1", "value1");
+    if (!params.isEmpty()) {
+      formattedUrl += "?" +
+      params.entrySet().stream()
+          .map(e -> e.getKey() + "=" + e.getValue())
+          .collect(Collectors.joining("&"));
+    }
+    System.out.println(formattedUrl);
 
   }
 }

@@ -27,7 +27,7 @@
 package com.acmutv.botnet.core.report.serial;
 
 import com.acmutv.botnet.config.AppConfiguration;
-import com.acmutv.botnet.core.attack.SynFloodAttack;
+import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
 import com.acmutv.botnet.core.report.SimpleReport;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -80,10 +80,10 @@ public class SimpleReportSerializer extends StdSerializer<SimpleReport> {
     }
 
     if (value.containsKey(SimpleReport.KEY_ATTACKS_HTTP)) {
-      @SuppressWarnings("unchecked") final List<SynFloodAttack> attacksHttp = (List<SynFloodAttack>) value.get(SimpleReport.KEY_ATTACKS_HTTP);
+      @SuppressWarnings("unchecked") final List<HttpFloodAttack> attacksHttp = (List<HttpFloodAttack>) value.get(SimpleReport.KEY_ATTACKS_HTTP);
       gen.writeArrayFieldStart(SimpleReport.KEY_ATTACKS_HTTP);
-      for (SynFloodAttack attack : attacksHttp) {
-        provider.findValueSerializer(SynFloodAttack.class).serialize(attack, gen, provider);
+      for (HttpFloodAttack attack : attacksHttp) {
+        provider.findValueSerializer(HttpFloodAttack.class).serialize(attack, gen, provider);
       }
       gen.writeEndArray();
     }

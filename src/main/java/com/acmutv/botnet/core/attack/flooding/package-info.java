@@ -1,7 +1,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2016 Giacomo Marciani and Michele Porretta
+  Copyright (c) 2017 Giacomo Marciani and Michele Porretta
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -24,24 +24,10 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.attack;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
 /**
- * JUnit test suite for all attacks.
+ * This package contains classes that realize bot attacks.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HttpFloodAttackerTest
- * @see HttpFloodAttackSerializationTest
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    HttpFloodAttackerTest.class,
-    HttpFloodAttackSerializationTest.class
-})
-public class TestAllAttack {
-
-}
+package com.acmutv.botnet.core.attack.flooding;

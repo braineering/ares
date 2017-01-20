@@ -1,7 +1,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2016 Giacomo Marciani and Michele Porretta
+  Copyright (c) 2017 Giacomo Marciani and Michele Porretta
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -23,25 +23,20 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
  */
+package com.acmutv.botnet.core.attack.flooding;
 
-package com.acmutv.botnet.core.attack;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.acmutv.botnet.core.attack.Attack;
+import com.acmutv.botnet.tool.time.Interval;
 
 /**
- * JUnit test suite for all attacks.
+ * A general flooding attack.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HttpFloodAttackerTest
- * @see HttpFloodAttackSerializationTest
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    HttpFloodAttackerTest.class,
-    HttpFloodAttackSerializationTest.class
-})
-public class TestAllAttack {
+public interface FloodAttack extends Attack {
 
+  int getExecutions();
+
+  Interval getPeriod();
 }

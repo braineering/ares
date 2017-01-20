@@ -1,16 +1,32 @@
 {
-  "command": "ATTACK_SYNFLOOD",
+  "command": "ATTACK_HTTPFLOOD",
   "attacks": [
     {
+      "method": "GET",
       "target": "http://www.gmarciani.com"
     },
     {
+      "method": "GET",
       "target": "http://www.gmarciani.com",
       "proxy": "192.168.0.1:8080"
     },
     {
+      "method": "GET",
       "target": "http://www.gmarciani.com",
       "proxy": "192.168.0.1:8080",
+      "executions": 3,
+      "period": "10-15:SECONDS"
+    },
+    {
+      "method": "GET",
+      "target": "http://www.gmarciani.com",
+      "proxy": "192.168.0.1:8080",
+      "header": {
+        "User-Agent": "CustomUserAgent"
+      },
+      "params": {
+        "foo1": "bar1"
+      },
       "executions": 3,
       "period": "10-15:SECONDS"
     }

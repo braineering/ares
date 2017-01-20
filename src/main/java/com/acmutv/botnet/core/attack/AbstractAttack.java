@@ -1,7 +1,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2016 Giacomo Marciani and Michele Porretta
+  Copyright (c) 2017 Giacomo Marciani and Michele Porretta
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,6 @@
 package com.acmutv.botnet.core.attack;
 
 import com.acmutv.botnet.tool.net.HttpProxy;
-import com.acmutv.botnet.tool.time.Interval;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
@@ -37,63 +36,21 @@ import org.apache.logging.log4j.Logger;
 import java.net.URL;
 
 /**
- * The details of a HTTP attack. Used by {@link SynFloodAttacker} to perform the attack.
+ * Abstract definition of a general attack.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  */
 @Data
 @AllArgsConstructor
-public class SynFloodAttack implements Attack {
+public abstract class AbstractAttack implements Attack {
 
-  protected static final Logger LOGGER = LogManager.getLogger(SynFloodAttack.class);
+  @NonNull
+  private AttackType type;
 
-  /**
-   * The target to attack.
-   */
   @NonNull
   private URL target;
 
-  /**
-   * The proxy to attack through.
-   */
   private HttpProxy proxy = HttpProxy.NONE;
 
-  /**
-   * The maximum number of attack executions.
-   * Default is 1.
-   */
-  private int executions = 1;
-
-  /**
-   * The execution period.
-   */
-  private Interval period = null;
-
-  /**
-   * Constructs a new attack with no proxy, empty properties and one execution.
-   * @param target the target to attack.
-   */
-  public SynFloodAttack(URL target) {
-    this(target, HttpProxy.NONE, 1, null);
-  }
-
-  /**
-   * Constructs a new attack with no proxy, empty properties and one execution.
-   * @param target the target to attack.
-   * @param proxy the proxy to attack through.
-   */
-  public SynFloodAttack(URL target, HttpProxy proxy) {
-    this(target, proxy, 1, null);
-  }
-
-  /**
-   * Constructs a new attack with no proxy, empty properties and one execution.
-   * @param target the target to attack.
-   * @param executions the number of executions.
-   * @param period the period of executions.
-   */
-  public SynFloodAttack(URL target, int executions, Interval period) {
-    this(target, HttpProxy.NONE, executions, period);
-  }
 }

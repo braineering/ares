@@ -26,22 +26,15 @@
 
 package com.acmutv.botnet.core.attack;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.quartz.Job;
+import org.quartz.Scheduler;
 
 /**
- * JUnit test suite for all attacks.
+ * An Attack that can be executed by a {@link Scheduler}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see HttpFloodAttackerTest
- * @see HttpFloodAttackSerializationTest
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    HttpFloodAttackerTest.class,
-    HttpFloodAttackSerializationTest.class
-})
-public class TestAllAttack {
+public interface SchedulableAttacker extends Job {
 
 }

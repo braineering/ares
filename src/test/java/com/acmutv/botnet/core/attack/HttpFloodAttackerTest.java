@@ -26,6 +26,8 @@
 
 package com.acmutv.botnet.core.attack;
 
+import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
+import com.acmutv.botnet.core.attack.flooding.HttpFloodAttacker;
 import com.acmutv.botnet.tool.net.ConnectionManager;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
@@ -36,18 +38,17 @@ import org.quartz.*;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- * JUnit tests for {@link SynFloodAttacker}.
+ * JUnit tests for {@link HttpFloodAttacker}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
- * @see QuartzAttacker
- * @see SynFloodAttacker
+ * @see SchedulableAttacker
+ * @see HttpFloodAttacker
  */
-public class SynFloodAttackerTest {
+public class HttpFloodAttackerTest {
 
   @Before
   public void setup() {
@@ -56,8 +57,7 @@ public class SynFloodAttackerTest {
 
   @Test
   public void test_get() throws InterruptedException, MalformedURLException, SchedulerException {
-    SynFloodAttack attack = new SynFloodAttack(
-        new URL("http://www.gmarciani.com"),
+    HttpFloodAttack attack = new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
         HttpProxy.NONE,
         3,
         new Interval(1, 2, TimeUnit.SECONDS)
@@ -72,7 +72,7 @@ public class SynFloodAttackerTest {
     jdata.put("proxy", attack.getProxy());
     jdata.put("executions", attack.getExecutions());
 
-    JobDetail job = JobBuilder.newJob(SynFloodAttacker.class)
+    JobDetail job = JobBuilder.newJob(HttpFloodAttacker.class)
         .withIdentity("myJob", "group1")
         .usingJobData(jdata)
         .build();
