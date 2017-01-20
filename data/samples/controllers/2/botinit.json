@@ -1,19 +1,5 @@
 {
-  "cnfInfo": true,
-  "tgtInfo": true,
-  "sysInfo": true,
-  "netInfo": true,
-  "controllers": [
-    {
-      "init": "data/samples/controllers/2/botinit.json",
-      "command": "data/samples/controllers/2/botcmd.json",
-      "log": "data/samples/controllers/2/botlog.json"
-    }
-  ],
-  "polling": "40-60:SECONDS",
-  "reconnections": 3,
-  "reconnectionWait": "2-5:SECONDS",
-  "proxy": "none",
-  "userAgent": "Bot by Marciani and Porretta",
-  "sleep": "* * * ? * * *"
+  "authentication": {
+    "User-Agent": "BotAgent2"
+  }
 }

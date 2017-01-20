@@ -48,10 +48,6 @@ import java.util.Map;
 @Data
 public class Controller {
 
-  public static final String PROPERTY_SLEEP = "sleep";
-
-  public static final String AUTHENTICATION_USER_AGENT = "User-Agent";
-
   /**
    * The resource providing configuration.
    */

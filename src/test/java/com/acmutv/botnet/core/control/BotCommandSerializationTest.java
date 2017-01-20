@@ -78,6 +78,13 @@ public class BotCommandSerializationTest {
         3,
         new Interval(10, 15, TimeUnit.SECONDS)
     ));
+    attacks.add(new HttpFloodAttack(HttpMethod.POST, new URL("http://www.gmarciani.com"),
+        new HttpProxy("192.168.0.1", 8080),
+        new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
+        new HashMap<String,String>(){{put("foo1", "bar1");}},
+        3,
+        new Interval(10, 15, TimeUnit.SECONDS)
+    ));
     cmdExpected.getParams().put("attacks", attacks);
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
@@ -103,6 +110,13 @@ public class BotCommandSerializationTest {
         new Interval(10, 15, TimeUnit.SECONDS)
     ));
     attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
+        new HttpProxy("192.168.0.1", 8080),
+        new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
+        new HashMap<String,String>(){{put("foo1", "bar1");}},
+        3,
+        new Interval(10, 15, TimeUnit.SECONDS)
+    ));
+    attacks.add(new HttpFloodAttack(HttpMethod.POST, new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080),
         new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
         new HashMap<String,String>(){{put("foo1", "bar1");}},
@@ -135,6 +149,13 @@ public class BotCommandSerializationTest {
         new Interval(10, 15, TimeUnit.SECONDS)
     ));
     attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
+        new HttpProxy("192.168.0.1", 8080),
+        new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
+        new HashMap<String,String>(){{put("foo1", "bar1");}},
+        3,
+        new Interval(10, 15, TimeUnit.SECONDS)
+    ));
+    attacks.add(new HttpFloodAttack(HttpMethod.POST, new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080),
         new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
         new HashMap<String,String>(){{put("foo1", "bar1");}},
@@ -340,7 +361,8 @@ public class BotCommandSerializationTest {
   @Test
   public void test_restart() throws IOException {
     BotCommand cmdExpected = new BotCommand(CommandScope.RESTART);
-    cmdExpected.getParams().put("resource", "Custom");
+    cmdExpected.getParams().put("controller",
+        new Controller("init", "cmd", "log"));
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
     BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
@@ -355,7 +377,8 @@ public class BotCommandSerializationTest {
   @Test
   public void test_restart_wait() throws IOException {
     BotCommand cmdExpected = new BotCommand(CommandScope.RESTART);
-    cmdExpected.getParams().put("resource", "Custom");
+    cmdExpected.getParams().put("controller",
+        new Controller("init", "cmd", "log"));
     cmdExpected.getParams().put("wait", true);
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
@@ -371,7 +394,8 @@ public class BotCommandSerializationTest {
   @Test
   public void test_restart_waitDelay() throws IOException {
     BotCommand cmdExpected = new BotCommand(CommandScope.RESTART);
-    cmdExpected.getParams().put("resource", "Custom");
+    cmdExpected.getParams().put("controller",
+        new Controller("init", "cmd", "log"));
     cmdExpected.getParams().put("wait", true);
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     ObjectMapper mapper = new BotCommandJsonMapper();
@@ -388,7 +412,8 @@ public class BotCommandSerializationTest {
   @Test
   public void test_restart_waitDelayReport() throws IOException {
     BotCommand cmdExpected = new BotCommand(CommandScope.RESTART);
-    cmdExpected.getParams().put("resource", "Custom");
+    cmdExpected.getParams().put("controller",
+        new Controller("init", "cmd", "log"));
     cmdExpected.getParams().put("wait", true);
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     cmdExpected.getParams().put("report", true);

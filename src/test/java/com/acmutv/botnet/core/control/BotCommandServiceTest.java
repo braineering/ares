@@ -96,6 +96,13 @@ public class BotCommandServiceTest {
         3,
         new Interval(10, 15, TimeUnit.SECONDS)
     ));
+    attacks.add(new HttpFloodAttack(HttpMethod.POST, new URL("http://www.gmarciani.com"),
+        new HttpProxy("192.168.0.1", 8080),
+        new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
+        new HashMap<String,String>(){{put("foo1", "bar1");}},
+        3,
+        new Interval(10, 15, TimeUnit.SECONDS)
+    ));
     expected.getParams().put("attacks", attacks);
     Assert.assertEquals(expected, actual);
   }
@@ -119,6 +126,13 @@ public class BotCommandServiceTest {
         new Interval(10, 15, TimeUnit.SECONDS)
     ));
     attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
+        new HttpProxy("192.168.0.1", 8080),
+        new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
+        new HashMap<String,String>(){{put("foo1", "bar1");}},
+        3,
+        new Interval(10, 15, TimeUnit.SECONDS)
+    ));
+    attacks.add(new HttpFloodAttack(HttpMethod.POST, new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080),
         new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
         new HashMap<String,String>(){{put("foo1", "bar1");}},
@@ -149,6 +163,13 @@ public class BotCommandServiceTest {
         new Interval(10, 15, TimeUnit.SECONDS)
     ));
     attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
+        new HttpProxy("192.168.0.1", 8080),
+        new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
+        new HashMap<String,String>(){{put("foo1", "bar1");}},
+        3,
+        new Interval(10, 15, TimeUnit.SECONDS)
+    ));
+    attacks.add(new HttpFloodAttack(HttpMethod.POST, new URL("http://www.gmarciani.com"),
         new HttpProxy("192.168.0.1", 8080),
         new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
         new HashMap<String,String>(){{put("foo1", "bar1");}},
@@ -341,7 +362,8 @@ public class BotCommandServiceTest {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/restart.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.RESTART);
-    expected.getParams().put("resource", "data/samples/controllers/1/botinit.json");
+    expected.getParams().put("controller",
+        new Controller("init", "cmd", "log"));
     Assert.assertEquals(expected, actual);
   }
 
@@ -354,7 +376,8 @@ public class BotCommandServiceTest {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/restart.wait.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.RESTART);
-    expected.getParams().put("resource", "data/samples/controllers/1/botinit.json");
+    expected.getParams().put("controller",
+        new Controller("init", "cmd", "log"));
     expected.getParams().put("wait", true);
     Assert.assertEquals(expected, actual);
   }
@@ -368,7 +391,8 @@ public class BotCommandServiceTest {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/restart.wait.delay.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.RESTART);
-    expected.getParams().put("resource", "data/samples/controllers/1/botinit.json");
+    expected.getParams().put("controller",
+        new Controller("init", "cmd", "log"));
     expected.getParams().put("wait", true);
     expected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     Assert.assertEquals(expected, actual);
@@ -383,7 +407,8 @@ public class BotCommandServiceTest {
     InputStream file = BotCommandServiceTest.class.getResourceAsStream("/command/restart.wait.delay.report.json");
     BotCommand actual = BotCommandService.fromJson(file);
     BotCommand expected = new BotCommand(CommandScope.RESTART);
-    expected.getParams().put("resource", "data/samples/controllers/1/botinit.json");
+    expected.getParams().put("controller",
+        new Controller("init", "cmd", "log"));
     expected.getParams().put("wait", true);
     expected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     expected.getParams().put("report", true);

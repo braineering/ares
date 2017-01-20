@@ -55,14 +55,14 @@ public class ControllerService {
   private static final Logger LOGGER = LogManager.getLogger(ControllerService.class);
 
   /**
-   * Deserializes {@link Map} from an input.
+   * Deserializes {@link ControllerProperties} from an input.
    * @param format the serialization format.
    * @param resource the resource providing the specified serialization.
    * @return the parsed configuration.
    * @throws IOException if {@link Map} cannot be deserialized.
    */
-  public static Map<String,String> from(final ControllerPropertiesFormat format, final String resource) throws IOException {
-    Map<String,String> config;
+  public static ControllerProperties from(final ControllerPropertiesFormat format, final String resource) throws IOException {
+    ControllerProperties config;
     try (final InputStream in = IOManager.getInputStream(resource)) {
       config = from(format, in);
     }
@@ -70,15 +70,17 @@ public class ControllerService {
   }
 
   /**
-   * Deserializes {@link Map} from a stream.
+   * Deserializes {@link ControllerProperties} from a stream.
    * @param format the serialization format.
    * @param in the stream providing the serialization.
    * @return the parsed configuration.
    * @throws IOException if {@link Map} cannot be deserialized.
    */
-  public static Map<String,String> from(final ControllerPropertiesFormat format, final InputStream in) throws IOException {
+  public static ControllerProperties from(final ControllerPropertiesFormat format, final InputStream in) throws IOException {
     ObjectMapper mapper = getMapper(format);
-    Map<String,String> config = mapper.readValue(in, new TypeReference<Map<String,String>>() { });
+    ControllerProperties config = new ControllerProperties();
+    Map<String,String> properties = mapper.readValue(in, new TypeReference<Map<String,String>>() { });
+    config.putAll(properties);
     return LOGGER.traceExit(config);
   }
 

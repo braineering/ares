@@ -27,6 +27,7 @@
 package com.acmutv.botnet.core.control.command.serial;
 
 import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
+import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -144,12 +145,13 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
           break;
 
         case RESTART:
-          final String resource = value.getParams().get("resource").toString();
+          final Controller controller = (Controller) value.getParams().get("controller");
           final Boolean restartWait = (Boolean) value.getParams().get("wait");
           final Interval restartDelay = (Interval) value.getParams().get("delay");
           final Boolean restartReport = (Boolean) value.getParams().get("report");
 
-          gen.writeStringField("resource", resource);
+          gen.writeFieldName("controller");
+          provider.findValueSerializer(Controller.class).serialize(controller, gen, provider);
 
           if (restartWait != null) {
             gen.writeBooleanField("wait", restartWait);

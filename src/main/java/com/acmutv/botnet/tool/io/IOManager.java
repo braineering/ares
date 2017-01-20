@@ -33,10 +33,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 
 /**
  * This class realizes I/O services.
@@ -74,13 +71,31 @@ public class IOManager {
   }
 
   /**
+   * Checks if a resource is readable.
+   * @param resource the resource to check.
+   * @return true if the resource is readable; false, otherwise.
+   */
+  public static boolean isReadableResource(String resource) {
+    try {
+      final Path path = FileSystems.getDefault().getPath(resource).toAbsolutePath();
+      return Files.isReadable(path);
+    } catch (InvalidPathException exc) {
+      return false;
+    }
+  }
+
+  /**
    * Checks if a resource is writable.
    * @param resource the resource to check.
    * @return true if the resource is writable; false, otherwise.
    */
   public static boolean isWritableResource(String resource) {
-    final Path path = FileSystems.getDefault().getPath(resource).toAbsolutePath();
-    return Files.isWritable(path);
+    try {
+      final Path path = FileSystems.getDefault().getPath(resource).toAbsolutePath();
+      return Files.isWritable(path);
+    } catch (InvalidPathException exc) {
+      return false;
+    }
   }
 
   /**

@@ -27,6 +27,7 @@
 package com.acmutv.botnet.core.control.command.serial;
 
 import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
+import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.command.CommandScope;
 import com.acmutv.botnet.tool.time.Interval;
@@ -165,17 +166,16 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
           break;
 
         case RESTART:
-          if (!node.has("resource")) {
-            throw new IOException("Cannot read parameter [resource] for scope [RESTART] (missing)");
+          if (!node.has("controller")) {
+            throw new IOException("Cannot read parameter [controller] for scope [RESTART] (missing)");
           }
-          final String resource = node.get("resource").asText();
+          final Controller controller = ctx.readValue(node.get("controller").traverse(parser.getCodec()), Controller.class);
+          cmd.getParams().put("controller", controller);
 
           if (node.hasNonNull("wait")) {
             final boolean restartWait = node.get("wait").asBoolean();
             cmd.getParams().put("wait", restartWait);
           }
-
-          cmd.getParams().put("resource", resource);
 
           if (node.hasNonNull("delay")) {
             final Interval restartDelay = Interval.valueOf(node.get("delay").asText());
