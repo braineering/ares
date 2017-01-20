@@ -48,17 +48,9 @@ import lombok.EqualsAndHashCode;
 public class AppConfigurationYamlMapper extends YAMLMapper {
 
   /**
-   * Initializes the YAML constructor, with no default model.
+   * Initializes the YAML constructor.
    */
   public AppConfigurationYamlMapper() {
-    this(null);
-  }
-
-  /**
-   * Initializes the YAML constructor, with default model.
-   * @param defaultConfig the default model.
-   */
-  public AppConfigurationYamlMapper(AppConfiguration defaultConfig) {
     super();
     SimpleModule module = new SimpleModule();
     module.addSerializer(AppConfiguration.class, AppConfigurationSerializer.getInstance());

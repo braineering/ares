@@ -26,7 +26,6 @@
 
 package com.acmutv.botnet.tool.net;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -97,48 +96,8 @@ public class HttpManager {
   public static InputStream getResponseBody(final HttpMethod method, final URL resource,
                                             HttpProxy proxy,
                                             Map<String,String> header, Map<String,String> params) throws IOException {
-    LOGGER.traceEntry("resource={} proxy={} header={} params={}", resource, proxy, header, params);
-
-    String formattedParams = (params != null) ?
-        params.entrySet().stream()
-            .map(e -> e.getKey() + "=" + e.getValue())
-            .collect(Collectors.joining("&"))
-        :
-        "";
-
-    URL url = (formattedParams.length() > 0) ?
-        new URL(resource.toString() + "?" + formattedParams)
-        :
-        resource;
-
-    Proxy jproxy = (proxy == null || proxy.equals(HttpProxy.NONE)) ?
-        Proxy.NO_PROXY
-        :
-        proxy;
-
-    LOGGER.trace("url={}", url);
-
-    HttpURLConnection http = (HttpURLConnection) url.openConnection(jproxy);
-
-    http.setRequestMethod(method.name());
-
-    if (header != null) {
-      header.forEach(http::setRequestProperty);
-    }
-
-    if (method.equals(HttpMethod.POST) && formattedParams.length() > 0) {
-      byte data[] = formattedParams.getBytes(Charset.defaultCharset());
-      int datalen = data.length;
-      http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-      http.setRequestProperty("charset", "utf-8");
-      http.setRequestProperty("Content-Length", Integer.toString(datalen));
-      http.setUseCaches(false);
-      try (DataOutputStream out = new DataOutputStream(http.getOutputStream())) {
-        out.write(data);
-      }
-    }
-
-    return LOGGER.traceExit(http.getInputStream());
+    HttpURLConnection http = request(method, resource, proxy, header, params);
+    return http.getInputStream();
   }
 
   /**
@@ -176,6 +135,23 @@ public class HttpManager {
    */
   public static int makeRequest(HttpMethod method, URL resource, HttpProxy proxy,
                                 Map<String,String> header, Map<String,String> params) throws IOException {
+    HttpURLConnection http = request(method, resource, proxy, header, params);
+    return http.getResponseCode();
+  }
+
+  /**
+   * Executes a HTTP request.
+   * @param method the HTTP method.
+   * @param resource the web url to contact.
+   * @param proxy the proxy server.
+   * @param header the request header.
+   * @param params the request parameters.
+   * @return the response code.
+   * @throws IOException when HTTP error.
+   */
+  private static HttpURLConnection request(final HttpMethod method, final URL resource,
+                                           HttpProxy proxy,
+                                           Map<String,String> header, Map<String,String> params) throws IOException {
     LOGGER.traceEntry("resource={} proxy={} header={} params={}", resource, proxy, header, params);
 
     String formattedParams = (params != null) ?
@@ -189,8 +165,6 @@ public class HttpManager {
         new URL(resource.toString() + "?" + formattedParams)
         :
         resource;
-
-    LOGGER.trace("url={}", url);
 
     Proxy jproxy = (proxy == null || proxy.equals(HttpProxy.NONE)) ?
         Proxy.NO_PROXY
@@ -211,12 +185,13 @@ public class HttpManager {
       http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
       http.setRequestProperty("charset", "utf-8");
       http.setRequestProperty("Content-Length", Integer.toString(datalen));
+      http.setDoOutput(true);
       http.setUseCaches(false);
       try (DataOutputStream out = new DataOutputStream(http.getOutputStream())) {
         out.write(data);
       }
     }
 
-    return LOGGER.traceExit(http.getResponseCode());
+    return http;
   }
 }

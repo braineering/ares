@@ -26,7 +26,6 @@
 
 package com.acmutv.botnet.core.control.serial;
 
-import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.core.control.ControllerProperties;
 
 /**

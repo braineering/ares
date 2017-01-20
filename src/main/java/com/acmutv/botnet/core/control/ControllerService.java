@@ -26,10 +26,6 @@
 
 package com.acmutv.botnet.core.control;
 
-import com.acmutv.botnet.config.AppConfiguration;
-import com.acmutv.botnet.config.serial.AppConfigurationFormat;
-import com.acmutv.botnet.config.serial.AppConfigurationJsonMapper;
-import com.acmutv.botnet.config.serial.AppConfigurationYamlMapper;
 import com.acmutv.botnet.core.control.serial.ControllerPropertiesFormat;
 import com.acmutv.botnet.tool.io.IOManager;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -39,8 +35,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.Map;
 
 /**

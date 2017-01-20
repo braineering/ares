@@ -38,6 +38,7 @@ import org.quartz.SchedulerException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -84,17 +85,30 @@ public class BotPoolTest {
   @Test
   public void test_schedulingAttack() throws SchedulerException, MalformedURLException, InterruptedException {
     Assume.assumeTrue(ConnectionManager.checkConnection());
-    Set<HttpFloodAttack> attacks = new HashSet<HttpFloodAttack>(){{
-      add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com")));
-      add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
-          new HttpProxy("31.220.56.101", 80))
-      );
-      add(
-          new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
-              new HttpProxy("31.220.56.101", 80),
-              3, new Interval(2, 3, TimeUnit.SECONDS))
-      );
-    }};
+
+    Set<HttpFloodAttack> attacks = new HashSet<>();
+    attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com")));
+    attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
+        new HttpProxy("31.220.56.101", 80)));
+    attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
+        new HttpProxy("31.220.56.101", 80),
+        3,
+        new Interval(10, 15, TimeUnit.SECONDS)
+    ));
+    attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
+        new HttpProxy("31.220.56.101", 80),
+        new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
+        new HashMap<String,String>(){{put("foo1", "bar1");}},
+        3,
+        new Interval(10, 15, TimeUnit.SECONDS)
+    ));
+    attacks.add(new HttpFloodAttack(HttpMethod.POST, new URL("http://www.gmarciani.com"),
+        new HttpProxy("31.220.56.101", 80),
+        new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
+        new HashMap<String,String>(){{put("foo1", "bar1");}},
+        3,
+        new Interval(10, 15, TimeUnit.SECONDS)
+    ));
 
     BotPool pool = new BotPool();
 
@@ -109,7 +123,7 @@ public class BotPoolTest {
 
     pool.getScheduler().start();
 
-    Thread.sleep(15000);
+    Thread.sleep(20000);
 
     pool.destroy(true);
 

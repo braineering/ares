@@ -57,13 +57,14 @@ public class HttpFloodAttacker implements SchedulableAttacker {
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
     LOGGER.traceEntry();
+    //TODO check
     JobDataMap jobmap = context.getJobDetail().getJobDataMap();
     LOGGER.trace("With jobmap {}", jobmap);
     final HttpMethod method = (HttpMethod) jobmap.get("method");
     final URL target = (URL) jobmap.get("target");
     final HttpProxy proxy = (HttpProxy) jobmap.get("proxy");
-    final Map<String,String> header = (Map<String,String>) jobmap.get("header");
-    final Map<String,String> params = (Map<String,String>) jobmap.get("params");
+    @SuppressWarnings("unchecked") final Map<String,String> header = (Map<String,String>) jobmap.get("header");
+    @SuppressWarnings("unchecked") final Map<String,String> params = (Map<String,String>) jobmap.get("params");
     final int counter = (int)jobmap.getOrDefault("counter", 1);
     final int executions = jobmap.getInt("executions");
 
@@ -72,7 +73,7 @@ public class HttpFloodAttacker implements SchedulableAttacker {
     LOGGER.trace("Execution {}", counter);
 
     LOGGER.info(AppLogMarkers.ATTACK,
-        "Launching HTTP FLOOD attack: {} {} {} ({}/{}) behind proxy {}",
+        "Launching HTTP FLOOD attack: {} {} ({}/{}) behind proxy {}",
         method, target, counter, executions, (proxy == null)?"none":proxy.toCompactString());
 
     try {

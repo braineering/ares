@@ -26,13 +26,9 @@
 
 package com.acmutv.botnet;
 
-import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.quartz.CronExpression;
 
 import java.net.MalformedURLException;
-import java.net.Socket;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.HashMap;

@@ -31,8 +31,6 @@ import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 

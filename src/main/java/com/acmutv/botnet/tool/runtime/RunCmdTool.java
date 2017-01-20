@@ -40,7 +40,7 @@ import java.util.Random;
 public class RunCmdTool {
 	/**
 	 * A method that runs a command on the command line of the host and captures the result from the console
-	 * @param system command
+	 * @param command the command to run.
 	 * @return output of the executed system command
 	 */
 	public static String runCmd(String command) { 

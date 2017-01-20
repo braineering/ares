@@ -28,7 +28,6 @@ package com.acmutv.botnet.core;
 
 import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.config.AppConfigurationService;
-import com.acmutv.botnet.config.serial.AppConfigurationFormat;
 import com.acmutv.botnet.core.analysis.Analyzer;
 import com.acmutv.botnet.core.analysis.NetworkAnalyzer;
 import com.acmutv.botnet.core.analysis.SystemAnalyzer;
@@ -566,7 +565,7 @@ public class CoreController {
    * @param controller the new controller.
    * @param wait if true, waits for jobs to complete; if false, kills immediately
    * @throws BotExecutionException when command `RESTART` cannot be correctly executed.
-   * @throws BotInitializationException
+   * @throws BotInitializationException when resources cannot be correctly allocated.
    */
   private static void restartBot(Controller controller, boolean wait) throws BotExecutionException, BotInitializationException {
     LOGGER.info("Restarting bot configuration with C&C at {}...", controller.getInitResource());

@@ -26,14 +26,13 @@
 
 package com.acmutv.botnet.core.attack.flooding;
 
-import com.acmutv.botnet.core.attack.Attack;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Interval;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
+import lombok.ToString;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,13 +41,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The details of a HTTP attack. Used by {@link HttpFloodAttacker} to perform the attack.
+ * The details of a HTTP Flood attack.
+ * Used by {@link HttpFloodAttacker} to perform the attack.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class HttpFloodAttack extends AbstractFloodAttack implements FloodAttack {
 
   protected static final Logger LOGGER = LogManager.getLogger(HttpFloodAttack.class);
@@ -107,7 +108,7 @@ public class HttpFloodAttack extends AbstractFloodAttack implements FloodAttack 
    * Constructs a new attack with no proxy, empty properties and one execution.
    * @param target the target to attack.
    * @param proxy the HTTP proxy to execute the attack through.
-   * @param header
+   * @param header the request header.
    * @param executions the number of executions.
    * @param period the period of executions.
    */

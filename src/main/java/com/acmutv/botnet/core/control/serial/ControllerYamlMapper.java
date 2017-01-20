@@ -26,9 +26,6 @@
 
 package com.acmutv.botnet.core.control.serial;
 
-import com.acmutv.botnet.config.AppConfiguration;
-import com.acmutv.botnet.config.serial.AppConfigurationDeserializer;
-import com.acmutv.botnet.config.serial.AppConfigurationSerializer;
 import com.acmutv.botnet.core.control.Controller;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;

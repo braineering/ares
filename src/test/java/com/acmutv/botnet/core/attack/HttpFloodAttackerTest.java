@@ -48,6 +48,7 @@ import java.util.concurrent.TimeUnit;
  * @see SchedulableAttacker
  * @see HttpFloodAttacker
  */
+@Deprecated
 public class HttpFloodAttackerTest {
 
   @Before
@@ -55,6 +56,12 @@ public class HttpFloodAttackerTest {
     org.junit.Assume.assumeTrue(ConnectionManager.checkConnection());
   }
 
+  /**
+   * Tests the HTTP Flooding GET attack.
+   * @throws InterruptedException when something is wrongly interrupted.
+   * @throws MalformedURLException when not valid URL are processed.
+   * @throws SchedulerException when Scheduler errors occur.
+   */
   @Test
   public void test_get() throws InterruptedException, MalformedURLException, SchedulerException {
     HttpFloodAttack attack = new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),

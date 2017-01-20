@@ -34,7 +34,8 @@ package com.acmutv.botnet.core.attack;
  */
 public enum AttackType {
 
-  FLOOD_HTTP ("HTTP Flooding");
+  FLOOD_HTTP ("HTTP Flooding"),
+  FLOOD_SYN  ("SYN Flooding");
 
   private final String name;
 

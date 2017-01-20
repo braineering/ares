@@ -286,11 +286,11 @@ public class BotPool {
         attack.setProxy(proxy);
       }
       if (jmap.containsKey("header")) {
-        final Map<String,String> header = (Map<String,String>) jmap.get("header");
+        @SuppressWarnings("unchecked") final Map<String,String> header = (Map<String,String>) jmap.get("header");
         attack.setHeader(header);
       }
       if (jmap.containsKey("params")) {
-        final Map<String,String> params = (Map<String,String>) jmap.get("params");
+        @SuppressWarnings("unchecked") final Map<String,String> params = (Map<String,String>) jmap.get("params");
         attack.setParams(params);
       }
       if (jmap.containsKey("executions")) {

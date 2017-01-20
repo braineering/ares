@@ -30,8 +30,6 @@ import com.acmutv.botnet.tool.net.HttpProxy;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.net.URL;
 

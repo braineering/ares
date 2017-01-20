@@ -26,14 +26,12 @@
 
 package com.acmutv.botnet.core.control;
 
-import com.acmutv.botnet.config.AppConfiguration;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.tool.net.HttpProxy;
 import com.acmutv.botnet.tool.time.Interval;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
-import org.quartz.CronExpression;
 
 import java.util.Map;
 
