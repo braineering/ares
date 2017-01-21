@@ -26,13 +26,18 @@
 
 package com.acmutv.botnet.tool.net;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 /**
@@ -47,6 +52,16 @@ public class HttpManager {
 
   private static final Logger LOGGER = LogManager.getLogger(HttpManager.class);
 
+  public static final String HTTP_URL_REGEXP = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+
+  /**
+   * Checks if {@code str} is a valid HTTP URL.
+   * @param str the string to check.
+   * @return true if {@code str} is a valid HTTP URL; false, otherwise.
+   */
+  public static boolean isHttpUrl(String str) {
+    return str.matches(HTTP_URL_REGEXP);
+  }
   /**
    * Executes a HTTP request.
    * @param method the HTTP method.
@@ -63,6 +78,56 @@ public class HttpManager {
   }
 
   /**
+   * Executes a HTTP request and return the response body.
+   * @param method the HTTP method.
+   * @param url the web url to contact.
+   * @return the response body.
+   * @throws IOException when HTTP error.
+   */
+  public static InputStream getResponseBodyAsInputStream(final HttpMethod method, final URL url) throws IOException {
+    LOGGER.traceEntry("url={}", url);
+    HttpURLConnection http = (HttpURLConnection) url.openConnection();
+    http.setRequestMethod(method.name());
+    InputStream in = http.getInputStream();
+    return LOGGER.traceExit(in);
+  }
+
+  /**
+   * Executes a HTTP request.
+   * @param method the HTTP method.
+   * @param props the request properties.
+   * @return the response code.
+   * @throws IOException when HTTP error.
+   */
+  public static InputStream getResponseBodyAsInputStream(final HttpMethod method, final URL url, Map<String,String> props) throws IOException {
+    LOGGER.traceEntry("url={}", url);
+    HttpURLConnection http = (HttpURLConnection) url.openConnection();
+    http.setRequestMethod(method.name());
+    props.forEach(http::setRequestProperty);
+    InputStream in = http.getInputStream();
+    return LOGGER.traceExit(in);
+  }
+
+  /**
+   * Executes a HTTP request and return the response body.
+   * @param method the HTTP method.
+   * @param url the web url to contact.
+   * @return the response body.
+   * @throws IOException when HTTP error.
+   */
+  public static String getResponseBody(final HttpMethod method, final URL url) throws IOException {
+    LOGGER.traceEntry("url={}", url);
+    HttpURLConnection http = (HttpURLConnection) url.openConnection();
+    http.setRequestMethod(method.name());
+    int response = http.getResponseCode();
+    String responseBody;
+    try (InputStream in = http.getInputStream()) {
+      responseBody = IOUtils.toString(in, Charset.defaultCharset());
+    }
+    return LOGGER.traceExit(responseBody);
+  }
+
+  /**
    * Executes a HTTP request.
    * @param method the HTTP method.
    * @param props the request properties.
@@ -74,6 +139,21 @@ public class HttpManager {
     HttpURLConnection http = (HttpURLConnection) url.openConnection();
     http.setRequestMethod(method.name());
     props.forEach(http::setRequestProperty);
+    int response = http.getResponseCode();
+    return LOGGER.traceExit(response);
+  }
+
+  /**
+   * Executes a HTTP request.
+   * @param method the HTTP method.
+   * @param proxy The proxy server.
+   * @return the response code.
+   * @throws IOException when HTTP error.
+   */
+  public static int makeRequest(final HttpMethod method, final URL url, final HttpProxy proxy) throws IOException {
+    LOGGER.traceEntry("url={} proxy={}", url, proxy);
+    HttpURLConnection http = (HttpURLConnection) url.openConnection((proxy==null || proxy.equals(HttpProxy.NONE))?Proxy.NO_PROXY:proxy);
+    http.setRequestMethod(method.name());
     int response = http.getResponseCode();
     return LOGGER.traceExit(response);
   }

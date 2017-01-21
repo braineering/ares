@@ -51,15 +51,41 @@ public class HttpManagerTest {
   }
 
   /**
+   * Tests the HTTP url check.
+   */
+  @Test
+  public void test_isHttpUrl() {
+    Assert.assertTrue(HttpManager.isHttpUrl("http://www.google.com"));
+    Assert.assertTrue(HttpManager.isHttpUrl("http://google.com"));
+    Assert.assertTrue(HttpManager.isHttpUrl("https://www.google.com"));
+    Assert.assertTrue(HttpManager.isHttpUrl("https://google.com"));
+
+    Assert.assertFalse(HttpManager.isHttpUrl("www.google.com"));
+    Assert.assertFalse(HttpManager.isHttpUrl("www/google/com"));
+  }
+
+  /**
    * Tests the HTTP GET request (method:GET properties:none proxy:none)
    * @throws ParseException when invalid weburl.
    * @throws IOException when HTTP error.
    */
   @Test
-  public void test_get() throws ParseException, IOException {
+  public void test_makeRequest_get() throws ParseException, IOException {
     URL url = new URL("http://www.google.com");
     int actual = HttpManager.makeRequest(HttpMethod.GET, url);
     Assert.assertTrue(actual == 200 || actual == 403);
+  }
+
+  /**
+   * Tests the HTTP GET request (method:GET properties:none proxy:none)
+   * @throws ParseException when invalid weburl.
+   * @throws IOException when HTTP error.
+   */
+  @Test
+  public void test_getResponseBody_get() throws ParseException, IOException {
+    URL url = new URL("http://www.google.com");
+    String actual = HttpManager.getResponseBody(HttpMethod.GET, url);
+    System.out.println(actual);
   }
 
   /**

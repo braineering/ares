@@ -42,6 +42,7 @@ import java.util.*;
 /**
  * The JSON deserializer for {@link HttpAttack}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
+ * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
  * @see HttpAttack
  * @see HttpAttackSerializer

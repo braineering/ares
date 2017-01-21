@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class realizes the JSON serializer for {@link BotCommand}.
+ * The JSON serializer for {@link BotCommand}.
  * @author Giacomo Marciani {@literal <gmarciani@acm.org>}
  * @author Michele Porretta {@literal <mporretta@acm.org>}
  * @since 1.0
