@@ -78,7 +78,12 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
     JsonNode node = parser.getCodec().readTree(parser);
 
     if (!node.has("command")) {
-      throw new IOException("Cannot read command scope (missing).");
+      throw new IOException("Cannot read [command scope] (missing).");
+    }
+
+    long timestamp = 0;
+    if (node.hasNonNull("timestamp")) {
+      timestamp = node.get("timestamp").asLong();
     }
 
     CommandScope scope;
@@ -88,7 +93,7 @@ public class BotCommandDeserializer extends StdDeserializer<BotCommand> {
       throw new IOException("Cannot read command scope (malformed).");
     }
 
-    BotCommand cmd = new BotCommand(scope);
+    BotCommand cmd = new BotCommand(timestamp, scope);
 
     if (cmd.getScope().isWithParams()) {
 

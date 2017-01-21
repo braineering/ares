@@ -26,10 +26,16 @@
 
 package com.acmutv.botnet;
 
+import com.acmutv.botnet.tool.net.HttpManager;
+import com.acmutv.botnet.tool.net.HttpMethod;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,18 +50,31 @@ import java.util.stream.Collectors;
 public class Misc {
 
   @Test
-  public void test() throws ParseException, MalformedURLException {
-    URL resource = new URL("http://www.gmarciani.com");
-    String formattedUrl = resource.toString();
-    Map<String,String> params = new HashMap<>();
-    params.put("param1", "value1");
-    if (!params.isEmpty()) {
-      formattedUrl += "?" +
-      params.entrySet().stream()
-          .map(e -> e.getKey() + "=" + e.getValue())
-          .collect(Collectors.joining("&"));
-    }
-    System.out.println(formattedUrl);
+  public void test1() throws ParseException, IOException {
+    URL url = new URL("http://localhost:3600/init");
+    InputStream in = HttpManager.getResponseBody(HttpMethod.GET, url, null, null, null);
+    String actual = IOUtils.toString(in, Charset.defaultCharset());
+    System.out.println(actual);
+  }
 
+  @Test
+  public void test2() throws ParseException, IOException {
+    URL url = new URL("http://localhost:3600/command");
+    InputStream in = HttpManager.getResponseBody(HttpMethod.GET, url, null, null, null);
+    String actual = IOUtils.toString(in, Charset.defaultCharset());
+    System.out.println(actual);
+  }
+
+  @Test
+  public void test3() throws ParseException, IOException {
+    //TODO
+    URL url = new URL("http://localhost:3600/report");
+    Map<String,String> header = new HashMap<>();
+    header.put("content-type", "application/json");
+    Map<String,String> params = new HashMap<>();
+    header.put("report", "{\"foo\":\"bar\"}");
+    InputStream in = HttpManager.getResponseBody(HttpMethod.POST, url, null, null, null);
+    String actual = IOUtils.toString(in, Charset.defaultCharset());
+    System.out.println(actual);
   }
 }

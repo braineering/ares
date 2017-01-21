@@ -107,6 +107,11 @@ public class CoreController {
   private static Controller CONTROLLER;
 
   /**
+   * The timestamp of the last received command.
+   */
+  private static long LAST_TIMESTAMP = 0;
+
+  /**
    * The list of shutdown hooks.
    */
   private static List<Runnable> SHUTDOWN_HOOKS = new ArrayList<Runnable>(){{
@@ -145,6 +150,10 @@ public class CoreController {
           BotCommand cmd = BotCommand.NONE;
           try {
             cmd = getNextCommand();
+            if (cmd.getTimestamp() <= LAST_TIMESTAMP) {
+              LOGGER.info("Received outdated command. Skipping...");
+              break;
+            }
             executeCommand(cmd);
             if (cmd.getScope().isWithReport() ||
                 (Boolean) cmd.getParams().getOrDefault("report", false)) {
@@ -555,7 +564,16 @@ public class CoreController {
     final String json;
     try {
       json = report.toJson();
-      IOManager.writeResource(logResource, json);
+      if (HttpManager.isHttpUrl(logResource)) {
+        HttpProxy proxy = CONTROLLER.getProxy(AppConfigurationService.getConfigurations().getProxy());
+        Map<String,String> header = CONTROLLER.getAuthentication(new HashMap<>());
+        header.put("bid", ID);
+        Map<String,String> params = new HashMap<>();
+        params.put("report", json);
+        HttpManager.makeRequest(HttpMethod.POST, new URL(logResource), proxy, header, params);
+      } else if (IOManager.isWritableResource(logResource)) {
+        IOManager.writeResource(logResource, json);
+      }
     } catch (JsonProcessingException exc) {
       throw new BotExecutionException("Cannot serialize report. %s", exc.getMessage());
     } catch (IOException exc) {

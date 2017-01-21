@@ -1,4 +1,5 @@
 {
+  "timestamp": 1,
   "command": "ATTACK_HTTPFLOOD",
   "attacks": [
     {

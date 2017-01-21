@@ -73,6 +73,7 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
   @Override
   public void serialize(BotCommand value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
+    gen.writeNumberField("timestamp", value.getTimestamp());
     gen.writeStringField("command", value.getScope().getName());
     if (value.getScope().isWithParams()) {
       switch (value.getScope()) {

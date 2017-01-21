@@ -61,7 +61,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_attackHttp() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.ATTACK_HTTPFLOOD);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.ATTACK_HTTPFLOOD);
     List<HttpFloodAttack> attacks = new ArrayList<>();
     attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com")));
     attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
@@ -99,7 +99,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_attackHttp_delay() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.ATTACK_HTTPFLOOD);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.ATTACK_HTTPFLOOD);
     List<HttpFloodAttack> attacks = new ArrayList<>();
     attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com")));
     attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
@@ -138,7 +138,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_attackHttp_delayReport() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.ATTACK_HTTPFLOOD);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.ATTACK_HTTPFLOOD);
     List<HttpFloodAttack> attacks = new ArrayList<>();
     attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com")));
     attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
@@ -178,7 +178,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_calmdown() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.CALMDOWN);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.CALMDOWN);
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
     BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
@@ -192,7 +192,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_calmdown_wait() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.CALMDOWN);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.CALMDOWN);
     ObjectMapper mapper = new BotCommandJsonMapper();
     cmdExpected.getParams().put("wait", true);
     String jsonActual = mapper.writeValueAsString(cmdExpected);
@@ -207,7 +207,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_calmdown_waitDelay() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.CALMDOWN);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.CALMDOWN);
     cmdExpected.getParams().put("wait", true);
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     ObjectMapper mapper = new BotCommandJsonMapper();
@@ -223,7 +223,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_calmdown_waitDelayReport() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.CALMDOWN);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.CALMDOWN);
     cmdExpected.getParams().put("wait", true);
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     cmdExpected.getParams().put("report", true);
@@ -255,7 +255,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_kill() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.KILL);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.KILL);
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
     BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
@@ -269,7 +269,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_kill_wait() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.KILL);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.KILL);
     cmdExpected.getParams().put("wait", true);
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
@@ -284,7 +284,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_kill_waitdelay() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.KILL);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.KILL);
     cmdExpected.getParams().put("wait", true);
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     ObjectMapper mapper = new BotCommandJsonMapper();
@@ -300,7 +300,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_kill_waitdelayReport() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.KILL);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.KILL);
     cmdExpected.getParams().put("wait", true);
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     cmdExpected.getParams().put("report", true);
@@ -331,7 +331,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_report() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.REPORT);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.REPORT);
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
     BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
@@ -345,7 +345,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_report_delay() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.REPORT);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.REPORT);
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
@@ -360,7 +360,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_restart() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.RESTART);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.RESTART);
     cmdExpected.getParams().put("controller",
         new Controller("init", "cmd", "log"));
     ObjectMapper mapper = new BotCommandJsonMapper();
@@ -376,7 +376,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_restart_wait() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.RESTART);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.RESTART);
     cmdExpected.getParams().put("controller",
         new Controller("init", "cmd", "log"));
     cmdExpected.getParams().put("wait", true);
@@ -393,7 +393,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_restart_waitDelay() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.RESTART);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.RESTART);
     cmdExpected.getParams().put("controller",
         new Controller("init", "cmd", "log"));
     cmdExpected.getParams().put("wait", true);
@@ -411,7 +411,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_restart_waitDelayReport() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.RESTART);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.RESTART);
     cmdExpected.getParams().put("controller",
         new Controller("init", "cmd", "log"));
     cmdExpected.getParams().put("wait", true);
@@ -430,7 +430,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_sleep() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.SLEEP);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.SLEEP);
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
     BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
@@ -444,7 +444,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_sleep_timeout() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.SLEEP);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.SLEEP);
     cmdExpected.getParams().put("timeout", new Interval(10, 15, TimeUnit.MINUTES));
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
@@ -459,7 +459,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_sleep_timeoutDelay() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.SLEEP);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.SLEEP);
     cmdExpected.getParams().put("timeout", new Interval(10, 15, TimeUnit.MINUTES));
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     ObjectMapper mapper = new BotCommandJsonMapper();
@@ -475,7 +475,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_sleep_timeoutDelayReport() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.SLEEP);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.SLEEP);
     cmdExpected.getParams().put("timeout", new Interval(10, 15, TimeUnit.MINUTES));
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.MINUTES));
     cmdExpected.getParams().put("report", true);
@@ -492,7 +492,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_update_delay() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.UPDATE);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.UPDATE);
     cmdExpected.getParams().put("settings", new HashMap<String,String>(){{put("prop1","val1");}});
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     ObjectMapper mapper = new BotCommandJsonMapper();
@@ -508,7 +508,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_update_delayReport() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.UPDATE);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.UPDATE);
     cmdExpected.getParams().put("settings", new HashMap<String,String>(){{put("prop1","val1");}});
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     cmdExpected.getParams().put("report", true);
@@ -525,7 +525,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_wakeup() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.WAKEUP);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.WAKEUP);
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
     BotCommand cmdActual = mapper.readValue(jsonActual, BotCommand.class);
@@ -539,7 +539,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_wakeup_delay() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.WAKEUP);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.WAKEUP);
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     ObjectMapper mapper = new BotCommandJsonMapper();
     String jsonActual = mapper.writeValueAsString(cmdExpected);
@@ -554,7 +554,7 @@ public class BotCommandSerializationTest {
    */
   @Test
   public void test_wakeup_delayReport() throws IOException {
-    BotCommand cmdExpected = new BotCommand(CommandScope.WAKEUP);
+    BotCommand cmdExpected = new BotCommand(1, CommandScope.WAKEUP);
     cmdExpected.getParams().put("delay", new Interval(10, 15, TimeUnit.SECONDS));
     cmdExpected.getParams().put("report", true);
     ObjectMapper mapper = new BotCommandJsonMapper();

@@ -1,4 +1,5 @@
 {
+  "timestamp": 1,
   "command": "KILL",
   "wait": true
 }

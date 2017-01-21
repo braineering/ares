@@ -57,7 +57,6 @@ public class HttpFloodAttacker implements SchedulableAttacker {
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
     LOGGER.traceEntry();
-    //TODO check
     JobDataMap jobmap = context.getJobDetail().getJobDataMap();
     LOGGER.trace("With jobmap {}", jobmap);
     final HttpMethod method = (HttpMethod) jobmap.get("method");
@@ -79,7 +78,7 @@ public class HttpFloodAttacker implements SchedulableAttacker {
     try {
       final int response = HttpManager.makeRequest(method, target, proxy, header, params);
       LOGGER.trace("HTTP Attack response :: {} {} :: {}", method, target, response);
-    } catch (IOException exc) {
+    } catch (Exception exc) {
       LOGGER.warn(exc.getMessage());
     }
   }

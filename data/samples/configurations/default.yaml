@@ -13,6 +13,6 @@ proxy: "none"
 sleep: null
 authentication: {}
 controllers:
-  - init: data/samples/controllers/1/botinit.json
-    command: data/samples/controllers/1/botcmd.json
-    log: data/samples/controllers/1/botlog.json
+  - init: data/samples/controllers/1/init.json
+    command: data/samples/controllers/1/command.json
+    log: data/samples/controllers/1/report.json
