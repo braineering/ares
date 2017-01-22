@@ -27,13 +27,8 @@
 package com.acmutv.botnet;
 
 import com.acmutv.botnet.core.CoreController;
-import com.acmutv.botnet.core.analysis.Analyzer;
-import com.acmutv.botnet.core.analysis.NetworkAnalyzer;
-import com.acmutv.botnet.core.analysis.SystemAnalyzer;
-import com.acmutv.botnet.core.exception.BotAnalysisException;
 import com.acmutv.botnet.core.exception.BotFatalException;
 import com.acmutv.botnet.ui.CliService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

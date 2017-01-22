@@ -227,10 +227,12 @@ If \texttt{report} is specified and set to \texttt{true}, the bot will send the 
 
 \end{description}
 
-\subsection{Commands WUI}
-\label{sec:commands-wui}
+\subsection{Commands WUI}\label{sec:commands-wui}
+The WUI for commands of the bot is divided into two sections: bot operating activities and attack command. The operating activities section includes the following commands: \textit{Kill}, \textit{Restart}, \textit{Report}, \textit{Sleep}, \textit{Wakeup} and \textit{Update}. As you can see in the figure \ref{fig:commands-wui}, a select box is used to define the desired activity. The chosen of command enables the associated options for that, example the delay option for “Kill”. Other options that can be enabled are: "Report" for a response of command execution and "Wait". The "Generate Command" button produces the JSON file for configured activity.
 
-\textcolor{green}{\lipsum[1]}
+As for the attack section, in this part of interface you can specify the list of targets on which to execute an \textit{HTTP Flooding Attack}. For each target, on the corresponding modal, can be defined the HTTP method (GET or POST), a specific proxy, the header and params fields of HTTP request, the number of executions and the waiting period between an execution and the other. 
+
+After defining a list of attacks, can be associate the activation delay and enable a report of execution. Finally, the button "Generate Attack", it allows you to produce the JSON file with the attack's description.
 
 \begin{figure}[tp]
   \centering
@@ -238,5 +240,3 @@ If \texttt{report} is specified and set to \texttt{true}, the bot will send the 
   \caption{The Web User Interface to build commands.}
     \label{fig:commands-wui}
 \end{figure}
-
-\textcolor{green}{\lipsum[1]}
