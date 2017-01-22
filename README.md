@@ -4,51 +4,51 @@
 
 *Coursework in Computer Security 2015/2016*
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Botnets are networks made up of unaware remote-controlled computers, typically instructed for 
+malicious purposes.
+Their first priority is to spread unnoticed, because in this way they may generate huge profits.
+They extend infecting computers with malwares — namely bots — that force them to join the network, 
+unwittingly.
+In this work we describe the implementation of a bot, though for botnets with a centralized command 
+and control layer.
+The developed bot is thought as an educational showcase, but it is actually ready to interact with a 
+real web controller and it is configurable via a convenient web-based interface.
 
 
 ## Build
-The app building is provided by Apache Maven. To build the app you need to run
+To build the bot you need to run
 
     $app> mvn clean package
 
-If you want to skip tests:
-
-    $app> mvn clean package -P skip-tests
-
-If you want to build with code optimization:
+If you want to build it with code optimization:
 
     $app> mvn clean package -P optimize
+    
+If you want to build it skipping tests:
+
+    $app> mvn clean package -P skip-tests
+    
+To build the Command&Control (C&C) server you need to run
+
+    $controller> npm install
 
 
-## Usage
-The app can be run both with and without Apache Maven.
+## Usage  
+To start the bot, you need to run
 
+    $> java -jar path/to/bot-1.0-jar-optimized.jar [YOUR ARGUMENTS HERE]
 
-### Usage with Apache Maven
-To run the app with Apache Maven, you need to run
+For example, to print the app version, you need to run:
 
-    $app>mvn exec:java -Dargs="YOUR ARGUMENTS HERE"
+    $> java -jar path/to/bot-1.0-jar-optimized.jar --version
+    
+To start the Command&Control (C&C), you need to run:
 
-For example, to print the app version, you need to run
+    $controller> npm start [YOUR ARGUMENTS HERE]
+    
+For example, to start the C&C with port 3600 and verbose mode, you need to run:
 
-    $app>mvn exec:java -Dargs="--version"
-
-Running the app this way could be useful during development,
-because it is repackaged at every execution.
-
-
-### Usage without Apache Maven    
-To run the app without Apache Maven, you need to run
-
-    $>java -jar path/to/botnet-1.0-SNAPSHOT-jar-with-dependencies.jar YOUR ARGUMENTS HERE
-
-For example, to print the app version, you need to run
-
-    $>java -jar path/to/botnet-1.0-SNAPSHOT-jar-with-dependencies.jar --version
+    $controller> npm start --port 3600 --verbose
 
 
 ## Authors
