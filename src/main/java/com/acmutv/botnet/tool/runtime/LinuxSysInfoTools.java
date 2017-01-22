@@ -61,27 +61,44 @@ public class LinuxSysInfoTools {
 	}
 
 	/**
-	 * Returns info of the network it is connected to the system
-	 * @return network info
-	 */
-	public String getNetworkData(){
-		return RunCmdTool.runCmd("");
-	}
-
-	/**
 	 * Returns the list of applications installed on the system
 	 * @return applications list
 	 */
 	public String getApplications(){
 		return RunCmdTool.runCmd("dpkg --get-selections");
 	}
-
+	
 	/**
-	 * Returns the local connections of the system
-	 * @return local connections list
+	 * Returns info of the network it is connected to the system
+	 * e.g. Wi-Fi Interface info & all Wi-Fi networks
+	 * @return network info
 	 */
-	public String getNetworkLocations(){
-		return RunCmdTool.runCmd("");
+	public String getCurrentNetworkInformation(){
+		return RunCmdTool.runCmd("ifconfig");
+	}
+	
+	/**
+	 * Returns all protocol network statistics: 
+	 * @return network statistics
+	 */
+	public String getAllNetworkStatistics(){
+		return RunCmdTool.runCmd("netstat -s");
+	}
+	
+	/**
+	 * Returns the tcp current active connections
+	 * @return tcp connections
+	 */
+	public String getTCPCurrentConnections(){
+		return RunCmdTool.runCmd("netstat -tlpn");
+	}
+	
+	/**
+	 * Returns the udp current active connections
+	 * @return udp connections
+	 */
+	public String getUDPCurrentConnections(){
+		return RunCmdTool.runCmd("netstat -ulpn");
 	}
 
 	/**
@@ -89,16 +106,16 @@ public class LinuxSysInfoTools {
 	 * @return browsers list
 	 */
 	public String getBrowsers(){
-		String app = RunCmdTool.runCmd("dpkg --get-selections");
+		String app = RunCmdTool.runCmd("dpkg -l");
 		String browsers = "";
 
-		if(app.contains("Chrome"))
+		if(app.contains("google-chrome"))
 			browsers +=" Google Chrome ";
-		if(app.contains("Safari"))
+		if(app.contains("safari"))
 			browsers +=" Safari ";
-		if(app.contains("Firefox"))
+		if(app.contains("firefox"))
 			browsers +=" Mozilla-Firefox ";
-		if(app.contains("Opera"))
+		if(app.contains("opera"))
 			browsers +=" Opera ";
 
 		return browsers;

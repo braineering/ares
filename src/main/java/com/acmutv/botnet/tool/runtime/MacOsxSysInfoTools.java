@@ -113,44 +113,34 @@ public class MacOsxSysInfoTools
 
 	/**
 	 * Returns info of the network it is connected to the system
-	 * e.g. Wi-Fi Interface info & all Wi-Fi networks
 	 * @return network info
 	 */
 	public String getCurrentNetworkInformation(){
-		return RunCmdTool.runCmd("system_profiler SPAirPortDataType");
-	}
-
-	/**
-	 * Returns the local network services of the system
-	 * e.g. Wi-Fi info, Bluetooth Info, Ethernet Info...etc.
-	 * @return local network services
-	 */
-	public String getLocalNetworkServices(){
-		return RunCmdTool.runCmd("system_profiler SPNetworkLocationDataType");
-	}
-	
-	/**
-	 * Returns current routing table 
-	 * @return routing table
-	 */
-	public String getRoutingTable(){
-		return RunCmdTool.runCmd("netstat -nr");
-	}
-	
-	/**
-	 * Returns all network interfaces of the host
-	 * @return network interfaces
-	 */
-	public String getAllInterfaces(){
 		return RunCmdTool.runCmd("ifconfig");
 	}
-
+	
 	/**
-	 * Returns all network's hardware ports 
-	 * @return network ports
+	 * Returns all protocol network statistics: 
+	 * @return network statistics
 	 */
-	public String getNetworkHardwarePorts(){
-		return RunCmdTool.runCmd("networksetup -listallhardwareports");
+	public String getAllNetworkStatistics(){
+		return RunCmdTool.runCmd("netstat -s");
+	}
+	
+	/**
+	 * Returns the tcp current active connections
+	 * @return tcp connections
+	 */
+	public String getTCPCurrentConnections(){
+		return RunCmdTool.runCmd("netstat -p tcp");
+	}
+	
+	/**
+	 * Returns the UDP current active connections
+	 * @return udp connections
+	 */
+	public String getUDPCurrentConnections(){
+		return RunCmdTool.runCmd("netstat -p udp");
 	}
 	
 	/**
@@ -162,22 +152,14 @@ public class MacOsxSysInfoTools
 		String browsers = "";
 
 		if(app.contains("Chrome.app"))
-			browsers +=" Google Chrome ";
+			browsers +="Google Chrome; ";
 		if(app.contains("Safari.app"))
-			browsers +=" Safari ";
+			browsers +="Safari;";
 		if(app.contains("Mozilla.app"))
-			browsers +=" Mozilla-Firefox ";
+			browsers +="Mozilla-Firefox;";
 		if(app.contains("Opera.app"))
-			browsers +=" Opera ";
+			browsers +="Opera;";
 
 		return browsers;
-	}
-	
-	/**
-	 * Returns the list of applications installed on the system
-	 * @return applications list
-	 */
-	public String getApplications(){
-		return RunCmdTool.runCmd("system_profiler SPApplicationsDataType");
 	}
 }

