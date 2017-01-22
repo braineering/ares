@@ -50,7 +50,7 @@ public class SystemFeatures {
 	/**
 	 * The Operating System's name.
 	 */
-	private String Os;
+	private String OsName;
 
 	/**
 	 * The Architecture's name.
@@ -65,7 +65,7 @@ public class SystemFeatures {
 	/**
 	 * The kernel's name.
 	 */
-	private String Kernel;
+	private String KernelVersion;
 
 	/**
 	 * The Host's name.
