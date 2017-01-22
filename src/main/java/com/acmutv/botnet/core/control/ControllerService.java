@@ -26,15 +26,33 @@
 
 package com.acmutv.botnet.core.control;
 
+import com.acmutv.botnet.config.AppConfigurationService;
+import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.serial.ControllerPropertiesFormat;
+import com.acmutv.botnet.core.report.Report;
+import com.acmutv.botnet.log.AppLogMarkers;
 import com.acmutv.botnet.tool.io.IOManager;
+import com.acmutv.botnet.tool.net.HttpManager;
+import com.acmutv.botnet.tool.net.HttpProxy;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 /**

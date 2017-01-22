@@ -26,6 +26,8 @@
 
 package com.acmutv.botnet.tool.net;
 
+import org.apache.http.HttpHost;
+
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 
@@ -64,6 +66,18 @@ public class HttpProxy extends Proxy {
   public int getPort() {
     InetSocketAddress sock = (InetSocketAddress) super.address();
     return sock.getPort();
+  }
+
+  /**
+   * Returns the proxy as a host.
+   * @return the proxy as a host.
+   */
+  public HttpHost toHttpHost() {
+    if (this.equals(HttpProxy.NONE)) {
+      return null;
+    } else {
+      return new HttpHost(this.getIP(), this.getPort(), "http");
+    }
   }
 
   /**

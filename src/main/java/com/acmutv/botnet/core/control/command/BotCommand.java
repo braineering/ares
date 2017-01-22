@@ -26,6 +26,9 @@
 
 package com.acmutv.botnet.core.control.command;
 
+import com.acmutv.botnet.core.control.command.serial.BotCommandJsonMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -80,6 +83,11 @@ public class BotCommand {
   public BotCommand(long timestamp, CommandScope scope) {
     this.timestamp = timestamp;
     this.scope = scope;
+  }
+
+  public String toJson() throws JsonProcessingException {
+    ObjectMapper mapper = new BotCommandJsonMapper();
+    return mapper.writeValueAsString(this);
   }
 
 }

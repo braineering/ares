@@ -26,9 +26,22 @@
 
 package com.acmutv.botnet;
 
+import com.acmutv.botnet.core.control.ControllerProperties;
+import com.acmutv.botnet.core.control.command.BotCommand;
+import com.acmutv.botnet.core.control.command.CommandScope;
+import com.acmutv.botnet.core.report.Report;
+import com.acmutv.botnet.core.report.SimpleReport;
 import com.acmutv.botnet.tool.net.HttpManager;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -49,32 +62,7 @@ import java.util.stream.Collectors;
  */
 public class Misc {
 
-  @Test
-  public void test1() throws ParseException, IOException {
-    URL url = new URL("http://localhost:3600/init");
-    InputStream in = HttpManager.getResponseBody(HttpMethod.GET, url, null, null, null);
-    String actual = IOUtils.toString(in, Charset.defaultCharset());
-    System.out.println(actual);
-  }
 
-  @Test
-  public void test2() throws ParseException, IOException {
-    URL url = new URL("http://localhost:3600/command");
-    InputStream in = HttpManager.getResponseBody(HttpMethod.GET, url, null, null, null);
-    String actual = IOUtils.toString(in, Charset.defaultCharset());
-    System.out.println(actual);
-  }
 
-  @Test
-  public void test3() throws ParseException, IOException {
-    //TODO
-    URL url = new URL("http://localhost:3600/report");
-    Map<String,String> header = new HashMap<>();
-    header.put("content-type", "application/json");
-    Map<String,String> params = new HashMap<>();
-    header.put("report", "{\"foo\":\"bar\"}");
-    InputStream in = HttpManager.getResponseBody(HttpMethod.POST, url, null, null, null);
-    String actual = IOUtils.toString(in, Charset.defaultCharset());
-    System.out.println(actual);
-  }
+
 }

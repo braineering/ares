@@ -26,6 +26,14 @@
 
 package com.acmutv.botnet.tool.net;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -67,6 +75,7 @@ public class HttpManager {
    * @return the response body.
    * @throws IOException when HTTP error.
    */
+  @Deprecated
   public static InputStream getResponseBody(final HttpMethod method, final URL resource) throws IOException {
     return getResponseBody(method, resource, null, null, null);
   }
@@ -79,6 +88,7 @@ public class HttpManager {
    * @return the response body.
    * @throws IOException when HTTP error.
    */
+  @Deprecated
   public static InputStream getResponseBody(final HttpMethod method, final URL resource, HttpProxy proxy) throws IOException {
     return getResponseBody(method, resource, proxy, null, null);
   }
@@ -93,6 +103,7 @@ public class HttpManager {
    * @return the response input stream.
    * @throws IOException when HTTP error.
    */
+  @Deprecated
   public static InputStream getResponseBody(final HttpMethod method, final URL resource,
                                             HttpProxy proxy,
                                             Map<String,String> header, Map<String,String> params) throws IOException {
@@ -107,6 +118,7 @@ public class HttpManager {
    * @return the response code.
    * @throws IOException when HTTP error.
    */
+  @Deprecated
   public static int makeRequest(final HttpMethod method, final URL resource) throws IOException {
     return makeRequest(method, resource, null, null, null);
   }
@@ -119,6 +131,7 @@ public class HttpManager {
    * @return the response code.
    * @throws IOException when HTTP error.
    */
+  @Deprecated
   public static int makeRequest(HttpMethod method, URL resource, HttpProxy proxy) throws IOException {
     return makeRequest(method, resource, proxy, null, null);
   }
@@ -133,6 +146,7 @@ public class HttpManager {
    * @return the response code.
    * @throws IOException when HTTP error.
    */
+  @Deprecated
   public static int makeRequest(HttpMethod method, URL resource, HttpProxy proxy,
                                 Map<String,String> header, Map<String,String> params) throws IOException {
     HttpURLConnection http = request(method, resource, proxy, header, params);
@@ -149,10 +163,11 @@ public class HttpManager {
    * @return the response code.
    * @throws IOException when HTTP error.
    */
+  @Deprecated
   private static HttpURLConnection request(final HttpMethod method, final URL resource,
                                            HttpProxy proxy,
                                            Map<String,String> header, Map<String,String> params) throws IOException {
-    LOGGER.traceEntry("resource={} proxy={} header={} params={}", resource, proxy, header, params);
+    LOGGER.traceEntry("resource={} proxy={} header={} params={} data={}", resource, proxy, header, params);
 
     String formattedParams = (params != null) ?
         params.entrySet().stream()

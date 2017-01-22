@@ -4,6 +4,7 @@
 var express    = require('express');
 var args       = require('command-line-args');
 var bodyParser = require('body-parser');
+var fs         = require('fs-extra');
 var jsonFile   = require('jsonfile');
 var path       = require('path');
 var winston    = require('winston');
@@ -64,8 +65,8 @@ function fnGetInitialization(req, res) {
 
 function fnSubmitInitialization(req, res) {
   INITIALIZATION = req.body;
-  winston.debug('New initialization submitted: ', JSON.stringify(INITIALIZATION));
-  res.status(200);
+  winston.info('New initialization submitted: ', JSON.stringify(INITIALIZATION));
+  res.send('Initialization submitted');
 }
 
 function fnGetCommand(req, res) {
@@ -74,19 +75,24 @@ function fnGetCommand(req, res) {
 
 function fnSubmitCommand(req, res) {
   COMMAND = req.body;
-  winston.debug('New command submitted: ', JSON.stringify(COMMAND));
-  res.status(200);
+  winston.info('New command submitted: ', JSON.stringify(COMMAND));
+  res.send('Command submitted');
 }
 
 function fnReport(req, res) {
 	var report = req.body;
   var bip    = req.ip;
   var file   = reportFilePattern.replace(/\$\{botIp\}/, bip);
-  winston.debug('Received report from %s: %s', bip, JSON.stringify(report));
-	jsonFile.writeFile(file, report, {spaces: 2});
-  winston.debug('Report saved in %s', file);
+  winston.info('Received report from %s: %s', bip, JSON.stringify(report));
+  fs.outputJson(file, report, function(err) {
+    if(err) {
+      winston.info(err);
+    } else {
+      winston.info('Report saved in %s', file);
+    }
+  });
 	res.send('Report saved')
-};
+}
 
 
 /****************************************************************************** 

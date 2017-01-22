@@ -2,7 +2,9 @@
   "name": "controller",
   "version": "1.0.0",
   "description": "A Command&Control (C&C) implementation for a simple botnet.",
-  "keywords": ["computer science, security, botnet"],
+  "keywords": [
+    "computer science, security, botnet"
+  ],
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
@@ -15,14 +17,14 @@
   },
   "contributors": [
     {
-      "name" : "Giacomo Marciani",
-      "email" : "gmarciani@acm.org",
-      "url" : "http://gmarciani.com/"
+      "name": "Giacomo Marciani",
+      "email": "gmarciani@acm.org",
+      "url": "http://gmarciani.com/"
     },
     {
-      "name" : "Michele Porretta",
-      "email" : "mporretta@acm.org",
-      "url" : "http://micheleporretta.com/"
+      "name": "Michele Porretta",
+      "email": "mporretta@acm.org",
+      "url": "http://micheleporretta.com/"
     }
   ],
   "license": "MIT",
@@ -31,6 +33,7 @@
     "command-line-args": "^3.0.5",
     "express": "^4.14.0",
     "fs": "0.0.1-security",
+    "fs-extra": "^2.0.0",
     "jsonfile": "^2.4.0",
     "winston": "^2.3.1"
   },

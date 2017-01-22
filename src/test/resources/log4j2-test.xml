@@ -6,17 +6,17 @@
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} %method - %msg%n"/>
         </Console>
 
-        <File name="FileCommands" fileName="src/test/resources/data/log/commands.log" append="false">
+        <File name="FileCommands" fileName="src/test/resources/log/commands.log" append="false">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} %msg%n"/>
             <MarkerFilter marker="COMMAND" onMatch="ACCEPT" onMismatch="DENY"/>
         </File>
 
-        <File name="FileAttacks" fileName="src/test/resources/data/log/attacks.log" append="false">
+        <File name="FileAttacks" fileName="src/test/resources/log/attacks.log" append="false">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} %msg%n"/>
             <MarkerFilter marker="ATTACK" onMatch="ACCEPT" onMismatch="DENY"/>
         </File>
 
-        <File name="FileReports" fileName="src/test/resources/data/log/reports.log" append="false">
+        <File name="FileReports" fileName="src/test/resources/log/reports.log" append="false">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} %msg%n"/>
             <MarkerFilter marker="REPORT" onMatch="ACCEPT" onMismatch="DENY"/>
         </File>

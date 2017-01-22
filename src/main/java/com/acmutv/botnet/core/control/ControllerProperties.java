@@ -25,6 +25,9 @@
  */
 package com.acmutv.botnet.core.control;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,6 +54,11 @@ public class ControllerProperties extends HashMap<String,String> {
       }
     }
     return authentication;
+  }
+
+  public String toJson() throws JsonProcessingException {
+    ObjectMapper mapper = new ObjectMapper();
+    return mapper.writeValueAsString(this);
   }
 
 
