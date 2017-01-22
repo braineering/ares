@@ -1,18 +1,39 @@
 \section{Reports}
 \label{sec:reports}
 
-The bot can send to the controller reports containing \textit{current bot configuration}, \textit{scheduled attacks}, \textit{local system analysis} and \textit{local networks analysis}. Each section is attached to reports, if requested in configuration (see options \texttt{cnfInfo}, \texttt{tgtInfo}, \texttt{sysInfo} and \texttt{netInfo} in \ref{sec:configuration}). Since the first two sections are self-explanatory, we focus here only on local system and networks analysis.
+The bot can send to the controller reports containing \textit{current bot configuration}, \textit{scheduled attacks}, \textit{local system analysis} and \textit{local networks analysis}. Each section is attached to reports, if requested in configuration (see options \texttt{cnfInfo}, \texttt{tgtInfo}, \texttt{sysInfo} and \texttt{netInfo} in \ref{sec:configuration}). Since the first two sections are self-explanatory, we focus here only on local system and networks analysis.\\
 
 The local system analysis includes the following components:
-
 \begin{description}
   \setlength\itemsep{1em}
-  \item[SYSTEM-ITEM-1] \textcolor{green}{\lipsum[1]}
+    \item [browsers] list of browsers installed on system.
+	\item [hostName] name associated with the host machine
+	\item [kernelVersion] version of the system kernel
+	\item [osArch] name of the system's architecture
+  	\item [osName] name of the operating system
+  	\item [osVersion] version of the operating system
+  	\item [userName] name of the active user on the host
 \end{description}
+\;
+
+An example of system analysis is the following:
+\begin{verbatim}
+{
+  "browsers" : "Google Chrome; Safari;",
+  "hostName" : " MacBook Pro di Michele",
+  "kernelVersion" : " Darwin 15.5.0",
+  "osArch" : "x86_64",
+  "osName" : "Mac OS X",
+  "osVersion" : "10.11.5",
+  "userName" : " Michele Porretta (micheleporretta)"
+}
+\end{verbatim}
 
 The local networks analysis includes the following components:
 
 \begin{description}
   \setlength\itemsep{1em}
-  \item[NETWORK-ITEM-1] \textcolor{green}{\lipsum[1]}
+  \item [Item1] aa
+  \item [Item2] aa
+  \item [Item3] aa
 \end{description}
