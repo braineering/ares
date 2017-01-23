@@ -57,8 +57,8 @@ public class MacOsxSysInfoTools
 			while ((lines = reader.readLine()) != null)  {
 				if (lines.length() > 0){
 					if(lines.contains("Kernel Version:"))
-						kernelVersion = lines.substring(lines.indexOf("Kernel Version: ")).replace("Kernel Version:", "");;
-				}
+						kernelVersion = lines.substring(lines.indexOf("Kernel Version: ")).replace("Kernel Version:", "");
+        }
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -91,7 +91,7 @@ public class MacOsxSysInfoTools
 	/**
 	 * Returns the username of the active user on the system
 	 * @return username
-	 * @throws IOException 
+	 * @throws IOException description.
 	 */
 	public String getUserName(){
 		String SPSDT = RunCmdTool.runCmd("system_profiler SPSoftwareDataType");

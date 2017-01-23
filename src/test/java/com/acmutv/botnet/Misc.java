@@ -26,13 +26,33 @@
 
 package com.acmutv.botnet;
 
-import org.junit.Assert;
-import org.junit.Ignore;
+import com.acmutv.botnet.core.control.ControllerProperties;
+import com.acmutv.botnet.core.control.command.BotCommand;
+import com.acmutv.botnet.core.control.command.CommandScope;
+import com.acmutv.botnet.core.report.Report;
+import com.acmutv.botnet.core.report.SimpleReport;
+import com.acmutv.botnet.tool.net.HttpManager;
+import com.acmutv.botnet.tool.net.HttpMethod;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This class realizes local tests (for personal use only).
@@ -42,13 +62,7 @@ import java.util.Map;
  */
 public class Misc {
 
-  @Test
-  @Ignore
-  public void test() throws ParseException {
-    Map<String, Object> m = new HashMap<>();
-    m.put("b", true);
 
-    final Boolean b = (Boolean) m.get("b");
-    Assert.assertTrue(b);
-  }
+
+
 }

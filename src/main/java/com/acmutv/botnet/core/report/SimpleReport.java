@@ -43,9 +43,11 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 public class SimpleReport extends HashMap<String,Object> implements Report {
 
-  public static final String KEY_CONFIGURATION = "config";
+  public static final String KEY_CONFIG_APP = "config.app";
 
-  public static final String KEY_ATTACKS_HTTP = "attacks-http";
+  public static final String KEY_CONFIG_CONTROLLER = "config.controller";
+
+  public static final String KEY_ATTACKS = "attacks";
 
   public SimpleReport(Map<? extends String,?> map) {
     super(map);

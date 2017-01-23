@@ -1,15 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--suppress XmlUnboundNsPrefix -->
 <Configuration status="WARN">
     <Appenders>
+
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} %method - %msg%n"/>
         </Console>
+
+        <File name="FileCommands" fileName="src/test/resources/log/commands.log" append="false">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %msg%n"/>
+            <MarkerFilter marker="COMMAND" onMatch="ACCEPT" onMismatch="DENY"/>
+        </File>
+
+        <File name="FileAttacks" fileName="src/test/resources/log/attacks.log" append="false">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %msg%n"/>
+            <MarkerFilter marker="ATTACK" onMatch="ACCEPT" onMismatch="DENY"/>
+        </File>
+
+        <File name="FileReports" fileName="src/test/resources/log/reports.log" append="false">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %msg%n"/>
+            <MarkerFilter marker="REPORT" onMatch="ACCEPT" onMismatch="DENY"/>
+        </File>
     </Appenders>
+
     <Loggers>
-        <Root level="ALL">
+        <Root level="TRACE">
             <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileCommands"/>
+            <AppenderRef ref="FileAttacks"/>
+            <AppenderRef ref="FileReports"/>
         </Root>
-        <Logger name="org.quartz" level="OFF" />
+        <Logger name="org.quartz" level="OFF"/>
     </Loggers>
 </Configuration>

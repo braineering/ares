@@ -27,7 +27,8 @@
 package com.acmutv.botnet.core.report;
 
 import com.acmutv.botnet.config.AppConfiguration;
-import com.acmutv.botnet.core.attack.HttpAttack;
+import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
+import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.core.report.serial.SimpleReportJsonMapper;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
@@ -39,7 +40,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -92,7 +92,26 @@ public class ReportSerializationTest {
     SimpleReport reportExpected = new SimpleReport();
     reportExpected.put("prop1", "val1");
     reportExpected.put("prop2", "val2");
-    reportExpected.put(SimpleReport.KEY_CONFIGURATION, new AppConfiguration());
+    reportExpected.put(SimpleReport.KEY_CONFIG_APP, new AppConfiguration());
+    ObjectMapper mapper = new SimpleReportJsonMapper();
+    String jsonActual = mapper.writeValueAsString(reportExpected);
+    SimpleReport reportActual = mapper.readValue(jsonActual, SimpleReport.class);
+    Assert.assertEquals(reportExpected, reportActual);
+  }
+
+  /**
+   * Tests {@link SimpleReport} serialization/deserialization.
+   * Properties: provided | Configuration: provided | Attacks: not provided
+   * @throws IOException when command cannot be serialized/deserialized.
+   */
+  @Test
+  public void test_propertiesConfiguration2() throws IOException {
+    SimpleReport reportExpected = new SimpleReport();
+    reportExpected.put("prop1", "val1");
+    reportExpected.put("prop2", "val2");
+    reportExpected.put(SimpleReport.KEY_CONFIG_APP, new AppConfiguration());
+    reportExpected.put(SimpleReport.KEY_CONFIG_CONTROLLER,
+        new Controller("init", "cmd", "log"));
     ObjectMapper mapper = new SimpleReportJsonMapper();
     String jsonActual = mapper.writeValueAsString(reportExpected);
     SimpleReport reportActual = mapper.readValue(jsonActual, SimpleReport.class);
@@ -109,25 +128,20 @@ public class ReportSerializationTest {
     SimpleReport reportExpected = new SimpleReport();
     reportExpected.put("prop1", "val1");
     reportExpected.put("prop2", "val2");
-    reportExpected.put(SimpleReport.KEY_CONFIGURATION, new AppConfiguration());
-    reportExpected.put(SimpleReport.KEY_ATTACKS_HTTP, new ArrayList<HttpAttack>(){{
-      add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com")));
-      add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+    reportExpected.put(SimpleReport.KEY_CONFIG_APP, new AppConfiguration());
+    reportExpected.put(SimpleReport.KEY_ATTACKS, new ArrayList<HttpFloodAttack>(){{
+      add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com")));
+      add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
           (HttpProxy) null
       ));
-      add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+      add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
           HttpProxy.NONE
       ));
-      add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+      add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
           new HttpProxy("192.168.0.1", 8080)
       ));
-      add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
+      add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
           new HttpProxy("192.168.0.1", 8080),
-          new HashMap<String,String>(){{put("prop1", "val1");}}
-      ));
-      add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
-          new HttpProxy("192.168.0.1", 8080),
-          new HashMap<String,String>(){{put("prop1", "val1");}},
           3,
           new Interval(10, 15, TimeUnit.SECONDS)
       ));

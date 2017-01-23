@@ -1,4 +1,5 @@
 {
+  "timestamp": 1,
   "command": "UPDATE",
   "settings": {
     "prop1": "val1"

@@ -1,6 +1,8 @@
 {
+  "timestamp": 1,
   "command": "UPDATE",
   "settings": {
-    "prop1": "val1"
+    "auth.user-agent": "MyAwesomeBot",
+    "life.sleep": "* * * ? * SAT,SUN"
   }
 }

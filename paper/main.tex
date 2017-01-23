@@ -1,5 +1,5 @@
 %*******************************************************************************
-% Title: A bot showcase
+% Title: A botnet showcase
 %
 % Series: Courseworks in Computer Security
 %
@@ -23,6 +23,8 @@
 \usepackage{lipsum}
 \usepackage{xr}
 \usepackage{color}
+\usepackage[english]{babel}
+\usepackage{cleveref}
 
 %*******************************************************************************
 % Meta
@@ -62,10 +64,13 @@
 %*******************************************************************************
 % References
 %*******************************************************************************
+\crefname{algorithm}{algorithm}{algorithms}
+\Crefname{algorithm}{Algorithm}{Algorithms}
 \externaldocument{sec/introduction}
 \externaldocument{sec/botnets}
 \externaldocument{sec/architecture}
 \externaldocument{sec/bot}
+\externaldocument{sec/controller}
 \externaldocument{sec/configuration}
 \externaldocument{sec/commands}
 \externaldocument{sec/reports}
@@ -79,7 +84,7 @@
 %*******************************************************************************
 % Title and Authors
 %*******************************************************************************
-\title{A bot showcase}
+\title{A botnet showcase}
 \author{Giacomo Marciani}
 \orcid{0000-0002-3675-8804}
 \affiliation{%
@@ -116,6 +121,7 @@
 \input{sec/botnets}
 \input{sec/architecture}
 \input{sec/bot}
+\input{sec/controller}
 \input{sec/configuration}
 \input{sec/commands}
 \input{sec/reports}

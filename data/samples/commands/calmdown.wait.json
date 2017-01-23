@@ -1,4 +1,5 @@
 {
+  "timestamp": 1,
   "command": "CALMDOWN",
   "wait": true
 }

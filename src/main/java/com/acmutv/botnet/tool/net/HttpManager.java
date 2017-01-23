@@ -27,18 +27,23 @@
 package com.acmutv.botnet.tool.net;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This class realizes HTTP contact utilities.
@@ -62,116 +67,146 @@ public class HttpManager {
   public static boolean isHttpUrl(String str) {
     return str.matches(HTTP_URL_REGEXP);
   }
+
   /**
-   * Executes a HTTP request.
+   * Executes a HTTP request and return the response body.
    * @param method the HTTP method.
-   * @param url the web url to contact.
-   * @return the response code.
+   * @param resource the web url to contact.
+   * @return the response body.
    * @throws IOException when HTTP error.
    */
-  public static int makeRequest(final HttpMethod method, final URL url) throws IOException {
-    LOGGER.traceEntry("url={}", url);
-    HttpURLConnection http = (HttpURLConnection) url.openConnection();
-    http.setRequestMethod(method.name());
-    int response = http.getResponseCode();
-    return LOGGER.traceExit(response);
+  @Deprecated
+  public static InputStream getResponseBody(final HttpMethod method, final URL resource) throws IOException {
+    return getResponseBody(method, resource, null, null, null);
   }
 
   /**
    * Executes a HTTP request and return the response body.
    * @param method the HTTP method.
-   * @param url the web url to contact.
+   * @param resource the web url to contact.
+   * @param proxy the proxy server.
    * @return the response body.
    * @throws IOException when HTTP error.
    */
-  public static InputStream getResponseBodyAsInputStream(final HttpMethod method, final URL url) throws IOException {
-    LOGGER.traceEntry("url={}", url);
-    HttpURLConnection http = (HttpURLConnection) url.openConnection();
-    http.setRequestMethod(method.name());
-    InputStream in = http.getInputStream();
-    return LOGGER.traceExit(in);
+  @Deprecated
+  public static InputStream getResponseBody(final HttpMethod method, final URL resource, HttpProxy proxy) throws IOException {
+    return getResponseBody(method, resource, proxy, null, null);
   }
 
   /**
    * Executes a HTTP request.
    * @param method the HTTP method.
-   * @param props the request properties.
-   * @return the response code.
+   * @param resource the web url to contact.
+   * @param proxy the proxy server.
+   * @param header the request header.
+   * @param params the request parameters.
+   * @return the response input stream.
    * @throws IOException when HTTP error.
    */
-  public static InputStream getResponseBodyAsInputStream(final HttpMethod method, final URL url, Map<String,String> props) throws IOException {
-    LOGGER.traceEntry("url={}", url);
-    HttpURLConnection http = (HttpURLConnection) url.openConnection();
-    http.setRequestMethod(method.name());
-    props.forEach(http::setRequestProperty);
-    InputStream in = http.getInputStream();
-    return LOGGER.traceExit(in);
+  @Deprecated
+  public static InputStream getResponseBody(final HttpMethod method, final URL resource,
+                                            HttpProxy proxy,
+                                            Map<String,String> header, Map<String,String> params) throws IOException {
+    HttpURLConnection http = request(method, resource, proxy, header, params);
+    return http.getInputStream();
   }
 
   /**
-   * Executes a HTTP request and return the response body.
+   * Executes a HTTP request.
    * @param method the HTTP method.
-   * @param url the web url to contact.
-   * @return the response body.
+   * @param resource the web url to contact.
+   * @return the response code.
    * @throws IOException when HTTP error.
    */
-  public static String getResponseBody(final HttpMethod method, final URL url) throws IOException {
-    LOGGER.traceEntry("url={}", url);
-    HttpURLConnection http = (HttpURLConnection) url.openConnection();
+  @Deprecated
+  public static int makeRequest(final HttpMethod method, final URL resource) throws IOException {
+    return makeRequest(method, resource, null, null, null);
+  }
+
+  /**
+   * Executes a HTTP request.
+   * @param method the HTTP method.
+   * @param resource the web url to contact.
+   * @param proxy the proxy server.
+   * @return the response code.
+   * @throws IOException when HTTP error.
+   */
+  @Deprecated
+  public static int makeRequest(HttpMethod method, URL resource, HttpProxy proxy) throws IOException {
+    return makeRequest(method, resource, proxy, null, null);
+  }
+
+  /**
+   * Executes a HTTP request.
+   * @param method the HTTP method.
+   * @param resource the web url to contact.
+   * @param proxy the proxy server.
+   * @param header the request header.
+   * @param params the request parameters.
+   * @return the response code.
+   * @throws IOException when HTTP error.
+   */
+  @Deprecated
+  public static int makeRequest(HttpMethod method, URL resource, HttpProxy proxy,
+                                Map<String,String> header, Map<String,String> params) throws IOException {
+    HttpURLConnection http = request(method, resource, proxy, header, params);
+    return http.getResponseCode();
+  }
+
+  /**
+   * Executes a HTTP request.
+   * @param method the HTTP method.
+   * @param resource the web url to contact.
+   * @param proxy the proxy server.
+   * @param header the request header.
+   * @param params the request parameters.
+   * @return the response code.
+   * @throws IOException when HTTP error.
+   */
+  @Deprecated
+  private static HttpURLConnection request(final HttpMethod method, final URL resource,
+                                           HttpProxy proxy,
+                                           Map<String,String> header, Map<String,String> params) throws IOException {
+    LOGGER.traceEntry("resource={} proxy={} header={} params={} data={}", resource, proxy, header, params);
+
+    String formattedParams = (params != null) ?
+        params.entrySet().stream()
+            .map(e -> e.getKey() + "=" + e.getValue())
+            .collect(Collectors.joining("&"))
+        :
+        "";
+
+    URL url = (formattedParams.length() > 0) ?
+        new URL(resource.toString() + "?" + formattedParams)
+        :
+        resource;
+
+    Proxy jproxy = (proxy == null || proxy.equals(HttpProxy.NONE)) ?
+        Proxy.NO_PROXY
+        :
+        proxy;
+
+    HttpURLConnection http = (HttpURLConnection) url.openConnection(jproxy);
+
     http.setRequestMethod(method.name());
-    int response = http.getResponseCode();
-    String responseBody;
-    try (InputStream in = http.getInputStream()) {
-      responseBody = IOUtils.toString(in, Charset.defaultCharset());
+
+    if (header != null) {
+      header.forEach(http::setRequestProperty);
     }
-    return LOGGER.traceExit(responseBody);
-  }
 
-  /**
-   * Executes a HTTP request.
-   * @param method the HTTP method.
-   * @param props the request properties.
-   * @return the response code.
-   * @throws IOException when HTTP error.
-   */
-  public static int makeRequest(final HttpMethod method, final URL url, Map<String,String> props) throws IOException {
-    LOGGER.traceEntry("url={}", url);
-    HttpURLConnection http = (HttpURLConnection) url.openConnection();
-    http.setRequestMethod(method.name());
-    props.forEach(http::setRequestProperty);
-    int response = http.getResponseCode();
-    return LOGGER.traceExit(response);
-  }
+    if (method.equals(HttpMethod.POST) && formattedParams.length() > 0) {
+      byte data[] = formattedParams.getBytes(Charset.defaultCharset());
+      int datalen = data.length;
+      http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+      http.setRequestProperty("charset", "utf-8");
+      http.setRequestProperty("Content-Length", Integer.toString(datalen));
+      http.setDoOutput(true);
+      http.setUseCaches(false);
+      try (DataOutputStream out = new DataOutputStream(http.getOutputStream())) {
+        out.write(data);
+      }
+    }
 
-  /**
-   * Executes a HTTP request.
-   * @param method the HTTP method.
-   * @param proxy The proxy server.
-   * @return the response code.
-   * @throws IOException when HTTP error.
-   */
-  public static int makeRequest(final HttpMethod method, final URL url, final HttpProxy proxy) throws IOException {
-    LOGGER.traceEntry("url={} proxy={}", url, proxy);
-    HttpURLConnection http = (HttpURLConnection) url.openConnection((proxy==null || proxy.equals(HttpProxy.NONE))?Proxy.NO_PROXY:proxy);
-    http.setRequestMethod(method.name());
-    int response = http.getResponseCode();
-    return LOGGER.traceExit(response);
-  }
-
-  /**
-   * Executes a HTTP request.
-   * @param method the HTTP method.
-   * @param props the request properties.
-   * @param proxy The proxy server.
-   * @return the response code.
-   * @throws IOException when HTTP error.
-   */
-  public static int makeRequest(final HttpMethod method, final URL url, Map<String,String> props, final HttpProxy proxy) throws IOException {
-    LOGGER.traceEntry("url={} proxy={}", url, proxy);
-    HttpURLConnection http = (HttpURLConnection) url.openConnection((proxy==null || proxy.equals(HttpProxy.NONE))?Proxy.NO_PROXY:proxy);
-    http.setRequestMethod(method.name());
-    props.forEach(http::setRequestProperty);
-    int response = http.getResponseCode();
-    return LOGGER.traceExit(response);
+    return http;
   }
 }

@@ -34,13 +34,9 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.quartz.CronExpression;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * The JSON deserializer for {@link AppConfiguration}.
@@ -124,74 +120,28 @@ public class AppConfigurationDeserializer extends StdDeserializer<AppConfigurati
       config.setProxy(proxy);
     }
 
-    if (node.hasNonNull("userAgent")) {
-      final String userAgent = node.get("userAgent").asText();
-      config.setUserAgent(userAgent);
-    }
-
     if (node.hasNonNull("sleep")) {
-      final CronExpression sleep;
-      try {
-        sleep = new CronExpression(node.get("sleep").asText());
-      } catch (ParseException exc) {
-        throw new IOException("Cannot deserialize cron expression [sleep]. " + exc.getMessage());
-      }
+      final String sleep = node.get("sleep").asText();
       config.setSleep(sleep);
     }
 
+    if (node.hasNonNull("authentication")) {
+      Map<String,String> authentication = new HashMap<>();
+      node.get("authentication").fields().forEachRemaining(f -> authentication.put(f.getKey(), f.getValue().asText()));
+      config.setAuthentication(authentication);
+    }
+
     if (node.hasNonNull("controllers")) {
-      final List<Controller> controllers = parseControllers(node.get("controllers"));
+      List<Controller> controllers = new ArrayList<>();
+      Iterator<JsonNode> iter = node.get("controllers").elements();
+      while (iter.hasNext()) {
+        JsonNode n = iter.next();
+        Controller controller = ctx.readValue(n.traverse(parser.getCodec()), Controller.class);
+        controllers.add(controller);
+      }
       config.setControllers(controllers);
     }
+
     return config;
-  }
-
-  /**
-   * Parses a list of {@link Controller} from a JSON node.
-   * @param node the JSON node to parse.
-   * @return the parsed list of {@link Controller}.
-   */
-  private static List<Controller> parseControllers(JsonNode node) {
-    List<Controller> controllers = new ArrayList<>();
-    Iterator<JsonNode> iter = node.elements();
-    while (iter.hasNext()) {
-      JsonNode n = iter.next();
-      if (!n.hasNonNull("init") ||
-          !n.hasNonNull("command") ||
-          !n.hasNonNull("log")) {
-        continue;
-      }
-
-      final String initResource = n.get("init").asText();
-
-      final String commandResource = n.get("command").asText();
-
-      final String logResource = n.get("log").asText();
-
-      Controller controller = new Controller(initResource, commandResource, logResource);
-
-      if (n.hasNonNull("polling")) {
-        final Interval polling = Interval.valueOf(n.get("polling").asText());
-        controller.setPolling(polling);
-      }
-
-      if (n.hasNonNull("reconnections")) {
-        final Long reconnections = n.get("reconnections").asLong();
-        controller.setReconnections(reconnections);
-      }
-
-      if (n.hasNonNull("reconnectionWait")) {
-        final Interval reconnectionWait = Interval.valueOf(n.get("reconnectionWait").asText());
-        controller.setReconnectionWait(reconnectionWait);
-      }
-
-      if (n.hasNonNull("proxy")) {
-        final HttpProxy proxy = HttpProxy.valueOf(n.get("proxy").asText());
-        controller.setProxy(proxy);
-      }
-
-      controllers.add(controller);
-    }
-    return controllers;
   }
 }

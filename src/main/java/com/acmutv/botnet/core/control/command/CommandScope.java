@@ -37,13 +37,12 @@ import lombok.Getter;
  */
 @Getter
 public enum CommandScope {
-  ATTACK_HTTP ("ATTACK_HTTP", true, false),
+  ATTACK_HTTPFLOOD("ATTACK_HTTPFLOOD", true, false),
   CALMDOWN    ("CALMDOWN", true, false),
   KILL        ("KILL", true, false),
   NONE        ("NONE", false, false),
   REPORT      ("REPORT", true, true),
   RESTART     ("RESTART", true, false),
-  SAVE_CONFIG ("SAVE_CONFIG", true, false),
   SLEEP       ("SLEEP", true, false),
   UPDATE      ("UPDATE", true, false),
   WAKEUP      ("WAKEUP", true, false);

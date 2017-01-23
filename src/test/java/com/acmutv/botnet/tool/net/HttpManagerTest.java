@@ -26,12 +26,17 @@
 
 package com.acmutv.botnet.tool.net;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +49,8 @@ import java.util.Map;
  * @see HttpManager
  */
 public class HttpManagerTest {
+
+  private static final Logger LOGGER = LogManager.getLogger(HttpManagerTest.class);
 
   @Before
   public void setup() {
@@ -65,71 +72,111 @@ public class HttpManagerTest {
   }
 
   /**
-   * Tests the HTTP GET request (method:GET properties:none proxy:none)
+   * Tests the HTTP GET request.
+   * Proxy: none | header: none | params: none
    * @throws ParseException when invalid weburl.
    * @throws IOException when HTTP error.
    */
   @Test
-  public void test_makeRequest_get() throws ParseException, IOException {
+  public void test_makeRequest_get_simple() throws ParseException, IOException {
     URL url = new URL("http://www.google.com");
-    int actual = HttpManager.makeRequest(HttpMethod.GET, url);
+    int actual1 = HttpManager.makeRequest(HttpMethod.GET, url, null, null, null);
+    Assert.assertTrue(actual1 == 200 || actual1 == 403);
+  }
+
+  /**
+   * Tests the HTTP GET request.
+   * Proxy: provided | header: provided | params: provided
+   * @throws ParseException when invalid weburl.
+   * @throws IOException when HTTP error.
+   */
+  @Test
+  public void test_makeRequest_get_complex() throws ParseException, IOException {
+    URL url = new URL("http://www.google.com");
+    //HttpProxy proxy = new HttpProxy("31.220.56.101", 80);
+    HttpProxy proxy = HttpProxy.NONE;
+    Map<String,String> header = new HashMap<String,String>(){{
+      put("content-type", "multipart/form-data");
+    }};
+    Map<String,String> params = new HashMap<String,String>(){{
+      put("Content-Type", "text%2Fhtml");
+      put("test", "response_headers");
+    }};
+    int actual = HttpManager.makeRequest(HttpMethod.GET, url, proxy, header, params);
     Assert.assertTrue(actual == 200 || actual == 403);
   }
 
   /**
-   * Tests the HTTP GET request (method:GET properties:none proxy:none)
+   * Tests the HTTP POST request.
+   * Proxy: none | header: none | params: none
    * @throws ParseException when invalid weburl.
    * @throws IOException when HTTP error.
    */
   @Test
-  public void test_getResponseBody_get() throws ParseException, IOException {
+  public void test_makeRequest_post_simple() throws ParseException, IOException {
     URL url = new URL("http://www.google.com");
-    String actual = HttpManager.getResponseBody(HttpMethod.GET, url);
-    System.out.println(actual);
+    int actual = HttpManager.makeRequest(HttpMethod.POST, url, null, null, null);
+    Assert.assertTrue(actual == 200 || actual == 403 || actual == 411);
   }
 
   /**
-   * Tests the HTTP GET request (method:GET properties:(User-Agent:provided) proxy:none)
+   * Tests the HTTP POST request.
+   * Proxy: provided | header: provided | params: provided
    * @throws ParseException when invalid weburl.
    * @throws IOException when HTTP error.
    */
   @Test
-  public void test_get_props() throws ParseException, IOException {
+  public void test_makeRequest_post_complex() throws ParseException, IOException {
     URL url = new URL("http://www.google.com");
-    Map<String,String> props = new HashMap<>();
-    props.put("User-Agent", "BOTNETv1.0.0");
-    int actual = HttpManager.makeRequest(HttpMethod.GET, url, props);
-    Assert.assertTrue(actual == 200 || actual == 403);
+    //HttpProxy proxy = new HttpProxy("31.220.56.101", 80);
+    HttpProxy proxy = null;
+    Map<String,String> header = new HashMap<String,String>(){{
+      put("content-type", "multipart/form-data");
+    }};
+    Map<String,String> params = new HashMap<String,String>(){{
+      put("Content-Type", "text%2Fhtml");
+      put("test", "response_headers");
+    }};
+    HttpManager.makeRequest(HttpMethod.POST, url, proxy, header, params);
   }
 
   /**
-   * Tests the HTTP GET request (method:GET properties:(User-Agent:null) proxy:none)
+   * Tests the HTTP GET request.
+   * Proxy: none | header: none | params: none
    * @throws ParseException when invalid weburl.
    * @throws IOException when HTTP error.
    */
   @Test
-  public void test_get_props_null() throws ParseException, IOException {
+  public void test_getResponseBody_get_simple() throws ParseException, IOException {
     URL url = new URL("http://www.google.com");
-    Map<String,String> props = new HashMap<>();
-    props.put("User-Agent", null);
-    int actual = HttpManager.makeRequest(HttpMethod.GET, url, props);
-    Assert.assertTrue(actual == 200 || actual == 403);
+    InputStream in = HttpManager.getResponseBody(HttpMethod.GET, url, null, null, null);
+    String actual = IOUtils.toString(in, Charset.defaultCharset());
+    LOGGER.info(actual);
   }
 
   /**
-   * Tests the HTTP GET request (method:GET properties:(User-Agent) proxy:provided)
-   * See {@literal https://www.us-proxy.org/} for a list of active public proxies.
+   * Tests the HTTP GET request.
+   * Proxy: provided | header: provided | params: provided
    * @throws ParseException when invalid weburl.
    * @throws IOException when HTTP error.
    */
   @Test
-  public void test_get_propsAndProxy() throws ParseException, IOException {
+  public void test_getResponseBody_get_complex() throws ParseException, IOException {
     URL url = new URL("http://www.google.com");
-    Map<String,String> props = new HashMap<>();
-    props.put("User-Agent", "BOTNETv1.0.0");
     HttpProxy proxy = new HttpProxy("31.220.56.101", 80);
-    int actual = HttpManager.makeRequest(HttpMethod.GET, url, props, proxy);
-    Assert.assertTrue(actual == 200 || actual == 403);
+    Map<String,String> header = new HashMap<String,String>(){{
+      put("content-type", "multipart/form-data");
+    }};
+    Map<String,String> params = new HashMap<String,String>(){{
+      put("Content-Type", "text%2Fhtml");
+      put("test", "response_headers");
+    }};
+    String actual = null;
+    try (InputStream in = HttpManager.getResponseBody(HttpMethod.GET, url, proxy, header, params)) {
+      actual = IOUtils.toString(in, Charset.defaultCharset());
+    } catch (IOException exc) {LOGGER.warn(exc.getMessage());}
+
+    LOGGER.info(actual);
   }
 
 }

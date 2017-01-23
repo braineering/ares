@@ -28,7 +28,6 @@ package com.acmutv.botnet.core.analysis;
 
 import com.acmutv.botnet.core.exception.BotAnalysisException;
 import com.acmutv.botnet.tool.net.ConnectionManager;
-import com.acmutv.botnet.tool.runtime.LinuxSysInfoTools;
 import com.acmutv.botnet.tool.runtime.MacOsxSysInfoTools;
 import com.acmutv.botnet.tool.runtime.WindowsSysInfoTools;
 

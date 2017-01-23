@@ -1,4 +1,5 @@
 {
+  "timestamp": 1,
   "command": "SLEEP",
   "timeout": "10-15:SECONDS"
 }

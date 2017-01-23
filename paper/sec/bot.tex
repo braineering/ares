@@ -14,15 +14,15 @@ The bot life cycle is modeled as a Finite State Automaton (FSA) with the state s
   \setlength\itemsep{1em}
 
   \item[INIT] the bot generates a unique identifier in the form \texttt{MAC:JVM}, where \texttt{MAC} is the local MAC address and \texttt{JVM} is the name of the Java Virtual Machine currently running the bot; it then allocates basic resources (e.g. shutdown hooks for resource releasing); it tries to join a botnet using the specified list of controllers.
-  Errors in this state are considered fatal, so they would cause bot termination. The pseudocode of this state is shown in \ref{alg:state-init-pseudocode}.
+  Errors in this state are considered fatal, so they would cause bot termination. The pseudocode of this state is shown in \cref{alg:state-init-pseudocode}.
 
   \item[EXECUTION] the bot polls the controller for the next command; it waits a delay before command execution (if required); it executes the command; it produces the report and sends it to the controller (if required); it waits for the next polling.
-  Errors in this state are considered warnings: they are handled and never cause bot termination. The pseudocode of this state is shown in \ref{alg:state-execution-pseudocode}.
+  Errors in this state are considered warnings: they are handled and never cause bot termination. The pseudocode of this state is shown in \Cref{alg:state-execution-pseudocode}.
 
   \item[SLEEP] no reports are sent to the controller nor attacks are executed. The bot polls the controller for the next command, waiting for a \texttt{WAKEUP} (it would transit to state \texttt{EXECUTION}) or a \texttt{KILL} (it would transit to state \texttt{DEAD}).
-  In this state errors are considered warning: they are handled and never cause bot termination. The pseudocode of this state is shown in \ref{alg:state-sleep-pseudocode}.
+  In this state errors are considered warning: they are handled and never cause bot termination. The pseudocode of this state is shown in \Cref{alg:state-sleep-pseudocode}.
 
-  \item[DEAD] attacks are unscheduled, resources are released and the bot terminates. In this state all errors are ignored, because no one of them could never compromise the state purpose. The pseudocode of this state is shown in \ref{alg:state-dead-pseudocode}.
+  \item[DEAD] attacks are unscheduled, resources are released and the bot terminates. In this state all errors are ignored, because no one of them could never compromise the state purpose. The pseudocode of this state is shown in \Cref{alg:state-dead-pseudocode}.
 
 \end{description}
 
@@ -57,7 +57,7 @@ The bot life cycle is modeled as a Finite State Automaton (FSA) with the state s
     }
   }
   \caption{Pseudocode for state \texttt{INIT}}
-  \label[alg]{alg:state-init-pseudocode}
+  \label{alg:state-init-pseudocode}
 \end{algorithm}
 
 \bigskip

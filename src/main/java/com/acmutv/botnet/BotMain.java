@@ -52,7 +52,7 @@ public class BotMain {
     CliService.handleArguments(args);
    
     try {
-      CoreController.startBot();
+      CoreController.run();
     } catch (BotFatalException exc) {
       LOGGER.error(exc.getMessage());
       System.exit(-1);
