@@ -2,12 +2,12 @@
 \label{sec:implementation}
 
 The bot has been realized as a Java\footnote{Oracle Java SE 8} desktop application, packaged with Maven into a self-contained\footnote{fat jar encapsulating all external dependencies.} jar with shrunk and obfuscated code.
+Basically, the bot implements the finite state automaton showned in \Cref{sec:bot}, and all the functionalities required for configuration parsing, HTTP interactions, commands execution and logging. All functionalities has been tested carefully against 123 total JUnit tests.
 
-Basically, the bot implements the finite state automaton (\ref{sec:bot}) and the functionalities required for configuration parsing (\ref{sec:configuration}), commands execution (\ref{sec:commands}) and logging. All functionalities has been tested carefully against 123 total JUnit tests.
+The controller has been realized as a Node.js web-server, distributed as a usual private NPM\footnote{Node Package Manager.} package.
+Basically, the controller exposes the REST interfaces defined in \Cref{sec:controller}, and provides the attacker with a botnet management dashboard whilst provides the common user with a simple legitimate web page..
 
-\textcolor{green}{WEB INTERFACE IMPLEMENTATION \lipsum[1]}
-
-Our bot and web user interfaces leverage some of well known technologies. Here we present them, giving an idea about how they have been used in our implementation. The reader may refer to the open source code of the project and the corresponding Javadocs to get into implementation details.
+Our botnet leverage some of well known technologies. Here we present them, giving an idea about how they have been used in our implementation. The reader may refer to the open source code of the project and the corresponding Javadocs to get into implementation details.
 
 \begin{description}
   \setlength\itemsep{1em}
@@ -29,6 +29,8 @@ Our bot and web user interfaces leverage some of well known technologies. Here w
 
   \item[LOMBOK] framework of annotations for the encapsulation of boilerplates and simple patterns \cite{lombok}.
   In our application it is used to generate constructors getters/setters toString/hashCode methods. As such a generation is evaluated at compile time, the code of entity classes is considerably reduced.
+
+  \item[NODE.JS] cross-platform open source JavaScript framework to build event-driven applications \cite{nodejs,npm}. In our application it is used to implement the controller web server.
 
   \item[BOOTSTRAP] most popular HTML, CSS, and JavaScript framework for developing responsive web sites \cite{bootstrap}. Bootstrap includes HTML and CSS based design templates for typography, forms, buttons, tables, navigation, modals, image carousels and many other, as well as optional JavaScript plugins. In our application it is used to realize the Web User Interface.
 

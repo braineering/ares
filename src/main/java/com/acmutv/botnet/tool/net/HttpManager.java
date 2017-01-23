@@ -75,7 +75,6 @@ public class HttpManager {
    * @return the response body.
    * @throws IOException when HTTP error.
    */
-  @Deprecated
   public static InputStream getResponseBody(final HttpMethod method, final URL resource) throws IOException {
     return getResponseBody(method, resource, null, null, null);
   }
@@ -88,7 +87,6 @@ public class HttpManager {
    * @return the response body.
    * @throws IOException when HTTP error.
    */
-  @Deprecated
   public static InputStream getResponseBody(final HttpMethod method, final URL resource, HttpProxy proxy) throws IOException {
     return getResponseBody(method, resource, proxy, null, null);
   }
@@ -103,7 +101,6 @@ public class HttpManager {
    * @return the response input stream.
    * @throws IOException when HTTP error.
    */
-  @Deprecated
   public static InputStream getResponseBody(final HttpMethod method, final URL resource,
                                             HttpProxy proxy,
                                             Map<String,String> header, Map<String,String> params) throws IOException {
@@ -118,7 +115,6 @@ public class HttpManager {
    * @return the response code.
    * @throws IOException when HTTP error.
    */
-  @Deprecated
   public static int makeRequest(final HttpMethod method, final URL resource) throws IOException {
     return makeRequest(method, resource, null, null, null);
   }
@@ -131,7 +127,6 @@ public class HttpManager {
    * @return the response code.
    * @throws IOException when HTTP error.
    */
-  @Deprecated
   public static int makeRequest(HttpMethod method, URL resource, HttpProxy proxy) throws IOException {
     return makeRequest(method, resource, proxy, null, null);
   }
@@ -146,7 +141,6 @@ public class HttpManager {
    * @return the response code.
    * @throws IOException when HTTP error.
    */
-  @Deprecated
   public static int makeRequest(HttpMethod method, URL resource, HttpProxy proxy,
                                 Map<String,String> header, Map<String,String> params) throws IOException {
     HttpURLConnection http = request(method, resource, proxy, header, params);
@@ -163,7 +157,6 @@ public class HttpManager {
    * @return the response code.
    * @throws IOException when HTTP error.
    */
-  @Deprecated
   private static HttpURLConnection request(final HttpMethod method, final URL resource,
                                            HttpProxy proxy,
                                            Map<String,String> header, Map<String,String> params) throws IOException {

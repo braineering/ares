@@ -1,18 +1,19 @@
 \section{Architecture}
 \label{sec:architecture}
 
-Since the development of a real botnet goes beyond the scope of this work, we adhered to an architecture that allowed us to focus on the development of a bot thought for testing and educational showcase, but actually ready for a real scenario. \Cref{fig:botnet-architecture} shows the reference architecture.
+The botnet implements the architecture showned in \Cref{fig:botnet-architecture}, where the C\&C layer is both implemented by a centralized web server exposing REST interfaces, and simulated by the local file system providing JSON files mimicking web server's responses.
 
 \begin{figure}[tp]
   \centering
   \includegraphics[scale=0.2]{./fig/architecture.eps}
-  \caption{The botnet architecture. In the real scenario, the bot interacts with a web server - e.g. a web server exposing REST APIs. In the testing scenario, the bot mimics the bot-controller interactions, reading/writing local files.}
+  \caption{The botnet architecture. In the \textit{real scenario}, the bot interacts with a C\&C layer implemented by web server exposing REST APIs — namely a controller. In the \textit{test scenario}, the bot interacts with the local file system, simulating controller's responses with local JSON files. In both scenarios, the bot is configured by a local configuration file, may produce local logs and performs attacks via the Internet.}
     \label{fig:botnet-architecture}
 \end{figure}
 
-The reference architecture models a bot that can be instructed by a centralized C\&C server.
-Here, the controller is defined giving three interfaces: the \textit{init interface} is the one from which the bot loads the configuration to join the botnet; the \textit{command interface} from which the bot loads commands to execute; the \textit{log interface} is the one that the bot submits reports to.
+In a \textit{real scenario}, the bot interacts with the web server through its REST APIs, whilst in a \textit{test scenario} it interacts with the local file system providing JSON files that simulates controller's responses.
+In both scenarios, the controller is defined giving three interfaces: the \textit{init interface} is the one from which the bot loads the configuration to join the botnet; the \textit{command interface} from which the bot loads commands to execute; the \textit{log interface} is the one that the bot submits reports to.
 
-Such a model makes our bot is suitable both for \textit{local testing}, where interfaces are local files, and \textit{real bot-controller interaction}, where interfaces are web interfaces. In the following we often says "the bot receives from the controller" and "the bot sends to the controller", meaning that "the bot reads from command interface" and "the bot write to log interface", respectively.
+Such a model makes our bot is suitable both for \textit{local testing}, where interfaces are local files, and \textit{real bot-controller interaction}, where interfaces are web interfaces.
+In the following we often says "the bot receives from the controller" and "the bot sends to the controller", meaning without distinction whetere the bot is interacting with the controller in the real or testing scenario.
 
-Our bot is configured providing a YAML configuration file and executes commands given in JSON format. Both can be produced by convenient web-based interfaces presented in \ref{sec:configuration-wui} \ref{sec:commands-wui}, respectively.
+The bot is configured providing a YAML configuration file and executes commands given in JSON format. Both can be produced by convenient web-based interfaces presented in \ref{sec:configuration-wui} \ref{sec:commands-wui}, respectively.

@@ -12,8 +12,11 @@ reconnectionWait: "10-20:SECONDS"
 proxy: "none"
 sleep: "* * * ? * SAT,SUN"
 authentication:
-  User-Agent: CustomUserAgent
+  User-Agent: MyAwesomBot
 controllers:
+  - init: http://localhost:4000/init
+    command: http://localhost:4000/command
+    log: http://localhost:4000/report
   - init: http://localhost:3000/init
     command: http://localhost:3000/command
     log: http://localhost:3000/report

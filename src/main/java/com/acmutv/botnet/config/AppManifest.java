@@ -54,7 +54,8 @@ public class AppManifest {
   /**
    * The app team name (ACM Rome Tor Vergata).
    */
-  public static final String APP_TEAM_NAME = "ACM Rome Tor Vergata";
+  public static final String APP_TEAM_NAME =
+      "ACM Rome Tor Vergata (Giacomo Marciani and Michele Porretta)";
 
   /**
    * The app team website (http://acm.uniroma2.it).

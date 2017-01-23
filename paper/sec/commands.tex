@@ -28,11 +28,7 @@ In the command listed below there are non primitive data types. Some of them hav
 
   \begin{verbatim}
     3-5:SECONDS
-  \end{verbatim}
 
-  and
-
-  \begin{verbatim}
     10:SECONDS
   \end{verbatim}
 
@@ -41,11 +37,7 @@ In the command listed below there are non primitive data types. Some of them hav
 
   \begin{verbatim}
     123.123.123:3000
-  \end{verbatim}
 
-  and
-
-  \begin{verbatim}
     none
   \end{verbatim}
 
@@ -62,7 +54,7 @@ In the command listed below there are non primitive data types. Some of them hav
     www.google.com
   \end{verbatim}
 
-  \item[dict-expression] represents a dictionary between strings and strings — e.g. "prop1" set to "val1".
+  \item[dict-object] represents a dictionary between strings and strings — e.g. "prop1" set to "val1".
   For example, the following is valid expressions:
 
   \begin{verbatim}
@@ -72,9 +64,10 @@ In the command listed below there are non primitive data types. Some of them hav
     }
   \end{verbatim}
 
-  \item[attack-object] represents a target of a HTTP attack — e.g. a GET attack to http://www.google.com.
+  \item[attack-object] represents a HTTP Flooding attack \cite{anderson2008security} — e.g. a POST attack to http://www.gmarciani.com.
   If specified, \texttt{proxy} is the HTTP proxy to attack through. If set to \texttt{null}, it is the default proxy (see \ref{sec:configuration}).
-  If specified, \texttt{properties} are the HTTP request parameters to attack with.
+  If specified, \texttt{header} are the HTTP request header fields-value.
+  If specified, \texttt{params} are the HTTP request data embedded into the URL when executing a GET attack, or encoded as \texttt{text/plain} when executing a POST attack.
   If specified, \texttt{executions} indicates how many attack executions need to be scheduled interleaved by the secified \texttt{period}.
 
   \begin{verbatim}
@@ -82,7 +75,8 @@ In the command listed below there are non primitive data types. Some of them hav
     "method": value in [GET,POST],
     "target": web-expression,
     ("proxy": proxy-expression (null)),
-    ("properties": dict-expression ({})),
+    ("header": dict-object ({})),
+    ("params": dict-object ({})),
     (
       "executions": integer in [1,65535] (1),
       "period": time-expression (null)
@@ -97,26 +91,42 @@ In the command listed below there are non primitive data types. Some of them hav
     "method": "GET",
     "target": "http://www.google.com"
   }
-  \end{verbatim}
 
-  and
-
-  \begin{verbatim}
   {
     "method": "GET",
     "target": "http://www.google.com",
     "proxy": "123.123.123:3000",
-    "properties": map-expression {
-      "User-Agent": "CustomUserAgent"
+    "header": {
+      "User-Agent": "MyAwesomeBot",
+      "Authentication": "Basic 123456789",
+      "BotID": 270690
     },
     "executions": 3,
     "period": "3-5:SECONDS"
   }
   \end{verbatim}
 
+  \item[controller-object] represents a controller — e.g. a controller with init interface X command interface Y and log interface Z. A controller is expressed in the following form:
+
+  \begin{verbatim}
+    {
+      "init": resource-expression
+      "cmd":  resource-expression
+      "log":  resource-expression
+      ("polling": time-expression),
+      ("reconnections": integer in [0,65535] (0)),
+      ("reconnectionWait": time-expression (null)),
+      ("proxy": proxy-expression (null)),
+      ("sleep": cron-expression (null)),
+      ("authentication": dict-object ({}))
+    }
+  \end{verbatim}
+
+  where a \texttt{resource-expression} represents a readable local or remote resource — i.e. a standard file pathname or a remote Web URL.
+
 \end{description}
 
-Every command starts with a field pointing out the command scope, and terminates with the expected parameters.
+Every command starts with a \textit{timestamp}, a field pointing out the \textit{command scope}, and terminates with the expected \textit{parameters}.
 Every command\footnote{with the exception of command \texttt{NONE} having no fields, and command \texttt{REPORT} having no optional field \texttt{report}.}  has a optional fields \texttt{delay} and \texttt{report}.
 
 If \texttt{delay} is specified, the command will be executed after a random amount of time within the given interval; if not, the command will be executed immediately. This optional field has been added to command schema because in some real scenarios could be useful to specify a variance component.
@@ -126,11 +136,12 @@ If \texttt{report} is specified and set to \texttt{true}, the bot will send the 
 \begin{description}
   \setlength\itemsep{1em}
 
-  \item[ATTACK-HTTP] schedules all the specified HTTP \texttt{attacks}.
+  \item[ATTACK-HTTPFLOOD] schedules all the specified HTTP Flooding \texttt{attacks}.
 
   \begin{verbatim}
   {
-    "command": "ATTACK_HTTP",
+    "timestamp": integer,
+    "command": "ATTACK_HTTPFLOOD",
     "attacks": [ attack-object ],
     ("delay": time-expr (null))
   }
@@ -141,6 +152,7 @@ If \texttt{report} is specified and set to \texttt{true}, the bot will send the 
 
   \begin{verbatim}
   {
+    "timestamp": integer,
     "command": "CALMDOWN",
     ("wait": boolean (false)),
     ("delay": time-expr (null))
@@ -152,6 +164,7 @@ If \texttt{report} is specified and set to \texttt{true}, the bot will send the 
 
   \begin{verbatim}
   {
+    "timestamp": integer,
     "command": "KILL",
     ("wait": boolean (false)),
     ("delay": time-expr (null))
@@ -162,6 +175,7 @@ If \texttt{report} is specified and set to \texttt{true}, the bot will send the 
 
   \begin{verbatim}
   {
+    ("timestamp": integer),
     "command": "NONE"
   }
   \end{verbatim}
@@ -170,6 +184,7 @@ If \texttt{report} is specified and set to \texttt{true}, the bot will send the 
 
   \begin{verbatim}
   {
+    "timestamp": integer,
     "command": "REPORT",
     ("delay": time-expr (null))
   }
@@ -180,18 +195,10 @@ If \texttt{report} is specified and set to \texttt{true}, the bot will send the 
 
   \begin{verbatim}
   {
+    "timestamp": integer,
     "command": "RESTART",
-    "resource": resource-expr,
+    "resource": [ controller-object ],
     ("wait": boolean (false)),
-    ("delay": time-expr (null))
-  }
-  \end{verbatim}
-
-  \item[SAVE-CONFIG] the currently loaded bot configuration is locally saved as default configuration.
-
-  \begin{verbatim}
-  {
-    "command": "SAVE_CONFIG",
     ("delay": time-expr (null))
   }
   \end{verbatim}
@@ -200,6 +207,7 @@ If \texttt{report} is specified and set to \texttt{true}, the bot will send the 
 
   \begin{verbatim}
   {
+    "timestamp": integer,
     "command": "SLEEP",
     ("timeout": time-expr (null)),
     ("delay": time-expr (null))
@@ -210,6 +218,7 @@ If \texttt{report} is specified and set to \texttt{true}, the bot will send the 
 
   \begin{verbatim}
   {
+    "timestamp": integer,
     "command": "UPDATE",
     "settings": map-expr,
     ("delay": time-expr (null))
@@ -220,6 +229,7 @@ If \texttt{report} is specified and set to \texttt{true}, the bot will send the 
 
   \begin{verbatim}
   {
+    "timestamp": integer,
     "command": "WAKEUP",
     ("delay": time-expr (null))
   }
@@ -230,7 +240,7 @@ If \texttt{report} is specified and set to \texttt{true}, the bot will send the 
 \subsection{Commands WUI}\label{sec:commands-wui}
 The WUI for commands of the bot is divided into two sections: bot operating activities and attack command. The operating activities section includes the following commands: \textit{Kill}, \textit{Restart}, \textit{Report}, \textit{Sleep}, \textit{Wakeup} and \textit{Update}. As you can see in the figure \ref{fig:commands-wui}, a select box is used to define the desired activity. The chosen of command enables the associated options for that, example the delay option for “Kill”. Other options that can be enabled are: "Report" for a response of command execution and "Wait". The "Generate Command" button produces the JSON file for configured activity.
 
-As for the attack section, in this part of interface you can specify the list of targets on which to execute an \textit{HTTP Flooding Attack}. For each target, on the corresponding modal, can be defined the HTTP method (GET or POST), a specific proxy, the header and params fields of HTTP request, the number of executions and the waiting period between an execution and the other. 
+As for the attack section, in this part of interface you can specify the list of targets on which to execute an \textit{HTTP Flooding Attack}. For each target, on the corresponding modal, can be defined the HTTP method (GET or POST), a specific proxy, the header and params fields of HTTP request, the number of executions and the waiting period between an execution and the other.
 
 After defining a list of attacks, can be associate the activation delay and enable a report of execution. Finally, the button "Generate Attack", it allows you to produce the JSON file with the attack's description.
 

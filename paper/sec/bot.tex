@@ -1,7 +1,7 @@
 \section{Bot}
 \label{sec:bot}
 
-The bot life cycle is modeled as a Finite State Automaton (FSA) with the state space defined as follows and depicted in \ref{fig:bot-fsa}.
+The bot is modeled as a Finite State Automaton (FSA) with the state space defined as follows and depicted in \Cref{fig:bot-fsa}.
 
 \begin{figure}[tp]
   \centering
@@ -14,15 +14,15 @@ The bot life cycle is modeled as a Finite State Automaton (FSA) with the state s
   \setlength\itemsep{1em}
 
   \item[INIT] the bot generates a unique identifier in the form \texttt{MAC:JVM}, where \texttt{MAC} is the local MAC address and \texttt{JVM} is the name of the Java Virtual Machine currently running the bot; it then allocates basic resources (e.g. shutdown hooks for resource releasing); it tries to join a botnet using the specified list of controllers.
-  Errors in this state are considered fatal, so they would cause bot termination. The pseudocode of this state is shown in \cref{alg:state-init-pseudocode}.
+  Errors in this state are considered fatal, so they would cause bot termination. The pseudocode of this state is shown in Algorithm~\ref{alg:state-init-pseudocode}.
 
   \item[EXECUTION] the bot polls the controller for the next command; it waits a delay before command execution (if required); it executes the command; it produces the report and sends it to the controller (if required); it waits for the next polling.
-  Errors in this state are considered warnings: they are handled and never cause bot termination. The pseudocode of this state is shown in \Cref{alg:state-execution-pseudocode}.
+  Errors in this state are considered warnings: they are handled and never cause bot termination. The pseudocode of this state is shown in Algorithm~\ref{alg:state-execution-pseudocode}.
 
   \item[SLEEP] no reports are sent to the controller nor attacks are executed. The bot polls the controller for the next command, waiting for a \texttt{WAKEUP} (it would transit to state \texttt{EXECUTION}) or a \texttt{KILL} (it would transit to state \texttt{DEAD}).
-  In this state errors are considered warning: they are handled and never cause bot termination. The pseudocode of this state is shown in \Cref{alg:state-sleep-pseudocode}.
+  In this state errors are considered warning: they are handled and never cause bot termination. The pseudocode of this state is shown in Algorithm~\ref{alg:state-sleep-pseudocode}.
 
-  \item[DEAD] attacks are unscheduled, resources are released and the bot terminates. In this state all errors are ignored, because no one of them could never compromise the state purpose. The pseudocode of this state is shown in \Cref{alg:state-dead-pseudocode}.
+  \item[DEAD] attacks are unscheduled, resources are released and the bot terminates. In this state all errors are ignored, because no one of them could never compromise the state purpose. The pseudocode of this state is shown in Algorithm~\ref{alg:state-dead-pseudocode}.
 
 \end{description}
 
@@ -30,29 +30,31 @@ The bot life cycle is modeled as a Finite State Automaton (FSA) with the state s
 
 \begin{algorithm}[H]
   \SetAlgoNoLine
-  $mac \leftarrow$ getMACAddress() \\
-  $jvm \leftarrow$ getJVMName() \\
+  \KwData{localMAC, localJVMName, config}
   $id \leftarrow$ concat($mac$,$jvm$) \\
-  setBotId($id$)
+  setBotId($id$) \\
   $controller \leftarrow$ None \\
   $joined \leftarrow$ False \\
   $controllerIdx \leftarrow$ 0 \\
   $reconnections \leftarrow$ 0 \\
-  $maxReconnections \leftarrow$ getBotConfig(RECONNECTIONS) \\
-  $reconnectionWaitInterval \leftarrow$ getBotConfig(RECONNECTION-WAIT) \\
+  $maxReconnections \leftarrow$ config.RECONNECTIONS \\
+  $reconnectionWaitInterval \leftarrow$ config.RECONNECTION-WAIT \\
   \While{ not $joined$ } {
-    $currentController \leftarrow$ getBotConfig(CONTROLLERS,$controllerIdx$)
-    \If{ canLoadConfig($currentController$) } {
-      loadConfig($currentController$)
-      $controller \leftarrow$ $currentController$
-      $joined \leftarrow$ True
-    } \Else {
-      $reconnections \leftarrow reconnections + 1$
-      \If { $reconnections <= maxReconnections$ } {
+    $controller \leftarrow$ config.CONTROLLERS[$controllerIdx$] \\
+    \eIf{ isValidController($controller$) } {
+      loadConfig($controller$) \\
+      $CONTROLLER \leftarrow$ $controller$ \\
+      $joined \leftarrow$ True \\
+    } {
+      $reconnections \leftarrow reconnections + 1$ \\
+      \eIf{ $reconnections <= maxReconnections$ } {
         $reconnectionWait \leftarrow$ randomWithin($reconnectionWaitInterval$) \\
         wait($reconnectionWait$)
-      } \Else {
-        $controllerIdx \leftarrow controllerIdx + 1$
+      } {
+      $controllerIdx \leftarrow controllerIdx + 1$ \\
+        \If{$controllerIdx >= len(config.CONTROLLERS)$} {
+          \Return{ error }
+        }
       }
     }
   }
@@ -64,19 +66,23 @@ The bot life cycle is modeled as a Finite State Automaton (FSA) with the state s
 
 \begin{algorithm}[H]
   \SetAlgoNoLine
-  $controller \leftarrow$ getBotConfig(CONTROLLER) \\
-  $pollWaitInterval \leftarrow$ getBotConfig(POLL-WAIT) \\
-  $reportType \leftarrow$ getBotConfig(REPORT-TYPE) \\
+  \KwData{CONTROLLER}
+  $timestamp \leftarrow$ getTimestamp() \\
+  $pollWaitInterval \leftarrow$ CONTROLLER.POLL-WAIT \\
+  $reportType \leftarrow$ CONTROLLER.REPORT-TYPE \\
   $command \leftarrow$ getNextCommand() \\
+  \If{ $command.timestamp <= timestamp$ } {
+    \Return
+  }
   \If{requiresDelay($command$)} {
-    $cmdDelayInterval \leftarrow$ getCommandParam($command$,DELAY-INTERVAL) \\
+    $cmdDelayInterval \leftarrow$ command.DELAY-INTERVAL \\
     $cmdDelay \leftarrow$ randomWithin($cmdDelayInterval$) \\
     wait($cmdDelay$)
   }
-  executeCommand($command$)
+  executeCommand($command$) \\
   \If{requiresReport($command$)} {
-    generateReport($reportType$) \\
-    sendReportTo($controller$)
+    $report \leftarrow$ generateReport($reportType$) \\
+    sendReportTo($controller$, $report$)
   }
   $pollWait \leftarrow$ randomWithin($pollWaitInterval$) \\
   wait($pollWait$)
@@ -88,19 +94,21 @@ The bot life cycle is modeled as a Finite State Automaton (FSA) with the state s
 
 \begin{algorithm}[H]
   \SetAlgoNoLine
-  $controller \leftarrow$ getBotConfig(CONTROLLER) \\
-  $pollWaitInterval \leftarrow$ getBotConfig(POLL-WAIT) \\
-  $reportType \leftarrow$ getBotConfig(REPORT-TYPE) \\
+  \KwData{CONTROLLER}
+  $timestamp \leftarrow$ getTimestamp() \\
+  $pollWaitInterval \leftarrow$ CONTROLLER.POLL-WAIT \\
+  $reportType \leftarrow$ CONTROLLER.REPORT-TYPE \\
   $command \leftarrow$ getNextCommand() \\
-  \If{$command =$ WAKEUP $command =$ KILL} {
-    \If{requiresDelay($command$)} {
-      $cmdDelayInterval \leftarrow$ getCommandParam($command$,DELAY-INTERVAL) \\
-      $cmdDelay \leftarrow$ randomWithin($cmdDelayInterval$) \\
-      wait($cmdDelay$)
-    }
+  \If{ $command.timestamp \leq timestamp$ or ($command \neq$ WAKEUP|KILL)} {
+    \Return
   }
-  executeCommand($command$)
-  $pollWait \leftarrow$ randomIn($pollWaitInterval$) \\
+  \If{requiresDelay($command$)} {
+    $cmdDelayInterval \leftarrow$ command.DELAY-INTERVAL \\
+    $cmdDelay \leftarrow$ randomWithin($cmdDelayInterval$) \\
+    wait($cmdDelay$)
+  }
+  executeCommand($command$) \\
+  $pollWait \leftarrow$ randomWithin($pollWaitInterval$) \\
   wait($pollWait$)
   \caption{Pseudocode for state \texttt{SLEEP}}
   \label[alg]{alg:state-sleep-pseudocode}
@@ -110,11 +118,10 @@ The bot life cycle is modeled as a Finite State Automaton (FSA) with the state s
 
 \begin{algorithm}[H]
   \SetAlgoNoLine
-  $waitJobs \leftarrow$ getBotConfig(WAIT-JOBS) \\
-  stopScheduler($waitJobs$) \\
+  \KwData{CONTROLLER,WAIT-JOBS}
+  stopScheduler(WAIT-JOBS) \\
   freeScheduler() \\
   freeIOResources() \\
-  interruptBotLoop() \\
   executeShutdownHooks() \\
   exit()
   \caption{Pseudocode for state \texttt{DEAD}}

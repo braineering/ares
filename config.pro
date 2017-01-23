@@ -6,8 +6,8 @@
 #===============================================================================
 # GENERAL
 #===============================================================================
--injars target/botnet-1.0-jar-with-dependencies.jar
--outjars target/botnet-1.0-optimized.jar
+-injars target/bot-1.0-jar-with-dependencies.jar
+-outjars target/bot-1.0-optimized.jar
 -libraryjars <java.home>/lib/rt.jar
 -target 1.8
 -dontwarn

@@ -5,7 +5,7 @@
 <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.acmutv</groupId>
-    <artifactId>botnet</artifactId>
+    <artifactId>bot</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
@@ -485,31 +485,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>${clean.version}</version>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>some/relative/path</directory>
-                            <includes>
-                                <include>**/*.tmp</include>
-                                <include>**/*.log</include>
-                            </includes>
-                            <excludes>
-                                <exclude>**/important.log</exclude>
-                                <exclude>**/another-important.log</exclude>
-                            </excludes>
-                            <followSymlinks>false</followSymlinks>
-                        </fileset>
-                    </filesets>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>auto-clean</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

