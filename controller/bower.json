@@ -1,0 +1,46 @@
+{
+  "name": "botnetwui",
+  "version": "1.0.0",
+  "description": "A WUI implementation for a simple botnet.",
+  "keywords": [
+    "computer science, security, botnet, html, css, js, responsive"
+  ],
+  "contributors": [
+    {
+      "name": "Giacomo Marciani",
+      "email": "gmarciani@acm.org",
+      "url": "http://gmarciani.com/"
+    },
+    {
+      "name": "Michele Porretta",
+      "email": "mporretta@acm.org",
+      "url": "http://micheleporretta.com/"
+    }
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "jquery": "^2.2.3",
+    "bootstrap": "^3.3.7",
+    "font-awesome": "fontawesome#^4.6.1",
+    "fastclick": "^1.0.6",
+    "bootstrap-progressbar": "^0.9.0",
+    "iCheck": "icheck#^1.0.2",
+    "bootstrap-wysiwyg": "bootstrap-wysiwyg-steveathon#^1.0.5",
+    "jquery.tagsinput": "^1.3.6",
+    "switchery": "^0.8.1",
+    "select2": "^4.0.2",
+    "autosize": "^3.0.15",
+    "devbridge-autocomplete": "^1.2.24",
+    "ion.rangeSlider": "ionrangeslider#^2.1.3",
+    "normalize-css": "^4.1.1",
+    "jquery.inputmask": "^3.3.1",
+    "starrr": "^2.0.0",
+    "file-saver":"1.3.3",
+    "yaml.js":"0.2.3"
+  },
+  "resolutions": {
+    "jquery": "2.2.4",
+    "fastclick": "1.0.6"
+  },
+  "private": true
+}

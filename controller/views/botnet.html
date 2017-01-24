@@ -1,774 +1,1164 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <!-- Meta, title, CSS, favicons, etc. -->
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<!-- Meta, title, CSS, favicons, etc. -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Botnet Manager</title>
+	<title>Botnet Manager</title>
 
-  <!-- Bootstrap -->
-  <link href="/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Font Awesome -->
-  <link href="/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-  <!-- iCheck -->
-  <link href="/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
-  <!-- bootstrap-progressbar -->
-  <link href="/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
-  <!-- bootstrap-wysiwyg -->
-  <link href="/vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
-  <!-- Select2 -->
-  <link href="/vendors/select2/dist/css/select2.min.css" rel="stylesheet">
-  <!-- Switchery -->
-  <link href="/vendors/switchery/dist/switchery.min.css" rel="stylesheet">
-  <!-- starrr -->
-  <link href="/vendors/starrr/dist/starrr.css" rel="stylesheet">
-  <!-- Custom Theme Style -->
-  <link href="/vendors/build/css/custom.min.css" rel="stylesheet">
-  <!-- Ion.RangeSlider -->
-  <link href="/vendors/normalize-css/normalize.css" rel="stylesheet">
-  <link href="/vendors/ion.rangeSlider/css/ion.rangeSlider.css" rel="stylesheet">
-  <link href="/vendors/ion.rangeSlider/css/ion.rangeSlider.skinFlat.css" rel="stylesheet">
-  
+	<!-- Bootstrap -->
+	<link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Font Awesome -->
+	<link href="../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+	<!-- iCheck -->
+	<link href="../bower_components/iCheck/skins/flat/green.css" rel="stylesheet">
+	<!-- bootstrap-progressbar -->
+	<link href="../bower_components/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+	<!-- bootstrap-wysiwyg -->
+	<link href="../bower_components/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
+	<!-- Select2 -->
+	<link href="../bower_components/select2/dist/css/select2.min.css" rel="stylesheet">
+	<!-- Switchery -->
+	<link href="../bower_components/switchery/dist/switchery.min.css" rel="stylesheet">
+	<!-- starrr -->
+	<link href="../bower_components/starrr/dist/starrr.css" rel="stylesheet">
+	<!-- Custom Theme Style -->
+	<link href="../graphics/css/custom.min.css" rel="stylesheet">
+	<!-- Ion.RangeSlider -->
+	<link href="../bower_components/normalize-css/normalize.css" rel="stylesheet">
+	<link href="../bower_components/ion.rangeSlider/css/ion.rangeSlider.css" rel="stylesheet">
+	<link href="../bower_components/ion.rangeSlider/css/ion.rangeSlider.skinFlat.css" rel="stylesheet">
+
 </head>
 
 <body class="nav-md">
-  <div class="container body">
-    <div class="main_container">
-      <div class="col-md-3 left_col">
-        <div class="left_col scroll-view">
-          <div class="navbar nav_title" style="border: 0;">
-            <a href="index.html" class="site_title"><i class="fa fa-cog"></i> <span>Botnet Manager</span></a>
-          </div>
-          <div class="clearfix"></div>
-          <br>
-          
-          <!-- sidebar menu -->
-          <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-            <div class="menu_section">
-              <h3>MENU</h3>
-              <ul class="nav side-menu">
-                <li><a href="#" onclick="SwitchPanel('configuration');"> <i class="fa fa-cogs"></i>Configuration </a></li>
-                <li><a href="#" onclick="SwitchPanel('commands');"> <i class="fa fa-crosshairs"></i>Commands </a></li>
-              </ul>
-            </div>
-          </div>
-          <!-- /sidebar menu -->
-        </div>
-      </div>
+	<div class="container body">
+		<div class="main_container">
+			<div class="col-md-3 left_col">
+				<div class="left_col scroll-view">
+					<div class="navbar nav_title" style="border: 0;">
+						<a href="index.html" class="site_title"><i class="fa fa-cog"></i> <span>Botnet Manager</span></a>
+					</div>
+					<div class="clearfix"></div>
+					<br>
 
-      <!-- top navigation -->
-      <div class="top_nav">
-        <div class="nav_menu">
-          <nav>
-            <div class="nav toggle">
-              <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-            </div>
-            <ul class="nav navbar-nav navbar-right">
-              <li class="">
-                <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false" onclick="return false;">
-                  <img src="/vendors/images/img.jpg" alt="">User
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </div>
-      <!-- /top navigation -->
+					<!-- sidebar menu -->
+					<div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+						<div class="menu_section">
+							<h3>MENU</h3>
+							<ul class="nav side-menu">
+								<li><a href="#" onclick="SwitchPanel('configuration');"> <i class="fa fa-cogs"></i>Configuration </a></li>
+								<li><a href="#" onclick="SwitchPanel('initialization');"> <i class="fa fa-spinner"></i>Initialization </a></li>
+								<li><a href="#" onclick="SwitchPanel('commands');"> <i class="fa fa-crosshairs"></i>Commands </a></li>
+							</ul>
+						</div>
+					</div>
+					<!-- /sidebar menu -->
+				</div>
+			</div>
 
-      <!-- page content -->
-      <div class="right_col" role="main">
-        <div class="page-title">
-          <div class="title_left">
-            <h3>Controller</h3>
-          </div>
-        </div>
-        <div class="clearfix"></div>
-        <br>
+			<!-- top navigation -->
+			<div class="top_nav">
+				<div class="nav_menu">
+					<nav>
+						<div class="nav toggle">
+							<a id="menu_toggle"><i class="fa fa-bars"></i></a>
+						</div>
+						<ul class="nav navbar-nav navbar-right">
+							<li class="">
+								<a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false" onclick="return false;">
+									<img src="../graphics/images/img.jpg" alt="">User
+								</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+			<!-- /top navigation -->
 
-        <!-- Configuration -->
-        <div class="col-md-12 col-sm-12 col-xs-12">
-          <div class="x_panel">
-            <div class="x_title">
-              <h2>Configuration</h2>
-              <ul class="nav navbar-right panel_toolbox">
-                <li><a class="collapse-link" id="collapse-config"><i class="fa fa-chevron-up"></i></a>
-                </li>
-              </ul>
-              <div class="clearfix"></div>
-            </div>
-            <div class="x_content" id="configuration-panel" >
-              <form class="form-horizontal form-label-left" id="configuration-form">
+			<!-- page content -->
+			<div class="right_col" role="main">
+				<div class="page-title">
+					<div class="title_left">
+						<h3>Controller</h3>
+					</div>
+				</div>
+				<div class="clearfix"></div>
+				<br>
 
-                <!-- Spying -->
-                <div class="item form-group">
-                <a href="" onclick="BuildModal('Spying');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6> Spying <span class="required">*</span></h6></a>
-                  <div class="col-md-9 col-sm-9 col-xs-12">
-                    <div class="">
-                      <label>
-                        <input type="checkbox" class="js-switch" id="sysInfo" name="sysInfo"/>
-                        <a data-toggle="tooltip" data-placement="left" title="SysInfo. if true, the bot report includes details about the localhost system.">System's Info</a>
-                      </label>
-                    </div>
-                    <div class="">
-                      <label>
-                        <input type="checkbox" class="js-switch" id="netInfo" name="netInfo"/>
-                        <a data-toggle="tooltip" data-placement="left" title="NetInfo. if true, the bot report includes details about the network the localhost is attached to.">Network's Info</a>
-                      </label>
-                    </div>
-                    <div class="">
-                      <label>
-                        <input type="checkbox" class="js-switch" id="cnfInfo" name="cnfInfo"/>
-                        <a data-toggle="tooltip" data-placement="left" title="CnfInfo. if true, the bot report includes the current bot configuration.">Configurations's Info</a>
-                      </label>
-                    </div>
-                    <div class="">                      
-                      <label>
-                        <input type="checkbox" class="js-switch" id="tgtInfo" name="tgtInfo"/>
-                        <a data-toggle="tooltip" data-placement="left" title="TgtInfo. if true, the bot report includes details about the targets to attack.">Target's Info</a>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <!-- Spying -->
+				<!-- Configuration -->
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<div class="x_panel">
+						<div class="x_title">
+							<h2>Configuration</h2>
+							<ul class="nav navbar-right panel_toolbox">
+								<li><a class="collapse-link" id="collapse-config"><i class="fa fa-chevron-up"></i></a>
+								</li>
+							</ul>
+							<div class="clearfix"></div>
+						</div>
+						<div class="x_content" id="configuration-panel" >
+							<form class="form-horizontal form-label-left" id="configuration-form">
 
-                <!-- Polling -->
-                <div class="item form-group">
-                  <a href="" onclick="BuildModal('Polling');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6>Polling <span class="required">*</span></h6></a>
-                  <div class="grid_slider">
-                    <div class="col-md-3 col-sm-9 col-xs-12">
-                      <input type="text" class="range_min_max" name="polling" id="polling"/>
-                    </div>
-                  </div>
-                  <div class="col-md-3">
-                    <select class="form-control" id="polling_option" name="polling_option">
-                      <option>NANOSECONDS</option>
-                      <option>MICROSECONDS</option>
-                      <option>MILLISECONDS</option>
-                      <option>SECONDS</option>
-                      <option>MINUTES </option>
-                      <option>HOURS</option>
-                      <option>DAYS</option>
-                    </select>
-                  </div>
-                </div>
-                <!-- Polling -->
+								<!-- Spying -->
+								<div class="item form-group">
+									<a href="" onclick="BuildModal('Spying');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6> Spying</h6></a>
+									<div class="col-md-9 col-sm-9 col-xs-12">
+										<div class="">
+											<label>
+												<input type="checkbox" class="js-switch" id="sysInfo" name="sysInfo"/>
+												<a data-toggle="tooltip" data-placement="left" title="SysInfo. if true, the bot report includes details about the localhost system.">System's Info</a>
+											</label>
+										</div>
+										<div class="">
+											<label>
+												<input type="checkbox" class="js-switch" id="netInfo" name="netInfo"/>
+												<a data-toggle="tooltip" data-placement="left" title="NetInfo. if true, the bot report includes details about the network the localhost is attached to.">Network's Info</a>
+											</label>
+										</div>
+										<div class="">
+											<label>
+												<input type="checkbox" class="js-switch" id="cnfInfo" name="cnfInfo"/>
+												<a data-toggle="tooltip" data-placement="left" title="CnfInfo. if true, the bot report includes the current bot configuration.">Configurations's Info</a>
+											</label>
+										</div>
+										<div class="">                      
+											<label>
+												<input type="checkbox" class="js-switch" id="tgtInfo" name="tgtInfo"/>
+												<a data-toggle="tooltip" data-placement="left" title="TgtInfo. if true, the bot report includes details about the targets to attack.">Target's Info</a>
+											</label>
+										</div>
+									</div>
+								</div>
+								<!-- Spying -->
 
-                <!-- Reconnections -->
-                <div class="item form-group">
-                  <a href="" onclick="BuildModal('Reconnections');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6>Reconnection <span class="required">*</span></h6></a>
-                  <div class="col-md-5 col-sm-9 col-xs-12">
-                    <input type="number" id="reconnections" name="reconnections" required="required" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="1234">
-                  </div>
-                </div>
-                <!-- Reconnections -->
+								<!-- Polling -->
+								<div class="item form-group">
+									<a href="" onclick="BuildModal('Polling');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6>Polling</h6></a>
+									<div class="grid_slider">
+										<div class="col-md-3 col-sm-9 col-xs-12">
+											<input type="text" class="range_min_max" name="polling" id="polling"/>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<select class="form-control" id="polling_option" name="polling_option">
+											<option>select time unit</option>
+											<option>NANOSECONDS</option>
+											<option>MICROSECONDS</option>
+											<option>MILLISECONDS</option>
+											<option>SECONDS</option>
+											<option>MINUTES </option>
+											<option>HOURS</option>
+											<option>DAYS</option>
+										</select>
+									</div>
+								</div>
+								<!-- Polling -->
 
-                <!-- Reconnection Wait -->
-                <div class="item form-group">
-                  <a href="" onclick="BuildModal('ReconnectionWait');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6>Reconnection Wait <span class="required">*</span></h6></a>
-                  <div class="grid_slider">
-                    <div class="col-md-3 col-sm-9 col-xs-12">
-                      <input type="text" class="range_min_max" id="reconnectionWait" name="reconnectionWait" />
-                    </div>
-                  </div>
-                  <div class="col-md-3">
-                    <select class="form-control" id="reconnectionWait_option" name="reconnectionWait_option">
-                      <option>NANOSECONDS</option>
-                      <option>MICROSECONDS</option>
-                      <option>MILLISECONDS</option>
-                      <option>SECONDS</option>
-                      <option>MINUTES </option>
-                      <option>HOURS</option>
-                      <option>DAYS</option>
-                    </select>
-                  </div>
-                </div>
-                <!-- Reconnection Wait  -->
+								<!-- Reconnections -->
+								<div class="item form-group">
+									<a href="" onclick="BuildModal('Reconnections');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6>Reconnection</h6></a>
+									<div class="col-md-5 col-sm-9 col-xs-12">
+										<input type="number" id="reconnections" name="reconnections" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="1234">
+									</div>
+								</div>
+								<!-- Reconnections -->
 
-                <!-- Controllers -->
-                <div class="item form-group">
-                  <a href="" onclick="BuildModal('Controllers');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6> Controllers <span class="required">*</span></h6></a>
+								<!-- Reconnection Wait -->
+								<div class="item form-group">
+									<a href="" onclick="BuildModal('ReconnectionWait');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6>Reconnection Wait</h6></a>
+									<div class="grid_slider">
+										<div class="col-md-3 col-sm-9 col-xs-12">
+											<input type="text" class="range_min_max" id="reconnectionWait" name="reconnectionWait" />
+										</div>
+									</div>
+									<div class="col-md-3">
+										<select class="form-control" id="reconnectionWait_option" name="reconnectionWait_option">
+											<option>select time unit</option>
+											<option>NANOSECONDS</option>
+											<option>MICROSECONDS</option>
+											<option>MILLISECONDS</option>
+											<option>SECONDS</option>
+											<option>MINUTES </option>
+											<option>HOURS</option>
+											<option>DAYS</option>
+										</select>
+									</div>
+								</div>
+								<!-- Reconnection Wait  -->
 
-                  <div class="col-md-6 col-sm-9 col-xs-12">
-                    <div class="table-responsive">
-                      <table class="table table-striped jambo_table bulk_action" id="controllers_table">
-                        <thead>
-                          <tr class="headings">
-                            <th class="column-title">Init </th>
-                            <th class="column-title">Cmd </th>
-                            <th class="column-title">Log</th>
-                            <th class="bulk-actions" colspan="7">
-                              <a class="antoo" style="color:#fff; font-weight:500;">Action: (<span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
-                            </th>
-                          </tr>
-                        </thead>
+								<!-- Controllers -->
+								<div class="item form-group">
+									<a href="" onclick="BuildModal('Controllers');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6> Controllers <span class="required">*</span></h6></a>
 
-                        <tbody>
-                          <tr class="even pointer">
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <div class="row">
-                        <div class="col-xs-12">
-                         <button class="btn btn-primary pull-left" style="margin-right: 5px;" data-toggle="modal" data-target=".bs-add-controllers"><i class="fa fa-plus"></i> Add Controllers </button> 
-                       </div>
-                     </div>
-                   </div>
-                 </div>
-               </div>
-               <!-- /Controllers Table -->
+									<div class="col-md-6 col-sm-9 col-xs-12">
+										<div class="table-responsive">
+											<table class="table table-striped jambo_table bulk_action" id="controllers_table">
+												<thead>
+													<tr class="headings">
+														<th class="column-title">Init </th>
+														<th class="column-title">Cmd </th>
+														<th class="column-title">Log</th>
+														<th class="bulk-actions" colspan="7">
+															<a class="antoo" style="color:#fff; font-weight:500;">Action: (<span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+														</th>
+													</tr>
+												</thead>
 
-               <!-- Proxy -->
-               <div class="item form-group">
-                <a href="" onclick="BuildModal('Proxy');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6>Default Proxy </h6></a>
-                <div class="col-md-6 col-sm-9 col-xs-12">
-                  <input type="ip" class="form-control" placeholder="127.000.000.001:080" optional id="proxy" name="proxy">
-                  <span class="fa fa-shield form-control-feedback right" aria-hidden="true"></span>
-                </div>
-              </div>
-              <!-- Proxy -->
+												<tbody>
+													<tr class="even pointer">
+														<td></td>
+														<td></td>
+														<td></td>
+													</tr>
+												</tbody>
+											</table>
+											<div class="row">
+												<div class="col-xs-12">
+													<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('ControllersModal');"><i class="fa fa-plus"></i> Add Controllers </button> 
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- /Controllers Table -->
 
-              <!-- User Agent -->
-              <div class="item form-group">
-                <a href="" onclick="BuildModal('UserAgent');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6>Default User Agent </h6></a>
-                <div class="col-md-6 col-sm-9 col-xs-12">
-                  <input type="text" class="form-control" placeholder="BYOB v. 1" id="user-agent" name="userAgent">
-                  <span class="fa fa-male form-control-feedback right" aria-hidden="true"></span>
-                </div>
-              </div>
-              <!-- User Agent -->
+								<!-- Proxy -->
+								<div class="item form-group">
+									<a href="" onclick="BuildModal('Proxy');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6>Default Proxy </h6></a>
+									<div class="col-md-6 col-sm-9 col-xs-12">
+										<input type="ip" class="form-control" placeholder="127.0.0.1:80" optional id="proxy" name="proxy">
+										<span class="fa fa-shield form-control-feedback right" aria-hidden="true"></span>
+									</div>
+								</div>
+								<!-- Proxy -->
 
-              <div class="row">
-                <div class="col-xs-12">
-                  <button class="btn btn-success pull-right" type="button" style="margin-right: 5px;" onclick="GenerateConfiguration()" ><i class="fa fa-cog"></i> Generate Configuration</button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      <!-- Configuration -->
+								<!-- Authentication -->
+								<div class="item form-group" id="div_set_authentication">
+									<a href="" onclick="BuildModal('Authentication');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6> Authentication</h6></a>
+									
+									<div class="col-md-6 col-sm-9 col-xs-12">
+										<div class="table-responsive">
+											<table class="table table-striped jambo_table bulk_action" id="authentication_table">
+												<thead>
+													<tr class="headings">
+														<th class="column-title">Field </th>
+														<th class="column-title">Value </th>
+														<th class="bulk-actions" colspan="7">
+															<a class="antoo" style="color:#fff; font-weight:500;">Action: (<span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+														</th>
+													</tr>
+												</thead>
 
-      <!-- Commands Section -->
-      <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="x_panel">
-          <!-- panel title -->
-          <div class="x_title">
-            <h2>Commands</small></h2>
-            <ul class="nav navbar-right panel_toolbox">
-              <li><a class="collapse-link" aria-expanded="false" aria-controls="command-panel" id="collapse-command"><i class="fa fa-chevron-up"></i></a></li>
-            </ul>
-            <div class="clearfix"></div>
-          </div>
-          <!-- panel content -->
-          <div class="x_content collapse" id="command-panel">
-            <!-- Tab Panel -->
-            <div class="" role="tabpanel" data-example-id="togglable-tabs">
-              <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Activities</a>
-                </li>
-                <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Attacks</a>
-                </li>
-              </ul>
-              <!-- Tab Content -->
-              <div id="myTabContent" class="tab-content">
-                <!-- Commands Tab Panel -->
-                <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
-                  <br>
-                  <br>
-                  <!-- COMMANDS  -->
-                  <form class="form-horizontal form-label-left" id="command-form">
-                    <div class="item form-group">
-                      <a href="" onclick="BuildModal('CommandsList');" class="control-label col-md-3 col-sm-3 col-xs-12"><h5>Select Command </h5></a>
-                      <div class="col-md-5">
-                        <select class="form-control btn-primary" id="command" name="command" onchange="WaitEnableDisable()">
-                          <option>CALMDOWN</option>
-                          <option>KILL</option>
-                          <option>RESTART</option>
-                          <option>REPORT</option>
-                          <option>WAKEUP</option>
-                          <option>SLEEP</option>
-                        </select>
-                      </div>
-                    </div>
+												<tbody>
+													<tr class="even pointer">
+														<td></td>
+														<td></td>
+													</tr>
+												</tbody>
+											</table>
+											<div class="row">
+												<div class="col-xs-12">
+													<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('AuthenticationModal');"><i class="fa fa-plus"></i> Add Field</button> 
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- /Authentication Table -->
 
-                    <!-- Wait - Delay - Sleep -->
-                    <div class="item form-group">
-                      <a href="" onclick="BuildModal('WaitDelayReportSleep');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6> Wait, Delay, Report and Sleep</h6></a>
-                      <div class="col-md-9 col-sm-9 col-xs-12">
-                        <div class="" id="div_wait_option">
-                          <label>
-                            <input type="checkbox" class="js-switch" id="wait_option" name="wait" disable="disabled">
-                            <a data-toggle="tooltip" data-placement="left" title="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. ">Set on Wait </a>
-                          </label>
-                        </div>
-                        <div class="">
-                          <label>
-                            <input type="checkbox" class="js-switch" id="report">
-                            <a data-toggle="tooltip" data-placement="left" title="If report is specified and set to true, the bot will send the report back to the controller, once the command has been executed. If set to false, no report will be sent back to the controller.">Attach Report </a>
-                          </label>
-                        </div>
-                        <div class="" >
-                          <label>
-                            <input type="checkbox" class="js-switch" id="delay_option" name="delay"  onclick="DelayEnableDisable(this.checked);">
-                            <a data-toggle="tooltip" data-placement="left" title="If delay is specified, the command will be executed after a random amount of time within the given interval; if not, the command will be executed immediately.">Add Delay </a>
-                          </label>
-                        </div>
-                        <div class="" id="div_timeout_option">
-                          <label>
-                            <input type="checkbox" class="js-switch" name="delay" onclick="TimeoutEnableDisable(this.checked);" id="timeout_option">
-                            <a data-toggle="tooltip" data-placement="left" title="If a timeout si specified the command WAKEUP is internally invoked after a random amount of time within the specified interval.">Add Sleep Timeout </a>
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                    <!-- Wait and Delay -->
+								<!-- Slee Mode -->
+								<div class="item form-group">
+									<a href="" onclick="BuildModal('SleepMode');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6>Sleep Mode</h6></a>
+									<div class="col-md-6 col-sm-9 col-xs-12">
+										<input type="text" class="form-control" placeholder="* * * ? * SAT,SUN" id="sleep-mode" name="sleep-mode">
+										<span class="fa fa-toggle-off form-control-feedback right" aria-hidden="true"></span>
+									</div>
+								</div>
+								<!-- User Agent -->
 
-                    <!-- Delay -->
-                    <div class="item form-group" id="div_delay_option">
-                      <a href="" onclick="BuildModal('WaitDelayReportSleep');" class="control-label col-md-3 col-sm-3 col-xs-12"><h5>Command Delay</h5></a>
-                      <div class="grid_slider">
-                        <div class="col-md-3 col-sm-9 col-xs-12">
-                          <input type="text" class="range_min_max" name="delay" disabled="disabled" id="cmd_delay"/>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <select class="form-control" name="delay_option" disabled="disabled" id="cmd_delay_option"a>
-                          <option>NANOSECONDS</option>
-                          <option>MICROSECONDS</option>
-                          <option>MILLISECONDS</option>
-                          <option>SECONDS</option>
-                          <option>MINUTES </option>
-                          <option>HOURS</option>
-                          <option>DAYS</option>
-                        </select>
-                      </div>
-                    </div>
-                    <!-- /Delay -->
+								<div class="row">
+									<div class="col-xs-12">
+										<button class="btn btn-success pull-right" type="button" style="margin-right: 5px;" onclick="GenerateConfiguration()" ><i class="fa fa-cog"></i> Generate Configuration</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<!-- Configuration -->
 
-                    <!-- Sleep Timeout -->
-                    <div class="item form-group" id="div_set_timeout">
-                      <a href="" onclick="BuildModal('WaitDelayReportSleep');" class="control-label col-md-3 col-sm-3 col-xs-12"><h5>Sleep Timeout</h5></a>
-                      <div class="grid_slider">
-                        <div class="col-md-3 col-sm-9 col-xs-12">
-                          <input type="text" class="range_min_max" name="sleep_timeout" disabled="disabled" id="sleep_timeout"/>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <select class="form-control" name="sleep_timeout_option" disabled="disabled" id="sleep_timeout_option"a>
-                          <option>NANOSECONDS</option>
-                          <option>MICROSECONDS</option>
-                          <option>MILLISECONDS</option>
-                          <option>SECONDS</option>
-                          <option>MINUTES </option>
-                          <option>HOURS</option>
-                          <option>DAYS</option>
-                        </select>
-                      </div>
-                    </div>
-                    <!-- /Delay -->
+				<!-- Initialization -->
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<div class="x_panel">
+						<div class="x_title">
+							<h2>Initialization</h2>
+							<ul class="nav navbar-right panel_toolbox">
+							<li><a class="collapse-link" aria-expanded="false" aria-controls="init-panel" id="collapse-init"><i class="fa fa-chevron-up"></i></a>
+								</li>
+							</ul>
+							<div class="clearfix"></div>
+						</div>
+						<div class="x_content collapse" id="initialization-panel" >
+							<form class="form-horizontal form-label-left" id="initialization-form">
 
-                    <div class="row">
-                      <div class="col-xs-12">
-                        <button class="btn btn-success pull-right" style="margin-right: 5px;" type="submit" onclick="GenerateCommand()"><i class="fa fa-cog"></i> Generate Command </button>
-                      </div>
-                    </div>
-                  </form>
-                  <br>
-                  <br>
-                  <br>
-                </div>
-                <!-- /Commands Tab Panel -->
-                <!-- Attacks Tab Panel -->
-                <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
-                  <!-- Attacks Table -->
-                  <div class="table-responsive">
-                    <table class="table table-striped jambo_table bulk_action" id="targets_table">
-                      <thead>
-                        <tr class="headings">
-                          <th class="column-title">Target </th>
-                          <th class="column-title">Method </th>
-                          <th class="column-title">Proxy</th>
-                          <th class="column-title">User Agent </th>
-                          <th class="column-title">Executions </th>
-                          <th class="column-title">Period </th>
-                          <th class="bulk-actions" colspan="7">
-                            <a class="antoo" style="color:#fff; font-weight:500;">Action: (<span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
-                          </th>
-                        </tr>
-                      </thead>
+								<!-- Properties Section -->
+								<div class="item form-group" id="div_set_initialization">
+									<a href="" onclick="BuildModal('Setting');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6> Setting</h6></a>
 
-                      <tbody>
-                        <tr class="even pointer">
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <!-- /Attacks Table -->  
+									<div class="col-md-6 col-sm-9 col-xs-12">
+										<div class="table-responsive">
+											<table class="table table-striped jambo_table bulk_action" id="initialization_table">
+												<thead>
+													<tr class="headings">
+														<th class="column-title">Property </th>
+														<th class="column-title">Value </th>
+														<th class="bulk-actions" colspan="7">
+															<a class="antoo" style="color:#fff; font-weight:500;">Action: (<span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+														</th>
+													</tr>
+												</thead>
 
-                  <form class="form-horizontal form-label-left">
-                    <!-- Attack Delay -->
-                    <div class="item form-group">
-                      <a href="" onclick="BuildModal('WaitDelayReportSleep');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6>Attack Delay</h6></a>
+												<tbody>
+													<tr class="even pointer">
+														<td></td>
+														<td></td>
+													</tr>
+												</tbody>
+											</table>
+											<div class="row">
+												<div class="col-xs-12">
+													<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('InitializationModal');"><i class="fa fa-plus"></i> Add Property </button> 
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- /Properties Table -->
 
-                      <div class="grid_slider">
-                        <div class="col-md-3 col-sm-9 col-xs-12">
-                          <input type="text" class="range_min_max" name="range" id="attack_delay"/>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <select class="form-control" id="attack_delay_option">
-                          <option>NANOSECONDS</option>
-                          <option>MICROSECONDS</option>
-                          <option>MILLISECONDS</option>
-                          <option>SECONDS</option>
-                          <option>MINUTES </option>
-                          <option>HOURS</option>
-                          <option>DAYS</option>
-                        </select>
-                      </div>
-                      <!-- Ability Report -->
-                      <label>
-                        <input type="checkbox" class="js-switch" id="attack_report">
-                        <a data-toggle="tooltip" data-placement="left" title="If report is specified and set to true, the bot will send the report back to the controller, once the command has been executed. ">Attach Report </a>
-                      </label>
-                    </div>
+								<div class="row">
+									<div class="col-xs-12">
+										<button class="btn btn-success pull-right" type="button" style="margin-right: 5px;" onclick="GenerateInitialization()" ><i class="fa fa-cog"></i> Generate Initialization</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<!-- Initialization -->
 
-                    <div class="row">
-                      <div class="col-xs-12">
-                        <button class="btn btn-primary pull-left" style="margin-right: 5px;" data-toggle="modal" data-target=".bs-add-target"><i class="fa fa-plus"></i> Add Target </button> 
-                        <button class="btn btn-success pull-right" onclick="GenerateAttack();" style="margin-right: 5px;"><i class="fa fa-flash"></i> Generate Attack</button>
-                      </div>
-                    </div>
-                    <!-- /Attack Delay -->
-                  </form>
-                </div>
-                <!-- /Attacks Tab Panel -->
-              </div>
-              <!-- /Tab Content -->
-            </div>
-            <!-- /Tab Panel -->
-          </div>
-          <!-- /Panel Content-->
-        </div>
-        <!-- /X Panel -->
-      </div>
-      <!-- /Commands Section -->
-    </div>
-    <!-- /Page Content -->
+				<!-- Commands Section -->
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<div class="x_panel">
+						<!-- panel title -->
+						<div class="x_title">
+							<h2>Commands</small></h2>
+							<ul class="nav navbar-right panel_toolbox">
+								<li><a class="collapse-link" aria-expanded="false" aria-controls="command-panel" id="collapse-command"><i class="fa fa-chevron-up"></i></a></li>
+							</ul>
+							<div class="clearfix"></div>
+						</div>
+						<!-- panel content -->
+						<div class="x_content collapse" id="command-panel">
+							<!-- Tab Panel -->
+							<div class="" role="tabpanel" data-example-id="togglable-tabs">
+								<ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+									<li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Activities</a>
+									</li>
+									<li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Attacks</a>
+									</li>
+								</ul>
+								<!-- Tab Content -->
+								<div id="myTabContent" class="tab-content">
+									<!-- Commands Tab Panel -->
+									<div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
+										<br>
+										<br>
+										<!-- COMMANDS  -->
+										<form class="form-horizontal form-label-left" id="command-form">
+											<div class="item form-group">
+												<a href="" onclick="BuildModal('CommandsList');" class="control-label col-md-3 col-sm-3 col-xs-12"><h5>Select Command </h5></a>
+												<div class="col-md-5">
+													<select class="form-control btn-primary" id="command" name="command" onchange="WaitEnableDisable()">
+														<option>CALMDOWN</option>
+														<option>KILL</option>
+														<option>RESTART</option>
+														<option>REPORT</option>
+														<option>WAKEUP</option>
+														<option>UPDATE</option>
+														<option>SLEEP</option>
+													</select>
+												</div>
+											</div>
 
-    <!-- footer content -->
-    <footer>
-      <div class="pull-right">
-        Botnet Manager | Copyright <i class="fa fa-copyright "></i> 2016 Giacomo Marciani and Michele Porretta
-      </div>
-      <div class="clearfix"></div>
-    </footer>
-    <!-- /footer content -->
-  </div>
-  <!-- /Main container-->
-</div>
-<!-- /Container Body-->
+											<!-- Wait - Delay - Sleep -->
+											<div class="item form-group">
+												<a href="" onclick="BuildModal('WaitDelayReportSleep');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6> Wait, Delay, Report and Sleep</h6></a>
+												<div class="col-md-9 col-sm-9 col-xs-12">
+													<div class="" id="div_wait_option">
+														<label>
+															<input type="checkbox" class="js-switch" id="wait_option" name="wait" disable="disabled">
+															<a>Add Wait </a>
+														</label>
+													</div>
+													<div class="">
+														<label>
+															<input type="checkbox" class="js-switch" id="report">
+															<a data-toggle="tooltip" data-placement="left" title="If report is specified and set to true, the bot will send the report back to the controller, once the command has been executed. If set to false, no report will be sent back to the controller.">Attach Report </a>
+														</label>
+													</div>
+													<div class="" >
+														<label>
+															<input type="checkbox" class="js-switch" id="delay_option" name="delay"  onclick="DelayEnableDisable(this.checked);">
+															<a data-toggle="tooltip" data-placement="left" title="If delay is specified, the command will be executed after a random amount of time within the given interval; if not, the command will be executed immediately.">Add Delay </a>
+														</label>
+													</div>
+													<div class="" id="div_timeout_option">
+														<label>
+															<input type="checkbox" class="js-switch" name="delay" onclick="TimeoutEnableDisable(this.checked);" id="timeout_option">
+															<a data-toggle="tooltip" data-placement="left" title="If a timeout si specified the command WAKEUP is internally invoked after a random amount of time within the specified interval.">Add Sleep Timeout </a>
+														</label>
+													</div>
+												</div>
+											</div>
+											<!-- Wait and Delay -->
 
-<!-- MODALS -->
-<!-- Add Target Modals -->
-<div class="modal fade bs-add-target" tabindex="-1" role="dialog" aria-hidden="true" backdrop="static" keyboard="true" id="add_target_modal" >
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
-        </button>
-        <h4 class="modal-title" id="myModalLabel">Add Target</h4>
-      </div>
-      <div class="modal-body">
-        <form class="form-horizontal form-label-left" id="add-target-form">
-          <!-- Method -->
-          <div class="item form-group">
-            <a class="control-label col-md-3 col-sm-3 col-xs-12" for="add-target-method" data-toggle="tooltip" data-placement="left" title="It defines the type of HTTP request.">Method <span class="required">*</span></a>
-            <div class="col-md-3">
-              <select class="form-control" id="add-target-method" name="method">
-                <option>GET</option>
-                <option>POST</option>
-              </select>
-            </div>
-          </div>
-          <!-- Method -->
+											<!-- Delay -->
+											<div class="item form-group" id="div_delay_option">
+												<a href="" onclick="BuildModal('WaitDelayReportSleep');" class="control-label col-md-3 col-sm-3 col-xs-12"><h5>Command Delay</h5></a>
+												<div class="grid_slider">
+													<div class="col-md-3 col-sm-9 col-xs-12">
+														<input type="text" class="range_min_max" name="delay" disabled="disabled" id="cmd_delay"/>
+													</div>
+												</div>
+												<div class="col-md-3">
+													<select class="form-control" name="delay_option" disabled="disabled" id="cmd_delay_option"a>
+														<option>select time unit</option>
+														<option>NANOSECONDS</option>
+														<option>MICROSECONDS</option>
+														<option>MILLISECONDS</option>
+														<option>SECONDS</option>
+														<option>MINUTES </option>
+														<option>HOURS</option>
+														<option>DAYS</option>
+													</select>
+												</div>
+											</div>
+											<!-- /Delay -->
 
-          <!-- Target --> 
-          <div class="item form-group">
-            <a class="control-label col-md-3 col-sm-3 col-xs-12" for="add-target-target" data-toggle="tooltip" data-placement="left" title="It defines a Web URL of target to attack.">Target <span class="required">*</span></a>
-            <div class="col-md-6 col-sm-9 col-xs-12">
-              <input type="url" class="form-control" placeholder="http://www.google.com" required id="add-target-target" name="target">
-              <span class="fa fa-dot-circle-o form-control-feedback right" aria-hidden="true"></span>
-            </div>
-          </div>
-          <!-- /Target -->
+											<!-- Sleep Timeout -->
+											<div class="item form-group" id="div_set_timeout">
+												<a href="" onclick="BuildModal('WaitDelayReportSleep');" class="control-label col-md-3 col-sm-3 col-xs-12"><h5>Sleep Timeout</h5></a>
+												<div class="grid_slider">
+													<div class="col-md-3 col-sm-9 col-xs-12">
+														<input type="text" class="range_min_max" name="sleep_timeout" disabled="disabled" id="sleep_timeout"/>
+													</div>
+												</div>
+												<div class="col-md-3">
+													<select class="form-control" name="sleep_timeout_option" disabled="disabled" id="sleep_timeout_option"a>
+														<option>select time unit</option>
+														<option>NANOSECONDS</option>
+														<option>MICROSECONDS</option>
+														<option>MILLISECONDS</option>
+														<option>SECONDS</option>
+														<option>MINUTES </option>
+														<option>HOURS</option>
+														<option>DAYS</option>
+													</select>
+												</div>
+											</div>
+											<!-- /sleep timeout -->
 
-          <!-- Custom Proxy --> 
-          <div class="item form-group">
-            <a class="control-label col-md-3 col-sm-3 col-xs-12" for="add-target-proxy" data-toggle="tooltip" data-placement="left" title="If specified, proxy is the HTTP proxy to attack through. If set to null, it is the default proxy.">Proxy </a>
-            <div class="col-md-6 col-sm-9 col-xs-12">
-              <input type="text" class="form-control" placeholder="127.000.000.001:080" optional  id="add-target-proxy" name="proxy">
-              <span class="fa fa-shield form-control-feedback right" aria-hidden="true"></span>
-            </div>
-          </div>
-          <!-- /Custom Proxy -->
+											<!-- Properties Section -->
+											<div class="item form-group" id="div_set_properties">
+												<a href="" onclick="BuildModal('Setting');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6> Setting</h6></a>
 
-          <!-- Custom User Agent --> 
-          <div class="item form-group">
-            <a class="control-label col-md-3 col-sm-3 col-xs-12" data-toggle="tooltip" data-placement="left" title="The User-Agent request-header field contains information about the user agent originating the request.">User Agent </a>
-            <div class="col-md-6 col-sm-9 col-xs-12">
-              <input type="text" class="form-control" placeholder="BYOB v. 1" id="add-target-useragent" optional  name="user-agent">
-              <span class="fa fa-male form-control-feedback right" aria-hidden="true"></span>
-            </div>
-          </div>
-          <!-- /Custom User Agent -->
+												<div class="col-md-6 col-sm-9 col-xs-12">
+													<div class="table-responsive">
+														<table class="table table-striped jambo_table bulk_action" id="properties_table">
+															<thead>
+																<tr class="headings">
+																	<th class="column-title">Property </th>
+																	<th class="column-title">Value </th>
+																	<th class="bulk-actions" colspan="7">
+																		<a class="antoo" style="color:#fff; font-weight:500;">Action: (<span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+																	</th>
+																</tr>
+															</thead>
 
-          <!-- Executions -->
-          <div class="item form-group">
-            <a class="control-label col-md-3 col-sm-3 col-xs-12" data-toggle="tooltip" data-placement="left" title="If specified, executions indicates how many attack executions need to be scheduled interleaved by the secified period.">Executions </a>
-            <div class="col-md-5 col-sm-9 col-xs-12">
-              <input type="number" id="add-target-executions" name="executions" data-validate-minmax="0," optional class="form-control col-md-3 col-xs-5" placeholder="1234">
-            </div>
-          </div>
-          <!-- /Executions -->
+															<tbody>
+																<tr class="even pointer">
+																	<td></td>
+																	<td></td>
+																</tr>
+															</tbody>
+														</table>
+														<div class="row">
+															<div class="col-xs-12">
+																<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('PropertiesModal');"><i class="fa fa-plus"></i> Add Property </button> 
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- /Properties Table -->
 
-          <!-- Period -->
-          <div class="item form-group">
-            <a class="control-label col-md-3 col-sm-3 col-xs-12" data-toggle="tooltip" data-placement="left" title="Time frame within which they occur all executions.">Period </a>
-            <div class="grid_slider">
-              <div class="col-md-3 col-sm-9 col-xs-12">
-                <input type="text" class="range_min_max" name="period" id="add-target-period" optional>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <select class="form-control" id="add-target-period-option" name="period-option">
-                <option>NANOSECONDS</option>
-                <option>MICROSECONDS</option>
-                <option>MILLISECONDS</option>
-                <option>SECONDS</option>
-                <option>MINUTES </option>
-                <option>HOURSE</option>
-                <option>DAYS</option>
-              </select>
-            </div>
-          </div>
-          <!-- Period -->
+											<div class="row">
+												<div class="col-xs-12">
+													<button class="btn btn-success pull-right" style="margin-right: 5px;" type="submit" onclick="GenerateCommand()"><i class="fa fa-cog"></i> Generate Command </button>
+												</div>
+											</div>
+										</form>
+										<br>
+										<br>
+										<br>
+									</div>
+									<!-- /Commands Tab Panel -->
+									<!-- Attacks Tab Panel -->
+									<div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
+										<!-- Attacks Table -->
+										<div class="table-responsive">
+											<table class="table table-striped jambo_table bulk_action" id="targets_table">
+												<thead>
+													<tr class="headings">
+														<th class="column-title">Target </th>
+														<th class="column-title">Method </th>
+														<th class="column-title">Proxy</th>
+														<th class="column-title">Header </th>
+														<th class="column-title">Params </th>
+														<th class="column-title">Executions </th>
+														<th class="column-title">Period </th>
+														<th class="bulk-actions" colspan="7">
+															<a class="antoo" style="color:#fff; font-weight:500;">Action: (<span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+														</th>
+													</tr>
+												</thead>
 
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button class="btn btn-primary" type="submit" >Add</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+												<tbody>
+													<tr class="even pointer">
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+										<!-- /Attacks Table -->  
 
-<!-- Add Controllers Modal -->
-<div class="modal fade bs-add-controllers" tabindex="-1" role="dialog" aria-hidden="true" backdrop="static" keyboard="true" id="add_controllers_modal" >
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
-        </button>
-        <h4 class="modal-title" id="myModalLabel">Add Controllers</h4>
-      </div>
-      <div class="modal-body">
-        <form class="form-horizontal form-label-left" id="add-controllers-form">
-          <!-- init path -->
-          <div class="item form-group">
-            <a data-toggle="tooltip" data-placement="left" title="The init interface is the one through wich the bot joins the botnet loading specific configuration. "><h6>Initialization's Path or URL <span class="required">*</span></h6></a>
-            <div class="col-md-10 col-sm-9 col-xs-12">
-              <input type="text" id="controller_init" name="controller_init" required="required" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="data/samples/controllers/1/botinit.json">
-            </div>
-          </div>
-          <!-- commands path -->
-          <div class="item form-group">
-            <a data-toggle="tooltip" data-placement="left" title="The command interface is the one through which the bot loads commands to execute."><h6>Command's Path or URL <span class="required">*</span></h6></a>
-            <div class="col-md-10 col-sm-9 col-xs-12">
-              <input type="text" id="controller_cmd" name="controller_cmd" required="required" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="data/samples/controllers/1/botcmd.json">
-            </div>
-          </div>
-          <!-- logs path -->
-          <div class="item form-group">
-            <a data-toggle="tooltip" data-placement="left" title="The log interface is the one that the bot submits analysis reports to."><h6>Log's Path or URL<span class="required">*</span></h6></a>
-            <div class="col-md-10 col-sm-9 col-xs-12">
-              <input type="text" id="controller_log" name="controller_log" required="required" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="data/samples/controllers/1/botlog.json">
-            </div>
-          </div>
+										<form class="form-horizontal form-label-left">
+											<!-- Attack Delay -->
+											<div class="item form-group">
+												<a href="" onclick="BuildModal('WaitDelayReportSleep');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6>Attack Delay</h6></a>
 
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button class="btn btn-primary" type="submit" >Add</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+												<div class="grid_slider">
+													<div class="col-md-3 col-sm-9 col-xs-12">
+														<input type="text" class="range_min_max" name="range" id="attack_delay"/>
+													</div>
+												</div>
+												<div class="col-md-3">
+													<select class="form-control" id="attack_delay_option">
+														<option>select time unit</option>
+														<option>NANOSECONDS</option>
+														<option>MICROSECONDS</option>
+														<option>MILLISECONDS</option>
+														<option>SECONDS</option>
+														<option>MINUTES </option>
+														<option>HOURS</option>
+														<option>DAYS</option>
+													</select>
+												</div>
+												<!-- Ability Report -->
+												<label>
+													<input type="checkbox" class="js-switch" id="attack_report">
+													<a data-toggle="tooltip" data-placement="left" title="If report is specified and set to true, the bot will send the report back to the controller, once the command has been executed. ">Attach Report </a>
+												</label>
+											</div>
 
-<!-- Generic Modal Template-->
-<div class="modal fade bs-generic" tabindex="-1" role="dialog" aria-hidden="true" id="generic_modal">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
-        </button>
-        <h4 class="modal-title" id="generic_modal_title">Title</h4>
-      </div>
-      <div class="modal-body">
-        <p id="generic_modal_body"></p>            
-      </div>
-      <br>
-      <br>
-      <br>
-      <br>
-    </div>
-  </div>
-</div>
+											<div class="row">
+												<div class="col-xs-12">
+													<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('TargetModal');"><i class="fa fa-plus"></i> Add Target </button> 
+													<button class="btn btn-success pull-right" onclick="GenerateAttack();" style="margin-right: 5px;"><i class="fa fa-flash"></i> Generate Attack</button>
+												</div>
+											</div>
+											<!-- /Attack Delay -->
+										</form>
+									</div>
+									<!-- /Attacks Tab Panel -->
+								</div>
+								<!-- /Tab Content -->
+							</div>
+							<!-- /Tab Panel -->
+						</div>
+						<!-- /Panel Content-->
+					</div>
+					<!-- /X Panel -->
+				</div>
+				<!-- /Commands Section -->
+			</div>
+			<!-- /Page Content -->
 
-<!-- Response Modal -->
-<div class="modal fade bs-reponse" tabindex="-1" role="dialog" aria-hidden="true" id="response">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
-        </button>
-        <h4 class="modal-title" id="response_title">Title</h4>
-      </div>
-      <div class="modal-body col-md-12 col-sm-12">
-        <textarea id="response_body" class=" col-md-12 col-sm-12"></textarea>            
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><span class="fa fa-close"></span> Close</button>
-        <button type="button" class="btn btn-primary" id="copyBtn"><span class="fa fa-copy"></span> Copy to Clipboard</button>
-        <button type="button" class="btn btn-success" id="downloadBtn" onclick="DownloadFile();"><span class="fa fa-download"></span> Download File</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- /MODALS -->
+			<!-- footer content -->
+			<footer>
+				<div class="pull-right">
+					Botnet Manager | Copyright <i class="fa fa-copyright "></i> 2016 Giacomo Marciani and Michele Porretta
+				</div>
+				<div class="clearfix"></div>
+			</footer>
+			<!-- /footer content -->
+		</div>
+		<!-- /Main container-->
+	</div>
+	<!-- /Container Body-->
 
-<!-- jQuery -->
-<script src="/vendors/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap -->
-<script src="/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- Custom Theme Scripts -->
-<script src="/vendors/build/js/custom.min.js"></script>
-<!-- FastClick -->
-<script src="/vendors/fastclick/lib/fastclick.js"></script>
-<!-- bootstrap-progressbar -->
-<script src="/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
-<!-- iCheck -->
-<script src="/vendors/iCheck/icheck.min.js"></script>
-<!-- bootstrap-wysiwyg -->
-<script src="/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
-<script src="/vendors/google-code-prettify/src/prettify.js"></script>
-<!-- jQuery Tags Input -->
-<script src="/vendors/jquery.tagsinput/src/jquery.tagsinput.js"></script>
-<!-- Switchery -->
-<script src="/vendors/switchery/dist/switchery.min.js"></script>
-<!-- Select2 -->
-<script src="/vendors/select2/dist/js/select2.full.min.js"></script>
-<!-- Autosize -->
-<script src="/vendors/autosize/dist/autosize.min.js"></script>
-<!-- jQuery autocomplete -->
-<script src="/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
-<!-- starrr -->
-<script src="/vendors/starrr/dist/starrr.js"></script>
-<!-- jquery.inputmask -->
-<script src="/vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js"></script>
-<!-- Ion.RangeSlider -->
-<script src="/vendors/ion.rangeSlider/js/ion.rangeSlider.min.js"></script>
-<!-- validator -->
-<script src="/vendors/validator/validator.js"></script>
-<!-- file saver -->
-<script src="/vendors/filesaver/FileSaver.min.js"></script>
-<!-- js to yaml -->
-<script src="/vendors/yaml_js_develop/dist/yaml.min.js"></script>
-<!-- html to json -->
-<script src= "/vendors/botnetjs/formfieldtojson.js"></script>
-<!-- html form to json -->
-<script src= "/vendors/botnetjs/addtarget.js"></script>
-<!-- add_controllers script -->
-<script src= "/vendors/botnetjs/addcontrollers.js"></script>
-<!-- new command script -->
-<script src= "/vendors/botnetjs/commands.js"></script>
-<!-- new configuration script -->
-<script src= "/vendors/botnetjs/configuration.js"></script>
-<!-- copy to clipboard -->
-<script src= "/vendors/botnetjs/copytoclipboard.js"></script>
-<!-- download file script -->
-<script src= "/vendors/botnetjs/downloadfile.js"></script>
-<!-- new attack command-->
-<script src= "/vendors/botnetjs/attacks.js"></script>
-<!-- build modal for selected item-->
-<script src= "/vendors/botnetjs/buildmodals.js"></script>
+	<!-- MODALS -->
+	<!-- Add Target Modals -->
+	<div class="modal fade bs-add-target" tabindex="-1" role="dialog" aria-hidden="true" backdrop="static" keyboard="true" id="add_target_modal" >
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">Add Target</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal form-label-left" id="add-target-form">
+
+						<!-- Method -->
+						<div class="item form-group">
+						  <a class="control-label col-md-3 col-sm-3 col-xs-12" for="add-target-method" data-toggle="tooltip" data-placement="left" title="It defines the type of HTTP request.">Method <span class="required">*</span></a>
+						  <div class="col-md-3">
+						    <select class="form-control" id="add-target-method" name="method">
+						      <option>GET</option>
+						      <option>POST</option>
+						    </select>
+						  </div>
+						</div>
+						<!-- Method -->
+						
+						<!-- Target --> 
+						<div class="item form-group">
+							<a class="control-label col-md-3 col-sm-3 col-xs-12" for="add-target-target" data-toggle="tooltip" data-placement="left" title="It defines a Web URL of target to attack.">Target <span class="required">*</span></a>
+							<div class="col-md-6 col-sm-9 col-xs-12">
+								<input type="url" class="form-control" placeholder="http://www.google.com" required id="add-target-target" name="target">
+								<span class="fa fa-dot-circle-o form-control-feedback right" aria-hidden="true"></span>
+							</div>
+						</div>
+						<!-- /Target -->
+
+						<!-- Custom Proxy --> 
+						<div class="item form-group">
+							<a class="control-label col-md-3 col-sm-3 col-xs-12" for="add-target-proxy" data-toggle="tooltip" data-placement="left" title="If specified, proxy is the HTTP proxy to attack through. If set to null, it is the default proxy.">Proxy </a>
+							<div class="col-md-6 col-sm-9 col-xs-12">
+								<input type="text" class="form-control" placeholder="127.0.0.1:80" optional  id="add-target-proxy" name="proxy">
+								<span class="fa fa-shield form-control-feedback right" aria-hidden="true"></span>
+							</div>
+						</div>
+						<!-- /Custom Proxy -->
+
+						<!-- Header -->
+						<div class="item form-group" id="div_set_header">
+							<a href="" onclick="BuildModal('Header');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6>Header</h6></a>
+							<div class="col-md-6 col-sm-9 col-xs-12">
+								<div class="table-responsive">
+									<table class="table table-striped jambo_table bulk_action" id="header_table">
+										<thead>
+											<tr class="headings">
+												<th class="column-title">Field </th>
+												<th class="column-title">Value </th>
+												<th class="bulk-actions" colspan="7">
+													<a class="antoo" style="color:#fff; font-weight:500;">Action: (<span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+												</th>
+											</tr>
+										</thead>
+
+										<tbody>
+											<tr class="even pointer">
+												<td></td>
+												<td></td>
+											</tr>
+										</tbody>
+									</table>
+									<div class="row">
+										<div class="col-xs-12">
+											<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('HeaderModal');"><i class="fa fa-plus"></i> Add Field</button> 
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- /Header Table -->
+
+						<!-- Params -->
+						<div class="item form-group" id="div_set_params">
+							<a href="" onclick="BuildModal('Params');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6>Params</h6></a>
+							<div class="col-md-6 col-sm-9 col-xs-12">
+								<div class="table-responsive">
+									<table class="table table-striped jambo_table bulk_action" id="params_table">
+										<thead>
+											<tr class="headings">
+												<th class="column-title">Param </th>
+												<th class="column-title">Value </th>
+												<th class="bulk-actions" colspan="7">
+													<a class="antoo" style="color:#fff; font-weight:500;">Action: (<span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+												</th>
+											</tr>
+										</thead>
+
+										<tbody>
+											<tr class="even pointer">
+												<td></td>
+												<td></td>
+											</tr>
+										</tbody>
+									</table>
+									<div class="row">
+										<div class="col-xs-12">
+											<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('ParamsModal');"><i class="fa fa-plus"></i> Add Param</button> 
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- /Params Table -->
+
+						<!-- Executions -->
+						<div class="item form-group">
+							<a class="control-label col-md-3 col-sm-3 col-xs-12" data-toggle="tooltip" data-placement="left" title="If specified, executions indicates how many attack executions need to be scheduled interleaved by the secified period.">Executions </a>
+							<div class="col-md-5 col-sm-9 col-xs-12">
+								<input type="number" id="add-target-executions" name="executions" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="1234">
+							</div>
+						</div>
+						<!-- /Executions -->
+
+						<!-- Period -->
+						<div class="item form-group">
+							<a class="control-label col-md-3 col-sm-3 col-xs-12" data-toggle="tooltip" data-placement="left" title="Time frame within which they occur all executions.">Period </a>
+							<div class="grid_slider">
+								<div class="col-md-3 col-sm-9 col-xs-12">
+									<input type="text" class="range_min_max" name="period" id="add-target-period" optional>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<select class="form-control" id="add-target-period-option" name="period-option">
+									<option>select time unit</option>
+									<option>NANOSECONDS</option>
+									<option>MICROSECONDS</option>
+									<option>MILLISECONDS</option>
+									<option>SECONDS</option>
+									<option>MINUTES </option>
+									<option>HOURSE</option>
+									<option>DAYS</option>
+								</select>
+							</div>
+						</div>
+						<!-- Period -->
+
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							<button class="btn btn-primary" onclick="AddTargetFormSubmit(this);" >Add</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Add Controllers Modal -->
+	<div class="modal fade bs-add-controllers" tabindex="-1" role="dialog" aria-hidden="true" backdrop="static" keyboard="true" id="add_controllers_modal" >
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">Add Controllers</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal form-label-left" id="add-controllers-form">
+						<!-- init path -->
+						<div class="item form-group">
+							<a data-toggle="tooltip" data-placement="left" title="The init interface is the one through wich the bot joins the botnet loading specific configuration. "><h6>Initialization's Path or URL <span class="required">*</span></h6></a>
+							<div class="col-md-10 col-sm-9 col-xs-12">
+								<input type="text" id="controller_init" name="controller_init" required="required" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="data/samples/controllers/1/botinit.json">
+							</div>
+						</div>
+						<!-- commands path -->
+						<div class="item form-group">
+							<a data-toggle="tooltip" data-placement="left" title="The command interface is the one through which the bot loads commands to execute."><h6>Command's Path or URL <span class="required">*</span></h6></a>
+							<div class="col-md-10 col-sm-9 col-xs-12">
+								<input type="text" id="controller_cmd" name="controller_cmd" required="required" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="data/samples/controllers/1/botcmd.json">
+							</div>
+						</div>
+						<!-- logs path -->
+						<div class="item form-group">
+							<a data-toggle="tooltip" data-placement="left" title="The log interface is the one that the bot submits analysis reports to."><h6>Log's Path or URL<span class="required">*</span></h6></a>
+							<div class="col-md-10 col-sm-9 col-xs-12">
+								<input type="text" id="controller_log" name="controller_log" required="required" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="data/samples/controllers/1/botlog.json">
+							</div>
+						</div>
+
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							<button class="btn btn-primary" type="button" onclick="AddControllersFormSubmit();" >Add</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Add Properties Modal -->
+	<div class="modal fade bs-add-properties" tabindex="-1" role="dialog" aria-hidden="true" backdrop="static" keyboard="true" id="add_properties_modal" >
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">Add Property</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal form-label-left" id="add-properties-form">
+
+						<div class="item form-group">
+							<a data-toggle="tooltip" data-placement="left" title="The init interface is the one through wich the bot joins the botnet loading specific configuration. "><h6>Property Name <span class="required">*</span></h6></a>
+							<div class="col-md-10 col-sm-9 col-xs-12">
+								<input type="text" id="property_name" name="property_name" required="required" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="sleep">
+							</div>
+						</div>
+
+						<div class="item form-group">
+							<a data-toggle="tooltip" data-placement="left" title="The command interface is the one through which the bot loads commands to execute."><h6>Value <span class="required">*</span></h6></a>
+							<div class="col-md-10 col-sm-9 col-xs-12">
+								<input type="text" id="property_value" name="property_value" required="required" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="* * * ? * SAT,SUN">
+							</div>
+						</div>
+
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							<button class="btn btn-primary" type="button" onclick="AddPropertiesFormSubmit();" >Add</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Add Initialization Modal -->
+	<div class="modal fade bs-add-initialization" tabindex="-1" role="dialog" aria-hidden="true" backdrop="static" keyboard="true" id="add_initialization_modal" >
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">Add Initialization Property</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal form-label-left" id="add-initialization-form">
+
+						<div class="item form-group">
+							<a data-toggle="tooltip" data-placement="left" title="The init interface is the one through wich the bot joins the botnet loading specific configuration. "><h6>Property Name <span class="required">*</span></h6></a>
+							<div class="col-md-10 col-sm-9 col-xs-12">
+								<input type="text" id="initialization_name" name="initialization_name" required="required" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="sleep">
+							</div>
+						</div>
+
+						<div class="item form-group">
+							<a data-toggle="tooltip" data-placement="left" title="The command interface is the one through which the bot loads commands to execute."><h6>Value <span class="required">*</span></h6></a>
+							<div class="col-md-10 col-sm-9 col-xs-12">
+								<input type="text" id="initialization_value" name="initialization_value" required="required" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="* * * ? * SAT,SUN">
+							</div>
+						</div>
+
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							<button class="btn btn-primary" type="button" onclick="AddInitializationFormSubmit();" >Add</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Add authentication Modal -->
+	<div class="modal fade bs-add-authentication" tabindex="-1" role="dialog" aria-hidden="true" backdrop="static" keyboard="true" id="add_authentication_modal" >
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">Add Authentication Field</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal form-label-left" id="add-authentication-form">
+
+						<div class="item form-group">
+							<a data-toggle="tooltip" data-placement="left" title=""><h6>Field Name <span class="required">*</span></h6></a>
+							<div class="col-md-10 col-sm-9 col-xs-12">
+								<input type="text" id="authentication_name" name="authentication_name" required="required" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="UserAgent">
+							</div>
+						</div>
+
+						<div class="item form-group">
+							<a data-toggle="tooltip" data-placement="left" title=""><h6>Value <span class="required">*</span></h6></a>
+							<div class="col-md-10 col-sm-9 col-xs-12">
+								<input type="text" id="authentication_value" name="authentication_value" required="required" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="BYOB v1">
+							</div>
+						</div>
+
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							<button class="btn btn-primary" type="button" onclick="AddAuthenticationFormSubmit();" >Add</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Add Header Modal -->
+	<div class="modal fade bs-add-header" tabindex="-1" role="dialog" aria-hidden="true" backdrop="static" keyboard="true" id="add_header_modal" >
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">Add Header Field</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal form-label-left" id="add-header-form">
+
+						<div class="item form-group">
+							<a data-toggle="tooltip" data-placement="left" title=""><h6>Field Name <span class="required">*</span></h6></a>
+							<div class="col-md-10 col-sm-9 col-xs-12">
+								<input type="text" id="header_name" name="header_name" required="required" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="UserAgent">
+							</div>
+						</div>
+
+						<div class="item form-group">
+							<a data-toggle="tooltip" data-placement="left" title=""><h6>Value <span class="required">*</span></h6></a>
+							<div class="col-md-10 col-sm-9 col-xs-12">
+								<input type="text" id="header_value" name="header_value" required="required" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="BYOB v1">
+							</div>
+						</div>
+
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							<button class="btn btn-primary" onclick="AddHeaderFormSubmit();" >Add</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Add Params Modal -->
+	<div class="modal fade bs-add-params" tabindex="-1" role="dialog" aria-hidden="true" backdrop="static" keyboard="true" id="add_params_modal" >
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">Add Param</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal form-label-left" id="add-params-form">
+
+						<div class="item form-group">
+							<a data-toggle="tooltip" data-placement="left" title=""><h6>Param Name <span class="required">*</span></h6></a>
+							<div class="col-md-10 col-sm-9 col-xs-12">
+								<input type="text" id="param_name" name="param_name" required="required" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="foo1">
+							</div>
+						</div>
+
+						<div class="item form-group">
+							<a data-toggle="tooltip" data-placement="left" title=""><h6>Value <span class="required">*</span></h6></a>
+							<div class="col-md-10 col-sm-9 col-xs-12">
+								<input type="text" id="param_value" name="param_value" required="required" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="bar1">
+							</div>
+						</div>
+
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							<button class="btn btn-primary" onclick="AddParamsFormSubmit();" >Add</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Generic Modal Template-->
+	<div class="modal fade bs-generic" tabindex="-1" role="dialog" aria-hidden="true" id="generic_modal">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title" id="generic_modal_title">Title</h4>
+				</div>
+				<div class="modal-body">
+					<p id="generic_modal_body"></p>            
+				</div>
+				<br>
+				<br>
+				<br>
+				<br>
+			</div>
+		</div>
+	</div>
+
+	<!-- Response Modal -->
+	<div class="modal fade bs-reponse" tabindex="-1" role="dialog" aria-hidden="true" id="response">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title" id="response_title">Title</h4>
+				</div>
+				<div class="modal-body col-md-12 col-sm-12">
+					<textarea id="response_body" class=" col-md-12 col-sm-12"></textarea>            
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default pull-left" data-dismiss="modal"><span class="fa fa-close"></span> Close</button>
+					<button type="button" class="btn btn-primary" id="copyBtn"><span class="fa fa-copy"></span> Copy to Clipboard</button>
+					<button type="button" class="btn btn-success" id="downloadBtn" onclick="DownloadFile();"><span class="fa fa-download"></span> Download File</button>
+					<button type="button" class="btn btn-warning" id="submitBtn" onclick="SubmitFile();"><span class="fa fa-send"></span> Submit File</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /MODALS -->
+
+	<!-- jQuery -->
+	<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+	<!-- Bootstrap -->
+	<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<!-- Custom Theme Scripts -->
+	<script src="../graphics/js/custom.min.js"></script>
+	<!-- FastClick -->
+	<script src="../bower_components/fastclick/lib/fastclick.js"></script>
+	<!-- bootstrap-progressbar -->
+	<script src="../bower_components/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+	<!-- iCheck -->
+	<script src="../bower_components/iCheck/icheck.min.js"></script>
+	<!-- bootstrap-wysiwyg -->
+	<script src="../bower_components/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
+	<script src="../bower_components/google-code-prettify/src/prettify.js"></script>
+	<!-- jQuery Tags Input -->
+	<script src="../bower_components/jquery.tagsinput/src/jquery.tagsinput.js"></script>
+	<!-- Switchery -->
+	<script src="../bower_components/switchery/dist/switchery.min.js"></script>
+	<!-- Select2 -->
+	<script src="../bower_components/select2/dist/js/select2.full.min.js"></script>
+	<!-- Autosize -->
+	<script src="../bower_components/autosize/dist/autosize.min.js"></script>
+	<!-- jQuery autocomplete -->
+	<script src="../bower_components/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
+	<!-- starrr -->
+	<script src="../bower_components/starrr/dist/starrr.js"></script>
+	<!-- jquery.inputmask -->
+	<script src="../bower_components/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js"></script>
+	<!-- Ion.RangeSlider -->
+	<script src="../bower_components/ion.rangeSlider/js/ion.rangeSlider.min.js"></script>
+	<!-- file saver -->
+	<script src="../bower_components/file-saver/FileSaver.min.js"></script>
+	<!-- js to yaml -->
+	<script src="../bower_components/yaml.js/dist/yaml.min.js"></script>
+	<!-- html to json -->
+	<script src= "../js/formfieldtojson.js"></script>
+	<!-- html form to json -->
+	<script src= "../js/addtarget.js"></script>
+	<!-- add_controllers script -->
+	<script src= "../js/addcontrollers.js"></script>
+	<!-- add_authentication script -->
+	<script src= "../js/addauthentication.js"></script>
+	<!-- add_properties script -->
+	<script src= "../js/addproperties.js"></script>
+	<!-- add_header script -->
+	<script src= "../js/addheader.js"></script>
+	<!-- add_params script -->
+	<script src= "../js/addparams.js"></script>
+	<!-- add_initialization script -->
+	<script src= "../js/addinitialization.js"></script>
+	<!-- initialization script -->
+	<script src= "../js/initialization.js"></script>
+	<!-- new command script -->
+	<script src= "../js/commands.js"></script>
+	<!-- new configuration script -->
+	<script src= "../js/configuration.js"></script>
+	<!-- copy to clipboard -->
+	<script src= "../js/copytoclipboard.js"></script>
+	<!-- download file script -->
+	<script src= "../js/downloadfile.js"></script>
+	<!-- submit file script -->
+	<script src= "../js/submitfile.js"></script>
+	<!-- new attack command-->
+	<script src= "../js/attacks.js"></script>
+	<!-- validator -->
+	<script src="../js/validator.js"></script>
+	<!-- build modal for selected item-->
+	<script src= "../js/buildmodals.js"></script>
 
 <!-- initialize page -->
 <script type="text/javascript">
     // hide elements
     $('#div_timeout_option').css("display","none");
+    $('#div_set_properties').css("display","none");
     $('#div_set_timeout').css("display","none");
     $('#div_delay_option').css("display","none");
 
     // block refresh
-    window.onbeforeunload = function() {
-      return "block";
-    }
-  </script>
+    /*window.onbeforeunload = function() {
+    	return "block";
+    }*/
+</script>
 
-  <!-- Switch Panel Function -->
-  <script type="text/javascript">
-    function SwitchPanel(value)
-    {
-      if(value=="configuration"){
-        $('#collapse-config').click();
-      }else if(value == "commands"){
-        $('#collapse-command').click();
-      }else{
-        console.log("Error");
-      }
-    };
-  </script>
+<!-- Switch Panel Function -->
+<script type="text/javascript">
+	function SwitchPanel(value)
+	{
+		if(value=="configuration"){
+			$('#collapse-config').click();
+		}else if(value == "commands"){
+			$('#collapse-command').click();
+		}else{
+			$('#collapse-init').click();
+		}
+	};
+</script>
 
-  <!-- jquery.inputmask -->
-  <script>
-    $(document).ready(function() {
-      $(":input").inputmask();
-    });
-  </script>
-  <!-- /jquery.inputmask -->
+<!-- jquery.inputmask -->
+<script>
+	$(document).ready(function() {
+		$(":input").inputmask();
+	});
+</script>
+<!-- /jquery.inputmask -->
 
-  <!-- Ion.RangeSlider -->
-  <script>
-    $(document).ready(function() {
-      $(".range_min_max").ionRangeSlider({
-        type: "double",
-        min: 0,
-        max: 1000,
-        from: 10,
-        to: 120,
-        max_interval: 1000
-      });
-    });
-  </script>
-  <!-- /Ion.RangeSlider -->
+<!-- Ion.RangeSlider -->
+<script>
+	$(document).ready(function() {
+		$(".range_min_max").ionRangeSlider({
+			type: "double",
+			min: 0,
+			max: 1000,
+			from: 10,
+			to: 120,
+			max_interval: 1000
+		});
+	});
+</script>
+<!-- /Ion.RangeSlider -->
 
-  <!-- Input Field Validator -->
-  <script>
+<!-- Input Field Validator -->
+<script>
     // initialize the validator function
     validator.message.date = 'not a real date';
 
@@ -779,24 +1169,24 @@
     .on('keypress', 'input[required][pattern]', validator.keypress);
 
     $('.multi.required').on('keyup blur', 'input', function() {
-      validator.checkField.apply($(this).siblings().last()[0]);
+    	validator.checkField.apply($(this).siblings().last()[0]);
     });
 
     $('form').submit(function(e) {
-      e.preventDefault();
-      var submit = true;
+    	e.preventDefault();
+    	var submit = true;
 
       // evaluate the form using generic validaing
       if (!validator.checkAll($(this))) {
-        submit = false;
+      	submit = false;
       }
       if (submit)
-        this.submit();
+      	this.submit();
 
       return false;
-    });
-  </script>
-  <!-- /validator -->
+  });
+</script>
+<!-- /validator -->
 
 </body>
 </html>
