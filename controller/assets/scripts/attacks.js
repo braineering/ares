@@ -90,7 +90,7 @@ function GenerateAttack()
    var modalTitle = document.getElementById('response_title');
    var modalContainer = document.getElementById('response_body');
    modalContainer.textContent = JSON.stringify(attack, null, "  ");
-   modalTitle.textContent = "Attack:";
+   modalTitle.textContent = "Command:";
 
    $('#response').modal({ backdrop: 'static', keyboard: true, show: true });
 

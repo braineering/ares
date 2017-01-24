@@ -161,7 +161,7 @@ function GenerateCommand()
   var modalTitle = document.getElementById('response_title');
   var modalContainer = document.getElementById('response_body');
   modalContainer.textContent = JSON.stringify(cmd, null, "  ");
-  modalTitle.textContent = "Command: ";
+  modalTitle.textContent = "Command:";
 
   $('#response').modal({ backdrop: 'static', keyboard: true, show: true });
   return true;

@@ -16,14 +16,14 @@ function DownloadFile()
 
   var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
 
-  if(type=="Configuration: ")
+  if(type=="Configuration:")
   	saveAs(blob, "config.yaml");
-  else if(type=="Command: ")
+  else if(type=="Command:")
   	saveAs(blob, "command.json");
-  else if(type=="Initialization: ")
-    saveAs(blob, "initialization.json");
+  else if(type=="Initialization:")
+    saveAs(blob, "init.json");
   else
-  	saveAs(blob, "attack.json");
+  	return;
 
   return true;
 };
