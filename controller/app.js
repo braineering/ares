@@ -2,7 +2,7 @@
 * DEPENDENCIES
 ******************************************************************************/
 var express    = require('express');
-var args       = require('command-line-args');
+var argv       = require('yargs').argv;
 var bodyParser = require('body-parser');
 var fs         = require('fs-extra');
 var jsonFile   = require('jsonfile');
@@ -22,23 +22,12 @@ app.use(bodyParser.json());
 /******************************************************************************
 * OPTIONS
 ******************************************************************************/
-try {
-  const options = args([
-    { name: 'port', alias: 'p', type: Number },
-    { name: 'report', alias: 'r', type: String },
-    { name: 'verbose', alias: 'v', type: Boolean }
-  ]);
-} catch (e) {
-  winston.error('Unknown option(s) found');
-  process.exit(1);
-}
 
-const port = options.port || 3000;
+const port = argv.port || 3000;
 
-const reportFilePattern = options.report || 'data/report/report.${botIp}.json';
+const reportFilePattern = argv.report || 'data/report/report.${botIp}.json';
 
-if (options.verbose) winston.level = 'verbose';
-
+winston.level = (argv.verbose) ? 'verbose' : 'info';
 
 /******************************************************************************
  * DATA
