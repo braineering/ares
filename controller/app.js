@@ -14,7 +14,7 @@ var winston    = require('winston');
 * APP SETUP
 ******************************************************************************/
 var app = express();
-app.use('/vendors', express.static(path.join(__dirname, 'vendors')));
+app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use(bodyParser.json());
 

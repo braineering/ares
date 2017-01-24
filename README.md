@@ -28,9 +28,10 @@ If you want to build it skipping tests:
 
     $app> mvn clean package -P skip-tests
 
-To build the Command&Control (C&C) server you need to run
+To build the Command&Control (C&C) server & Web User Interface (WUI) you need to run
 
     $controller> npm install
+    $controller> bower install
 
 
 ## Usage  
@@ -48,11 +49,15 @@ configuration.
 
 To start the Command&Control (C&C), you need to run:
 
-    $controller> node controller.js [YOUR ARGUMENTS HERE]
+    $controller> node app.js [YOUR ARGUMENTS HERE]
 
 For example, to start the C&C with port 3600 and verbose mode, you need to run:
 
-    $controller> node controller.js --port 3600 --verbose
+    $controller> node app.js --port 3600 --verbose
+
+WUI access: 
+
+	http://localhost:port/admin
 
 
 ## Authors
