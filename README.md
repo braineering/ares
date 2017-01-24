@@ -41,6 +41,10 @@ To start the bot, you need to run
 For example, to print the app version, you need to run:
 
     $> java -jar path/to/bot-1.0-jar-optimized.jar --version
+    
+Note: when no custom configuration is specified, the bot looks for a file `config.yaml`
+in the current working directory. If no such file is found, the bot loads its default
+configuration.
 
 To start the Command&Control (C&C), you need to run:
 
