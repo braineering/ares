@@ -6,7 +6,7 @@ The bot can send to the controller reports containing \textit{current bot config
 The local system analysis includes the following components:
 \begin{description}
   \setlength\itemsep{1em}
-    \item [browsers] list of browsers installed on system.
+    \item [browsers] list of browsers installed on system. Browsers are detected by parsing the report of installed applications, returned by system's command of specific OS (e.g. Linux command: "\textit{dpkg -l}").
 	\item [hostName] name associated with the host machine.
 	\item [kernelVersion] version of the system kernel.
 	\item [osArch] name of the system's architecture.
@@ -38,3 +38,14 @@ The local networks analysis includes the following components:
   \item [CurrentNetworkInfo] List of network interfaces with their details
   \item [NetworkStatistics] Statistics about network traffic, classified by protocol
 \end{description}
+
+An example of network analysis is the following:
+
+\begin{verbatim}
+{
+  	"MAC" : "6C-D2-C4-76-FB-24",
+  	"ip" : "10.224.219.219",
+  	"currentNetworkInfo" : "[ network info ]",
+  	"networkStatistics" : "[ statistics ]"
+}
+\end{verbatim}
