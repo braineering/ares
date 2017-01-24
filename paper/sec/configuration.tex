@@ -102,13 +102,11 @@ Here we show a sample configuration for reader's convenience. Other sample confi
 \end{verbatim}
 
 \subsection{Configuration WUI}\label{sec:configuration-wui}
+The WUI for configuration allows to generate the initialization YAML file for bot, as seen in the previous example. It is an intuitive web page with responsive design, that is automatically readapted to the device size from which is used. As we can see in Figure \ref{fig:configuration-wui}, the first section of Configuration WUI provides the chance to set to true or false the following fields: \textit{sysinfo}, \textit{netInfo}, \textit{cnfInfo} and \textit{tgtInfo}, enabling the appropriate checkbox. In the part below, we can act on polling and reconnection-wait values with a simple slider to establish the time interval within which the command operates. The reconnection box provides the opportunity to specify the number of connection attempts. The controllers table involves the insertion of a list of controllers, in where each controller group consists of: init, cmd, and log. Table’s fields can be, as already said, a path to a local file or a Web URL. Below, can be specified the default proxy and a set of authentication fields, defined with the pair: <\textit{field}, \textit{value}>. The last textbox allows to specify a regex with the desired sleepmode. A click on the "Generate Configuration" button lets you to generate the YAML configuration file for the bot. This file can be then copied to the clipboard, simply downloading them or submitting to the C\&C.
 
-
-\begin{figure}[tp]
+\begin{figure}[h]
   \centering
   \includegraphics[scale=0.45]{./fig/configurationWUI.png}
   \caption{The Web User Interface to build configurations.}
     \label{fig:configuration-wui}
 \end{figure}
-
-\textcolor{green}{\lipsum[1]}
