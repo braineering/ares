@@ -13,7 +13,7 @@ The bot is modeled as a Finite State Automaton (FSA) with the state space define
 \begin{description}
   \setlength\itemsep{1em}
 
-  \item[INIT] the bot generates a unique identifier in the form \texttt{MAC:JVM}, where \texttt{MAC} is the local MAC address and \texttt{JVM} is the name of the Java Virtual Machine currently running the bot; it then allocates basic resources (e.g. shutdown hooks for resource releasing); it tries to join a botnet using the specified list of controllers.
+  \item[INIT] the bot generates a unique identifier in the form \texttt{MAC:JVM}, where \texttt{MAC} is the local MAC address and \texttt{JVM} is the name of the Java Virtual Machine currently running the bot; it tries to join the botnet contacting the specified list of controllers, orderly; if successful, it loads further controller-specific configurations and allocates resources (e.g. shutdown hooks for resource releasing);
   Errors in this state are considered fatal, so they would cause bot termination. The pseudocode of this state is shown in Algorithm~\ref{alg:state-init-pseudocode}.
 
   \item[EXECUTION] the bot polls the controller for the next command; it waits a delay before command execution (if required); it executes the command; it produces the report and sends it to the controller (if required); it waits for the next polling.

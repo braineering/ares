@@ -1,7 +1,7 @@
 \section{Configuration}
 \label{sec:configuration}
 
-The bot behaviour is ruled both by a \textit{local configuration} and by a \textit{controller-specific configuration}. The former is a fully customizable local YAML file; the latter is given as a JSON response to \texttt{GET /init} loaded when joining the botnet.
+The bot behaviour is ruled both by a \textit{local configuration} \textit{controller-specific configuration} loaded during botnet joining. The former is a fully customizable local YAML file, loaded during startup; the latter is given as a JSON response of \texttt{GET /init}, loaded when joining the botnet.
 When no local configuration is specified, the bot looks for a YAML file named \texttt{config.yaml} in the present working directory. If not there, the bot loads the default configuration , which is hardly wired in code. For details about how to submit a custom configuration, please refer to \ref{sec:usage}.
 
 We now show the configuration components, the YAML configuration schema to express them and a tool to generate configurations.
@@ -107,6 +107,13 @@ The WUI for configuration allows to generate the initialization YAML file for bo
 \begin{figure}[h]
   \centering
   \includegraphics[scale=0.45]{./fig/configurationWUI.png}
-  \caption{The Web User Interface to build configurations.}
+  \caption{The Web User Interface to build \textit{local configuration}.}
     \label{fig:configuration-wui}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.45]{./fig/configurationWUI.png}
+	\caption{The Web User Interface to submit \textit{controller-specific} configuration.}
+	\label{fig:initialization-wui}
 \end{figure}

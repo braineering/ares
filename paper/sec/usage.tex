@@ -6,7 +6,8 @@ In a real scenario, the program would be delivered via an infected file as a sel
 The controller can be built and run as a usual Node.js application packaged with NPM.
 The reader may refer to the \texttt{README} file for details on other compilation and execution methods.
 
-In the following, we assume that the execution environment is provided with JDK SE 8.* \cite{jdk}, Maven 3.*, \cite{maven}), Node.js \cite{nodejs} and NPM \cite{npm}. We also assume that an Internet connection is available and that both the Jar execution and whichever referenced file do not require any root rights.
+In the following, we assume that the execution environment is provided with JDK SE 8.* \cite{jdk}, Maven 3.*, \cite{maven}, Node.js \cite{nodejs}, NPM \cite{npm} amd Bower \cite{bower}. 
+We also assume that an Internet connection is available and that both the Jar execution and whichever referenced file do not require any root rights.
 
 \subsection{Bot compilation and execution}
 \label{sec:bot-compilation-execution}
@@ -28,13 +29,16 @@ The compilation produces a Jar file \texttt{bot-1.0-optimized.jar} in the \textt
 The bot provides the user with three execution mode: \texttt{default}, \texttt{trace} and \texttt{silent}, which are distinguished by the adopted logging discipline. The \texttt{default} mode prints in console the strictly relevant output and produces log files. The \texttt{trace} mode prints in console a detailed tracing output and produces log files. The \texttt{silent} mode does neither print anything in console nor produce any log file.
 To run the program in one of these modes, specify the corresponding options \texttt{--trace} or \texttt{--silent}.
 
-The program behaviour can be customized providing a custom YAML configuration file. If no configuration is specified, the program runs with default configuration. To run the program with custom configuration, specify the corresponding configuration, with the option \texttt{--config}.
+The program behaviour can be customized providing a custom configuration file, specified with the option \texttt{--config}.
+If no custom configuration is specified, the bot looks for the configuration file \texttt{config.yaml} in the current working directory\footnote{notice that the \textit{current working directory} is the directory from where JVM is executed, not where the Jar is located.}. If no such file can be found, the bot loads the default configuration\footnote{notiche that the default configuration does not provide the bot with any controller.}.
 
 To run the program with default configuration and default execution mode, run the command:
 
 \begin{verbatim}
   $> java -jar bot.jar
 \end{verbatim}
+
+Remember tha,t by default, the bot loads the configuration file \texttt{config.yaml} in the current working directory.
 
 To run the program in \texttt{trace} execution mode, run the command:
 
