@@ -43,8 +43,8 @@ function SubmitFile()
     });
 
   }else{
-    //failure
+    $('#response').modal('toggle');
     return;
   }
-	
+	$('#response').modal('toggle');
 };

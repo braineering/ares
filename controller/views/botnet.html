@@ -350,7 +350,7 @@
 					<div class="x_panel">
 						<!-- panel title -->
 						<div class="x_title">
-							<h2>Commands</small></h2>
+							<h2>Commands <small id="lastcommand" name="lastcommand">Last command used: not found</small></h2>
 							<ul class="nav navbar-right panel_toolbox">
 								<li><a class="collapse-link" aria-expanded="false" aria-controls="command-panel" id="collapse-command"><i class="fa fa-chevron-up"></i></a></li>
 							</ul>
@@ -385,13 +385,14 @@
 														<option>WAKEUP</option>
 														<option>UPDATE</option>
 														<option>SLEEP</option>
+														<option>NONE</option>
 													</select>
 												</div>
 											</div>
 
 											<!-- Wait - Delay - Sleep -->
-											<div class="item form-group">
-												<a href="" onclick="BuildModal('WaitDelayReportSleep');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6> Wait, Delay, Report and Sleep</h6></a>
+											<div class="item form-group" id="general_options">
+												<a href="" onclick="BuildModal('WaitDelayReportSleep');" class="control-label col-md-3 col-sm-3 col-xs-12" id="general_options"><h6> Wait, Delay, Report and Sleep</h6></a>
 												<div class="col-md-9 col-sm-9 col-xs-12">
 													<div class="" id="div_wait_option">
 														<label>
@@ -399,13 +400,13 @@
 															<a>Add Wait </a>
 														</label>
 													</div>
-													<div class="">
+													<div class="" id="div_report_option">
 														<label>
 															<input type="checkbox" class="js-switch" id="report">
 															<a data-toggle="tooltip" data-placement="left" title="If report is specified and set to true, the bot will send the report back to the controller, once the command has been executed. If set to false, no report will be sent back to the controller.">Attach Report </a>
 														</label>
 													</div>
-													<div class="" >
+													<div class="" id="div_delay_option2" >
 														<label>
 															<input type="checkbox" class="js-switch" id="delay_option" name="delay"  onclick="DelayEnableDisable(this.checked);">
 															<a data-toggle="tooltip" data-placement="left" title="If delay is specified, the command will be executed after a random amount of time within the given interval; if not, the command will be executed immediately.">Add Delay </a>
@@ -501,11 +502,41 @@
 											</div>
 											<!-- /Properties Table -->
 
+											<!-- Restart Section -->
+											<div class="item form-group" id="div_set_restart">
+												<a href="" onclick="BuildModal('Controllers');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6> Controllers</h6></a>
+
+												<div class="col-md-6 col-sm-9 col-xs-12">
+													<!-- init path -->
+													<div class="item form-group">
+														<a data-toggle="tooltip" data-placement="left" title="The init interface is the one through wich the bot joins the botnet loading specific configuration. "><h6>Init <span class="required">*</span></h6></a>
+														<div class="col-md-10 col-sm-9 col-xs-12">
+															<input type="text" id="restart_controller_init" name="restart_controller_init" required="required" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="data/samples/controllers/1/botinit.json">
+														</div>
+													</div>
+													<!-- commands path -->
+													<div class="item form-group">
+														<a data-toggle="tooltip" data-placement="left" title="The command interface is the one through which the bot loads commands to execute."><h6>Cmd<span class="required">*</span></h6></a>
+														<div class="col-md-10 col-sm-9 col-xs-12">
+															<input type="text" id="restart_controller_cmd" name="restart_controller_cmd" required="required" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="data/samples/controllers/1/botcmd.json">
+														</div>
+													</div>
+													<!-- logs path -->
+													<div class="item form-group">
+														<a data-toggle="tooltip" data-placement="left" title="The log interface is the one that the bot submits analysis reports to."><h6>Log<span class="required">*</span></h6></a>
+														<div class="col-md-10 col-sm-9 col-xs-12">
+															<input type="text" id="restart_controller_log" name="restart_controller_log" required="required" data-validate-minmax="0," class="form-control col-md-3 col-xs-5" placeholder="data/samples/controllers/1/botlog.json">
+														</div>
+													</div>
+												</div>
+											</div>
+
 											<div class="row">
 												<div class="col-xs-12">
 													<button class="btn btn-success pull-right" style="margin-right: 5px;" type="submit" onclick="GenerateCommand()"><i class="fa fa-cog"></i> Generate Command </button>
 												</div>
 											</div>
+
 										</form>
 										<br>
 										<br>
@@ -1024,7 +1055,7 @@
 					<button type="button" class="btn btn-default pull-left" data-dismiss="modal"><span class="fa fa-close"></span> Close</button>
 					<button type="button" class="btn btn-primary" id="copyBtn"><span class="fa fa-copy"></span> Copy to Clipboard</button>
 					<button type="button" class="btn btn-success" id="downloadBtn" onclick="DownloadFile();"><span class="fa fa-download"></span> Download File</button>
-					<button type="button" class="btn btn-warning" id="submitBtn" onclick="SubmitFile();"><span class="fa fa-send"></span> Submit File</button>
+					<button type="button" class="btn btn-warning" id="submitBtn" onclick="SubmitFile();"><span class="fa fa-send"></span> Submit </button>
 				</div>
 			</div>
 		</div>
@@ -1100,6 +1131,7 @@
 	<script src="../assets/scripts/validator.js"></script>
 	<!-- build modal for selected item-->
 	<script src= "../assets/scripts/buildmodals.js"></script>
+	<script src= "../app.js"></script>
 
 <!-- initialize page -->
 <script type="text/javascript">
@@ -1108,7 +1140,8 @@
     $('#div_set_properties').css("display","none");
     $('#div_set_timeout').css("display","none");
     $('#div_delay_option').css("display","none");
-
+    $('#div_set_restart').css("display","none");
+    
     // block refresh
     /*window.onbeforeunload = function() {
     	return "block";

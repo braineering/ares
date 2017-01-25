@@ -9,6 +9,31 @@ function WaitEnableDisable()
 {
   var cmd = document.getElementById('command').value;
 
+  if(cmd == "RESTART")
+    $('#div_set_restart').css("display","inherit");
+  else
+    $('#div_set_restart').css("display","none");
+
+  if(cmd == "NONE")
+  {
+    console.log("comando none");
+    $('#general_options').css("display","none");
+    $('#div_wait_option').css("display","none");
+    $('#div_delay_option2').css("display","none");
+    $('#div_timeout_option').css("display","none");
+    $('#div_set_timeout').css("display","none");
+    $('#div_report_option').css("display","none");
+    $('#div_set_properties').css("display","none");
+    return true;
+  }
+  else{
+    $('#general_options').css("display","inherit");
+    $('#div_wait_option').css("display","inherit");
+    $('#div_delay_option2').css("display","inherit");
+    $('#div_timeout_option').css("display","inherit");
+    $('#div_report_option').css("display","inherit");
+  }
+
   if(cmd == "CALMDOWN" || cmd == "RESTART" || cmd == "KILL"){
     $('#wait_option').disabled = false;
     $('#div_wait_option').css("display","inherit");
@@ -132,9 +157,9 @@ function GenerateCommand()
   if(cmd.command == "RESTART")
   {
     cmd.controller = {};
-    cmd.controller.init = "init";
-    cmd.controller.command = "cmd";
-    cmd.controller.log = "log";
+    cmd.controller.init = document.getElementById('restart_controller_init').value;;
+    cmd.controller.command = document.getElementById('restart_controller_cmd').value;
+    cmd.controller.log = document.getElementById('restart_controller_log').value;
   }
 
   if(waitoption){

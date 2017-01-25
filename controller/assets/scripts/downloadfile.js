@@ -22,8 +22,8 @@ function DownloadFile()
   	saveAs(blob, "command.json");
   else if(type=="Initialization:")
     saveAs(blob, "init.json");
-  else
-  	return;
+
+  $('#response').modal('toggle');
 
   return true;
 };
