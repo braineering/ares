@@ -41,6 +41,8 @@ To start the bot, you need to run
 For example, to print the app version, you need to run:
 
     $> java -jar path/to/bot-1.0-jar-optimized.jar --version
+
+If no custom configuration is specified, the bot looks for the configuration file `config.yaml` in the current working directory. Notice that the current working directory is the directory from where JVM is executed, not where the Jar is located. If no such file can be found, the bot loads the default configuration. Notice that the default configuration does not provide the bot with any controller.
     
 NOTE: when no custom configuration is specified, the bot looks for a file `config.yaml`
 in the current working directory. If no such file is found, the bot loads its default
