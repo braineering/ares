@@ -23,8 +23,8 @@ An example of system analysis is the following:
 		{
 		  "Browsers" : "Google Chrome; Safari;",
 		  "HostName" : " MacBook Pro di Michele",
-	 	  "KernelVersion" : " Darwin 15.5.0",
-	 	  "OsArch" : "x86_64",
+	 	"KernelVersion" : " Darwin 15.5.0",
+	 	"OsArch" : "x86_64",
 		  "OsName" : "Mac OS X",
 		  "OsVersion" : "10.11.5",
 		  "UserName" : " Michele Porretta (micheleporretta)"
@@ -36,11 +36,15 @@ The local networks analysis includes the following components:
 
 \begin{description}
   \setlength\itemsep{1em}
-  \item [Mac] Mac Address
-  \item [Ip] Ip Address 
-  \item [CurrentNetworkInfo] List of network interfaces with their details
-  \item [NetworkStatistics] Statistics about network traffic, classified by protocol
-\end{description}
+  \item [Mac] Mac Address.
+  \item [Ip] Ip Address.
+  \item [CurrentNetworkInfo] List of network interfaces with their details.
+  \item [NetworkStatistics] Statistics about network traffic, classified by protocol.
+  \item [TcpConnections] Active Tcp connections.
+  \item [UdpConnections] Active Udp connections.
+ \end{description}
+
+Note: The use of netInfo command requires a more substantial execution time, because it search the network statistics and the active \textit{TCP} and \textit{UDP} connections.
 
 An example of network analysis is the following:
 
@@ -50,8 +54,10 @@ An example of network analysis is the following:
 		{
 		  "MAC" : "6C-D2-C4-76-FB-24",
 		  "ip" : "10.224.219.219",
-	 	  "currentNetworkInfo" : "[ network info ]",
-	 	  "networkStatistics" : "[ statistics ]"
+	 	"currentNetworkInfo" : "[ network info ]",
+	 	"networkStatistics" : "[ statistics ]",
+	 	"tcpConnections" : "[ active tcp connections ]",
+	 	"udpConnections" : "[ active udp connections ]"
 		}
 	\end{verbatim}
 \end{description}

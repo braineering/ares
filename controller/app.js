@@ -41,7 +41,7 @@ var COMMAND = {'timestamp': Date.now(), 'command': 'NONE'};
 * HANDLERS
 ******************************************************************************/
 function fnLandingPage(req, res) {
-  res.sendFile(path.join(__dirname + '/views/landing.html'));
+  res.sendFile(path.join(__dirname + '/views/index.html'));
 }
 
 function fnAdminPage(req, res) {
