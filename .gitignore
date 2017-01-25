@@ -11,6 +11,7 @@
 _ignore
 src/test/java/com/acmutv/botnet/Misc.java
 node_modules
+bower_components
 
 #==============================================================================#
 # OS
