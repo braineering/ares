@@ -169,14 +169,16 @@ public class CoreController {
           try {
             cmd = getNextCommand();
             if (cmd.getTimestamp() <= LAST_TIMESTAMP) {
-              LOGGER.info("Received outdated command. Skipping...");
-              break;
-            }
-            LAST_TIMESTAMP = cmd.getTimestamp();
-            executeCommand(cmd);
-            if (cmd.getScope().isWithReport() ||
-                (Boolean) cmd.getParams().getOrDefault("report", false)) {
-              report();
+              LOGGER.trace("Received outdated command. Skipping...");
+            } else {
+              LOGGER.info(AppLogMarkers.COMMAND, "Received command {} with params {} from C&C at {}",
+                  cmd.getScope(), cmd.getParams(), CONTROLLER.getCmdResource());
+              LAST_TIMESTAMP = cmd.getTimestamp();
+              executeCommand(cmd);
+              if (cmd.getScope().isWithReport() ||
+                  (Boolean) cmd.getParams().getOrDefault("report", false)) {
+                report();
+              }
             }
           } catch (BotCommandParsingException exc) {
             LOGGER.warn("Cannot read command. {}", exc.getMessage());
@@ -697,15 +699,12 @@ public class CoreController {
    */
   private static BotCommand getNextCommand() throws BotCommandParsingException {
     final String cmdResource = CONTROLLER.getCmdResource();
-    LOGGER.trace("Consuming command from C&C at {}...", cmdResource);
     BotCommand cmd;
     try {
       cmd = BotControllerInteractions.getCommand(CONTROLLER, HTTP_CLIENT);
     } catch (IOException exc) {
       throw new BotCommandParsingException("Cannot consume command. %s", exc.getMessage());
     }
-    LOGGER.info(AppLogMarkers.COMMAND, "Received command {} with params {} from C&C at {}",
-        cmd.getScope(), cmd.getParams(), CONTROLLER.getCmdResource());
     return cmd;
   }
 
@@ -754,7 +753,6 @@ public class CoreController {
     LOGGER.trace("Initializing HTTP client...");
     HTTP_CLIENT = HttpClients.createDefault();
     LOGGER.trace("Initializing HTTP client initialized...");
-
 
     LOGGER.trace("Initializing scheduler...");
     try {

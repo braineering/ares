@@ -106,5 +106,6 @@ app.post('/report', fnReport);
 * START
 ******************************************************************************/
 app.listen(port, function () {
-  winston.info('Botnet controller ready on port %d', port)
+  winston.info('Botnet controller ready on port %d', port);
+  winston.info('Press Ctrl-C to shutdown');
 });
