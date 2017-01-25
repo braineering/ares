@@ -74,12 +74,12 @@ public class NetworkFeatures {
 	/**
 	 * Tcp Connections
 	 */
-	//private String TcpConnections;
+	private String TcpConnections;
 	
 	/**
 	 * Udp Connections
 	 */
-	//private String UdpConnections;
+	private String UdpConnections;
 	
 	/**
 	 * Returns local network features.
@@ -94,8 +94,8 @@ public class NetworkFeatures {
 		String mac = null;
 		String currentNetworkInformation = null;
 		String networkStatistics = null;
-		//String tcpConnections = null;
-		//String udpConnections = null;
+		String tcpConnections = null;
+		String udpConnections = null;
 
 		try {
 			ip = ConnectionManager.getIP();
@@ -113,31 +113,30 @@ public class NetworkFeatures {
 			MacOsxSysInfoTools osx = new MacOsxSysInfoTools();
 			currentNetworkInformation = osx.getCurrentNetworkInformation();
 			networkStatistics = osx.getAllNetworkStatistics();
-			//tcpConnections = osx.getTCPCurrentConnections();
-			//udpConnections = osx.getUDPCurrentConnections();
+			tcpConnections = osx.getTCPCurrentConnections();
+			udpConnections = osx.getUDPCurrentConnections();
 			
 		}else if (osName.toUpperCase().equals("LINUX")){
 			LinuxSysInfoTools linux = new LinuxSysInfoTools();
 			currentNetworkInformation = linux.getCurrentNetworkInformation();
 			networkStatistics = linux.getAllNetworkStatistics();
-			//tcpConnections = linux.getTCPCurrentConnections();
-			//udpConnections = linux.getUDPCurrentConnections();
+			tcpConnections = linux.getTCPCurrentConnections();
+			udpConnections = linux.getUDPCurrentConnections();
 
 		}
 		else if (osName.toUpperCase().equals("WINDOWS")){
 			WindowsSysInfoTools win = new WindowsSysInfoTools();
 			currentNetworkInformation = win.getCurrentNetworkInformation();
 			networkStatistics = win.getAllNetworkStatistics();
-			//tcpConnections = win.getTCPCurrentConnections();
-			//udpConnections = win.getUDPCurrentConnections();
+			tcpConnections = win.getTCPCurrentConnections();
+			udpConnections = win.getUDPCurrentConnections();
 		}else{
 			currentNetworkInformation = "Error: Not Found";
 			networkStatistics = "Error: Not Found";
-			//tcpConnections = "Error: Not Found";
-			//udpConnections = "Error: Not Found";
+			tcpConnections = "Error: Not Found";
+			udpConnections = "Error: Not Found";
 		}
 
-		//return new NetworkFeatures(ip, mac, currentNetworkInformation, networkStatistics, tcpConnections, udpConnections);
-		return new NetworkFeatures(ip, mac, currentNetworkInformation, networkStatistics);
+		return new NetworkFeatures(ip, mac, currentNetworkInformation, networkStatistics, tcpConnections, udpConnections);
 	}
 }

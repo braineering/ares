@@ -33,7 +33,6 @@ To build the Command&Control (C&C) server & Web User Interface (WUI) you need to
     $controller> npm install
     $controller> bower install
 
-
 ## Usage  
 To start the bot, you need to run
 
@@ -43,7 +42,7 @@ For example, to print the app version, you need to run:
 
     $> java -jar path/to/bot-1.0-jar-optimized.jar --version
     
-Note: when no custom configuration is specified, the bot looks for a file `config.yaml`
+NOTE: when no custom configuration is specified, the bot looks for a file `config.yaml`
 in the current working directory. If no such file is found, the bot loads its default
 configuration.
 
@@ -51,11 +50,17 @@ To start the Command&Control (C&C), you need to run:
 
     $controller> node app.js [YOUR ARGUMENTS HERE]
 
-For example, to start the C&C with port 3600 and verbose mode, you need to run:
+For example, to start the C&C with port 3000 and verbose mode, you need to run:
 
-    $controller> node app.js --port 3600 --verbose
+    $controller> node app.js --port 3000 --verbose
 
-WUI access: 
+By default, the C&C is bound to port 3000.
+
+The fake landing is located in 
+
+    http://localhost:port/
+
+While the botnet dashboard is located in: 
 
 	http://localhost:port/admin
 
