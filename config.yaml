@@ -5,7 +5,7 @@
 cnfInfo: true
 tgtInfo: true
 sysInfo: true
-netInfo: true
+netInfo: false
 polling: "3-5:SECONDS"
 reconnections: 3
 reconnectionWait: "2-5:SECONDS"

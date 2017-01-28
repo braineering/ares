@@ -111,12 +111,12 @@
 
   var yamlString = YAML.stringify(config, null, 4 );
   
-  var modalTitle = document.getElementById('response_title');
-  var modalContainer = document.getElementById('response_body');
+  var modalTitle = document.getElementById('responseconf_title');
+  var modalContainer = document.getElementById('responseconf_body');
   var intro = "#===================================================\n# BOT Configuration file\n#===================================================\n";
   modalContainer.textContent = intro + yamlString
   modalTitle.textContent = "Configuration: ";
 
-  $('#response').modal({ backdrop: 'static', keyboard: true, show: true });
+  $('#responseconf').modal({ backdrop: 'static', keyboard: true, show: true });
   return true;
 };
