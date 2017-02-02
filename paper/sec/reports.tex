@@ -38,10 +38,28 @@ The \textit{local networks analysis} includes the following components:
   \setlength\itemsep{1em}
   \item [Mac] Mac Address.
   \item [Ip] Ip Address.
-  \item [CurrentNetworkInfo] List of network interfaces with their details. This report is produced by \textit{ifconfig} system's command to the \textit{Unix-Like} machines, and \textit{ipconfig} command for \textit{Windows NT} machines.
-  \item [NetworkStatistics] Statistics about network traffic, classified by protocol. This report is produced by \textit{netstat -s} command. \textit{Netstat} is a useful tool for checking network configuration and activity.
-  \item [TcpConnections] Active Tcp connections. This report is produced by \textit{netstat -p tcp} command.
-  \item [UdpConnections] Active Udp connections. This report is produced by \textit{netstat -p udp} command.
+  \item [CurrentNetworkInfo] List of network interfaces with their details. This report is produced by following system's command to the \textit{Unix-Like} machines:
+	\begin{verbatim}
+		ifconfig
+	\end{verbatim}
+	And with the following command for \textit{Windows NT} machines: 
+	\begin{verbatim}
+		ipconfig
+	\end{verbatim}
+  \item [NetworkStatistics] Statistics about network traffic, classified by protocol. This report is produced by the following command: 
+	\begin{verbatim}
+		netstat -s			
+	\end{verbatim}
+	Where \textit{Netstat} is a command-line utility useful  for checking network configuration and activity.
+  \item [TcpConnections] Active Tcp connections. This report is produced by the following command: 
+  	\begin{verbatim}
+		netstat -p tcp  		
+  	\end{verbatim}
+  \item [UdpConnections] Active Udp connections. This report is produced by the following command: 
+  	\begin{verbatim}
+		netstat -p udp  		
+  	\end{verbatim}
+
  \end{description}
 
 Notice that the use of \texttt{netInfo} may slow down the execution, as it scans all the active \textit{TCP} and \textit{UDP} connections.
