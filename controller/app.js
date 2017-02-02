@@ -59,13 +59,17 @@ function fnSubmitInitialization(req, res) {
 }
 
 function fnGetCommand(req, res) {
-  res.json(COMMAND);
+  var commandJson = JSON.stringify(COMMAND);
+  res.writeHead(200, {'Content-Type': 'application/json'});
+  res.end(commandJson);
 }
 
 function fnSubmitCommand(req, res) {
   COMMAND = req.body;
-  winston.info('New command submitted: ', JSON.stringify(COMMAND));
-  res.send('Command submitted');
+  var commandJson = JSON.stringify(COMMAND);
+  winston.info('New command submitted: ', commandJson);
+  res.writeHead(200, {'Content-Type': 'application/json'});
+  res.end(commandJson);
 }
 
 function fnReport(req, res) {

@@ -1,5 +1,6 @@
 'use strict';
 
+
 /**
  * Enables the Wait option for Command
  *
@@ -47,7 +48,7 @@ function WaitEnableDisable()
   if(cmd == "SLEEP"){
     $('#div_timeout_option').css("display","inherit");
     $('#div_set_timeout').css("display","inherit");
-    
+
   }
   else{
     $('#div_timeout_option').css("display","none");
@@ -105,11 +106,11 @@ function TimeoutEnableDisable(check)
  *
  + @return {Boolean} true if the operation is successful
  */
-function GenerateCommand() 
+function GenerateCommand()
 {
 
   event.preventDefault();
-  
+
   var cmd = {};
   cmd.timestamp = Date.now();
   cmd.command = document.getElementById('command').value;
@@ -148,9 +149,9 @@ function GenerateCommand()
 
       var name = oCells.item(0).innerHTML;
       var val = oCells.item(1).innerHTML;
-      
+
       if(val)
-        cmd.settings[name] = val;    
+        cmd.settings[name] = val;
     }
   }
 

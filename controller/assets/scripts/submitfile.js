@@ -1,7 +1,7 @@
 'use strict';
 
 
-function SubmitFile() 
+function SubmitFile()
 {
   var rtype = document.getElementById('response_title').textContent;
   var rdata = document.getElementById('response_body').textContent;
@@ -40,6 +40,10 @@ function SubmitFile()
       dataType: 'json',
       contentType: 'application/json',
       data: JSON.stringify(command)
+    }).done(function(data) {
+      $('#lastcmd').text(data.command);
+    }).fail(function() {
+      $('#lastcmd').text('N/A');
     });
 
   }else{

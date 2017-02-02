@@ -120,7 +120,7 @@
 												<a data-toggle="tooltip" data-placement="left" title="CnfInfo. if true, the bot report includes the current bot configuration.">Configurations's Info</a>
 											</label>
 										</div>
-										<div class="">                      
+										<div class="">
 											<label>
 												<input type="checkbox" class="js-switch" id="tgtInfo" name="tgtInfo"/>
 												<a data-toggle="tooltip" data-placement="left" title="TgtInfo. if true, the bot report includes details about the targets to attack.">Target's Info</a>
@@ -213,7 +213,7 @@
 											</table>
 											<div class="row">
 												<div class="col-xs-12">
-													<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('ControllersModal');"><i class="fa fa-plus"></i> Add Controllers </button> 
+													<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('ControllersModal');"><i class="fa fa-plus"></i> Add Controllers </button>
 												</div>
 											</div>
 										</div>
@@ -234,7 +234,7 @@
 								<!-- Authentication -->
 								<div class="item form-group" id="div_set_authentication">
 									<a href="" onclick="BuildModal('Authentication');" class="control-label col-md-3 col-sm-3 col-xs-12"><h6> Authentication</h6></a>
-									
+
 									<div class="col-md-6 col-sm-9 col-xs-12">
 										<div class="table-responsive">
 											<table class="table table-striped jambo_table bulk_action" id="authentication_table">
@@ -257,7 +257,7 @@
 											</table>
 											<div class="row">
 												<div class="col-xs-12">
-													<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('AuthenticationModal');"><i class="fa fa-plus"></i> Add Field</button> 
+													<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('AuthenticationModal');"><i class="fa fa-plus"></i> Add Field</button>
 												</div>
 											</div>
 										</div>
@@ -326,7 +326,7 @@
 											</table>
 											<div class="row">
 												<div class="col-xs-12">
-													<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('InitializationModal');"><i class="fa fa-plus"></i> Add Property </button> 
+													<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('InitializationModal');"><i class="fa fa-plus"></i> Add Property </button>
 												</div>
 											</div>
 										</div>
@@ -350,7 +350,7 @@
 					<div class="x_panel">
 						<!-- panel title -->
 						<div class="x_title">
-							<h2>Commands <small id="lastcommand" name="lastcommand">Last command used: not found</small></h2>
+							<h2>Commands <small>Last command used:</small><small id="lastcmd"></small></h2>
 							<ul class="nav navbar-right panel_toolbox">
 								<li><a class="collapse-link" aria-expanded="false" aria-controls="command-panel" id="collapse-command"><i class="fa fa-chevron-up"></i></a></li>
 							</ul>
@@ -494,7 +494,7 @@
 														</table>
 														<div class="row">
 															<div class="col-xs-12">
-																<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('PropertiesModal');"><i class="fa fa-plus"></i> Add Property </button> 
+																<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('PropertiesModal');"><i class="fa fa-plus"></i> Add Property </button>
 															</div>
 														</div>
 													</div>
@@ -576,7 +576,7 @@
 												</tbody>
 											</table>
 										</div>
-										<!-- /Attacks Table -->  
+										<!-- /Attacks Table -->
 
 										<form class="form-horizontal form-label-left">
 											<!-- Attack Delay -->
@@ -609,7 +609,7 @@
 
 											<div class="row">
 												<div class="col-xs-12">
-													<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('TargetModal');"><i class="fa fa-plus"></i> Add Target </button> 
+													<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('TargetModal');"><i class="fa fa-plus"></i> Add Target </button>
 													<button class="btn btn-success pull-right" onclick="GenerateAttack();" style="margin-right: 5px;"><i class="fa fa-flash"></i> Generate Attack</button>
 												</div>
 											</div>
@@ -667,8 +667,8 @@
 						  </div>
 						</div>
 						<!-- Method -->
-						
-						<!-- Target --> 
+
+						<!-- Target -->
 						<div class="item form-group">
 							<a class="control-label col-md-3 col-sm-3 col-xs-12" for="add-target-target" data-toggle="tooltip" data-placement="left" title="It defines a Web URL of target to attack.">Target <span class="required">*</span></a>
 							<div class="col-md-6 col-sm-9 col-xs-12">
@@ -678,7 +678,7 @@
 						</div>
 						<!-- /Target -->
 
-						<!-- Custom Proxy --> 
+						<!-- Custom Proxy -->
 						<div class="item form-group">
 							<a class="control-label col-md-3 col-sm-3 col-xs-12" for="add-target-proxy" data-toggle="tooltip" data-placement="left" title="If specified, proxy is the HTTP proxy to attack through. If set to null, it is the default proxy.">Proxy </a>
 							<div class="col-md-6 col-sm-9 col-xs-12">
@@ -713,7 +713,7 @@
 									</table>
 									<div class="row">
 										<div class="col-xs-12">
-											<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('HeaderModal');"><i class="fa fa-plus"></i> Add Field</button> 
+											<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('HeaderModal');"><i class="fa fa-plus"></i> Add Field</button>
 										</div>
 									</div>
 								</div>
@@ -746,7 +746,7 @@
 									</table>
 									<div class="row">
 										<div class="col-xs-12">
-											<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('ParamsModal');"><i class="fa fa-plus"></i> Add Param</button> 
+											<button class="btn btn-primary pull-left" style="margin-right: 5px;" onclick="BuildModal('ParamsModal');"><i class="fa fa-plus"></i> Add Param</button>
 										</div>
 									</div>
 								</div>
@@ -1029,7 +1029,7 @@
 					<h4 class="modal-title" id="generic_modal_title">Title</h4>
 				</div>
 				<div class="modal-body">
-					<p id="generic_modal_body"></p>            
+					<p id="generic_modal_body"></p>
 				</div>
 				<br>
 				<br>
@@ -1049,7 +1049,7 @@
 					<h4 class="modal-title" id="response_title">Title</h4>
 				</div>
 				<div class="modal-body col-md-12 col-sm-12">
-					<textarea id="response_body" class=" col-md-12 col-sm-12"></textarea>            
+					<textarea id="response_body" class=" col-md-12 col-sm-12"></textarea>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default pull-left" data-dismiss="modal"><span class="fa fa-close"></span> Close</button>
@@ -1071,7 +1071,7 @@
 					<h4 class="modal-title" id="responseconf_title">Title</h4>
 				</div>
 				<div class="modal-body col-md-12 col-sm-12">
-					<textarea id="responseconf_body" class=" col-md-12 col-sm-12"></textarea>            
+					<textarea id="responseconf_body" class=" col-md-12 col-sm-12"></textarea>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default pull-left" data-dismiss="modal"><span class="fa fa-close"></span> Close</button>
@@ -1153,7 +1153,6 @@
 	<script src="../assets/scripts/validator.js"></script>
 	<!-- build modal for selected item-->
 	<script src= "../assets/scripts/buildmodals.js"></script>
-	<script src= "../app.js"></script>
 
 <!-- initialize page -->
 <script type="text/javascript">
@@ -1163,11 +1162,20 @@
     $('#div_set_timeout').css("display","none");
     $('#div_delay_option').css("display","none");
     $('#div_set_restart').css("display","none");
-    
-    // block refresh
-    /*window.onbeforeunload = function() {
-    	return "block";
-    }*/
+
+    $('document').ready(function() {
+      $.ajax({
+        method: 'GET',
+        url: '/command',
+        dataType: 'json'
+      })
+      .done(function(data) {
+        $('#lastcmd').text(data.command);
+      })
+      .fail(function() {
+        $('#lastcmd').text('N/A');
+      });
+    });
 </script>
 
 <!-- Switch Panel Function -->
