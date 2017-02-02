@@ -29,6 +29,9 @@ package com.acmutv.botnet.tool.runtime;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class WindowsSysInfoTools {
 	
@@ -124,6 +127,22 @@ public class WindowsSysInfoTools {
 	 * @return browsers list
 	 */
 	public String getBrowsers(){
-		return RuntimeManager.runCmd("");
+
+	    Path pathFirefox = FileSystems.getDefault().getPath("C:/Program Files (x86)/Mozilla Firefox").toAbsolutePath();
+	    Path pathChrome = FileSystems.getDefault().getPath("C:/Program Files (x86)/Google/Chrome").toAbsolutePath();
+	    Path pathIE = FileSystems.getDefault().getPath("C:/Program Files (x86)/Internet Explorer").toAbsolutePath();
+	    
+	    String browsers = "";
+
+	    if (Files.exists(pathFirefox)) {
+	    	browsers +="Mozilla-Firefox;";
+	    }
+	    if (Files.exists(pathChrome)) {
+	    	browsers +="Google Chrome; ";
+	    }
+	    if (Files.exists(pathIE)) {
+			browsers +="Internet Explorer;";
+	    }
+	    return browsers;
 	}	
 }
