@@ -1,9 +1,9 @@
 \section{Reports}
 \label{sec:reports}
 
-The bot can send to the controller reports containing \textit{current bot configuration}, \textit{scheduled attacks}, \textit{local system analysis} and \textit{local networks analysis}. Each section is attached to reports, if requested in configuration (see options \texttt{cnfInfo}, \texttt{tgtInfo}, \texttt{sysInfo} and \texttt{netInfo} in \ref{sec:configuration}). Since the first two sections are self-explanatory, we focus here only on local system and networks analysis.\\
+The bot can send to the controller reports containing \textit{current bot configuration}, \textit{scheduled attacks}, \textit{local system analysis} and \textit{local networks analysis}. Each section is attached to reports, if requested in configuration (see options \texttt{cnfInfo}, \texttt{tgtInfo}, \texttt{sysInfo} and \texttt{netInfo} in Section~\ref{sec:configuration}). Since the first two sections are self-explanatory, we focus here only on local system and networks analysis.\\
 
-The local system analysis includes the following components:
+The \textit{local system analysis} includes the following components:
 \begin{description}
   \setlength\itemsep{1em}
     \item [browsers] list of browsers installed on system. Browsers are detected by parsing the report of installed applications, returned by system's command of specific OS (e.g. Linux command: "\textit{dpkg -l}").
@@ -32,7 +32,7 @@ An example of system analysis is the following:
 		\end{verbatim}
 \end{description}
 
-The local networks analysis includes the following components:
+The \textit{local networks analysis} includes the following components:
 
 \begin{description}
   \setlength\itemsep{1em}
@@ -44,7 +44,7 @@ The local networks analysis includes the following components:
   \item [UdpConnections] Active Udp connections. This report is produced by \textit{netstat -p udp} command.
  \end{description}
 
-Note: The use of netInfo command requires a more substantial execution time, because it search the network statistics and the active \textit{TCP} and \textit{UDP} connections.
+Notice that the use of \texttt{netInfo} may slow down the execution, as it scans all the active \textit{TCP} and \textit{UDP} connections.
 
 An example of network analysis is the following:
 
