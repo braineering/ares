@@ -22,6 +22,7 @@ The bot is modeled as a Finite State Automaton (FSA) with the state space define
   \item[SLEEP] no reports are sent to the controller nor attacks are executed. The bot polls the controller for the next command, waiting for a \texttt{WAKEUP} (it would transit to state \texttt{EXECUTION}) or a \texttt{KILL} (it would transit to state \texttt{DEAD}).
   In this state errors are considered warning: they are handled and never cause bot termination. The pseudocode of this state is shown in Algorithm~\ref{alg:state-sleep-pseudocode}.
 
+
   \item[DEAD] attacks are unscheduled, resources are released and the bot terminates. In this state all errors are ignored, because no one of them could never compromise the state purpose. The pseudocode of this state is shown in Algorithm~\ref{alg:state-dead-pseudocode}.
 
 \end{description}
