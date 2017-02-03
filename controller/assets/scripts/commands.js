@@ -60,6 +60,11 @@ function WaitEnableDisable()
   else
     $('#div_set_properties').css("display","none");
 
+  if(cmd == "REPORT")
+    $('#div_report_option').css("display","none");
+  else
+    $('#div_report_option').css("display","inherit");
+
   return true;
 };
 
