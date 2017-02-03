@@ -76,7 +76,6 @@ function fnReport(req, res) {
 	var report = req.body;
   var bip    = req.ip;
   var file   = reportFilePattern.replace(/\$\{botIp\}/, bip);
-  winston.info('Received report from %s: %s', bip, JSON.stringify(report));
   fs.outputJson(file, report, function(err) {
     if(err) {
       winston.info(err);
@@ -84,7 +83,7 @@ function fnReport(req, res) {
       winston.info('Report saved in %s', file);
     }
   });
-	res.send('Report saved')
+	res.send('Report saved');
 }
 
 
